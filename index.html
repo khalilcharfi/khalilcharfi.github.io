@@ -36,7 +36,17 @@
 	<script type="text/javascript">
 		var scene = new THREE.Scene();
 		var camera = new THREE.PerspectiveCamera( 35, window.innerWidth/window.innerHeight, 0.1, 1000 );
+		
+window.addEventListener( 'resize', onWindowResize, false );
 
+function onWindowResize(){
+
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+
+    renderer.setSize( window.innerWidth, window.innerHeight );
+
+}
 		var renderer = new THREE.WebGLRenderer();
 		renderer.setSize( window.innerWidth-3, window.innerHeight-3 );
 		renderer.setClearColorHex( 0x3F3F3F, 1 );
