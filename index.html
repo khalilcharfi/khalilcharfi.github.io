@@ -1,99 +1,120 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <title>Khalil Charfi</title>
 
 
-      <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
-      <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
 
     <meta name="description" content="khalil charfi">
-	<meta name="author" content="khalil charfi">
+    <meta name="language" content="EN">
+    <meta name="author" content="khalil charfi">
+    <meta name="keywords"
+          content="HTML,CSS,XML,JavaScript,CV,Curriculum Vitae,Presentation, Khalil, Charfi, Khalil Charfi, KC, Charfisoft, IT, Job, Experience, Master, Research, linkedin, github, Java, J2EE, JEE, Spring, Android, Json, Web, Developer">
 
-	<link href='https://fonts.googleapis.com/css?family=Lato:400,300,700' rel='stylesheet' type='text/css'>
-	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 
-	<link rel="stylesheet" type="text/css" href="css/style.css">
+    <link href='https://fonts.googleapis.com/css?family=Lato:400,300,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <link rel="stylesheet" type="text/css" href="css/style.css">
 </head>
 <body>
-	<div class="universe">
-		<div class="container">
-			<div class="absolute-center">
-				<h1><b>K</b>halil <b>C</b>harfi</h1>
-				<ul class="touch">
-					<li><a title="Github" href="https://goo.gl/Q8hlVW" class="button"><i class="fa fa-github"></i></a></li>
-					<li><a title="Linkedin"  href="https://goo.gl/fvm7ui" class="button"><i class="fa fa-linkedin"></i></a></li>
-					<li><a title="Twitter" href="https://goo.gl/hsvdI1" class="button"><i class="fa fa-twitter"></i></a></li>
-					<li><a title="E-mail" href="mailto:khalilcharfi8@gmail.com" class="button"><i class="fa fa-envelope"></i></a></li>
-					<li><a title="Curriculum Vitae" target="_blank" rel="noopener noreferrer" href="Khalil_Charfi___cv.pdf" class="button"><i class="fa fa-address-card-o"></i></a></li>
-				</ul>
-			</div>
-		</div>
-	</div>
-	<script type="text/javascript" src="js/three.min.js"></script>
-	<script type="text/javascript">
-		var scene = new THREE.Scene();
-		var camera = new THREE.PerspectiveCamera( 35, window.innerWidth/window.innerHeight, 0.1, 1000 );
-		
-window.addEventListener( 'resize', onWindowResize, false );
+<div class="universe">
+    <div class="container">
+        <div class="absolute-center">
+            <h1><b>K</b>halil <b>C</b>harfi</h1>
+            <ul class="touch">
+                <li><a title="Github" href="https://goo.gl/Q8hlVW" class="button"><i class="fa fa-github"></i></a></li>
+                <li><a title="Linkedin" href="https://goo.gl/fvm7ui" class="button"><i class="fa fa-linkedin"></i></a>
+                </li>
+                <li><a title="Twitter" href="https://goo.gl/hsvdI1" class="button"><i class="fa fa-twitter"></i></a>
+                </li>
+                <li><a title="E-mail" href="mailto:khalilcharfi8@gmail.com" class="button"><i
+                        class="fa fa-envelope"></i></a></li>
+                <li>
+                    <div class="dropdown button">
+                        <a class="dropdown-toggle" type="button" title="Curriculum Vitae"
+                           data-toggle="dropdown">
+                            <i class="fa fa-address-card-o"></i>
+                        </a>
+                        <div class="dropdown-content" style="left:0;">
+                            <a title="Curriculum Vitae (EN)" target="_blank" rel="noopener noreferrer"
+                               href="Khalil_Charfi___cv.pdf">EN</a>
+                            <a title="Curriculum Vitae (FR)" target="_blank" rel="noopener noreferrer"
+                               href="Khalil_Charfi___cv.pdf">FR</a>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="js/three.min.js"></script>
+<script type="text/javascript">
+    var scene = new THREE.Scene();
+    var camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 0.1, 1000);
 
-function onWindowResize(){
+    window.addEventListener('resize', onWindowResize, false);
 
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
+    function onWindowResize() {
 
-    renderer.setSize( window.innerWidth, window.innerHeight );
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
 
-}
-		var renderer = new THREE.WebGLRenderer();
-		renderer.setSize( window.innerWidth-3, window.innerHeight-3 );
-		renderer.setClearColorHex( 0x3F3F3F, 1 );
-		document.body.appendChild( renderer.domElement );
+        renderer.setSize(window.innerWidth, window.innerHeight);
 
-		var object = [];
-		object[0] = new THREE.Mesh( 
-			new THREE.OctahedronGeometry( 1, 4 ), 
-			new THREE.MeshBasicMaterial( { color: 0x56544D, wireframe: true } ) 
-		);
-		object[1] = new THREE.Mesh( 
-			new THREE.IcosahedronGeometry( 5, 5 ), 
-			new THREE.MeshBasicMaterial( { color: 0x4D4D4D, wireframe: true } ) 
-		);
+    }
 
-		for(var i in object){
-			scene.add( object[i] );
-		}
+    var renderer = new THREE.WebGLRenderer();
+    renderer.setSize(window.innerWidth - 3, window.innerHeight - 3);
+    renderer.setClearColorHex(0x3F3F3F, 1);
+    document.body.appendChild(renderer.domElement);
 
-		camera.position.z = 5;
+    var object = [];
+    object[0] = new THREE.Mesh(
+        new THREE.OctahedronGeometry(1, 4),
+        new THREE.MeshBasicMaterial({color: 0x56544D, wireframe: true})
+    );
+    object[1] = new THREE.Mesh(
+        new THREE.IcosahedronGeometry(5, 5),
+        new THREE.MeshBasicMaterial({color: 0x4D4D4D, wireframe: true})
+    );
 
-		var render = function () {
-			object[0].rotation.x += 0.005;
-			object[0].rotation.y += 0.0005;
+    for (var i in object) {
+        scene.add(object[i]);
+    }
 
-			object[1].rotation.x += 0.0005;
-			object[1].rotation.y += 0.00005;
+    camera.position.z = 5;
 
-			camera.lookAt( scene.position );
+    var render = function () {
+        object[0].rotation.x += 0.005;
+        object[0].rotation.y += 0.0005;
 
-			renderer.render(scene, camera);
-		};
+        object[1].rotation.x += 0.0005;
+        object[1].rotation.y += 0.00005;
 
-		var animate = function(){
-			requestAnimationFrame(animate);  
-			render();
-		}
+        camera.lookAt(scene.position);
 
-		document.addEventListener( 'resize', function(){
-			camera.aspect = window.innerWidth / window.innerHeight;
-		    camera.updateProjectionMatrix();
+        renderer.render(scene, camera);
+    };
 
-		    renderer.setSize( window.innerWidth, window.innerHeight );
-		}, false );
+    var animate = function () {
+        requestAnimationFrame(animate);
+        render();
+    }
 
-		animate();
-	</script>    
+    document.addEventListener('resize', function () {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+
+        renderer.setSize(window.innerWidth, window.innerHeight);
+    }, false);
+
+    animate();
+</script>
 </body>
 </html>
