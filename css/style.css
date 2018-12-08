@@ -68,6 +68,7 @@ table {
 }
 
 .absolute-center {
+    width: 100%;
     position: absolute;
     left: 50%;
     top: 50%;
@@ -192,3 +193,4 @@ a {
         margin: 5px;
     }
 }*/
+
