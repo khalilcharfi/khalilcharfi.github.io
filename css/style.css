@@ -194,7 +194,10 @@ a {
     }
 }*/
 
-.kc {
-   color: #FF6820
+.kc, .char1, .char8 {
+   color: #FF6820;
+   font-weight: bold;
 }
+
+
 
