@@ -1,0 +1,15 @@
+/* Developer */
+Name: Khalil Charfi
+Location: Frankfurt, Germany
+Twitter: @khalilcharfi8
+GitHub: https://github.com/khalilcharfi
+
+/* Site */
+Language: Multilingual (EN/FR/AR/DE)
+Technologies: Vue.js, Angular, Laravel, GitHub Pages
+Last update: 2023-10-20
+
+/* Thanks */
+- Font Awesome for icons
+- Three.js for animations
+- Google Fonts for typography
