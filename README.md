@@ -1,7 +1,3 @@
-Here’s a clean and professional `README.md` file tailored for your GitHub repository:
-
----
-
 # 🌍 Khalil Charfi - Multilingual Full-Stack Developer Portfolio
 
 ![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-Live-brightgreen) ![Languages](https://img.shields.io/badge/Languages-EN%2C%20FR%2C%20AR%2C%20DE-blue)
@@ -127,7 +123,3 @@ If you have any questions or want to collaborate, feel free to reach out:
 ### 🌟 Live Demo
 
 Visit the live site: [Khalil Charfi's Portfolio](https://khalilcharfi.github.io)
-
----
-
-This `README.md` provides a clear overview of your project, its features, and how to use it. It also includes badges, sections for contributions, and contact information to make it professional and user-friendly.
