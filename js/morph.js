@@ -1,19 +1,39 @@
 {
     // Scene setup
     const scene = new THREE.Scene();
-    let camera = new THREE.PerspectiveCamera(27, window.innerWidth/window.innerHeight, 0.1, 1000);
-    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+    const camera = new THREE.PerspectiveCamera(
+        27, 
+        window.innerWidth / window.innerHeight, 
+        0.1, 
+        1000
+    );
+    
+    const renderer = new THREE.WebGLRenderer({
+        alpha: true,
+        antialias: true
+    });
+    
+    // Set initial renderer size and pixel ratio
     renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(window.devicePixelRatio);
-    renderer.setClearColor(0x3F3F3F, 1);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // Cap at 2x for performance
+    renderer.setClearColor(0x3F3F3F, 1); // Background color
     document.body.appendChild(renderer.domElement);
 
     // Responsive handling
     const onWindowResize = () => {
+        // Update camera aspect ratio
         camera.aspect = window.innerWidth / window.innerHeight;
         camera.updateProjectionMatrix();
+
+        // Update renderer size and pixel ratio
         renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+        // Resize spheres based on screen dimensions
+        resizeSpheres();
     };
+
+    // Listen for window resize events
     window.addEventListener('resize', onWindowResize, false);
 
     // Objects
@@ -27,23 +47,36 @@
             new THREE.MeshBasicMaterial({ color: 0x4D4D4D, wireframe: true })
         )
     ];
+
+    // Add objects to the scene
     objects.forEach(obj => scene.add(obj));
     camera.position.z = 5;
+
+    // Function to resize spheres based on screen dimensions
+    const resizeSpheres = () => {
+        const scaleFactor = Math.min(window.innerWidth / 1920, window.innerHeight / 1080); // Scale factor based on screen size
+        objects[0].scale.set(scaleFactor, scaleFactor, scaleFactor); // Octahedron
+        objects[1].scale.set(scaleFactor * 5, scaleFactor * 5, scaleFactor * 5); // Icosahedron
+    };
+
+    // Initial resizing of spheres
+    resizeSpheres();
 
     // Animation loop
     const animate = () => {
         requestAnimationFrame(animate);
-        
-        // Rotations
+
+        // Rotate objects
         objects[0].rotation.x += 0.005;
         objects[0].rotation.y += 0.0005;
         objects[1].rotation.x += 0.0005;
         objects[1].rotation.y += 0.00005;
 
+        // Render the scene
         renderer.render(scene, camera);
     };
 
-    // Text morphing
+    // Text morphing animation
     const chars = ['$', '%', '#', '@', '&', '(', ')', '=', '*', '/'];
     class Entry {
         constructor(el) {
@@ -54,6 +87,7 @@
             this.DOM.title.letters.forEach(letter => letter.dataset.initial = letter.innerHTML);
             observer.observe(this.DOM.el);
         }
+
         enter() {
             this.DOM.title.word.style.opacity = 1;
             this.timeouts = [];
@@ -69,13 +103,14 @@
                 this.timeouts.push(timeout);
             });
         }
+
         exit() {
             this.DOM.title.word.style.opacity = 0;
             this.timeouts.forEach(clearTimeout);
         }
     }
 
-    // Intersection observer
+    // Intersection Observer for text morphing
     let current = -1;
     const sections = document.querySelectorAll('.content__section');
     const observer = new IntersectionObserver(entries => {
@@ -83,16 +118,16 @@
             if (entry.isIntersecting) {
                 const index = [...sections].indexOf(entry.target);
                 if (index === current) return;
-                
-                if (current >= 0) allentries[current].exit();
-                allentries[index].enter();
+
+                if (current >= 0) allEntries[current].exit();
+                allEntries[index].enter();
                 current = index;
             }
         });
     }, { threshold: 0.5 });
 
-    const allentries = Array.from(sections).map(section => new Entry(section));
+    const allEntries = Array.from(sections).map(section => new Entry(section));
 
-    // Start animation
+    // Start animations
     animate();
 }
