@@ -1,185 +1,21 @@
+<!-- Root index.html (Redirects users based on browser language) -->
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Khalil Charfi - Full Stack Developer (Vue.js, Angular, Laravel, PHP) | Frankfurt, Germany</title>
-    <!-- Google Tag Manager -->
+    <title>Redirecting...</title>
     <script>
-        (function (w, d, s, l, i) {
-            w[l] = w[l] || [];
-            w[l].push({
-                'gtm.start': new Date().getTime(),
-                event: 'gtm.js'
-            });
-            var f = d.getElementsByTagName(s)[0],
-                j = d.createElement(s),
-                dl = l != 'dataLayer' ? '&l=' + l : '';
-            j.async = true;
-            j.src =
-                'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
-            f.parentNode.insertBefore(j, f);
-        })(window, document, 'script', 'dataLayer', 'GTM-KJLDLLX');
-    </script>
-    <!-- End Google Tag Manager -->
-    <!-- Favicon -->
-<link rel="apple-touch-icon-precomposed" sizes="57x57" href="apple-touch-icon-57x57.png" />
-<link rel="apple-touch-icon-precomposed" sizes="114x114" href="apple-touch-icon-114x114.png" />
-<link rel="apple-touch-icon-precomposed" sizes="72x72" href="apple-touch-icon-72x72.png" />
-<link rel="apple-touch-icon-precomposed" sizes="144x144" href="apple-touch-icon-144x144.png" />
-<link rel="apple-touch-icon-precomposed" sizes="60x60" href="apple-touch-icon-60x60.png" />
-<link rel="apple-touch-icon-precomposed" sizes="120x120" href="apple-touch-icon-120x120.png" />
-<link rel="apple-touch-icon-precomposed" sizes="76x76" href="apple-touch-icon-76x76.png" />
-<link rel="apple-touch-icon-precomposed" sizes="152x152" href="apple-touch-icon-152x152.png" />
-<link rel="icon" type="image/png" href="favicon-196x196.png" sizes="196x196" />
-<link rel="icon" type="image/png" href="favicon-96x96.png" sizes="96x96" />
-<link rel="icon" type="image/png" href="favicon-32x32.png" sizes="32x32" />
-<link rel="icon" type="image/png" href="favicon-16x16.png" sizes="16x16" />
-<link rel="icon" type="image/png" href="favicon-128.png" sizes="128x128" />
-<meta name="application-name" content="&nbsp;"/>
-<meta name="msapplication-TileColor" content="#FFFFFF" />
-<meta name="msapplication-TileImage" content="mstile-144x144.png" />
-<meta name="msapplication-square70x70logo" content="mstile-70x70.png" />
-<meta name="msapplication-square150x150logo" content="mstile-150x150.png" />
-<meta name="msapplication-wide310x150logo" content="mstile-310x150.png" />
-<meta name="msapplication-square310x310logo" content="mstile-310x310.png" />
+        const lang = navigator.language || navigator.userLanguage || 'en';
+        let redirectUrl = '/en/';
+        
+        if (lang.startsWith('fr')) redirectUrl = '/fr/';
+        else if (lang.startsWith('ar')) redirectUrl = '/ar/';
+        else if (lang.startsWith('de')) redirectUrl = '/de/';
 
-    <meta name="description"
-        content="Experienced full-stack developer skilled in Vue.js, Angular, and Laravel. Proven ability to build scalable applications. Proficient in REST APIs and database technologies.">
-    <meta name="language" content="EN">
-    <meta name="author" content="Khalil Charfi">
-    <meta name="keywords"
-        content="Software Engineer, Full-Stack Developer, Web Developer, Mobile Developer, Vue.js, Angular, Laravel, Ionic, Flutter, Capacitor, REST APIs, GraphQL, Keycloak, Firebase, GitLab CI/CD, Bitrise, TestCafe, Cucumber, SQL, MySQL, MongoDB, Docker, Germany, Frankfurt, CHECK24, ASM, Sfax, Tunisia">
-    <link href='https://fonts.googleapis.com/css?family=Lato:400,300,700' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" type="text/css" href="css/normalize.css">
-    <link rel="stylesheet" type="text/css" href="css/style.css">
-    <!-- Schema Markup -->
-    <script type="application/ld+json">
-        {
-          "@context": "https://schema.org",
-          "@type": "Person",
-          "name": "Khalil Charfi",
-          "jobTitle": "Software Engineer",
-          "url": "https://khalilcharfi.github.io/",
-          "email": "khalil.charfi@web.de",
-          "description": "Full-stack developer specializing in Vue.js, Angular, and Laravel. Based in Frankfurt, Germany.",
-          "address": {
-            "@type": "PostalAddress",
-            "addressLocality": "Frankfurt",
-            "addressRegion": "Hesse",
-            "addressCountry": "Germany"
-          },
-          "worksFor": [
-            {
-                "@type": "Organization",
-                "name": "CHECK24 Vergleichsportal GmbH",
-                "url": "https://www.check24.de/"
-              },
-            {
-              "@type": "Organization",
-              "name": "ASM - All Soft Multimedia",
-              "url": ""
-            },
-            {
-              "@type": "Organization",
-              "name": "MyBus - Monkey Factory",
-              "url": ""
-            },
-            {
-              "@type": "Organization",
-              "name": "Softtodo IT Solutions",
-              "url": ""
-            },
-            {
-              "@type": "Organization",
-              "name": "University of Marburg",
-              "url": "https://www.uni-marburg.de/"
-            },
-            {
-              "@type": "Organization",
-              "name": "Digital Research Centre of Sfax",
-              "url": "https://www.crns.rnrt.tn/"
-            }
-          ],
-          "knowsAbout": [
-                "Software Engineering",
-                "Full-Stack Development",
-                "Web Development",
-                "Mobile Development",
-                "Vue.js",
-                "Angular",
-                "Laravel",
-                "PHP",
-                "JavaScript",
-                "TypeScript",
-                "Laminas",
-                "Ionic",
-                "Capacitor",
-                "Flutter",
-                "REST APIs",
-                "GraphQL",
-                "Keycloak",
-                "Firebase",
-                "GitLab CI/CD",
-                "Bitrise",
-                "TestCafe",
-                "Cucumber",
-                "SQL",
-                "MySQL",
-                "MongoDB",
-                "Docker",
-                "Agile Development",
-                "Scrum",
-                "Unit Testing",
-                "E2E Testing"
-          ],
-          "alumniOf": [
-            {
-                "@type": "Organization",
-                "name": "University of Marburg"
-              },
-              {
-                "@type": "Organization",
-                "name": "Digital Research Centre of Sfax"
-              }
-          ],
-          "sameAs": [
-            "https://github.com/khalilcharfi",
-            "https://www.linkedin.com/in/khalil-charfi",
-            "https://www.xing.com/profile/Khalil_Charfi2/cv",
-            "https://twitter.com/khalilcharfi8"
-          ]
-        }
+        window.location.href = redirectUrl;
     </script>
 </head>
 <body>
-    <!-- Google Tag Manager (noscript) -->
-    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-KJLDLLX" height="0" width="0"
-            style="display:none;visibility:hidden"></iframe></noscript>
-    <!-- End Google Tag Manager (noscript) -->
-    <div class="universe">
-        <div class="container">
-            <div class="absolute-center">
-                <div class="content__section">
-                    <h1 class="content__text">Khalil Charfi</h1>
-                </div>
-                <ul class="touch">
-                    <li><a id="Github" title="Github" href="https://github.com/khalilcharfi" target="_blank" class="button" onclick="dataLayer.push({'event': 'button_click', 'button_id': 'Github'});"><i
-                                class="fa fa-github"></i></a></li>
-                    <li><a id="Linkedin" title="Linkedin" href="https://www.linkedin.com/in/khalil-charfi" target="_blank"
-                            class="button" onclick="dataLayer.push({'event': 'button_click', 'button_id': 'LinkedIn'});"><i class="fa fa-linkedin"></i></a>
-                    </li>
-                    <li><a id="Xing" title="Xing" href="https://www.xing.com/profile/Khalil_Charfi2/cv" target="_blank"
-                            class="button" onclick="dataLayer.push({'event': 'button_click', 'button_id': 'Xing'});"><i class="fa fa-brands fa-xing"></i></a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </div>
-    <script type="text/javascript" src="js/three.min.js"></script>
-    <script type="text/javascript" src="js/charming.min.js"></script>
-    <script type="text/javascript" src="js/morph.js"></script>
-
+    <p>Redirecting to the appropriate language version...</p>
 </body>
 </html>
