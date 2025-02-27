@@ -102,7 +102,7 @@ canvas {
 }
 
 h1 {
-    font-family: 'Lato', sans-serif;
+ font-family: 'Arial', sans-serif;
     text-transform: uppercase;
     font-size: 4em;
     margin: 50px 0 0 0;
@@ -197,9 +197,5 @@ a {
 .kc, .char1, .char8 {
    color: #FF6820;
    font-weight: bold;
-}
-
-.content__text--ar > * {
-    font-family: 'Arial', sans-serif !important;
 }
 
