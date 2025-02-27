@@ -16,7 +16,9 @@
     <meta name="msapplication-config" content="/img/favicons/browserconfig.xml">
     <meta name="theme-color" content="#ffffff">
     
+    <!-- Redirection Script -->
     <script>
+        // Redirect based on browser language
         const lang = navigator.language || navigator.userLanguage || 'en';
         let redirectUrl = '/en/';
         
@@ -27,6 +29,17 @@
     </script>
 </head>
 <body>
-    <p>Redirecting to the appropriate language version...</p>
+    <div style="text-align: center; margin-top: 50px;">
+        <h1>Redirecting...</h1>
+        <p>If you are not redirected automatically, please select your preferred language:</p>
+        
+        <!-- Fallback Language Links -->
+        <ul style="list-style: none; padding: 0;">
+            <li><a href="/en/">English</a></li>
+            <li><a href="/fr/">Français</a></li>
+            <li><a href="/ar/">العربية</a></li>
+            <li><a href="/de/">Deutsch</a></li>
+        </ul>
+    </div>
 </body>
 </html>
