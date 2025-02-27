@@ -1,25 +1,24 @@
 {
-    // Scene setup
+    // Scene Setup
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(
-        27, 
-        window.innerWidth / window.innerHeight, 
-        0.1, 
-        1000
+        27, // Field of view
+        window.innerWidth / window.innerHeight, // Aspect ratio
+        0.1, // Near clipping plane
+        1000 // Far clipping plane
     );
-    
-    const renderer = new THREE.WebGLRenderer({
-        alpha: true,
-        antialias: true
-    });
-    
-    // Set initial renderer size and pixel ratio
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // Cap at 2x for performance
-    renderer.setClearColor(0x3F3F3F, 1); // Background color
-    document.body.appendChild(renderer.domElement);
 
-    // Responsive handling
+    // Renderer Configuration
+    const renderer = new THREE.WebGLRenderer({
+        alpha: true, // Transparent background
+        antialias: true // Smooth edges
+    });
+    renderer.setSize(window.innerWidth, window.innerHeight); // Set initial size
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // Cap pixel ratio at 2x for performance
+    renderer.setClearColor(0x3F3F3F, 1); // Background color (dark gray)
+    document.body.appendChild(renderer.domElement); // Add renderer to DOM
+
+    // Responsive Handling
     const onWindowResize = () => {
         // Update camera aspect ratio
         camera.aspect = window.innerWidth / window.innerHeight;
@@ -29,40 +28,34 @@
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-        // Resize spheres based on screen dimensions
+        // Resize 3D objects based on screen dimensions
         resizeSpheres();
     };
-
-    // Listen for window resize events
     window.addEventListener('resize', onWindowResize, false);
 
-    // Objects
+    // Objects (3D Shapes)
     const objects = [
         new THREE.Mesh(
-            new THREE.OctahedronGeometry(1, 4),
-            new THREE.MeshBasicMaterial({ color: 0x56544D, wireframe: true })
+            new THREE.OctahedronGeometry(1, 4), // Octahedron shape
+            new THREE.MeshBasicMaterial({ color: 0x56544D, wireframe: true }) // Wireframe material
         ),
         new THREE.Mesh(
-            new THREE.IcosahedronGeometry(5, 5),
-            new THREE.MeshBasicMaterial({ color: 0x4D4D4D, wireframe: true })
+            new THREE.IcosahedronGeometry(5, 5), // Icosahedron shape
+            new THREE.MeshBasicMaterial({ color: 0x4D4D4D, wireframe: true }) // Wireframe material
         )
     ];
+    objects.forEach(obj => scene.add(obj)); // Add objects to the scene
+    camera.position.z = 5; // Set camera position
 
-    // Add objects to the scene
-    objects.forEach(obj => scene.add(obj));
-    camera.position.z = 5;
-
-    // Function to resize spheres based on screen dimensions
+    // Function to Resize Spheres Based on Screen Dimensions
     const resizeSpheres = () => {
         const scaleFactor = Math.min(window.innerWidth / 1920, window.innerHeight / 1080); // Scale factor based on screen size
-        objects[0].scale.set(scaleFactor, scaleFactor, scaleFactor); // Octahedron
-        objects[1].scale.set(scaleFactor * 5, scaleFactor * 5, scaleFactor * 5); // Icosahedron
+        objects[0].scale.set(scaleFactor, scaleFactor, scaleFactor); // Scale Octahedron
+        objects[1].scale.set(scaleFactor * 5, scaleFactor * 5, scaleFactor * 5); // Scale Icosahedron
     };
+    resizeSpheres(); // Initial resizing of spheres
 
-    // Initial resizing of spheres
-    resizeSpheres();
-
-    // Animation loop
+    // Animation Loop
     const animate = () => {
         requestAnimationFrame(animate);
 
@@ -76,58 +69,59 @@
         renderer.render(scene, camera);
     };
 
-    // Text morphing animation
-    const chars = ['$', '%', '#', '@', '&', '(', ')', '=', '*', '/'];
+    // Text Morphing Animation
+    const chars = ['$', '%', '#', '@', '&', '(', ')', '=', '*', '/']; // Characters for morphing effect
     class Entry {
         constructor(el) {
-            this.DOM = { el };
-            this.DOM.title = { word: this.DOM.el.querySelector('.content__text') };
-            charming(this.DOM.title.word);
-            this.DOM.title.letters = Array.from(this.DOM.title.word.querySelectorAll('span'));
-            this.DOM.title.letters.forEach(letter => letter.dataset.initial = letter.innerHTML);
-            observer.observe(this.DOM.el);
+            this.DOM = { el }; // Store the element
+            this.DOM.title = { word: this.DOM.el.querySelector('.content__text') }; // Get the text element
+            charming(this.DOM.title.word); // Split text into spans using charming.js
+            this.DOM.title.letters = Array.from(this.DOM.title.word.querySelectorAll('span')); // Get all letters
+            this.DOM.title.letters.forEach(letter => letter.dataset.initial = letter.innerHTML); // Store initial text
+            observer.observe(this.DOM.el); // Observe the element for visibility
         }
 
         enter() {
-            this.DOM.title.word.style.opacity = 1;
+            this.DOM.title.word.style.opacity = 1; // Make text visible
             this.timeouts = [];
             let cnt = 0;
+
+            // Animate each letter
             this.DOM.title.letters.forEach((letter, pos) => {
                 const timeout = setTimeout(() => {
-                    letter.innerHTML = chars[Math.floor(Math.random() * chars.length)];
+                    letter.innerHTML = chars[Math.floor(Math.random() * chars.length)]; // Replace with random character
                     setTimeout(() => {
-                        letter.innerHTML = letter.dataset.initial;
-                        if (++cnt === this.DOM.title.letters.length) this.complete = true;
+                        letter.innerHTML = letter.dataset.initial; // Restore original text
+                        if (++cnt === this.DOM.title.letters.length) this.complete = true; // Mark animation as complete
                     }, 100);
-                }, pos * 50);
+                }, pos * 50); // Delay based on position
                 this.timeouts.push(timeout);
             });
         }
 
         exit() {
-            this.DOM.title.word.style.opacity = 0;
-            this.timeouts.forEach(clearTimeout);
+            this.DOM.title.word.style.opacity = 0; // Hide text
+            this.timeouts.forEach(clearTimeout); // Clear timeouts
         }
     }
 
-    // Intersection Observer for text morphing
-    let current = -1;
-    const sections = document.querySelectorAll('.content__section');
+    // Intersection Observer for Text Morphing
+    let current = -1; // Track the current active section
+    const sections = document.querySelectorAll('.content__section'); // Get all sections
     const observer = new IntersectionObserver(entries => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
-                const index = [...sections].indexOf(entry.target);
-                if (index === current) return;
-
-                if (current >= 0) allEntries[current].exit();
-                allEntries[index].enter();
-                current = index;
+                const index = [...sections].indexOf(entry.target); // Get the index of the intersecting section
+                if (index === current) return; // Exit if already active
+                if (current >= 0) allEntries[current].exit(); // Exit previous section
+                allEntries[index].enter(); // Enter new section
+                current = index; // Update current section
             }
         });
-    }, { threshold: 0.5 });
+    }, { threshold: 0.5 }); // Trigger when 50% of the section is visible
 
-    const allEntries = Array.from(sections).map(section => new Entry(section));
+    const allEntries = Array.from(sections).map(section => new Entry(section)); // Create Entry instances for all sections
 
-    // Start animations
+    // Start Animations
     animate();
 }
