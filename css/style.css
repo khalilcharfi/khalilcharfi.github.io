@@ -199,3 +199,14 @@ a {
    font-weight: bold;
 }
 
+/* General RTL Styling */
+[dir="rtl"] {
+    text-align: right;
+    direction: rtl;
+}
+
+/* Ensure charming.js spans respect RTL */
+[dir="rtl"] .content__text span {
+    display: inline-block; /* Prevents layout issues */
+    unicode-bidi: embed;   /* Ensures proper bidi handling */
+}
