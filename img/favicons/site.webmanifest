@@ -34,6 +34,30 @@
       "purpose": "any"
     },
     {
+      "src": "/img/favicons/apple-touch-icon-ipad-76x76.png",
+      "sizes": "76x76",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/img/favicons/apple-touch-icon-ipad-retina-152x152.png",
+      "sizes": "152x152",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/img/favicons/apple-touch-icon-iphone-60x60.png",
+      "sizes": "60x60",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/img/favicons/apple-touch-icon-iphone-retina-120x120.png",
+      "sizes": "120x120",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
       "src": "/img/favicons/apple-touch-icon-114x114.png",
       "sizes": "114x114",
       "type": "image/png",
