@@ -1,0 +1,31 @@
+{
+  "name": "Khalil Charfi - Full-Stack Developer Portfolio",
+  "short_name": "Khalil Charfi",
+  "description": "A multilingual portfolio showcasing expertise in Vue.js, Angular, Laravel, and full-stack development.",
+  "lang": "en",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#3F3F3F",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "/img/favicons/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/img/favicons/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "/img/favicons/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "related_applications": [],
+  "prefer_related_applications": false
+}
