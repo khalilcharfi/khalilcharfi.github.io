@@ -199,7 +199,7 @@ a {
    font-weight: bold;
 }
 
-.content__text--ar {
+.content__text--ar > * {
     font-family: 'Arial', sans-serif !important;
 }
 
