@@ -71,40 +71,48 @@
 
     // Text Morphing Animation
     const chars = ['$', '%', '#', '@', '&', '(', ')', '=', '*', '/']; // Characters for morphing effect
-    class Entry {
-        constructor(el) {
-            this.DOM = { el }; // Store the element
-            this.DOM.title = { word: this.DOM.el.querySelector('.content__text') }; // Get the text element
-            charming(this.DOM.title.word); // Split text into spans using charming.js
-            this.DOM.title.letters = Array.from(this.DOM.title.word.querySelectorAll('span')); // Get all letters
-            this.DOM.title.letters.forEach(letter => letter.dataset.initial = letter.innerHTML); // Store initial text
-            observer.observe(this.DOM.el); // Observe the element for visibility
-        }
+ class Entry {
+    constructor(el) {
+        this.DOM = { el };
+        this.DOM.title = { word: this.DOM.el.querySelector('.content__text') };
 
-        enter() {
-            this.DOM.title.word.style.opacity = 1; // Make text visible
-            this.timeouts = [];
-            let cnt = 0;
+        // Apply charming.js to the text
+        charming(this.DOM.title.word);
 
-            // Animate each letter
-            this.DOM.title.letters.forEach((letter, pos) => {
-                const timeout = setTimeout(() => {
-                    letter.innerHTML = chars[Math.floor(Math.random() * chars.length)]; // Replace with random character
-                    setTimeout(() => {
-                        letter.innerHTML = letter.dataset.initial; // Restore original text
-                        if (++cnt === this.DOM.title.letters.length) this.complete = true; // Mark animation as complete
-                    }, 100);
-                }, pos * 50); // Delay based on position
-                this.timeouts.push(timeout);
-            });
-        }
+        // Get all letters (spans created by charming.js)
+        this.DOM.title.letters = Array.from(this.DOM.title.word.querySelectorAll('span'));
 
-        exit() {
-            this.DOM.title.word.style.opacity = 0; // Hide text
-            this.timeouts.forEach(clearTimeout); // Clear timeouts
-        }
+        // Store the initial text for each letter
+        this.DOM.title.letters.forEach(letter => letter.dataset.initial = letter.innerHTML);
+
+        // Observe the section for visibility
+        observer.observe(this.DOM.el);
     }
 
+    enter() {
+        this.DOM.title.word.style.opacity = 1;
+        this.timeouts = [];
+        let cnt = 0;
+
+        // Animate each letter in RTL order
+        const letters = this.DOM.title.letters.reverse(); // Reverse the array for RTL
+        letters.forEach((letter, pos) => {
+            const timeout = setTimeout(() => {
+                letter.innerHTML = chars[Math.floor(Math.random() * chars.length)];
+                setTimeout(() => {
+                    letter.innerHTML = letter.dataset.initial;
+                    if (++cnt === letters.length) this.complete = true;
+                }, 100);
+            }, pos * 50); // Delay based on position
+            this.timeouts.push(timeout);
+        });
+    }
+
+    exit() {
+        this.DOM.title.word.style.opacity = 0;
+        this.timeouts.forEach(clearTimeout);
+    }
+}
     // Intersection Observer for Text Morphing
     let current = -1; // Track the current active section
     const sections = document.querySelectorAll('.content__section'); // Get all sections
