@@ -132,4 +132,26 @@
 
     // Start Animations
     animate();
+
+
+    // Function to center and resize text
+function adjustText() {
+    const textElement = document.querySelector('.centered-text');
+    if (!textElement) return;
+
+    // Calculate font size based on screen dimensions
+    const fontSize = Math.min(window.innerWidth, window.innerHeight) / 10 + 'px';
+    textElement.style.fontSize = fontSize;
+
+    // Re-center the text
+    textElement.style.top = '50%';
+    textElement.style.left = '50%';
+    textElement.style.transform = 'translate(-50%, -50%)';
+}
+
+// Listen for screen orientation changes
+window.addEventListener('resize', adjustText);
+
+// Initial adjustment
+adjustText();
 }
