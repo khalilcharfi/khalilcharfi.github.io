@@ -1,4 +1,4 @@
-# 🌍 Khalil Charfi - Multilingual Full-Stack Developer Portfolio
+# 🌍 Khalil Charfi - Full-Stack Developer Portfolio
 
 ![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-Live-brightgreen) ![Languages](https://img.shields.io/badge/Languages-EN%2C%20FR%2C%20AR%2C%20DE-blue)
 
@@ -27,7 +27,7 @@ This project is a **multilingual portfolio website** designed to showcase my ski
 The site is built using:
 - **HTML5**, **CSS3**, and **JavaScript**
 - **Three.js** for 3D animations
-- **Charming.js** for text morphing effects
+- **Tailwind CSS** for responsive styling
 - **GitHub Pages** for hosting
 
 ---
@@ -38,8 +38,8 @@ The site is built using:
 - **Responsive Design**: Fully responsive layout for all devices and screen sizes.
 - **SEO Optimization**: Includes meta tags, Open Graph tags, Twitter cards, hreflang tags, and schema markup.
 - **Fallback Mechanism**: Provides manual language selection if JavaScript is disabled.
-- **3D Animations**: Interactive 3D objects powered by Three.js.
-- **Text Morphing**: Dynamic text animations using Charming.js.
+- **Language Preference Storage**: Remembers user's language preference using localStorage.
+- **RTL Support**: Proper right-to-left layout for Arabic language.
 - **Favicons**: Comprehensive favicon setup for all devices and browsers.
 
 ---
@@ -58,14 +58,17 @@ Each language version includes localized content, metadata, and SEO tags.
 
 ## 🔍 SEO Optimization
 
-The site is fully optimized for search engines with:
-- **Meta Tags**: Descriptions, keywords, and author information.
-- **Open Graph Tags**: For social media sharing (Facebook, LinkedIn).
-- **Twitter Cards**: For Twitter sharing.
-- **Hreflang Tags**: For multilingual SEO.
-- **Schema Markup**: Structured data for search engines.
-- **Canonical URLs**: Prevents duplicate content issues.
-- **Sitemap**: Helps search engines index all pages.
+This portfolio implements comprehensive SEO best practices:
+
+- **Meta Tags**: Descriptive title, description, and keywords for each language.
+- **Open Graph Tags**: For better social media sharing on Facebook, LinkedIn, etc.
+- **Twitter Cards**: For optimized Twitter sharing.
+- **Structured Data**: JSON-LD schema markup for better search engine understanding.
+- **Hreflang Tags**: Proper language annotations for international SEO.
+- **Canonical URLs**: To prevent duplicate content issues.
+- **Sitemap.xml**: XML sitemap with language alternates.
+- **Robots.txt**: Proper configuration for search engine crawlers.
+- **Semantic HTML**: Using appropriate HTML5 elements for better accessibility and SEO.
 
 ---
 
@@ -73,14 +76,18 @@ The site is fully optimized for search engines with:
 
 1. **Redirection Logic**:
    - The root `index.html` detects the user's browser language and redirects them to the appropriate language folder (`/en/`, `/fr/`, `/ar/`, `/de/`).
+   - User language preferences are stored in localStorage for future visits.
    - If JavaScript is disabled, fallback links allow manual navigation.
 
-2. **3D Animations**:
-   - Two rotating 3D objects (Octahedron and Icosahedron) are rendered using Three.js.
-   - The objects dynamically resize based on the screen dimensions for responsiveness.
+2. **Multilingual Structure**:
+   - Each language has its own directory with localized content.
+   - The Arabic version includes RTL support with appropriate styling.
+   - All versions share common assets (CSS, JavaScript, images).
 
-3. **Text Morphing**:
-   - The title text animates with random characters before settling into the final text using Charming.js.
+3. **Performance Optimization**:
+   - Inline critical CSS for faster initial rendering.
+   - Preconnect to domains for faster resource loading.
+   - Optimized SVG icons for social media links.
 
 ---
 
