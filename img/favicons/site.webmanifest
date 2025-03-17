@@ -3,84 +3,31 @@
   "short_name": "Khalil Charfi",
   "description": "A multilingual portfolio showcasing expertise in Vue.js, Angular, Laravel, and full-stack development.",
   "lang": "en",
+  "dir": "ltr",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#3F3F3F",
+  "background_color": "#101218",
+  "theme_color": "#ff4a36",
   "orientation": "any",
+  "categories": ["portfolio", "development", "web development"],
+  "screenshots": [
+    {
+      "src": "/img/screenshots/desktop.png",
+      "sizes": "1280x800",
+      "type": "image/png",
+      "platform": "wide",
+      "label": "Desktop view of Khalil Charfi's portfolio"
+    },
+    {
+      "src": "/img/screenshots/mobile.png",
+      "sizes": "750x1334",
+      "type": "image/png",
+      "platform": "narrow",
+      "label": "Mobile view of Khalil Charfi's portfolio"
+    }
+  ],
   "icons": [
-    {
-      "src": "/img/favicons/apple-touch-icon-57x57.png",
-      "sizes": "57x57",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "/img/favicons/apple-touch-icon-60x60.png",
-      "sizes": "60x60",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "/img/favicons/apple-touch-icon-72x72.png",
-      "sizes": "72x72",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "/img/favicons/apple-touch-icon-76x76.png",
-      "sizes": "76x76",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "/img/favicons/apple-touch-icon-ipad-76x76.png",
-      "sizes": "76x76",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "/img/favicons/apple-touch-icon-ipad-retina-152x152.png",
-      "sizes": "152x152",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "/img/favicons/apple-touch-icon-iphone-60x60.png",
-      "sizes": "60x60",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "/img/favicons/apple-touch-icon-iphone-retina-120x120.png",
-      "sizes": "120x120",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "/img/favicons/apple-touch-icon-114x114.png",
-      "sizes": "114x114",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "/img/favicons/apple-touch-icon-120x120.png",
-      "sizes": "120x120",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "/img/favicons/apple-touch-icon-144x144.png",
-      "sizes": "144x144",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "/img/favicons/apple-touch-icon-152x152.png",
-      "sizes": "152x152",
-      "type": "image/png",
-      "purpose": "any"
-    },
     {
       "src": "/img/favicons/favicon-16x16.png",
       "sizes": "16x16",
@@ -100,8 +47,14 @@
       "purpose": "any"
     },
     {
-      "src": "/img/favicons/favicon-128.png",
-      "sizes": "128x128",
+      "src": "/img/favicons/apple-touch-icon-120x120.png",
+      "sizes": "120x120",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/img/favicons/apple-touch-icon-152x152.png",
+      "sizes": "152x152",
       "type": "image/png",
       "purpose": "any"
     },
@@ -109,39 +62,61 @@
       "src": "/img/favicons/favicon-196x196.png",
       "sizes": "196x196",
       "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "/img/favicons/mstile-70x70.png",
-      "sizes": "70x70",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "/img/favicons/mstile-144x144.png",
-      "sizes": "144x144",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "/img/favicons/mstile-150x150.png",
-      "sizes": "150x150",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "/img/favicons/mstile-310x150.png",
-      "sizes": "310x150",
-      "type": "image/png",
-      "purpose": "any"
+      "purpose": "any maskable"
     },
     {
       "src": "/img/favicons/mstile-310x310.png",
       "sizes": "310x310",
       "type": "image/png",
       "purpose": "any"
+    },
+    {
+      "src": "/img/favicons/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "English Version",
+      "short_name": "English",
+      "description": "View portfolio in English",
+      "url": "/en/",
+      "icons": [{ "src": "/img/favicons/favicon-96x96.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "French Version",
+      "short_name": "French",
+      "description": "View portfolio in French",
+      "url": "/fr/",
+      "icons": [{ "src": "/img/favicons/favicon-96x96.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "German Version",
+      "short_name": "German",
+      "description": "View portfolio in German",
+      "url": "/de/",
+      "icons": [{ "src": "/img/favicons/favicon-96x96.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Arabic Version",
+      "short_name": "Arabic",
+      "description": "View portfolio in Arabic",
+      "url": "/ar/",
+      "icons": [{ "src": "/img/favicons/favicon-96x96.png", "sizes": "96x96" }]
     }
   ],
   "related_applications": [],
-  "prefer_related_applications": false
+  "prefer_related_applications": false,
+  "iarc_rating_id": "",
+  "share_target": {
+    "action": "/share-target/",
+    "method": "GET",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url"
+    }
+  }
 }

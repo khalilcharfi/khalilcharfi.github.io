@@ -1,12 +1,12 @@
-/* Import Poppins font from Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+/* Import Poppins font with optimized subset and display swap for better performance */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap&text=0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz&display=swap');
 
 /* Base responsive settings */
 html {
     font-size: 16px;
     line-height: 1.5;
     -webkit-text-size-adjust: 100%;
-    font-family: 'Poppins', var(--font-sans), ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    font-family: 'Poppins', var(--font-sans), ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     font-feature-settings: normal;
     font-variation-settings: normal;
     -moz-tab-size: 4;
@@ -16,12 +16,52 @@ html {
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+    /* Improve rendering */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    /* Improve accessibility */
+    scroll-behavior: smooth;
+}
+
+/* Improve focus visibility for accessibility and SEO */
+:focus {
+    outline: 2px solid #dd98ff;
+    outline-offset: 2px;
+}
+
+/* Add print styles for better SEO */
+@media print {
+    body {
+        background-color: #fff;
+        color: #000;
+    }
+    
+    .social-btn {
+        border: 1px solid #000;
+        background-image: none;
+    }
+}
+
+/* Add skip-to-content link for accessibility */
+.skip-to-content {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    background: #dd98ff;
+    color: #101218;
+    padding: 8px;
+    z-index: 100;
+    transition: top 0.3s;
+}
+
+.skip-to-content:focus {
+    top: 0;
 }
 
 body {
     background-color: #101218;
     color: #f2f4f9;
-    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, PingFang SC, Hiragino Sans GB, Segoe UI, Microsoft YaHei, Arial, sans-serif;
+    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
     font-size: 16px;
     font-weight: 400;
     margin: 0;
@@ -54,6 +94,7 @@ body {
     left: 50%;
     transform: translate(-50%, -50%);
     margin: 0;
+    will-change: transform, opacity;
 }
 
 .profile .slogan {
@@ -68,10 +109,7 @@ body {
     opacity: 1;
     -webkit-text-fill-color: transparent;
     animation: masked-animation 5s linear infinite;
-    translate: none;
-    rotate: none;
-    scale: none;
-    transform: translate(0px, 0px);
+    will-change: background-position;
 }
 
 .profile .describe {
@@ -84,124 +122,44 @@ body {
     max-width: 90%;
     opacity: 1;
     z-index: 1;
-    translate: none;
-    rotate: none;
-    scale: none;
-    transform: translate(0px, 0px);
     font-size: 16px;
 }
 
-/* Container responsiveness */
-.container {
-    margin-left: auto;
-    margin-right: auto;
-    padding-left: 1rem;
-    padding-right: 1rem;
-    width: 100%;
-    box-sizing: border-box;
+/* Social buttons optimization */
+.social-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 45px;
+    height: 45px;
+    border-radius: 8px;
+    background-image: linear-gradient(73deg, #ff4a36 17.88%, #dd98ff 98.36%);
+    color: white;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    text-decoration: none;
+    will-change: transform, box-shadow;
 }
 
-.container .content {
-    background-color: #101218;
-    grid-area: content;
-    overflow-x: hidden;
-    width: 100%;
+.social-btn:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(221, 152, 255, 0.4);
 }
 
-/* Enhanced media queries for better responsiveness */
-@media (max-width: 360px) {
-    html {
-        font-size: 14px;
-    }
-    
-    .profile .slogan {
-        font-size: 36px;
-    }
-    
-    .profile .describe {
-        font-size: 14px;
-        line-height: 20px;
-        margin-top: 20px;
-    }
-    
-    .container {
-        padding-left: 0.75rem;
-        padding-right: 0.75rem;
-    }
+.social-btn svg {
+    width: 22px;
+    height: 22px;
 }
 
-@media (min-width: 480px) {
-    .profile {
-        padding-bottom: 40px;
-        padding-top: 40px;
-        padding-inline: 40px;
-    }
-    
-    .profile .slogan {
-        font-size: 56px;
-    }
-    
-    .profile .describe {
-        font-size: 18px;
-        line-height: 26px;
-        margin-top: 40px;
-        max-width: 80%;
-    }
-    
-    .container {
-        padding-left: 1.5rem;
-        padding-right: 1.5rem;
-    }
-}
-
-@media (min-width: 768px) {
-    .profile .slogan {
-        font-size: 72px;
-    }
-    
-    .profile .describe {
-        font-size: 20px;
-        line-height: 30px;
-        margin-top: 50px;
-        max-width: 70%;
-    }
-    
-    .container {
-        grid-template-rows: 80px auto 362px;
-        max-width: 768px;
-        padding-left: 2rem;
-        padding-right: 2rem;
-    }
-}
-
-@media (min-width: 992px) {
-    .profile .slogan {
-        font-size: 84px;
-    }
-    
-    .profile .describe {
-        max-width: 60%;
-    }
-    
-    .container {
-        max-width: 992px;
-    }
-}
-
-@media (min-width: 1200px) {
-    .profile .slogan {
-        font-size: 92px;
-    }
-    
-    .container {
-        max-width: 1200px;
-    }
-}
-
-@media (min-width: 1400px) {
-    .container {
-        max-width: 1400px;
-    }
+/* Button container optimization */
+.button {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 30px;
+    padding-block: 15px;
+    position: relative;
 }
 
 /* Animations */
@@ -223,131 +181,47 @@ body {
     }
 }
 
-/* Keep your existing social button styles */
-.button {
-	align-items: center;
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	padding-block: 40px;
-	position: relative
-}
-
-@media (min-width:480px) {
-	.button {
-		padding-block: 60px
-	}
-}
-
-.container-ESG4rA .btn {
-    font-weight: 600;
-    height: 52px;
-    justify-self: center;
-    min-width: 250px;
-    opacity: 0;
-    z-index: 1;
-}
-
-.button-ulvlZp {
-    background-image: linear-gradient(73deg, #ff4a36 17.88%, #dd98ff 98.36%);
-    border-radius: 4px;
-    color: #fff;
-    color: var(--white-92, hsla(0, 0%, 100%, .92));
-    display: flex;
-    flex-shrink: 0;
-    font-size: 1rem;
-    font-size: 18px;
-    font-family: 'Poppins', sans-serif;
-    font-style: normal;
-    font-weight: 600;
-    gap: 6px;
-    height: 40px;
-    letter-spacing: 0;
-    line-height: 1.5rem;
-    line-height: 24px;
-    padding: 14px 24px;
-    text-align: center;
-    transition: -webkit-filter .3s ease;
-    transition: filter .3s ease;
-    transition: filter .3s ease, -webkit-filter .3s ease;
-    width: auto;
-}
-
-/* Update the button container to display buttons horizontally */
-.button {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    gap: 20px;
-    margin-top: 40px;
-    padding-block: 20px;
-    position: relative;
-}
-
-/* Style for the social buttons */
-.social-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 45px;
-    height: 45px;
-    border-radius: 8px;
-    background-image: linear-gradient(73deg, #ff4a36 17.88%, #dd98ff 98.36%);
-    color: white;
-    transition: all 0.3s ease;
-    text-decoration: none;
-}
-
-.social-btn:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 5px 15px rgba(221, 152, 255, 0.4);
-}
-
-.social-btn svg {
-    width: 22px;
-    height: 22px;
-}
-
-/* Update the button container to be more responsive */
-.button {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 15px;
-    margin-top: 30px;
-    padding-block: 15px;
-    position: relative;
-}
-
-/* Responsive adjustments for different screen sizes */
+/* Media queries - consolidated and optimized */
 @media (max-width: 360px) {
-    .button {
-        gap: 10px;
+    html { font-size: 14px; }
+    .profile .slogan { font-size: 36px; }
+    .profile .describe { 
+        font-size: 14px; 
+        line-height: 20px; 
+        margin-top: 20px; 
     }
-    
-    .social-btn {
-        width: 40px;
-        height: 40px;
+    .button { gap: 10px; }
+    .social-btn { 
+        width: 40px; 
+        height: 40px; 
     }
-    
-    .social-btn svg {
-        width: 20px;
-        height: 20px;
+    .social-btn svg { 
+        width: 20px; 
+        height: 20px; 
     }
 }
 
 @media (min-width: 480px) {
+    .profile {
+        padding-bottom: 40px;
+        padding-top: 40px;
+        padding-inline: 40px;
+    }
+    .profile .slogan { font-size: 56px; }
+    .profile .describe {
+        font-size: 18px;
+        line-height: 26px;
+        margin-top: 40px;
+        max-width: 80%;
+    }
     .button {
         margin-top: 30px;
         gap: 20px;
     }
-    
     .social-btn {
         width: 55px;
         height: 55px;
     }
-    
     .social-btn svg {
         width: 26px;
         height: 26px;
@@ -355,84 +229,68 @@ body {
 }
 
 @media (min-width: 768px) {
+    .profile .slogan { font-size: 72px; }
+    .profile .describe {
+        font-size: 20px;
+        line-height: 30px;
+        margin-top: 50px;
+        max-width: 70%;
+    }
     .social-btn {
         width: 60px;
         height: 60px;
     }
-    
     .social-btn svg {
         width: 30px;
         height: 30px;
     }
+    .container {
+        max-width: 768px;
+    }
 }
 
 @media (min-width: 992px) {
-    .button {
-        gap: 25px;
-    }
-    
+    .profile .slogan { font-size: 84px; }
+    .profile .describe { max-width: 60%; }
+    .button { gap: 25px; }
     .social-btn {
         width: 65px;
         height: 65px;
     }
-    
     .social-btn svg {
         width: 32px;
         height: 32px;
     }
+    .container { max-width: 992px; }
 }
 
-blockquote,
-dd,
-dl,
-figure,
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-hr,
-p,
-pre {
-	margin: 0
+@media (min-width: 1200px) {
+    .profile .slogan { font-size: 92px; }
+    .container { max-width: 1200px; }
 }
 
+@media (min-width: 1400px) {
+    .container { max-width: 1400px; }
+}
 
+/* Container styles */
 .container {
-	margin-left: auto;
-	margin-right: auto;
-	padding-left: 2rem;
-	padding-right: 2rem;
-	width: 100%
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    width: 100%;
+    box-sizing: border-box;
 }
 
-@media (min-width:0px) {
-	.container {
-		max-width: 0
-	}
+.container .content {
+    background-color: #101218;
+    grid-area: content;
+    overflow-x: hidden;
+    width: 100%;
 }
 
-@media (min-width:768px) {
-	.container {
-		max-width: 768px
-	}
-}
-
-@media (min-width:992px) {
-	.container {
-		max-width: 992px
-	}
-}
-
-@media (min-width:1200px) {
-	.container {
-		max-width: 1200px
-	}
-}
-
-@media (min-width:1400px) {
-	.container {
-		max-width: 1400px
-	}
+/* Reset margins */
+blockquote, dd, dl, figure, h1, h2, h3, h4, h5, h6, hr, p, pre {
+    margin: 0;
 }

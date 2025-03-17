@@ -1,15 +1,32 @@
-/* Developer */
-Name: Khalil Charfi
+/* TEAM */
+Developer: Khalil Charfi
 Location: Frankfurt, Germany
-Twitter: @khalilcharfi8
 GitHub: https://github.com/khalilcharfi
+LinkedIn: https://www.linkedin.com/in/khalil-charfi
+Twitter: @khalilcharfi8
 
-/* Site */
-Language: Multilingual (EN/FR/AR/DE)
-Technologies: Vue.js, Angular, Laravel, GitHub Pages
+/* SITE */
 Last update: 2023-10-20
+Standards: HTML5, CSS3, JavaScript
+Components: Vue.js, Angular, Laravel
+Software: Visual Studio Code, Git
+Hosting: GitHub Pages
+Languages: English, French, Arabic, German
 
-/* Thanks */
+/* TECHNOLOGIES */
+Frontend: HTML5, CSS3, JavaScript
+Frameworks: Vue.js, Angular
+Backend: Laravel, PHP
+Fonts: Google Fonts (Poppins)
+Icons: Font Awesome
+Animations: Three.js
+
+/* THANKS */
 - Font Awesome for icons
 - Three.js for animations
 - Google Fonts for typography
+- GitHub Pages for hosting
+
+/* NOTE */
+This site is a multilingual portfolio with automatic language detection.
+Built with performance and accessibility in mind.
