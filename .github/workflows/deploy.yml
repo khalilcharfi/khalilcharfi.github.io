@@ -56,3 +56,10 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v2
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./
+          keep_files: false
+          force_orphan: true
+          publish_branch: master
+          commit_message: "Deploy: ${{ github.sha }}"
