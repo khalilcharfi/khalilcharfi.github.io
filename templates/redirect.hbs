@@ -3,19 +3,15 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{site.name}}</title>
+    <title>{{site.name}} - {{meta.title}}</title>
 
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id={{site.googleAnalytics}}"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', '{{site.googleAnalytics}}');
-    </script>
-
-    <!-- Preconnect to domains for faster loading -->
+    <!-- Preload critical resources -->
+    <link rel="preload" href="/css/critical.css" as="style">
     <link rel="preconnect" href="{{site.baseUrl}}">
+    <link rel="preconnect" href="https://www.googletagmanager.com" crossorigin>
+    
+    <!-- Google tag (gtag.js) - Moved to bottom for better performance -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id={{site.googleAnalytics}}" defer></script>
     
     <!-- Favicon Links - Consolidated -->
     <link rel="apple-touch-icon" sizes="180x180" href="/img/favicons/apple-touch-icon.png">
@@ -28,42 +24,83 @@
     <meta name="msapplication-config" content="/img/favicons/browserconfig.xml">
     <meta name="theme-color" content="{{meta.themeColor}}">
 
-    <!-- SEO Meta Tags -->
+    <!-- Enhanced SEO Meta Tags -->
     <meta name="description" content="{{meta.description}}">
     <meta name="keywords" content="{{meta.keywords}}">
     <meta name="author" content="{{meta.author}}">
-    <meta name="robots" content="index, follow">
-
-    <!-- Open Graph Tags -->
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+    
+    <!-- Open Graph Tags - Enhanced -->
     <meta property="og:title" content="{{meta.title}}">
     <meta property="og:description" content="{{meta.description}}">
     <meta property="og:image" content="{{site.baseUrl}}{{og.image}}">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
     <meta property="og:url" content="{{site.baseUrl}}">
     <meta property="og:type" content="website">
+    <meta property="og:site_name" content="{{site.name}}">
     <meta property="og:locale" content="{{og.locales.default}}">
     {{#each og.locales.alternates}}
     <meta property="og:locale:alternate" content="{{this}}">
     {{/each}}
 
-    <!-- Twitter Card Tags -->
+    <!-- Twitter Card Tags - Enhanced -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:site" content="{{site.twitter}}">
+    <meta name="twitter:creator" content="{{site.twitter}}">
     <meta name="twitter:title" content="{{meta.title}}">
     <meta name="twitter:description" content="{{meta.description}}">
     <meta name="twitter:image" content="{{site.baseUrl}}{{og.image}}">
+    <meta name="twitter:image:alt" content="{{meta.imageAlt}}">
 
     <!-- Canonical URL -->
     <link rel="canonical" href="{{site.baseUrl}}">
 
-    <!-- Hreflang Tags -->
+    <!-- Improved Hreflang Tags -->
     {{#each languages}}
     <link rel="alternate" hreflang="{{code}}" href="{{../site.baseUrl}}/{{code}}/">
     {{/each}}
     <link rel="alternate" hreflang="x-default" href="{{site.baseUrl}}/en/">
 
-    <!-- Schema Markup -->
+    <!-- Enhanced Schema Markup with BreadcrumbList -->
     <script type="application/ld+json">
-      {{toJSON jsonLd}}
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "{{site.name}}",
+        "url": "{{site.baseUrl}}",
+        "description": "{{meta.description}}",
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": "{{site.baseUrl}}/search?q={search_term_string}",
+          "query-input": "required name=search_term_string"
+        },
+        "publisher": {
+          "@type": "Organization",
+          "name": "{{site.name}}",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "{{site.baseUrl}}/img/logo.png",
+            "width": "600",
+            "height": "60"
+          }
+        }
+      }
+    </script>
+    
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "{{site.baseUrl}}"
+          }
+        ]
+      }
     </script>
 
     <!-- Inline critical CSS -->
@@ -107,9 +144,16 @@
       }
     </style>
 
-    <!-- Redirection Script -->
+    <!-- Improved Redirection Script with better performance -->
     <script>
-      (function() {
+      document.addEventListener('DOMContentLoaded', function() {
+        // Google Analytics
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', '{{site.googleAnalytics}}', { 'anonymize_ip': true });
+        
+        // Language redirection
         const path = window.location.pathname;
         if (path.match(/^\/(en|fr|ar|de)\//)) {
           return;
@@ -128,21 +172,24 @@
         }
         
         window.location.href = redirectUrl;
-      })();
+      });
     </script>
 </head>
 <body>
-    <div class="redirect-container">
+    <div class="redirect-container" role="main">
         <h1>Redirecting...</h1>
         <p>If you are not redirected automatically, please select your preferred language:</p>
         
-        <!-- Fallback Language Links -->
-        <ul class="language-list">
+        <!-- Fallback Language Links with improved accessibility -->
+        <ul class="language-list" aria-label="Language selection">
             {{#each languages}}
             <li>
                 <a href="/{{code}}/" 
                    onclick="localStorage.setItem('preferred-language', '{{code}}')"
-                   {{#if dir}}dir="{{dir}}"{{/if}}>
+                   lang="{{code}}"
+                   hreflang="{{code}}"
+                   {{#if dir}}dir="{{dir}}"{{/if}}
+                   aria-label="{{name}} language">
                     {{name}}
                 </a>
             </li>
