@@ -2,12 +2,10 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [ "dev" ]
+    branches: [ "dev", "main" ]
     paths-ignore:
       - '**.md'
       - '**.txt'
-      - '.github/**'
-      - '*.{yml,yaml,json}'
       - '.gitignore'
   workflow_dispatch:
 
