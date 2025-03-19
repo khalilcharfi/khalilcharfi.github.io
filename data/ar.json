@@ -1,0 +1,44 @@
+{
+  "meta": {
+    "lang": "ar",
+    "dir": "rtl",
+    "title": "خليل الشرفي - مطور ويب متكامل | Vue.js, Angular, Laravel",
+    "description": "مطور ويب متكامل ذو خبرة في Vue.js و Angular و Laravel. أقوم ببناء تطبيقات ويب قابلة للتوسع في فرانكفورت، ألمانيا.",
+    "keywords": "مهندس برمجيات، مطور ويب متكامل، Vue.js، Angular، Laravel، PHP، JavaScript، فرانكفورت، تطوير الويب",
+    "author": "خليل الشرفي",
+    "twitter": "@khalilcharfi8",
+    "og_locale": "ar_SA"
+  },
+  "schema": {
+    "name": "خليل الشرفي",
+    "jobTitle": "مهندس برمجيات",
+    "location": {
+      "addressLocality": "فرانكفورت",
+      "addressRegion": "هيسن",
+      "addressCountry": "ألمانيا"
+    },
+    "companies": [
+      {"name": "CHECK24 Vergleichsportal GmbH", "url": "https://www.check24.de/"},
+      {"name": "ASM - All Soft Multimedia"}
+    ],
+    "skills": ["Vue.js", "Angular", "Laravel", "PHP", "REST APIs", "Docker"]
+  },
+  "content": {
+    "heading": "خليل الشرفي",
+    "tagline": "مطور ويب متكامل | Vue.js, Angular, Laravel",
+    "social": {
+      "xing": {
+        "url": "https://www.xing.com/profile/Khalil_Charfi2",
+        "label": "الملف الشخصي على Xing"
+      },
+      "linkedin": {
+        "url": "https://www.linkedin.com/in/khalil-charfi",
+        "label": "الملف الشخصي على LinkedIn"
+      },
+      "github": {
+        "url": "https://github.com/khalilcharfi",
+        "label": "الملف الشخصي على GitHub"
+      }
+    }
+  }
+}

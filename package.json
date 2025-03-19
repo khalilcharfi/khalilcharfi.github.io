@@ -1,0 +1,19 @@
+{
+  "name": "khalilcharfi-portfolio",
+  "version": "1.0.0",
+  "description": "Khalil Charfi's multilingual portfolio website",
+  "main": "index.js",
+  "scripts": {
+    "build": "node scripts/generate-languages.js",
+    "start": "npx serve .",
+    "generate": "node scripts/generate-languages.js"
+  },
+  "author": "Khalil Charfi",
+  "license": "MIT",
+  "dependencies": {
+    "nunjucks": "^3.2.4"
+  },
+  "devDependencies": {
+    "serve": "^14.2.0"
+  }
+}

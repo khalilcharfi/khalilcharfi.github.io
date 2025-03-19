@@ -1,0 +1,44 @@
+{
+  "meta": {
+    "lang": "en",
+    "dir": "ltr",
+    "title": "Khalil Charfi - Full-Stack Developer | Vue.js, Angular, Laravel",
+    "description": "Full-Stack Developer specializing in Vue.js, Angular, Laravel, and building scalable web applications in Frankfurt, Germany.",
+    "keywords": "Software Engineer, Full-Stack Developer, Vue.js, Angular, Laravel, PHP, JavaScript, Frankfurt, Web Development",
+    "author": "Khalil Charfi",
+    "twitter": "@khalilcharfi8",
+    "og_locale": "en_US"
+  },
+  "schema": {
+    "name": "Khalil Charfi",
+    "jobTitle": "Software Engineer",
+    "location": {
+      "addressLocality": "Frankfurt",
+      "addressRegion": "Hesse",
+      "addressCountry": "Germany"
+    },
+    "companies": [
+      {"name": "CHECK24 Vergleichsportal GmbH", "url": "https://www.check24.de/"},
+      {"name": "ASM - All Soft Multimedia"}
+    ],
+    "skills": ["Vue.js", "Angular", "Laravel", "PHP", "REST APIs", "Docker"]
+  },
+  "content": {
+    "heading": "Khalil Charfi",
+    "tagline": "Full-Stack Developer | Vue.js, Angular, Laravel",
+    "social": {
+      "xing": {
+        "url": "https://www.xing.com/profile/Khalil_Charfi2",
+        "label": "Xing Profile"
+      },
+      "linkedin": {
+        "url": "https://www.linkedin.com/in/khalil-charfi",
+        "label": "LinkedIn Profile"
+      },
+      "github": {
+        "url": "https://github.com/khalilcharfi",
+        "label": "GitHub Profile"
+      }
+    }
+  }
+}
