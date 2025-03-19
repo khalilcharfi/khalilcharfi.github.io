@@ -2,7 +2,7 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [ "dev" ]  # Trigger on dev branch
+    branches: [ "dev" ]  # Changed from dev to master
     paths-ignore:
       - '**.md'
       - '**.txt'
@@ -95,4 +95,4 @@ jobs:
         id: deployment
         uses: actions/deploy-pages@v4
         with:
-          branch: gh-pages
+          branch: master
