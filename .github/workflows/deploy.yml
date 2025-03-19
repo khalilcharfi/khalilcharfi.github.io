@@ -2,26 +2,29 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "dev" ]
     paths-ignore:
-      - 'README.md'
       - '**.md'
       - '**.txt'
-      - 'data/**'
-      - 'scripts/**'
-      - 'node_modules/**'
-      - 'templates/**'
       - '.github/**'
-      - '*.yml'
-      - '*.yaml'
-      - '*.json'
+      - '*.{yml,yaml,json}'
       - '.gitignore'
+  workflow_dispatch:
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     permissions:
       contents: write
+      pages: write
+      id-token: write
       
     steps:
       - name: Checkout repository
@@ -31,17 +34,28 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+          cache: 'npm'
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
       - name: Generate static site
         run: npm run build:all
+        env:
+          NODE_ENV: production
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
 
       - name: Deploy to GitHub Pages
+        id: deployment
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./
           keep_files: true
           force_orphan: true
+          publish_branch: master
+          enable_jekyll: false
+          commit_message: "Deploy: ${{ github.sha }}"
+        if: github.ref == 'refs/heads/dev'
