@@ -13,18 +13,18 @@ const CONFIG = {
   ],
   paths: {
       output: {
-          sitemap: path.join(__dirname, '../dist/sitemap.xml'),
-          robots: path.join(__dirname, '../dist/robots.txt'),
-          humans: path.join(__dirname, '../dist/humans.txt')
+          sitemap: path.join(__dirname, '../sitemap.xml'),
+          robots: path.join(__dirname, '../robots.txt'),
+          humans: path.join(__dirname, '../humans.txt')
       },
       assets: {
           css: path.join(__dirname, '../css'),
           js: path.join(__dirname, '../js'),
           img: path.join(__dirname, '../img'),
           dest: {
-              css: path.join(__dirname, '../dist/css'),
-              js: path.join(__dirname, '../dist/js'),
-              img: path.join(__dirname, '../dist/img')
+              css: path.join(__dirname, '../css'),
+              js: path.join(__dirname, '../js'),
+              img: path.join(__dirname, '../img')
           }
       }
   },
