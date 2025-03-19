@@ -35,7 +35,7 @@ jobs:
         run: |
           npm run build:all
           ls -la
-          rm -rf node_modules
+                    rm -rf node_modules
         env:
           NODE_ENV: production
           OUTPUT_DIR: ./
@@ -43,7 +43,7 @@ jobs:
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
-          name: github-pages
+          name: site-build-files
           path: ./
           if-no-files-found: error
 
@@ -60,7 +60,7 @@ jobs:
       - name: Download build artifact
         uses: actions/download-artifact@v4
         with:
-          name: github-pages
+          name: site-build-files
           path: ./
           
       - name: Setup Pages
