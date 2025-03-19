@@ -2,7 +2,7 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "master", 'dev' ]
     paths-ignore:
       - '**.md'
       - '**.txt'
@@ -94,4 +94,3 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-        # Removed invalid 'branch' parameter
