@@ -82,7 +82,6 @@ generator.generate().catch(error => {
 });
 
 
-// Update the CONFIG object to use dist as output directory
 const CONFIG = {
   paths: {
     // ... other paths
