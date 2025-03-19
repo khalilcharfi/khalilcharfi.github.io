@@ -25,6 +25,9 @@ jobs:
         with:
           node-version: '20'
           cache: 'npm'
+          
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
 
       - name: Install dependencies
         run: npm i
@@ -41,7 +44,7 @@ jobs:
           OUTPUT_DIR: ./dist
           
       - name: Upload GitHub Pages artifact
-        uses: actions/upload-pages-artifact@v4
+        uses: actions/upload-pages-artifact@v3
         with:
           path: './dist'
 
