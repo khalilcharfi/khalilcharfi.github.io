@@ -4,38 +4,38 @@ const path = require('path');
 const minify = require('html-minifier').minify;
 
 // Configuration
+// Update CONFIG to use dist directory
 const CONFIG = {
-    languages: ['en', 'fr', 'de', 'ar'],
-    paths: {
-        template: 'templates/template.hbs',
-        data: 'data',
-        output: '.',
-        assets: {
-            css: 'css',
-            img: 'img',
-            js: 'js'
-        }
-    },
-    minify: {
-        collapseWhitespace: true,
-        removeComments: true,
-        removeRedundantAttributes: true,
-        removeScriptTypeAttributes: true,
-        removeStyleLinkTypeAttributes: true,
-        useShortDoctype: true,
-        minifyCSS: true,
-        minifyJS: true,
-        minifyURLs: true,
-        sortAttributes: true,
-        sortClassName: true,
-        preserveLineBreaks: false,
-        ignoreCustomComments: [
-            /^!/,
-            /^@preserve/,
-            /^@license/,
-            /^@cc_on/
-        ]
+  paths: {
+    template: 'templates/template.hbs',
+    data: 'data',
+    output: '.',
+    assets: {
+      css: 'css',
+      img: 'img',
+      js: 'js'
     }
+  },
+  minify: {
+    collapseWhitespace: true,
+    removeComments: true,
+    removeRedundantAttributes: true,
+    removeScriptTypeAttributes: true,
+    removeStyleLinkTypeAttributes: true,
+    useShortDoctype: true,
+    minifyCSS: true,
+    minifyJS: true,
+    minifyURLs: true,
+    sortAttributes: true,
+    sortClassName: true,
+    preserveLineBreaks: false,
+    ignoreCustomComments: [
+      /^!/,
+      /^@preserve/,
+      /^@license/,
+      /^@cc_on/
+    ]
+  }
 };
 
 // Environment setup
