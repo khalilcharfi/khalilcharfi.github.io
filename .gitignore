@@ -13,6 +13,7 @@ Icon
 .com.apple.timemachine.donotpresent
 
 # Node.js dependencies
+# Dependencies
 node_modules/
 npm-debug.log
 yarn-debug.log
@@ -23,19 +24,7 @@ yarn.lock
 # Build files
 dist/
 build/
-out/
-.next/
-
-# Editor directories and files
-.idea/
-.vscode/
-*.sublime-project
-*.sublime-workspace
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
+.cache/
 
 # Environment variables
 .env
@@ -44,25 +33,42 @@ out/
 .env.test.local
 .env.production.local
 
-# Log files
+# Editor directories and files
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.DS_Store
+Thumbs.db
+
+# Logs
 logs
 *.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# Cache directories
-.sass-cache/
-.cache/
-.parcel-cache/
+# Coverage directory used by tools like istanbul
+coverage/
 
 # Temporary files
 *.tmp
 *.temp
-*.bak
-*.swp
+.tmp/
+.temp/
 
-# Generated files
-.jekyll-cache/
-.jekyll-metadata
-_site/
+# System Files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+de/*
+en/*
+fr/*
+ar/*

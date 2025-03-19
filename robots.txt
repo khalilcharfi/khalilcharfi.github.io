@@ -1,6 +1,5 @@
 # robots.txt for https://khalilcharfi.github.io/
 User-agent: *
 Allow: /
-Disallow: /private/  # Optional: Block non-existent private directory
 
 Sitemap: https://khalilcharfi.github.io/sitemap.xml
