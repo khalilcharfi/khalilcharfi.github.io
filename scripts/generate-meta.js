@@ -16,7 +16,25 @@ const CONFIG = {
           sitemap: path.join(__dirname, '../dist/sitemap.xml'),
           robots: path.join(__dirname, '../dist/robots.txt'),
           humans: path.join(__dirname, '../dist/humans.txt')
+      },
+      assets: {
+          css: path.join(__dirname, '../css'),
+          js: path.join(__dirname, '../js'),
+          img: path.join(__dirname, '../img'),
+          dest: {
+              css: path.join(__dirname, '../dist/css'),
+              js: path.join(__dirname, '../dist/js'),
+              img: path.join(__dirname, '../dist/img')
+          }
       }
+  },
+  // Add meta information
+  meta: {
+      author: 'Khalil Charfi',
+      location: 'Frankfurt, Germany',
+      github: 'https://github.com/khalilcharfi',
+      linkedin: 'https://www.linkedin.com/in/khalilcharfi/',
+      twitter: 'https://twitter.com/khalilcharfi8'
   }
 };
 
@@ -47,6 +65,38 @@ const utils = {
 
     getCurrentDate() {
         return new Date().toISOString().split('T')[0];
+    },
+    
+    ensureDirectoryExists(dirPath) {
+        if (!fs.existsSync(dirPath)) {
+            fs.mkdirSync(dirPath, { recursive: true });
+        }
+    },
+    
+    copyDirectory(source, destination) {
+        // Create destination directory if it doesn't exist
+        this.ensureDirectoryExists(destination);
+        
+        // Read all files in source directory
+        const files = fs.readdirSync(source);
+        
+        // Copy each file to destination
+        let copiedFiles = 0;
+        files.forEach(file => {
+            const sourcePath = path.join(source, file);
+            const destPath = path.join(destination, file);
+            
+            // Check if it's a directory
+            if (fs.statSync(sourcePath).isDirectory()) {
+                copiedFiles += this.copyDirectory(sourcePath, destPath);
+            } else {
+                // Copy file
+                fs.copyFileSync(sourcePath, destPath);
+                copiedFiles++;
+            }
+        });
+        
+        return copiedFiles;
     }
 };
 
@@ -161,10 +211,48 @@ Built with performance and accessibility in mind.`;
         }
     }
 
+    copyAssets() {
+        try {
+            utils.logInfo('Copying assets to dist folder...');
+            
+            // Ensure destination directories exist
+            Object.values(CONFIG.paths.assets.dest).forEach(dir => {
+                utils.ensureDirectoryExists(dir);
+            });
+            
+            // Copy CSS files
+            if (fs.existsSync(CONFIG.paths.assets.css)) {
+                const cssFiles = utils.copyDirectory(CONFIG.paths.assets.css, CONFIG.paths.assets.dest.css);
+                utils.logSuccess(`Copied ${cssFiles} CSS files to dist/css`);
+            }
+            
+            // Copy JS files
+            if (fs.existsSync(CONFIG.paths.assets.js)) {
+                const jsFiles = utils.copyDirectory(CONFIG.paths.assets.js, CONFIG.paths.assets.dest.js);
+                utils.logSuccess(`Copied ${jsFiles} JS files to dist/js`);
+            }
+            
+            // Copy image files
+            if (fs.existsSync(CONFIG.paths.assets.img)) {
+                const imgFiles = utils.copyDirectory(CONFIG.paths.assets.img, CONFIG.paths.assets.dest.img);
+                utils.logSuccess(`Copied ${imgFiles} image files to dist/img`);
+            }
+            
+            return true;
+        } catch (error) {
+            utils.logError('Failed to copy assets', error);
+            return false;
+        }
+    }
+
     async generateAll() {
         try {
             utils.logInfo('Starting meta files generation...');
             
+            // Copy assets first
+            this.copyAssets();
+            
+            // Generate meta files
             this.generateSitemap();
             this.generateRobots();
             this.generateHumans();
