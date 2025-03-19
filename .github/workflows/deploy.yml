@@ -31,46 +31,35 @@ jobs:
       - name: Install dependencies
         run: npm i
 
+      - name: Clean previous build
+        run: rm -rf dist
+
       - name: Generate static site
         run: |
           npm run build:all
-          ls -la
-                    rm -rf node_modules
+          ls -la dist
+          rm -rf node_modules scripts data templates
         env:
-          NODE_ENV: production
-          OUTPUT_DIR: ./
-          
+          OUTPUT_DIR: ./dist  # Changed from ./ to ./dist
+
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
-          name: site-build-files
-          path: ./
-          if-no-files-found: error
+          name: site-build
+          path: dist  # Only include the dist directory
 
   deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    permissions:
-      pages: write
-      id-token: write
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     steps:
+      - name: Clean workspace
+        run: rm -rf *
+        
       - name: Download build artifact
         uses: actions/download-artifact@v4
         with:
-          name: site-build-files
-          path: ./
-          
-      - name: Setup Pages
-        uses: actions/configure-pages@v4
-        
+          name: site-build
+          path: dist  # Extract to dist directory
+
       - name: Upload GitHub Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./
-          
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+          path: dist  # Deploy from dist

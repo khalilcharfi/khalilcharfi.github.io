@@ -2,7 +2,7 @@
 Developer: Khalil Charfi
 Location: Frankfurt, Germany
 GitHub: https://github.com/khalilcharfi
-LinkedIn: https://www.linkedin.com/in/khalil-charfi
+LinkedIn: https://www.linkedin.com/in/khalil-charfi/
 Twitter: @khalilcharfi8
 
 /* SITE */

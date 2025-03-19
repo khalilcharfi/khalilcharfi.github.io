@@ -33,8 +33,8 @@ const CONFIG = {
       author: 'Khalil Charfi',
       location: 'Frankfurt, Germany',
       github: 'https://github.com/khalilcharfi',
-      linkedin: 'https://www.linkedin.com/in/khalilcharfi/',
-      twitter: 'https://twitter.com/khalilcharfi8'
+      linkedin: 'https://www.linkedin.com/in/khalil-charfi/',
+      twitter: '@khalilcharfi8'
   }
 };
 
