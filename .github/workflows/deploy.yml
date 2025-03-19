@@ -35,7 +35,9 @@ jobs:
         run: mkdir -p dist
 
       - name: Generate static site
-        run: npm run build:all
+        run: |
+          npm run build:all
+          ls -la dist
         env:
           NODE_ENV: production
           OUTPUT_DIR: ./dist
