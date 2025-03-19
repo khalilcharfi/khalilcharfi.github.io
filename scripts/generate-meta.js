@@ -2,35 +2,22 @@ const fs = require('fs');
 const path = require('path');
 
 // Configuration
+// Update CONFIG to use dist directory
 const CONFIG = {
-    baseUrl: 'https://khalilcharfi.github.io',
-    languages: [
-        { code: 'en', name: 'English' },
-        { code: 'fr', name: 'French' },
-        { code: 'ar', name: 'Arabic' },
-        { code: 'de', name: 'German' }
-    ],
-    paths: {
-        output: {
-            sitemap: 'sitemap.xml',
-            robots: 'robots.txt',
-            humans: 'humans.txt'
-        }
-    },
-    meta: {
-        author: 'Khalil Charfi',
-        twitter: '@khalilcharfi8',
-        location: 'Frankfurt, Germany',
-        github: 'https://github.com/khalilcharfi',
-        linkedin: 'https://www.linkedin.com/in/khalil-charfi',
-        lastUpdate: new Date().toISOString().split('T')[0],
-        technologies: {
-            frontend: ['HTML5', 'CSS3', 'JavaScript'],
-            frameworks: ['Vue.js', 'Angular'],
-            backend: ['Laravel', 'PHP'],
-            other: ['Font Awesome', 'Three.js', 'Google Fonts']
-        }
-    }
+  baseUrl: 'https://khalilcharfi.github.io',
+  languages: [
+      { code: 'en', name: 'English' },
+      { code: 'fr', name: 'French' },
+      { code: 'ar', name: 'Arabic' },
+      { code: 'de', name: 'German' }
+  ],
+  paths: {
+      output: {
+          sitemap: path.join(__dirname, '../dist/sitemap.xml'),
+          robots: path.join(__dirname, '../dist/robots.txt'),
+          humans: path.join(__dirname, '../dist/humans.txt')
+      }
+  }
 };
 
 // Console colors

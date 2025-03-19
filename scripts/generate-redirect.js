@@ -6,12 +6,12 @@ const { minify } = require('html-minifier');
 // Determine if we're in development mode
 const isDevelopment = process.env.NODE_ENV === 'development';
 
-// Configuration
+// Update CONFIG to use dist directory
 const CONFIG = {
   paths: {
     template: path.join(__dirname, '../templates/redirect.hbs'),
     data: path.join(__dirname, '../data/redirect.json'),
-    output: path.join(__dirname, '../index.html')
+    output: path.join(__dirname, '../dist/index.html')
   },
   minify: {
     collapseWhitespace: true,

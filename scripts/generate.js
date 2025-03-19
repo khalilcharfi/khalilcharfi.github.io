@@ -80,3 +80,13 @@ generator.generate().catch(error => {
   utils.logError('Fatal error during site generation', error);
   process.exit(1);
 });
+
+
+// Update the CONFIG object to use dist as output directory
+const CONFIG = {
+  paths: {
+    // ... other paths
+    output: path.join(__dirname, '../dist')
+  }
+  // ... other config
+};
