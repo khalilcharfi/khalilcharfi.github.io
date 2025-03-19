@@ -34,12 +34,12 @@ jobs:
         run: npm ci
 
       - name: Generate static site
-        run: npm run build:all
+        run: node scripts/build.js
         env:
           NODE_ENV: production
           
       - name: Upload GitHub Pages artifact
-        uses: actions/upload-pages-artifact@v4
+        uses: actions/upload-pages-artifact@v2
         with:
           path: ./
 
@@ -55,7 +55,7 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v2
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./
