@@ -2,7 +2,7 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [ "dev" ]  # Changed from dev to master
+    branches: [ "dev" ]
     paths-ignore:
       - '**.md'
       - '**.txt'
