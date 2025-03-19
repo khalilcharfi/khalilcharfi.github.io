@@ -86,7 +86,7 @@ generator.generate().catch(error => {
 const CONFIG = {
   paths: {
     // ... other paths
-    output: path.join(__dirname, '../dist')
+    output: path.join(__dirname, '../')
   }
   // ... other config
 };

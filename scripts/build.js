@@ -9,11 +9,11 @@ const CONFIG = {
   paths: {
     template: path.join(__dirname, '../templates/template.hbs'),
     data: path.join(__dirname, '../data'),
-    output: path.join(__dirname, '../dist'),
+    output: path.join(__dirname, '../'),
     assets: {
-      css: path.join(__dirname, '../dist/css'),
-      img: path.join(__dirname, '../dist/img'),
-      js: path.join(__dirname, '../dist/js')
+      css: path.join(__dirname, '../css'),
+      img: path.join(__dirname, '../img'),
+      js: path.join(__dirname, '../js')
     }
   },
   // Define languages array to prevent the error

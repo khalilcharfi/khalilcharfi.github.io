@@ -11,7 +11,7 @@ const CONFIG = {
   paths: {
     template: path.join(__dirname, '../templates/redirect.hbs'),
     data: path.join(__dirname, '../data/redirect.json'),
-    output: path.join(__dirname, '../dist/index.html')
+    output: path.join(__dirname, '../index.html')
   },
   minify: {
     collapseWhitespace: true,
