@@ -6,7 +6,7 @@ LinkedIn: https://www.linkedin.com/in/khalil-charfi
 Twitter: @khalilcharfi8
 
 /* SITE */
-Last update: 2023-10-20
+Last update: 2025-03-19
 Standards: HTML5, CSS3, JavaScript
 Components: Vue.js, Angular, Laravel
 Software: Visual Studio Code, Git
