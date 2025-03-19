@@ -41,12 +41,11 @@ jobs:
         env:
           NODE_ENV: production
           OUTPUT_DIR: ./dist
-
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v3
+          
+      - name: Upload GitHub Pages artifact
+        uses: actions/upload-pages-artifact@v2
         with:
-          name: site-artifact
-          path: ./dist
+          path: './dist'
 
   deploy:
     needs: build
@@ -58,17 +57,6 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Download build artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: site-artifact
-          path: ./dist
-
-      - name: Upload GitHub Pages artifact
-        uses: actions/upload-pages-artifact@v2
-        with:
-          path: './dist'
-
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v2
