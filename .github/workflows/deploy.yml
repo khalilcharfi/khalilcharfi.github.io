@@ -2,7 +2,7 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [ "master" ]  # Only trigger on master branch
+    branches: [ "dev" ]  # Only trigger on master branch
     paths-ignore:
       - '**.md'
       - '**.txt'
