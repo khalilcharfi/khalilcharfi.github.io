@@ -7,15 +7,17 @@ const minify = require('html-minifier').minify;
 // Update CONFIG to use dist directory
 const CONFIG = {
   paths: {
-    template: 'templates/template.hbs',
-    data: 'data',
-    output: '.',
+    template: path.join(__dirname, '../templates/template.hbs'),
+    data: path.join(__dirname, '../data'),
+    output: path.join(__dirname, '../dist'),
     assets: {
-      css: 'css',
-      img: 'img',
-      js: 'js'
+      css: path.join(__dirname, '../dist/css'),
+      img: path.join(__dirname, '../dist/img'),
+      js: path.join(__dirname, '../dist/js')
     }
   },
+  // Define languages array to prevent the error
+  languages: ['en', 'fr', 'ar', 'de'],
   minify: {
     collapseWhitespace: true,
     removeComments: true,
@@ -152,14 +154,22 @@ class StaticSiteGenerator {
         utils.logInfo(`Starting generation in ${isDevelopment ? 'development' : 'production'} mode`);
         
         await this.initialize();
-
+    
+        // Create the output directory if it doesn't exist
+        utils.ensureDirectoryExists(CONFIG.paths.output);
+        
+        // Ensure assets directories exist
+        Object.values(CONFIG.paths.assets).forEach(dir => {
+            utils.ensureDirectoryExists(dir);
+        });
+    
         const results = await Promise.all(
             CONFIG.languages.map(lang => this.generatePage(lang))
         );
-
+    
         const successful = results.filter(Boolean).length;
         const failed = results.length - successful;
-
+    
         if (failed === 0) {
             utils.logSuccess(`Generation complete! Generated ${successful} pages successfully`);
         } else {
