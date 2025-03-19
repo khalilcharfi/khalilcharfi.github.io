@@ -1,6 +1,13 @@
-# robots.txt for https://khalilcharfi.github.io/
+# www.robotstxt.org
+
 User-agent: *
 Allow: /
-Disallow: /private/  # Optional: Block non-existent private directory
 
+# Sitemaps
 Sitemap: https://khalilcharfi.github.io/sitemap.xml
+
+# Host
+Host: https://khalilcharfi.github.io
+
+# Crawl-delay
+Crawl-delay: 10

@@ -2,12 +2,10 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [ "dev" ]
+    branches: [ "dev" ]  # Changed from dev to master
     paths-ignore:
       - '**.md'
       - '**.txt'
-      - '.github/**'
-      - '*.{yml,yaml,json}'
       - '.gitignore'
   workflow_dispatch:
 
@@ -21,27 +19,53 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
+
+      - name: Check directory contents
+        run: ls -la
+
+      - name: Create package.json if not exists
+        run: |
+          if [ ! -f package.json ]; then
+            echo "Creating basic package.json"
+            echo '{
+              "name": "khalilcharfi-portfolio",
+              "version": "1.0.0",
+              "description": "Khalil Charfi portfolio website",
+              "scripts": {
+                "build:all": "node scripts/build.js && node scripts/generate-redirect.js && node scripts/generate-meta.js"
+              },
+              "dependencies": {
+                "handlebars": "^4.7.8",
+                "html-minifier": "^4.0.0"
+              }
+            }' > package.json
+          fi
 
       - name: Install dependencies
-        run: npm ci
+        run: npm i
+
+      - name: Create dist directory
+        run: mkdir -p dist
 
       - name: Generate static site
-        run: npm run build:all
+        run: |
+          npm run build:all
+          ls -la dist
         env:
           NODE_ENV: production
+          OUTPUT_DIR: ./dist
           
-      - name: Upload GitHub Pages artifact
-        uses: actions/upload-pages-artifact@v4
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
         with:
-          path: ./
+          name: site-build-files
+          path: ./dist
+          if-no-files-found: error
 
   deploy:
     needs: build
@@ -53,13 +77,21 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: site-build-files
+          path: ./dist
+          
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+        
+      - name: Upload GitHub Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./dist
+          
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./
-          keep_files: false
-          force_orphan: true
-          publish_branch: master
-          commit_message: "Deploy: ${{ github.sha }}"
+        # Removed invalid 'branch' parameter

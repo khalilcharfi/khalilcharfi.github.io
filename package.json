@@ -1,0 +1,23 @@
+{
+  "name": "khalilcharfi-portfolio",
+  "version": "1.0.0",
+  "description": "Khalil Charfi's multilingual portfolio website",
+  "main": "index.js",
+  "scripts": {
+    "build": "node scripts/generate.js",
+    "build:redirect": "node scripts/generate-redirect.js",
+    "build:meta": "node scripts/generate-meta.js",
+    "build:all": "npm run build && npm run build:redirect && npm run build:meta"
+  },
+  "author": "Khalil Charfi",
+  "license": "MIT",
+  "dependencies": {
+    "chalk": "^5.4.1",
+    "handlebars": "^4.7.8",
+    "html-minifier": "^4.0.0",
+    "nunjucks": "^3.2.4"
+  },
+  "devDependencies": {
+    "serve": "^14.2.0"
+  }
+}
