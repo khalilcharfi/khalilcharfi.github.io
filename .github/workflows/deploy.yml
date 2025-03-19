@@ -2,7 +2,7 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [ "dev" ]  # Only trigger on master branch
+    branches: [ "dev" ]  # Trigger on dev branch
     paths-ignore:
       - '**.md'
       - '**.txt'
@@ -19,13 +19,35 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          ref: master  # Explicitly checkout the master branch
+        # Remove the ref: master line since we want to use the branch that triggered the workflow
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+
+      - name: Check directory contents
+        run: ls -la
+
+      - name: Create package.json if not exists
+        run: |
+          if [ ! -f package.json ]; then
+            echo "Creating basic package.json"
+            cat > package.json << 'EOF'
+            {
+              "name": "khalilcharfi-portfolio",
+              "version": "1.0.0",
+              "description": "Khalil Charfi's multilingual portfolio website",
+              "scripts": {
+                "build:all": "node scripts/build.js && node scripts/generate-redirect.js && node scripts/generate-meta.js"
+              },
+              "dependencies": {
+                "handlebars": "^4.7.8",
+                "html-minifier": "^4.0.0"
+              }
+            }
+            EOF
+          fi
 
       - name: Install dependencies
         run: npm i
