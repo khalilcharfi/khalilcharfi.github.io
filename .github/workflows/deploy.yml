@@ -31,32 +31,38 @@ jobs:
       - name: Install dependencies
         run: npm i
 
-      - name: Clean previous build
-        run: rm -rf dist
-
       - name: Generate static site
         run: |
           npm run build:all
           ls -la
-          # Clean development artifacts
           rm -rf node_modules
+        env:
+          NODE_ENV: production
+          OUTPUT_DIR: ./
+          
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: site-build-files
+          path: ./
+          if-no-files-found: error
 
   deploy:
     needs: build
     runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Clean workspace
-        run: rm -rf *
-        
       - name: Download build artifact
         uses: actions/download-artifact@v4
         with:
           name: site-build-files
           path: ./
           
-      - name: Remove CI files
-        run: rm -rf .github
-        
       - name: Setup Pages
         uses: actions/configure-pages@v4
         
