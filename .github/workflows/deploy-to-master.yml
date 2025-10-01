@@ -26,9 +26,9 @@ jobs:
         
       - name: Create production .env
         run: |
-          echo "GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }}" >> .env.production
-          echo "VITE_ENABLE_CHATBOT=${{ secrets.VITE_ENABLE_CHATBOT || 'true' }}" >> .env.production
-          echo "VITE_ENABLE_DYNAMIC_CONTENT=${{ secrets.VITE_ENABLE_DYNAMIC_CONTENT || 'true' }}" >> .env.production
+          echo "GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY || '' }}" >> .env.production
+          echo "VITE_ENABLE_CHATBOT=${{ secrets.VITE_ENABLE_CHATBOT || 'false' }}" >> .env.production
+          echo "VITE_ENABLE_DYNAMIC_CONTENT=${{ secrets.VITE_ENABLE_DYNAMIC_CONTENT || 'false' }}" >> .env.production
           echo "VITE_SHOW_DEV_ELEMENTS=false" >> .env.production
           echo "VITE_SHOW_VISITOR_CONTROLS=false" >> .env.production
           echo "VITE_SHOW_PROFILE_INSIGHTS=false" >> .env.production

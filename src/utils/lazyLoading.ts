@@ -1,5 +1,5 @@
 // Lazy Loading Utilities
-import { lazy, ComponentType } from 'react';
+import { lazy } from 'react';
 
 // Lazy load heavy Three.js components
 export const LazyThreeBackground = lazy(() => 
@@ -63,8 +63,9 @@ export const preloadCriticalChunks = () => {
 export const conditionallyPreloadThreeJS = () => {
   // Check user preference or device capability
   const userPreference = localStorage.getItem('enableAnimations');
-  const hasGoodConnection = navigator.connection 
-    ? (navigator.connection as any).effectiveType !== 'slow-2g' && (navigator.connection as any).effectiveType !== '2g'
+  const connection = (navigator as any).connection;
+  const hasGoodConnection = connection 
+    ? connection.effectiveType !== 'slow-2g' && connection.effectiveType !== '2g'
     : true;
   
   if (userPreference !== 'false' && hasGoodConnection) {

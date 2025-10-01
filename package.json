@@ -7,6 +7,7 @@
     "dev": "vite",
     "build": "vite build",
     "build:prod": "vite build --mode production",
+    "build:analyze": "vite build && open dist/bundle-analysis.html",
     "preview": "vite preview",
     "preview:prod": "vite preview --mode production",
     "i18n:validate": "node scripts/validate-translations.js",
@@ -14,9 +15,10 @@
     "i18n:complete": "node scripts/complete-translations.js",
     "i18n:check": "npm run i18n:validate && npm run i18n:fix-missing",
     "i18n:validate-json": "node scripts/validate-json-translations.js",
-    "build:analyze": "npm run build && npx vite-bundle-analyzer dist",
-    "perf:audit": "lighthouse http://localhost:5177 --output html --output-path ./dist/lighthouse-report.html",
-    "perf:monitor": "node scripts/performance-monitor.js"
+    "perf:audit": "npm run preview & sleep 3 && lighthouse http://localhost:5177 --output html --output-path ./dist/lighthouse-report.html --view",
+    "perf:monitor": "node scripts/performance-monitor.js",
+    "perf:report": "npm run build:analyze && npm run perf:audit",
+    "optimize": "npm run build:prod && npm run build:analyze"
   },
   "dependencies": {
     "@google/genai": "latest",

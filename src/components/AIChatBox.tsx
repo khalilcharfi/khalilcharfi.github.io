@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { loadAIModule } from '../utils/lazyLoading';
 import type { GoogleGenAI, Chat } from '@google/genai';
 
@@ -9,7 +9,6 @@ interface AIChatBoxProps {
   language: string;
   buildContext: (lang: string) => string;
   t: (key: string) => string;
-  i18n: any;
 }
 
 export const AIChatBox: React.FC<AIChatBoxProps> = ({ 
@@ -18,8 +17,7 @@ export const AIChatBox: React.FC<AIChatBoxProps> = ({
   theme, 
   language, 
   buildContext, 
-  t, 
-  i18n 
+  t
 }) => {
   const [chat, setChat] = useState<Chat | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -88,7 +86,7 @@ export const AIChatBox: React.FC<AIChatBoxProps> = ({
     setIsLoading(true);
 
     try {
-      const response = await chat.sendMessage({ parts: [{ text: input }] });
+      const response = await chat.sendMessage(input);
       const botMessage = { 
         role: 'assistant', 
         content: response.text || 'No response received' 
