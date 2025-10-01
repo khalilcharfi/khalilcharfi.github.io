@@ -6,7 +6,17 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "build:prod": "vite build --mode production",
+    "preview": "vite preview",
+    "preview:prod": "vite preview --mode production",
+    "i18n:validate": "node scripts/validate-translations.js",
+    "i18n:fix-missing": "node scripts/fix-missing-translations.js",
+    "i18n:complete": "node scripts/complete-translations.js",
+    "i18n:check": "npm run i18n:validate && npm run i18n:fix-missing",
+    "i18n:validate-json": "node scripts/validate-json-translations.js",
+    "build:analyze": "npm run build && npx vite-bundle-analyzer dist",
+    "perf:audit": "lighthouse http://localhost:5177 --output html --output-path ./dist/lighthouse-report.html",
+    "perf:monitor": "node scripts/performance-monitor.js"
   },
   "dependencies": {
     "@google/genai": "latest",
@@ -25,9 +35,11 @@
     "three": "0.165.0"
   },
   "devDependencies": {
+    "@lingual/i18n-check": "^0.8.8",
     "@types/node": "^22.14.0",
     "@types/react-dom": "^19.1.6",
     "@wasm-tool/wasm-pack-plugin": "^1.7.0",
+    "rollup-plugin-visualizer": "^6.0.3",
     "typescript": "~5.7.2",
     "vite": "^6.2.0",
     "wasm-pack": "^0.0.0"

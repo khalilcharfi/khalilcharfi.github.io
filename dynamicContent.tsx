@@ -1,11 +1,7 @@
 // Dynamic Content Provider Component
 import React, { createContext, useContext, useEffect, useState, ReactNode, useRef } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from './src/hooks/useTranslation';
 import { useConsent } from 'react-hook-consent';
-import { userAnalytics, UserProfile } from './userAnalytics';
-import { ContentAdapter, PersonalizedContent } from './contentAdapter';
-import { analytics, VisitorType } from './userAnalytics';
-import VisitorTypeSelector from './VisitorTypeSelector';
 import { PERSONAS_FEATURE_ENABLED } from './personaSettings';
 
 // Simple types to avoid conflicts
@@ -49,39 +45,66 @@ interface SimpleDynamicContentContextType {
 }
 
 // ===============================
-//  Feature Flag: Personas / Profiles
+//  Feature Flags: Personas / Profiles & Content Modes
 // -------------------------------
 // Set VITE_ENABLE_PERSONAS=false in your .env or build command to completely
 // disable personalized personas/profiles logic at compile-time.
 // Alternatively, change the constant below directly.
 export const PERSONAS_ENABLED: boolean = (import.meta as any).env?.VITE_ENABLE_PERSONAS !== 'false';
+
+// Dynamic content control flags
+export const DYNAMIC_CONTENT_ENABLED: boolean = (import.meta as any).env?.VITE_ENABLE_DYNAMIC_CONTENT !== 'false';
+export const FORCE_DEFAULT_CONTENT: boolean = (import.meta as any).env?.VITE_FORCE_DEFAULT_CONTENT === 'true';
+
+// Development elements visibility flags
+export const SHOW_DEV_ELEMENTS: boolean = (import.meta as any).env?.VITE_SHOW_DEV_ELEMENTS === 'true';
+export const SHOW_VISITOR_CONTROLS: boolean = (import.meta as any).env?.VITE_SHOW_VISITOR_CONTROLS === 'true';
+export const SHOW_PROFILE_INSIGHTS: boolean = (import.meta as any).env?.VITE_SHOW_PROFILE_INSIGHTS === 'true';
+export const SHOW_TRANSLATION_DEBUG: boolean = (import.meta as any).env?.VITE_SHOW_TRANSLATION_DEBUG === 'true';
+export const SHOW_DEBUG_INFO: boolean = (import.meta as any).env?.VITE_SHOW_DEBUG_INFO === 'true';
+
+// Chatbot configuration
+export const ENABLE_CHATBOT: boolean = (import.meta as any).env?.VITE_ENABLE_CHATBOT !== 'false';
+
+// Environment detection
+export const IS_DEVELOPMENT: boolean = (import.meta as any).env?.DEV === true;
+export const IS_PRODUCTION: boolean = (import.meta as any).env?.PROD === true;
 // ===============================
 
 // Default content as a function for i18n
-const getDefaultContent = (t: (key: string) => string): SimplePersonalizedContent => ({
+const getDefaultContent = (t: (key: string, options?: any) => string | object): SimplePersonalizedContent => ({
   home: {
-    greeting: t('dynamicContent.defaultGreeting'),
-    tagline: t('dynamicContent.defaultTagline'),
-    intro: t('dynamicContent.defaultIntro')
+    greeting: t('dynamicContent.defaultGreeting') as string,
+    tagline: t('dynamicContent.defaultTagline') as string,
+    intro: t('dynamicContent.defaultIntro') as string
   },
   about: {
-    title: t('about.title'),
-    professionalSummary: t('dynamicContent.professionalSummary'),
+    title: t('about.title') as string,
+    professionalSummary: t('dynamicContent.professionalSummary') as string,
     keyHighlights: [
-      t('dynamicContent.expertInAI'),
-      t('dynamicContent.fullStackProficiency'),
-      t('dynamicContent.problemSolving'),
-      t('dynamicContent.modernFrameworks')
+      t('dynamicContent.expertInAI') as string,
+      t('dynamicContent.fullStackProficiency') as string,
+      t('dynamicContent.problemSolving') as string,
+      t('dynamicContent.modernFrameworks') as string
     ]
   },
   skills: {
-    title: t('skills.title'),
-    focusAreas: [t('skills.focusAI'), t('skills.focusWebDev'), t('skills.focusDataScience')],
-    priorityOrder: [t('skills.priorityProgramming'), t('skills.priorityFrameworks'), t('skills.priorityTools'), t('skills.priorityDatabases')]
+    title: t('skills.title') as string,
+    focusAreas: [
+      t('skills.focusAI') as string, 
+      t('skills.focusWebDev') as string, 
+      t('skills.focusDataScience') as string
+    ],
+    priorityOrder: [
+      t('skills.priorityProgramming') as string, 
+      t('skills.priorityFrameworks') as string, 
+      t('skills.priorityTools') as string, 
+      t('skills.priorityDatabases') as string
+    ]
   },
   contact: {
-    title: t('contact.title'),
-    message: t('contact.message')
+    title: t('contact.title') as string,
+    message: t('contact.message') as string
   }
 });
 
@@ -118,19 +141,36 @@ export const DynamicContentProvider: React.FC<DynamicContentProviderProps> = ({ 
 
   // Personas are only active when the feature is enabled *and* analytics consent is given
   const personasActive = PERSONAS_FEATURE_ENABLED && analyticsConsent;
+  
+  // Content mode logic: force default content overrides everything
+  const useDefaultContent = FORCE_DEFAULT_CONTENT || !DYNAMIC_CONTENT_ENABLED;
+  const useDynamicContent = DYNAMIC_CONTENT_ENABLED && !FORCE_DEFAULT_CONTENT;
+  
+  // Debug logging for content mode
+  useEffect(() => {
+    console.log('Content Mode Debug:', {
+      PERSONAS_ENABLED,
+      DYNAMIC_CONTENT_ENABLED,
+      FORCE_DEFAULT_CONTENT,
+      useDefaultContent,
+      useDynamicContent,
+      personasActive,
+      analyticsConsent
+    });
+  }, [useDefaultContent, useDynamicContent, personasActive, analyticsConsent]);
 
   const trackEvent = (event: string, data?: any) => {
-    if (!personasActive) {
-      console.log('Event tracking skipped - no analytics consent or personas disabled');
+    if (!personasActive || !useDynamicContent) {
+      console.log('Event tracking skipped - no analytics consent, personas disabled, or dynamic content disabled');
       return;
     }
     console.log('Event tracked:', event, data);
   };
 
-  // Update meta tags only if personas are active
+  // Update meta tags based on content mode and personas
   useEffect(() => {
-    if (!personasActive) {
-      // Use generic meta tags when no consent
+    if (!personasActive || !useDynamicContent) {
+      // Use generic meta tags when no consent or dynamic content disabled
       document.title = 'Khalil Charfi | Portfolio';
       const metaDescription = document.querySelector('meta[name="description"]');
       if (metaDescription) {
@@ -139,19 +179,24 @@ export const DynamicContentProvider: React.FC<DynamicContentProviderProps> = ({ 
       return;
     }
 
-    // Use personalized meta tags when consent is granted
+    // Use personalized meta tags when consent is granted and dynamic content is enabled
     // ... existing meta tag logic ...
-  }, [personasActive, personalizedContent, i18n.language]);
+  }, [personasActive, useDynamicContent, personalizedContent, i18n.language]);
 
   // Update content on language change
   useEffect(() => {
     setPersonalizedContent(getDefaultContent(t));
   }, [t, i18n.language]);
 
+  // Content selection logic with new flags
+  const currentContent = useDefaultContent 
+    ? getDefaultContent(t) 
+    : (personasActive && useDynamicContent ? personalizedContent : getDefaultContent(t));
+  
   return (
     <DynamicContentContext.Provider value={{
-      personalizedContent: personasActive ? personalizedContent : getDefaultContent(t),
-      userProfile: personasActive ? userProfile : defaultProfile,
+      personalizedContent: currentContent,
+      userProfile: (personasActive && useDynamicContent) ? userProfile : defaultProfile,
       contentAdapter: {},
       trackEvent
     }}>
@@ -162,6 +207,17 @@ export const DynamicContentProvider: React.FC<DynamicContentProviderProps> = ({ 
 
 export const useDynamicContent = () => {
   return useContext(DynamicContentContext);
+};
+
+// Utility function to get current content mode info
+export const getContentModeInfo = () => {
+  return {
+    personasEnabled: PERSONAS_FEATURE_ENABLED,
+    dynamicContentEnabled: DYNAMIC_CONTENT_ENABLED,
+    forceDefaultContent: FORCE_DEFAULT_CONTENT,
+    isUsingDefaultContent: FORCE_DEFAULT_CONTENT || !DYNAMIC_CONTENT_ENABLED,
+    isUsingDynamicContent: DYNAMIC_CONTENT_ENABLED && !FORCE_DEFAULT_CONTENT
+  };
 };
 
 // Section tracking hook
@@ -248,7 +304,7 @@ export const ProfileInsights: React.FC<{ chatbotOpen?: boolean; scrollToTopVisib
   = ({ chatbotOpen = false, scrollToTopVisible = false }) => {
   const [isVisible, setIsVisible] = useState(false);
   const debug = isDebugMode();
-  if (!PERSONAS_FEATURE_ENABLED) return null;
+  if (!PERSONAS_FEATURE_ENABLED || !DYNAMIC_CONTENT_ENABLED) return null;
 
   // Dynamically calculate bottom offset
   let bottom = 160;
@@ -276,7 +332,3 @@ export const ProfileInsights: React.FC<{ chatbotOpen?: boolean; scrollToTopVisib
     </>
   );
 };
-
-const getBaseLang = (lang: string) => lang?.split('-')[0] || 'en';
-// Replace all i18n.language usages in translation/analytics with getBaseLang(i18n.language)
-// ... existing code ... 

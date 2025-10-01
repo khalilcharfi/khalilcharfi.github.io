@@ -1,8 +1,7 @@
-// i18n.ts - Enhanced Internationalization Configuration
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
-import { translations } from './translations';
+import { translations } from '../../translations';
 
 // Transform the translations into the format i18next expects
 const resources: { [key: string]: { translation: any } } = {};
@@ -12,7 +11,7 @@ Object.keys(translations).forEach((lang) => {
   };
 });
 
-// Enhanced i18n configuration
+// Configure i18next
 i18n
   .use(LanguageDetector)
   .use(initReactI18next)
@@ -21,27 +20,29 @@ i18n
     fallbackLng: 'en',
     debug: process.env.NODE_ENV === 'development',
     
-    // React configuration
-    react: {
-      useSuspense: false, // Disable suspense for better error handling
-    },
-    
-    // Interpolation configuration
     interpolation: {
       escapeValue: false, // React already escapes by default
-      format: (value, format) => {
-        if (format === 'uppercase') return value.toUpperCase();
-        if (format === 'lowercase') return value.toLowerCase();
-        if (format === 'capitalize') return value.charAt(0).toUpperCase() + value.slice(1);
-        return value;
-      },
     },
     
-    // Language detection configuration
     detection: {
+      // Order of language detection
       order: ['localStorage', 'navigator', 'htmlTag'],
       caches: ['localStorage'],
+      
+      // Look for language in URL parameter
+      lookupFromPathIndex: 0,
+      lookupFromSubdomainIndex: 0,
+      
+      // Check for language in localStorage
       lookupLocalStorage: 'i18nextLng',
+      
+      // Check for language in navigator
+      checkWhitelist: true,
+    },
+    
+    // Language switching configuration
+    react: {
+      useSuspense: false, // Disable suspense for better error handling
     },
     
     // Namespace configuration
@@ -50,55 +51,39 @@ i18n
     
     // Missing key handling
     saveMissing: process.env.NODE_ENV === 'development',
-    missingKeyHandler: (lng, ns, key, fallbackValue) => {
+    missingKeyHandler: (lng, ns, key) => {
       if (process.env.NODE_ENV === 'development') {
-        console.warn(`🌐 Missing translation key: "${key}" for language: "${lng}"`);
-        console.warn(`   Fallback value: "${fallbackValue}"`);
+        console.warn(`Missing translation key: ${key} for language: ${lng}`);
       }
     },
     
-    // Key configuration
-    keySeparator: '.',
-    nsSeparator: ':',
+    // Pluralization
     pluralSeparator: '_',
     contextSeparator: '_',
     
-    // Load path configuration
-    load: 'languageOnly',
+    // Key separator
+    keySeparator: '.',
     
-    // Backend configuration for future use
-    backend: {
-      loadPath: '/locales/{{lng}}/{{ns}}.json',
-    },
+    // Namespace separator
+    nsSeparator: ':',
   });
 
 // Export the configured i18n instance
 export default i18n;
 
-// Export utility functions
+// Export translation function for direct use
+export const t = (key: string, options?: any) => i18n.t(key, options);
+
+// Export language utilities
 export const getCurrentLanguage = () => i18n.language;
 export const getBaseLanguage = (lang?: string) => (lang || i18n.language)?.split('-')[0] || 'en';
 export const isLanguageSupported = (lang: string) => Object.keys(translations).includes(lang);
 export const getSupportedLanguages = () => Object.keys(translations);
 
-// Enhanced language change utility
+// Language change utility
 export const changeLanguage = async (lang: string) => {
   try {
-    if (!isLanguageSupported(lang)) {
-      console.warn(`Language "${lang}" is not supported. Falling back to English.`);
-      lang = 'en';
-    }
-    
     await i18n.changeLanguage(lang);
-    
-    // Update document language attribute
-    document.documentElement.lang = getBaseLanguage(lang);
-    
-    // Dispatch custom event for language change
-    window.dispatchEvent(new CustomEvent('languageChanged', { 
-      detail: { language: lang, baseLanguage: getBaseLanguage(lang) } 
-    }));
-    
     return true;
   } catch (error) {
     console.error('Failed to change language:', error);
@@ -151,8 +136,3 @@ const getAllKeys = (obj: any, prefix = ''): string[] => {
 // Export types
 export type SupportedLanguage = keyof typeof translations;
 export type TranslationKey = string;
-
-// Initialize document language on load
-if (typeof document !== 'undefined') {
-  document.documentElement.lang = getBaseLanguage();
-}

@@ -2,75 +2,63 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [ "master", 'dev' ]
-    paths-ignore:
-      - '**.md'
-      - '**.txt'
-      - '.gitignore'
-  workflow_dispatch:
-
-concurrency:
-  group: "pages"
-  cancel-in-progress: true
+    branches: [ main, next ]
+  pull_request:
+    branches: [ main ]
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
+    
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Set up Node.js
+        
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-
-      - name: Check directory contents
-        run: ls -la
-
+          node-version: '18'
+          cache: 'npm'
+          
       - name: Install dependencies
-        run: npm i
-
-      - name: Generate static site
-        run: |
-          npm run build:all
-          ls -la
-          
-        env:
-          NODE_ENV: production
-          OUTPUT_DIR: ./
-          
-      - name: Upload build artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: site-build-files
-          path: ./
-          if-no-files-found: error
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    permissions:
-      pages: write
-      id-token: write
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - name: Download build artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: site-build-files
-          path: ./
-          
-      - name: Setup Pages
-        uses: actions/configure-pages@v4
+        run: npm ci
         
-      - name: Upload GitHub Pages artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: ./
+      - name: Create production .env
+        run: |
+          echo "GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }}" >> .env.production
+          echo "VITE_ENABLE_CHATBOT=${{ secrets.VITE_ENABLE_CHATBOT || 'true' }}" >> .env.production
+          echo "VITE_ENABLE_DYNAMIC_CONTENT=${{ secrets.VITE_ENABLE_DYNAMIC_CONTENT || 'true' }}" >> .env.production
+          echo "VITE_SHOW_DEV_ELEMENTS=false" >> .env.production
+          echo "VITE_SHOW_VISITOR_CONTROLS=false" >> .env.production
+          echo "VITE_SHOW_PROFILE_INSIGHTS=false" >> .env.production
+          echo "VITE_SHOW_TRANSLATION_DEBUG=false" >> .env.production
+          echo "VITE_SHOW_DEBUG_INFO=false" >> .env.production
+          echo "NODE_ENV=production" >> .env.production
           
+      - name: Test environment variables
+        run: |
+          echo "Testing environment variables..."
+          node -e "
+            const fs = require('fs');
+            const envContent = fs.readFileSync('.env.production', 'utf8');
+            console.log('Production .env content:');
+            console.log(envContent.replace(/GEMINI_API_KEY=.*/, 'GEMINI_API_KEY=***HIDDEN***'));
+          "
+          
+      - name: Build
+        run: npm run build:prod
+        
       - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+        uses: peaceiris/actions-gh-pages@v3
+        if: github.ref == 'refs/heads/main'
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
+          
+      - name: Deploy to GitHub Pages (Preview)
+        uses: peaceiris/actions-gh-pages@v3
+        if: github.ref == 'refs/heads/next'
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
+          cname: your-custom-domain.com  # Optional: replace with your custom domain

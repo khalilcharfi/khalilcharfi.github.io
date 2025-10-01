@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gemini API Connection Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #1a1a1a;
+            color: #fff;
+        }
+        .test-section {
+            background: #2a2a2a;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            border: 1px solid #444;
+        }
+        .status {
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .connected { background: #2d5a2d; }
+        .failed { background: #5a2d2d; }
+        .checking { background: #2d4a5a; }
+        .disabled { background: #5a5a5a; }
+        .info { background: #2d4a5a; }
+        code {
+            background: #1a1a1a;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+        .instructions {
+            background: #3a3a3a;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .test-button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 10px 5px;
+        }
+        .test-button:hover {
+            background: #45a049;
+        }
+        .test-button:disabled {
+            background: #666;
+            cursor: not-allowed;
+        }
+        .api-key-input {
+            width: 100%;
+            padding: 8px;
+            margin: 10px 0;
+            border: 1px solid #555;
+            border-radius: 4px;
+            background: #333;
+            color: white;
+        }
+        .log {
+            background: #1a1a1a;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <h1>🤖 Gemini API Connection Test</h1>
+    
+    <div class="instructions">
+        <h3>How to Test:</h3>
+        <ol>
+            <li><strong>Enter API Key:</strong> Paste your Gemini API key in the input field below</li>
+            <li><strong>Test Connection:</strong> Click "Test Connection" to validate the API key and test connectivity</li>
+            <li><strong>Check Results:</strong> View the detailed connection status and any error messages</li>
+            <li><strong>Test Chat:</strong> Try sending a test message to verify full functionality</li>
+        </ol>
+    </div>
+
+    <div class="test-section">
+        <h2>🔑 API Key Configuration</h2>
+        <input 
+            type="password" 
+            id="apiKeyInput" 
+            class="api-key-input" 
+            placeholder="Enter your Gemini API key (AIza...)"
+        />
+        <div style="font-size: 12px; color: #888; margin-top: 5px;">
+            Your API key is stored locally and not sent to any server except Google's Gemini API
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>🔍 Connection Test</h2>
+        <button id="testConnectionBtn" class="test-button">Test Connection</button>
+        <button id="clearLogBtn" class="test-button" style="background: #666;">Clear Log</button>
+        
+        <div id="connectionStatus" class="status checking">
+            <strong>Status:</strong> <span id="statusText">Ready to test</span>
+        </div>
+        
+        <div id="errorMessage" style="display: none; color: #ff6b6b; margin: 10px 0;"></div>
+        
+        <div id="connectionDetails" style="margin-top: 10px; font-size: 12px; color: #888;"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>💬 Test Chat</h2>
+        <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+            <input 
+                type="text" 
+                id="testMessageInput" 
+                placeholder="Enter test message..." 
+                style="flex: 1; padding: 8px; border: 1px solid #555; border-radius: 4px; background: #333; color: white;"
+            />
+            <button id="sendTestMessageBtn" class="test-button" disabled>Send</button>
+        </div>
+        <div id="chatResponse" class="log" style="min-height: 100px;">Chat responses will appear here...</div>
+    </div>
+
+    <div class="test-section">
+        <h2>📊 Test Log</h2>
+        <div id="testLog" class="log">Test log will appear here...</div>
+    </div>
+
+    <div class="test-section">
+        <h2>🔧 Environment Variables</h2>
+        <div class="info">
+            <h3>Current Environment Variables:</h3>
+            <ul id="envVars">
+                <li>Loading...</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        let currentApiKey = '';
+        let isConnected = false;
+        let testLog = [];
+
+        const log = (message, type = 'info') => {
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = `[${timestamp}] ${type.toUpperCase()}: ${message}`;
+            testLog.push(logEntry);
+            
+            const logElement = document.getElementById('testLog');
+            logElement.textContent = testLog.join('\n');
+            logElement.scrollTop = logElement.scrollHeight;
+            
+            console.log(logEntry);
+        };
+
+        const updateStatus = (status, message = '') => {
+            const statusElement = document.getElementById('connectionStatus');
+            const statusText = document.getElementById('statusText');
+            const errorElement = document.getElementById('errorMessage');
+            
+            statusElement.className = `status ${status}`;
+            statusText.textContent = message || status;
+            
+            if (message && status === 'failed') {
+                errorElement.textContent = message;
+                errorElement.style.display = 'block';
+            } else {
+                errorElement.style.display = 'none';
+            }
+        };
+
+        const validateApiKey = (apiKey) => {
+            if (!apiKey || apiKey.trim() === '') {
+                return { isValid: false, error: 'API key is empty' };
+            }
+            
+            if (apiKey === 'your-gemini_api_key_here' || apiKey === 'your_api_key_here') {
+                return { isValid: false, error: 'API key is placeholder value' };
+            }
+            
+            if (apiKey.length < 20) {
+                return { isValid: false, error: 'API key is too short' };
+            }
+            
+            if (!apiKey.startsWith('AIza') || apiKey.length < 35) {
+                return { isValid: false, error: 'API key format appears invalid' };
+            }
+            
+            return { isValid: true };
+        };
+
+        const testGeminiConnection = async (apiKey, retries = 3) => {
+            for (let attempt = 1; attempt <= retries; attempt++) {
+                try {
+                    log(`Testing Gemini API connection (attempt ${attempt}/${retries})...`);
+                    
+                    // Create a test request
+                    const response = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-04-17:generateContent', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            contents: [{
+                                parts: [{
+                                    text: "Test connection - respond with OK"
+                                }]
+                            }],
+                            generationConfig: {
+                                temperature: 0.1,
+                                maxOutputTokens: 10
+                            }
+                        })
+                    });
+
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(`HTTP ${response.status}: ${errorData.error?.message || 'Unknown error'}`);
+                    }
+
+                    const data = await response.json();
+                    
+                    if (data.candidates && data.candidates[0] && data.candidates[0].content) {
+                        log('Gemini API connection successful!');
+                        return { success: true, response: data };
+                    } else {
+                        throw new Error('No valid response received from API');
+                    }
+                    
+                } catch (error) {
+                    log(`Connection attempt ${attempt} failed: ${error.message}`, 'error');
+                    
+                    if (attempt === retries) {
+                        let errorMsg = 'Unknown connection error';
+                        
+                        if (error.message.includes('API key') || error.message.includes('401')) {
+                            errorMsg = 'Invalid API key';
+                        } else if (error.message.includes('quota') || error.message.includes('429')) {
+                            errorMsg = 'API quota exceeded';
+                        } else if (error.message.includes('permission') || error.message.includes('403')) {
+                            errorMsg = 'API permission denied';
+                        } else if (error.message.includes('network') || error.message.includes('fetch')) {
+                            errorMsg = 'Network connection failed';
+                        } else if (error.message.includes('timeout')) {
+                            errorMsg = 'Connection timeout';
+                        } else {
+                            errorMsg = error.message;
+                        }
+                        
+                        return { success: false, error: errorMsg };
+                    }
+                    
+                    // Wait before retry (exponential backoff)
+                    await new Promise(resolve => setTimeout(resolve, Math.pow(2, attempt) * 1000));
+                }
+            }
+            
+            return { success: false, error: 'Max retries exceeded' };
+        };
+
+        const testConnection = async () => {
+            const apiKey = document.getElementById('apiKeyInput').value.trim();
+            
+            if (!apiKey) {
+                updateStatus('failed', 'Please enter an API key');
+                return;
+            }
+            
+            const keyValidation = validateApiKey(apiKey);
+            if (!keyValidation.isValid) {
+                updateStatus('failed', keyValidation.error);
+                log(`API key validation failed: ${keyValidation.error}`, 'error');
+                return;
+            }
+            
+            updateStatus('checking', 'Testing connection...');
+            log('Starting connection test...');
+            
+            currentApiKey = apiKey;
+            const result = await testGeminiConnection(apiKey);
+            
+            if (result.success) {
+                updateStatus('connected', 'Connection successful!');
+                isConnected = true;
+                document.getElementById('sendTestMessageBtn').disabled = false;
+                log('✅ Gemini API connection established successfully');
+            } else {
+                updateStatus('failed', result.error);
+                isConnected = false;
+                document.getElementById('sendTestMessageBtn').disabled = true;
+                log(`❌ Connection failed: ${result.error}`, 'error');
+            }
+        };
+
+        const sendTestMessage = async () => {
+            if (!isConnected || !currentApiKey) {
+                log('Not connected to API', 'error');
+                return;
+            }
+            
+            const message = document.getElementById('testMessageInput').value.trim();
+            if (!message) {
+                log('Please enter a test message', 'error');
+                return;
+            }
+            
+            const chatResponse = document.getElementById('chatResponse');
+            chatResponse.textContent = 'Sending message...';
+            
+            try {
+                log(`Sending test message: "${message}"`);
+                
+                const response = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-04-17:generateContent', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        contents: [{
+                            parts: [{
+                                text: message
+                            }]
+                        }],
+                        generationConfig: {
+                            temperature: 0.7,
+                            maxOutputTokens: 1000
+                        }
+                    })
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(`HTTP ${response.status}: ${errorData.error?.message || 'Unknown error'}`);
+                }
+
+                const data = await response.json();
+                
+                if (data.candidates && data.candidates[0] && data.candidates[0].content) {
+                    const responseText = data.candidates[0].content.parts[0].text;
+                    chatResponse.textContent = responseText;
+                    log(`✅ Received response: ${responseText.substring(0, 100)}...`);
+                } else {
+                    throw new Error('No valid response received');
+                }
+                
+            } catch (error) {
+                chatResponse.textContent = `Error: ${error.message}`;
+                log(`❌ Chat test failed: ${error.message}`, 'error');
+            }
+        };
+
+        const clearLog = () => {
+            testLog = [];
+            document.getElementById('testLog').textContent = 'Test log cleared';
+            document.getElementById('chatResponse').textContent = 'Chat responses will appear here...';
+        };
+
+        const displayEnvVars = () => {
+            const envVarsList = document.getElementById('envVars');
+            const envVars = [
+                'NODE_ENV',
+                'VITE_ENABLE_CHATBOT',
+                'GEMINI_API_KEY'
+            ];
+
+            envVarsList.innerHTML = envVars.map(envVar => {
+                const value = window[envVar] || 'undefined';
+                return `<li><code>${envVar}</code>: ${value}</li>`;
+            }).join('');
+        };
+
+        // Event listeners
+        document.getElementById('testConnectionBtn').addEventListener('click', testConnection);
+        document.getElementById('sendTestMessageBtn').addEventListener('click', sendTestMessage);
+        document.getElementById('clearLogBtn').addEventListener('click', clearLog);
+        document.getElementById('testMessageInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendTestMessage();
+            }
+        });
+
+        // Initialize
+        displayEnvVars();
+        log('Gemini API Connection Test initialized');
+    </script>
+</body>
+</html>

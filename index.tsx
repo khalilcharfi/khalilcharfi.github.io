@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef, Suspense, useMemo, useLayoutEffect, Component, createContext, useContext } from 'react';
 import { createRoot } from 'react-dom/client';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from './src/hooks/useTranslation';
 import { marked } from 'marked';
 import { CertificateItem, translations } from './translations';
+// TranslationTest will be dynamically imported when needed
 import { GoogleGenAI, Chat } from '@google/genai';
 import { Canvas, useFrame, useThree, extend, type ThreeElements } from '@react-three/fiber';
 import { PointMaterial } from '@react-three/drei';
@@ -10,9 +11,9 @@ import { Bloom, EffectComposer } from '@react-three/postprocessing';
 import * as THREE from 'three';
 import { createNoise3D } from 'simplex-noise';
 import './i18n'; // Initializes i18next
-import { useDynamicContent, ProfileInsights, useSectionTracking } from './dynamicContent';
+import { useDynamicContent, ProfileInsights, useSectionTracking, SHOW_VISITOR_CONTROLS, SHOW_PROFILE_INSIGHTS, SHOW_TRANSLATION_DEBUG, SHOW_DEBUG_INFO, ENABLE_CHATBOT, IS_DEVELOPMENT } from './dynamicContent';
 import { analytics } from './userAnalytics';
-import VisitorTypeSelector from './VisitorTypeSelector';
+// VisitorTypeSelector will be dynamically imported when needed
 import { PERSONAS_FEATURE_ENABLED } from './personaSettings';
 
 // Extend Three.js objects for React Three Fiber
@@ -878,13 +879,172 @@ interface Message {
     text: string;
 }
 
+// Enhanced Gemini API connection checker
+const useGeminiConnectionCheck = () => {
+    const [connectionStatus, setConnectionStatus] = useState<'checking' | 'connected' | 'failed' | 'disabled'>('checking');
+    const [errorMessage, setErrorMessage] = useState<string>('');
+    const [retryCount, setRetryCount] = useState(0);
+
+    const validateApiKey = (apiKey: string): { isValid: boolean; error?: string } => {
+        if (!apiKey || apiKey.trim() === '') {
+            return { isValid: false, error: 'API key is empty' };
+        }
+        
+        if (apiKey === 'your-gemini_api_key_here' || apiKey === 'your_api_key_here') {
+            return { isValid: false, error: 'API key is placeholder value' };
+        }
+        
+        if (apiKey.length < 20) {
+            return { isValid: false, error: 'API key is too short' };
+        }
+        
+        // Basic format validation for Gemini API keys
+        if (!apiKey.startsWith('AIza') || apiKey.length < 35) {
+            return { isValid: false, error: 'API key format appears invalid' };
+        }
+        
+        return { isValid: true };
+    };
+
+    const testGeminiConnection = async (apiKey: string, retries = 3): Promise<{ success: boolean; error?: string }> => {
+        for (let attempt = 1; attempt <= retries; attempt++) {
+            try {
+                console.log(`Testing Gemini API connection (attempt ${attempt}/${retries})...`);
+                
+                const ai = new GoogleGenAI({ apiKey });
+                const testChat = ai.chats.create({
+                    model: 'gemini-2.5-flash-preview-04-17',
+                    config: { 
+                        systemInstruction: 'You are a test assistant. Respond with "OK" to confirm connection.',
+                        temperature: 0.1
+                    },
+                });
+
+                // Test with a simple message
+                const testStream = await testChat.sendMessageStream({ 
+                    message: ["Test connection - respond with OK"] 
+                });
+                
+                let responseReceived = false;
+                for await (const chunk of testStream) {
+                    if (chunk.text) {
+                        responseReceived = true;
+                        console.log('Gemini API connection successful:', chunk.text);
+                        break;
+                    }
+                }
+                
+                if (responseReceived) {
+                    return { success: true };
+                } else {
+                    throw new Error('No response received from API');
+                }
+                
+            } catch (error: any) {
+                console.warn(`Gemini API connection attempt ${attempt} failed:`, error);
+                
+                if (attempt === retries) {
+                    // Determine specific error type
+                    let errorMsg = 'Unknown connection error';
+                    
+                    if (error.message?.includes('API key')) {
+                        errorMsg = 'Invalid API key';
+                    } else if (error.message?.includes('quota')) {
+                        errorMsg = 'API quota exceeded';
+                    } else if (error.message?.includes('permission')) {
+                        errorMsg = 'API permission denied';
+                    } else if (error.message?.includes('network') || error.message?.includes('fetch')) {
+                        errorMsg = 'Network connection failed';
+                    } else if (error.message?.includes('timeout')) {
+                        errorMsg = 'Connection timeout';
+                    } else {
+                        errorMsg = error.message || 'Connection failed';
+                    }
+                    
+                    return { success: false, error: errorMsg };
+                }
+                
+                // Wait before retry (exponential backoff)
+                await new Promise(resolve => setTimeout(resolve, Math.pow(2, attempt) * 1000));
+            }
+        }
+        
+        return { success: false, error: 'Max retries exceeded' };
+    };
+
+    const checkConnection = async () => {
+        setConnectionStatus('checking');
+        setErrorMessage('');
+        
+        // First check if chatbot is enabled via environment variable
+        if (!ENABLE_CHATBOT) {
+            setConnectionStatus('disabled');
+            setErrorMessage('Chatbot is disabled via environment variable');
+            return;
+        }
+        
+        // Check if API key exists and validate format
+        const apiKey = process.env.API_KEY || process.env.GEMINI_API_KEY;
+        const keyValidation = validateApiKey(apiKey);
+        
+        if (!keyValidation.isValid) {
+            setConnectionStatus('failed');
+            setErrorMessage(keyValidation.error || 'Invalid API key');
+            return;
+        }
+        
+        // Skip API validation in development for faster startup
+        if (window.location.hostname === 'localhost' && process.env.NODE_ENV === 'development') {
+            console.log('Development mode: Skipping API connection test');
+            setConnectionStatus('connected');
+            return;
+        }
+        
+        // Test actual API connection
+        const connectionResult = await testGeminiConnection(apiKey);
+        
+        if (connectionResult.success) {
+            setConnectionStatus('connected');
+            setErrorMessage('');
+            setRetryCount(0);
+        } else {
+            setConnectionStatus('failed');
+            setErrorMessage(connectionResult.error || 'Connection failed');
+            setRetryCount(prev => prev + 1);
+        }
+    };
+
+    const retryConnection = () => {
+        checkConnection();
+    };
+
+    useEffect(() => {
+        checkConnection();
+    }, []);
+
+    return { 
+        connectionStatus, 
+        errorMessage, 
+        retryCount, 
+        retryConnection,
+        isAvailable: connectionStatus === 'connected',
+        isChecking: connectionStatus === 'checking'
+    };
+};
+
+// Legacy hook for backward compatibility
+const useChatbotAvailability = () => {
+    const { isAvailable, isChecking } = useGeminiConnectionCheck();
+    return { isAvailable, isChecking };
+};
+
 const Chatbot: React.FC = () => {
     const { t, i18n } = useTranslation();
     const [isOpen, setIsOpen] = useState(false);
     const [messages, setMessages] = useState<Message[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [chat, setChat] = useState<Chat | null>(null);
-    const [isAvailable, setIsAvailable] = useState(false);
+    const { isAvailable: isChatbotAvailable, isChecking: isChatbotChecking } = useChatbotAvailability();
     const inputRef = useRef<HTMLInputElement>(null);
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -913,72 +1073,36 @@ const Chatbot: React.FC = () => {
         return JSON.stringify(data);
     };
 
+    // Initialize chat when component mounts and chatbot is available
     useEffect(() => {
-        let didCancel = false;
+        if (!isChatbotAvailable) return;
         
-        // Check if API key exists and is not empty - exit early without any API calls
-        const apiKey = process.env.API_KEY || process.env.GEMINI_API_KEY;
-        if (!apiKey || apiKey.trim() === '' || apiKey === 'your-api-key-here' || apiKey.length < 20) {
-            setIsAvailable(false);
-            return;
-        }
-        
-        // Only proceed with API setup if we have a valid-looking key
-        try {
-            const ai = new GoogleGenAI({ apiKey });
-            const context = buildContext(i18n.language);
-            const langName = t(`languageSwitcher.${i18n.language}`);
+        const initializeChat = async () => {
+            try {
+                const apiKey = process.env.API_KEY || process.env.GEMINI_API_KEY;
+                const ai = new GoogleGenAI({ apiKey: apiKey! });
+                const context = buildContext(i18n.language);
+                const langName = t(`languageSwitcher.${i18n.language}`);
 
-            const systemInstruction = `You are a helpful and friendly AI assistant for Khalil Charfi's portfolio. Your answers must be based *only* on the provided JSON data about his skills, experience, projects, etc. Be friendly, conversational, and keep answers concise. Format responses with markdown for lists or emphasis. If asked about something outside the context, politely state you can only answer questions about Khalil's portfolio. The user is viewing the portfolio in ${langName}. Here is the portfolio data: ${context}`;
-            
-            const newChat = ai.chats.create({
-              model: 'gemini-2.5-flash-preview-04-17',
-              config: { systemInstruction },
-            });
+                const systemInstruction = `You are a helpful and friendly AI assistant for Khalil Charfi's portfolio. Your answers must be based *only* on the provided JSON data about his skills, experience, projects, etc. Be friendly, conversational, and keep answers concise. Format responses with markdown for lists or emphasis. If asked about something outside the context, politely state you can only answer questions about Khalil's portfolio. The user is viewing the portfolio in ${langName}. Here is the portfolio data: ${context}`;
+                
+                const newChat = ai.chats.create({
+                  model: 'gemini-2.5-flash-preview-04-17',
+                  config: { systemInstruction },
+                });
 
-            // Skip API validation in development - just set up the chat without testing
-            if (window.location.hostname === 'localhost') {
-                if (!didCancel) {
-                    setIsAvailable(true);
-                    setChat(newChat);
-                    setMessages([{
-                        sender: 'ai',
-                        text: t('chatbot.initialMessage')
-                    }]);
-                }
-            } else {
-                // Only test API connection in production
-                (async () => {
-                    try {
-                        // Use a very short harmless prompt
-                        const testStream = await newChat.sendMessageStream({ message: ["ping"] });
-                        // Try to get at least one chunk (if not, error will be thrown)
-                        for await (const _ of testStream) {
-                            break;
-                        }
-                        if (!didCancel) {
-                            setIsAvailable(true);
-                            setChat(newChat);
-                            setMessages([{
-                                sender: 'ai',
-                                text: t('chatbot.initialMessage')
-                            }]);
-                        }
-                    } catch (err) {
-                        // Only log if we actually tried to make an API call
-                        console.warn("Gemini API key invalid or connection failed. Chatbot is disabled.");
-                        if (!didCancel) setIsAvailable(false);
-                    }
-                })();
+                setChat(newChat);
+                setMessages([{
+                    sender: 'ai',
+                    text: t('chatbot.initialMessage')
+                }]);
+            } catch (err) {
+                console.warn("Failed to initialize chatbot:", err);
             }
-        } catch (err) {
-            // Handle any errors in setting up the API client
-            console.warn("Failed to initialize Gemini API client:", err);
-            setIsAvailable(false);
-        }
-        
-        return () => { didCancel = true; };
-    }, [i18n.language, t]);
+        };
+
+        initializeChat();
+    }, [i18n.language, t, isChatbotAvailable]);
 
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -1020,7 +1144,8 @@ const Chatbot: React.FC = () => {
         }
     };
     
-    if (!isAvailable) return null;
+    // Don't render if chatbot is not available or still checking
+    if (!isChatbotAvailable || isChatbotChecking) return null;
 
     return (
         <>
@@ -2246,10 +2371,19 @@ const App: React.FC = () => {
     const [isThemeTransitioning, setIsThemeTransitioning] = useState(false);
     const [activeSection, setActiveSection] = useState('home');
     const [selectedCert, setSelectedCert] = useState<CertificateItem | null>(null);
-    const [isChatbotAvailable, setIsChatbotAvailable] = useState(true); // Track chatbot FAB visibility
+    const { 
+        isAvailable: isChatbotAvailable, 
+        isChecking: isChatbotChecking,
+        connectionStatus,
+        errorMessage,
+        retryCount,
+        retryConnection
+    } = useGeminiConnectionCheck();
     const [isPersonalized, setIsPersonalized] = useState(false);
     const [personalizedContent, setPersonalizedContent] = useState<any>(null);
     const [showVisitorSelector, setShowVisitorSelector] = useState(false);
+    const [TranslationTest, setTranslationTest] = useState<React.ComponentType<any> | null>(null);
+    const [VisitorTypeSelector, setVisitorTypeSelector] = useState<React.ComponentType<any> | null>(null);
 
     // Use useLayoutEffect for immediate DOM update
     useLayoutEffect(() => {
@@ -2289,6 +2423,24 @@ const App: React.FC = () => {
             document.querySelector('meta[property="twitter:description"]')?.setAttribute('content', seo.description);
         }
     }, [i18n.language, t]);
+
+    // Dynamically import TranslationTest component only when needed
+    useEffect(() => {
+        if (IS_DEVELOPMENT && SHOW_TRANSLATION_DEBUG && !TranslationTest) {
+            import('./src/components/TranslationTest').then((module) => {
+                setTranslationTest(() => module.default);
+            });
+        }
+    }, [TranslationTest]);
+
+    // Dynamically import VisitorTypeSelector component only when needed
+    useEffect(() => {
+        if (PERSONAS_FEATURE_ENABLED && SHOW_VISITOR_CONTROLS && !VisitorTypeSelector) {
+            import('./VisitorTypeSelector').then((module) => {
+                setVisitorTypeSelector(() => module.default);
+            });
+        }
+    }, [VisitorTypeSelector]);
     
     useEffect(() => {
         const observer = new IntersectionObserver(
@@ -2349,7 +2501,7 @@ const App: React.FC = () => {
         <Suspense fallback={t('general.loading')}>
             <>
                 {/* Visitor Type Selector - Optional */}
-                {PERSONAS_FEATURE_ENABLED && (
+                {PERSONAS_FEATURE_ENABLED && SHOW_VISITOR_CONTROLS && (
                   <div className="visitor-controls">
                       <button 
                           onClick={() => setShowVisitorSelector(!showVisitorSelector)}
@@ -2359,7 +2511,7 @@ const App: React.FC = () => {
                           🎯 Personalize
                       </button>
                       
-                      {showVisitorSelector && (
+                      {showVisitorSelector && VisitorTypeSelector && (
                           <div className="visitor-selector-container">
                               <VisitorTypeSelector 
                                   onVisitorTypeChange={handleVisitorTypeChange}
@@ -2382,11 +2534,65 @@ const App: React.FC = () => {
                     <Publications />
                     <Certificates onCertClick={setSelectedCert} />
                     <Contact />
-                    <ProfileInsights chatbotOpen={isChatbotAvailable} scrollToTopVisible={isScrollToTopVisible} />
+                    {SHOW_PROFILE_INSIGHTS && <ProfileInsights chatbotOpen={isChatbotAvailable && !isChatbotChecking} scrollToTopVisible={isScrollToTopVisible} />}
                 </main>
+                
+                {/* Translation Debug Component - Only in development */}
+                {IS_DEVELOPMENT && SHOW_TRANSLATION_DEBUG && TranslationTest && (
+                    <TranslationTest showDebugInfo={true} />
+                )}
                 <Footer />
-                <ScrollToTop chatbotVisible={isChatbotAvailable} isVisible={isScrollToTopVisible} />
-                {isChatbotAvailable && <Chatbot />}
+                <ScrollToTop chatbotVisible={isChatbotAvailable && !isChatbotChecking} isVisible={isScrollToTopVisible} />
+                {isChatbotAvailable && !isChatbotChecking && <Chatbot />}
+                
+                {/* Gemini API Connection Status Indicator - Only show in development */}
+                {IS_DEVELOPMENT && (
+                    <div className="gemini-connection-status" style={{
+                        position: 'fixed',
+                        top: '10px',
+                        right: '10px',
+                        background: connectionStatus === 'connected' ? '#2d5a2d' : 
+                                   connectionStatus === 'failed' ? '#5a2d2d' : 
+                                   connectionStatus === 'checking' ? '#2d4a5a' : '#5a5a5a',
+                        color: 'white',
+                        padding: '8px 12px',
+                        borderRadius: '6px',
+                        fontSize: '12px',
+                        zIndex: 1000,
+                        maxWidth: '300px',
+                        boxShadow: '0 2px 8px rgba(0,0,0,0.3)'
+                    }}>
+                        <div style={{ fontWeight: 'bold', marginBottom: '4px' }}>
+                            Gemini API: {connectionStatus.toUpperCase()}
+                        </div>
+                        {errorMessage && (
+                            <div style={{ fontSize: '11px', opacity: 0.9, marginBottom: '4px' }}>
+                                {errorMessage}
+                            </div>
+                        )}
+                        {retryCount > 0 && (
+                            <div style={{ fontSize: '11px', opacity: 0.8, marginBottom: '4px' }}>
+                                Retries: {retryCount}
+                            </div>
+                        )}
+                        {connectionStatus === 'failed' && (
+                            <button 
+                                onClick={retryConnection}
+                                style={{
+                                    background: 'rgba(255,255,255,0.2)',
+                                    border: 'none',
+                                    color: 'white',
+                                    padding: '4px 8px',
+                                    borderRadius: '4px',
+                                    fontSize: '11px',
+                                    cursor: 'pointer'
+                                }}
+                            >
+                                Retry
+                            </button>
+                        )}
+                    </div>
+                )}
                 <CertificateModal cert={selectedCert} onClose={() => setSelectedCert(null)} />
                 {PERSONAS_FEATURE_ENABLED && isPersonalized && (
                   <div className="personalization-indicator">
@@ -2395,7 +2601,7 @@ const App: React.FC = () => {
                 )}
 
                 {/* Debug Info */}
-                {PERSONAS_FEATURE_ENABLED && process.env.NODE_ENV === 'development' && personalizedContent && (
+                {PERSONAS_FEATURE_ENABLED && IS_DEVELOPMENT && SHOW_DEBUG_INFO && personalizedContent && (
                     <div className="debug-info">
                         <details>
                             <summary>Visitor Profile Debug</summary>
