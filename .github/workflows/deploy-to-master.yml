@@ -1,0 +1,95 @@
+name: Deploy Built Project to Master Branch
+
+on:
+  push:
+    branches: [ next ]
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  build-and-deploy-to-master:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Fetch all history for proper git operations
+          
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Create production .env
+        run: |
+          echo "GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }}" >> .env.production
+          echo "VITE_ENABLE_CHATBOT=${{ secrets.VITE_ENABLE_CHATBOT || 'true' }}" >> .env.production
+          echo "VITE_ENABLE_DYNAMIC_CONTENT=${{ secrets.VITE_ENABLE_DYNAMIC_CONTENT || 'true' }}" >> .env.production
+          echo "VITE_SHOW_DEV_ELEMENTS=false" >> .env.production
+          echo "VITE_SHOW_VISITOR_CONTROLS=false" >> .env.production
+          echo "VITE_SHOW_PROFILE_INSIGHTS=false" >> .env.production
+          echo "VITE_SHOW_TRANSLATION_DEBUG=false" >> .env.production
+          echo "VITE_SHOW_DEBUG_INFO=false" >> .env.production
+          echo "NODE_ENV=production" >> .env.production
+          
+      - name: Test environment variables
+        run: |
+          echo "Testing environment variables..."
+          node -e "
+            const fs = require('fs');
+            const envContent = fs.readFileSync('.env.production', 'utf8');
+            console.log('Production .env content:');
+            console.log(envContent.replace(/GEMINI_API_KEY=.*/, 'GEMINI_API_KEY=***HIDDEN***'));
+          "
+          
+      - name: Build project
+        run: npm run build:prod
+        
+      - name: Configure Git
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          
+      - name: Switch to master branch
+        run: |
+          git checkout master
+          git pull origin master
+          
+      - name: Clean master branch (keep only built files)
+        run: |
+          # Remove all files except .git
+          find . -maxdepth 1 -not -name '.git' -not -name '.' -exec rm -rf {} +
+          
+      - name: Copy built files to master
+        run: |
+          # Copy built files from next branch
+          git checkout next -- dist/
+          git checkout next -- .env.production
+          git checkout next -- .env.example
+          git checkout next -- README.md
+          git checkout next -- package.json
+          
+      - name: Create index.html for GitHub Pages
+        run: |
+          # Move dist contents to root for GitHub Pages
+          cp -r dist/* .
+          # Keep important files
+          cp .env.example .
+          cp README.md .
+          cp package.json .
+          
+      - name: Commit and push to master
+        run: |
+          git add .
+          git commit -m "Deploy built project from next branch - $(date)"
+          git push origin master
+          
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./
