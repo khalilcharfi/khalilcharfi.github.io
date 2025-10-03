@@ -6,27 +6,30 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-and-deploy-to-master:
+  build-and-deploy:
     runs-on: ubuntu-latest
-    
+
     steps:
+      # 1️⃣ Checkout next branch
       - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          
+
+      # 2️⃣ Setup Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '18'
           cache: 'npm'
-          
-      - name: Install dependencies
-        run: npm ci
-       
-      - name: Install terser
-        run: npm install --save-dev terser
 
+      # 3️⃣ Install dependencies including terser
+      - name: Install dependencies
+        run: |
+          npm ci
+          npm install --save-dev terser
+
+      # 4️⃣ Create production .env (no NODE_ENV here)
       - name: Create production .env
         run: |
           echo "GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY || '' }}" >> .env.production
@@ -37,62 +40,55 @@ jobs:
           echo "VITE_SHOW_PROFILE_INSIGHTS=false" >> .env.production
           echo "VITE_SHOW_TRANSLATION_DEBUG=false" >> .env.production
           echo "VITE_SHOW_DEBUG_INFO=false" >> .env.production
-          echo "NODE_ENV=production" >> .env.production
-          
-      - name: Test environment variables
-        run: |
-          echo "Testing environment variables..."
-          node -e "
-            const fs = require('fs');
-            const envContent = fs.readFileSync('.env.production', 'utf8');
-            console.log('Production .env content:');
-            console.log(envContent.replace(/GEMINI_API_KEY=.*/, 'GEMINI_API_KEY=***HIDDEN***'));
-          "
-          
+
+      # 5️⃣ Build project (Vite production mode via CLI)
       - name: Build project
         run: npm run build:prod
 
-      - name: Upload dist as artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: dist
-          path: dist
-
-      - name: Switch to master branch
+      # 6️⃣ Prepare deploy directory
+      - name: Prepare deploy directory
         run: |
+          mkdir deploy
+          cp -r dist/* deploy/
+          cp .env.production deploy/
+          cp .env.example deploy/
+          cp README.md deploy/
+          cp package.json deploy/
+
+      # 7️⃣ Discard local changes before switching branches
+      - name: Discard local changes
+        run: git reset --hard
+
+      # 8️⃣ Checkout master branch
+      - name: Checkout master branch
+        run: |
+          git fetch origin master
           git checkout master
           git pull origin master
 
-      - name: Clean master branch (keep only .git)
+      # 9️⃣ Clean master branch except .git
+      - name: Clean master branch
         run: |
           find . -maxdepth 1 -not -name '.git' -not -name '.' -exec rm -rf {} +
 
-      - name: Download built artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: dist
-          path: dist
+      # 🔟 Copy deploy contents to root
+      - name: Copy deploy files
+        run: cp -r deploy/* .
 
-      - name: Copy important files to master
-        run: |
-          cp .env.production .
-          cp .env.example .
-          cp README.md .
-          cp package.json .
-          # Move built files to root
-          cp -r dist/* .
-
+      # 1️⃣1️⃣ Configure Git
       - name: Configure Git
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
 
-      - name: Commit and push to master
+      # 1️⃣2️⃣ Commit and push
+      - name: Commit and push
         run: |
           git add .
           git commit -m "Deploy built project from next branch - $(date)" || echo "No changes to commit"
           git push origin master
-          
+
+      # 1️⃣3️⃣ Deploy to GitHub Pages
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
