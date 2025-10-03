@@ -1,4 +1,4 @@
-name: Fast Deploy to Master Branch
+name: Ultra-Fast Deploy to Master Branch
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  fast-deploy:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -29,10 +29,11 @@ jobs:
           npm ci
           npm install --save-dev terser
 
-      # 4️⃣ Create production .env (no NODE_ENV)
-      - name: Create production .env
+      # 4️⃣ Build + create .env + prepare deploy folder (all in one)
+      - name: Build project and prepare deploy folder
         run: |
-          echo "GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY || '' }}" >> .env.production
+          # Create production .env
+          echo "GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY || '' }}" > .env.production
           echo "VITE_ENABLE_CHATBOT=${{ secrets.VITE_ENABLE_CHATBOT || 'false' }}" >> .env.production
           echo "VITE_ENABLE_DYNAMIC_CONTENT=${{ secrets.VITE_ENABLE_DYNAMIC_CONTENT || 'false' }}" >> .env.production
           echo "VITE_SHOW_DEV_ELEMENTS=false" >> .env.production
@@ -41,17 +42,16 @@ jobs:
           echo "VITE_SHOW_TRANSLATION_DEBUG=false" >> .env.production
           echo "VITE_SHOW_DEBUG_INFO=false" >> .env.production
 
-      # 5️⃣ Build project
-      - name: Build project
-        run: npm run build:prod
+          # Build project in production mode
+          npm run build:prod
 
-      # 6️⃣ Ensure dist exists and prepare deploy folder
-      - name: Prepare deploy folder
-        run: |
+          # Ensure dist exists
           if [ ! -d dist ]; then
-            echo "Error: dist/ not found. Build failed."
+            echo "Error: dist/ folder not found. Build failed."
             exit 1
           fi
+
+          # Prepare deploy folder
           mkdir -p deploy
           cp -r dist/* deploy/
           cp .env.production deploy/
@@ -59,11 +59,11 @@ jobs:
           cp README.md deploy/
           cp package.json deploy/
 
-      # 7️⃣ Deploy directly to master branch using GitHub Pages action
+      # 5️⃣ Deploy directly to master branch
       - name: Deploy to GitHub Pages (master branch)
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./deploy
           publish_branch: master
-          force_orphan: true  # replaces entire master content
+          force_orphan: true  # completely replaces master content
