@@ -1,4 +1,4 @@
-name: Deploy Built Project to Master Branch
+name: Fast Deploy to Master Branch
 
 on:
   push:
@@ -6,12 +6,12 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-and-deploy:
+  fast-deploy:
     runs-on: ubuntu-latest
 
     steps:
       # 1️⃣ Checkout next branch
-      - name: Checkout
+      - name: Checkout next branch
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
@@ -29,7 +29,7 @@ jobs:
           npm ci
           npm install --save-dev terser
 
-      # 4️⃣ Create production .env (no NODE_ENV here)
+      # 4️⃣ Create production .env (no NODE_ENV)
       - name: Create production .env
         run: |
           echo "GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY || '' }}" >> .env.production
@@ -41,15 +41,15 @@ jobs:
           echo "VITE_SHOW_TRANSLATION_DEBUG=false" >> .env.production
           echo "VITE_SHOW_DEBUG_INFO=false" >> .env.production
 
-      # 5️⃣ Build project (Vite production mode via CLI)
+      # 5️⃣ Build project
       - name: Build project
         run: npm run build:prod
 
-      # 6️⃣ Ensure dist/ exists and prepare deploy directory
-      - name: Prepare deploy directory
+      # 6️⃣ Ensure dist exists and prepare deploy folder
+      - name: Prepare deploy folder
         run: |
           if [ ! -d dist ]; then
-            echo "Error: dist/ folder not found. Build may have failed."
+            echo "Error: dist/ not found. Build failed."
             exit 1
           fi
           mkdir -p deploy
@@ -59,42 +59,11 @@ jobs:
           cp README.md deploy/
           cp package.json deploy/
 
-      # 7️⃣ Discard local changes before switching branches
-      - name: Discard local changes
-        run: git reset --hard
-
-      # 8️⃣ Checkout master branch
-      - name: Checkout master branch
-        run: |
-          git fetch origin master
-          git checkout master
-          git pull origin master
-
-      # 9️⃣ Clean master branch except .git
-      - name: Clean master branch
-        run: |
-          find . -maxdepth 1 -not -name '.git' -not -name '.' -exec rm -rf {} +
-
-      # 🔟 Copy deploy contents to root
-      - name: Copy deploy files
-        run: cp -r deploy/* .
-
-      # 1️⃣1️⃣ Configure Git
-      - name: Configure Git
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-
-      # 1️⃣2️⃣ Commit and push
-      - name: Commit and push
-        run: |
-          git add .
-          git commit -m "Deploy built project from next branch - $(date)" || echo "No changes to commit"
-          git push origin master
-
-      # 1️⃣3️⃣ Deploy to GitHub Pages
-      - name: Deploy to GitHub Pages
+      # 7️⃣ Deploy directly to master branch using GitHub Pages action
+      - name: Deploy to GitHub Pages (master branch)
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./
+          publish_dir: ./deploy
+          publish_branch: master
+          force_orphan: true  # replaces entire master content
