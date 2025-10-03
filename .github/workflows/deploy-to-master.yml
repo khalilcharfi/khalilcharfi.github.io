@@ -32,7 +32,7 @@ jobs:
       # 4️⃣ Build + create .env + prepare deploy folder (all in one)
       - name: Build project and prepare deploy folder
         run: |
-          # Create production .env
+          # Create production .env (do NOT set NODE_ENV)
           echo "GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY || '' }}" > .env.production
           echo "VITE_ENABLE_CHATBOT=${{ secrets.VITE_ENABLE_CHATBOT || 'false' }}" >> .env.production
           echo "VITE_ENABLE_DYNAMIC_CONTENT=${{ secrets.VITE_ENABLE_DYNAMIC_CONTENT || 'false' }}" >> .env.production
@@ -42,7 +42,7 @@ jobs:
           echo "VITE_SHOW_TRANSLATION_DEBUG=false" >> .env.production
           echo "VITE_SHOW_DEBUG_INFO=false" >> .env.production
 
-          # Build project in production mode
+          # Build project in production mode (NODE_ENV handled by CLI)
           npm run build:prod
 
           # Ensure dist exists
