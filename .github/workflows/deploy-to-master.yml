@@ -3,7 +3,7 @@ name: Deploy Built Project to Master Branch
 on:
   push:
     branches: [ next ]
-  workflow_dispatch: # Allow manual trigger
+  workflow_dispatch:
 
 jobs:
   build-and-deploy-to-master:
@@ -13,7 +13,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # Fetch all history for proper git operations
+          fetch-depth: 0
           
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -51,47 +51,46 @@ jobs:
           
       - name: Build project
         run: npm run build:prod
-        
-      - name: Configure Git
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
 
-      - name: Discard local changes
-        run: git reset --hard
+      - name: Upload dist as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist
 
       - name: Switch to master branch
         run: |
           git checkout master
           git pull origin master
-          
-      - name: Clean master branch (keep only built files)
+
+      - name: Clean master branch (keep only .git)
         run: |
-          # Remove all files except .git
           find . -maxdepth 1 -not -name '.git' -not -name '.' -exec rm -rf {} +
-          
-      - name: Copy built files to master
+
+      - name: Download built artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist
+
+      - name: Copy important files to master
         run: |
-          # Copy built files from next branch
-          git checkout next -- dist/
-          git checkout next -- .env.production
-          git checkout next -- .env.example
-          git checkout next -- README.md
-          git checkout next -- package.json
-          
-      - name: Create index.html for GitHub Pages
-        run: |
-          # Move dist contents to root for GitHub Pages
-          cp -r dist/* .
-          # Keep important files
+          cp .env.production .
           cp .env.example .
           cp README.md .
           cp package.json .
-          
+          # Move built files to root
+          cp -r dist/* .
+
+      - name: Configure Git
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+
       - name: Commit and push to master
         run: |
           git add .
-          git commit -m "Deploy built project from next branch - $(date)"
+          git commit -m "Deploy built project from next branch - $(date)" || echo "No changes to commit"
           git push origin master
           
       - name: Deploy to GitHub Pages
