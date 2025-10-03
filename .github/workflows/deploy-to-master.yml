@@ -29,7 +29,7 @@ jobs:
           npm ci
           npm install --save-dev terser
 
-      # 4️⃣ Build + create .env + prepare deploy folder (all in one)
+      # 4️⃣ Build project, create .env, and prepare deploy folder
       - name: Build project and prepare deploy folder
         run: |
           # Create production .env (do NOT set NODE_ENV)
@@ -42,7 +42,7 @@ jobs:
           echo "VITE_SHOW_TRANSLATION_DEBUG=false" >> .env.production
           echo "VITE_SHOW_DEBUG_INFO=false" >> .env.production
 
-          # Build project in production mode (NODE_ENV handled by CLI)
+          # Build in production mode
           npm run build:prod
 
           # Ensure dist exists
@@ -66,4 +66,4 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./deploy
           publish_branch: master
-          force_orphan: true  # completely replaces master content
+          force_orphan: true  # replaces entire master content
