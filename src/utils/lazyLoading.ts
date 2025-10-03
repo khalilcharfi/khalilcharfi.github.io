@@ -7,7 +7,8 @@ export const LazyThreeBackground = lazy(() =>
 );
 
 // Lazy load other components
-export const LazyVisitorTypeSelector = lazy(() => import('../../VisitorTypeSelector'));
+export const LazyVisitorTypeSelector = lazy(() => import('../components/VisitorTypeSelector'));
+
 export const LazyTranslationTest = lazy(() => import('../components/TranslationTest'));
 
 // Conditional lazy loading for AI - only load when chatbot is enabled
@@ -31,23 +32,31 @@ export const preloadResource = (href: string, as: string, type?: string) => {
   }
   
   const link = document.createElement('link');
-  link.rel = 'preload';
+  link.rel = 'modulepreload'; // Use modulepreload for better ES module support
   link.href = href;
-  link.as = as;
   
   if (type) {
     link.type = type;
   }
   
   if (as === 'font') {
+    link.rel = 'preload';
+    link.as = 'font';
     link.crossOrigin = 'anonymous';
   }
   
+  // Only add to DOM if we're actually going to use it soon
   document.head.appendChild(link);
 };
 
 // Preload critical chunks
 export const preloadCriticalChunks = () => {
+  // Only preload in production when chunks actually exist
+  if (process.env.NODE_ENV !== 'production') {
+    console.log('⚠️ Skipping chunk preload in development mode');
+    return;
+  }
+  
   // Preload critical vendor chunks
   const criticalChunks = [
     { href: '/assets/react-vendor.js', as: 'script' },
@@ -59,20 +68,45 @@ export const preloadCriticalChunks = () => {
   });
 };
 
-// Conditionally preload Three.js if user hasn't opted out
+// Conditionally preload Three.js based on device capabilities
 export const conditionallyPreloadThreeJS = () => {
-  // Check user preference or device capability
-  const userPreference = localStorage.getItem('enableAnimations');
-  const connection = (navigator as any).connection;
-  const hasGoodConnection = connection 
-    ? connection.effectiveType !== 'slow-2g' && connection.effectiveType !== '2g'
-    : true;
+  if (typeof window === 'undefined') return;
   
-  if (userPreference !== 'false' && hasGoodConnection) {
-    // Preload Three.js chunk after critical resources
-    setTimeout(() => {
-      preloadResource('/assets/three-vendor.js', 'script');
-    }, 1000);
+  // Check device capabilities
+  const memory = (navigator as any).deviceMemory;
+  const connection = (navigator as any).connection;
+  const cores = navigator.hardwareConcurrency;
+  
+  // Check user preference
+  const userPreference = localStorage.getItem('enableAnimations');
+  
+  // Only preload on capable devices
+  const shouldPreload = (
+    userPreference !== 'false' &&
+    (!memory || memory >= 4) &&
+    (!cores || cores >= 4) &&
+    (!connection || !['slow-2g', '2g'].includes(connection.effectiveType))
+  );
+  
+  if (shouldPreload) {
+    // Preload Three.js on idle
+    if ('requestIdleCallback' in window) {
+      requestIdleCallback(() => {
+        import('three').catch(console.error);
+        // Only preload the vendor chunk in production
+        if (process.env.NODE_ENV === 'production') {
+          preloadResource('/assets/three-vendor.js', 'script');
+        }
+      }, { timeout: 2000 });
+    } else {
+      setTimeout(() => {
+        import('three').catch(console.error);
+        // Only preload the vendor chunk in production
+        if (process.env.NODE_ENV === 'production') {
+          preloadResource('/assets/three-vendor.js', 'script');
+        }
+      }, 2000);
+    }
   }
 };
 
@@ -84,7 +118,7 @@ export const registerServiceWorker = async () => {
         scope: '/'
       });
       
-      console.log('Service Worker registered successfully:', registration.scope);
+      console.log('✅ Service Worker registered:', registration.scope);
       
       // Check for updates
       registration.addEventListener('updatefound', () => {

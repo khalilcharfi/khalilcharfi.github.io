@@ -9,60 +9,90 @@ import {
   conditionallyPreloadThreeJS 
 } from './lazyLoading';
 
+import { setupImageLazyLoading } from './imageOptimization';
+
 /**
  * Initialize all performance optimizations
  */
 export const initializePerformanceOptimizations = async () => {
-  console.log('🚀 Initializing performance optimizations...');
+  if (process.env.NODE_ENV === 'development') {
+    console.log('🚀 Initializing performance optimizations...');
+  }
 
-  // 1. Preload critical resources immediately
+  // 1. Preload critical resources immediately (production only)
   preloadCriticalChunks();
-  console.log('✅ Critical chunks preloaded');
 
   // 2. Register service worker (in production only)
   if (process.env.NODE_ENV === 'production') {
     await registerServiceWorker();
-    console.log('✅ Service worker registered');
+    if (process.env.NODE_ENV === 'development') {
+      console.log('✅ Service worker registered');
+    }
   }
 
   // 3. Conditionally preload Three.js based on device capabilities
   conditionallyPreloadThreeJS();
-  console.log('✅ Conditional Three.js preloading configured');
 
   // 4. Setup performance monitoring
   setupPerformanceMonitoring();
-  console.log('✅ Performance monitoring active');
 
   // 5. Setup resource hints
   setupResourceHints();
-  console.log('✅ Resource hints configured');
+
+  // 6. Setup image lazy loading
+  if ('requestIdleCallback' in window) {
+    requestIdleCallback(() => {
+      setupImageLazyLoading();
+    });
+  } else {
+    setTimeout(() => {
+      setupImageLazyLoading();
+    }, 1000);
+  }
+  
+  if (process.env.NODE_ENV === 'development') {
+    console.log('✅ Performance optimizations initialized');
+  }
 };
 
 /**
  * Setup performance monitoring and reporting
  */
 const setupPerformanceMonitoring = () => {
+  // Only enable detailed monitoring in development
+  const isDev = process.env.NODE_ENV === 'development';
+  
   // Monitor Core Web Vitals
   if ('PerformanceObserver' in window) {
     try {
       // Largest Contentful Paint (LCP)
       const lcpObserver = new PerformanceObserver((list) => {
         const entries = list.getEntries();
-        const lastEntry = entries[entries.length - 1];
-        console.log('📊 LCP:', lastEntry.renderTime || lastEntry.loadTime);
+        const lastEntry = entries[entries.length - 1] as any;
+        if (isDev) {
+          console.log('📊 LCP:', lastEntry.renderTime || lastEntry.loadTime);
+        }
       });
       lcpObserver.observe({ entryTypes: ['largest-contentful-paint'] });
 
-      // First Input Delay (FID)
+      // First Input Delay (FID) - only log once
+      let fidLogged = false;
       const fidObserver = new PerformanceObserver((list) => {
-        for (const entry of list.getEntries()) {
-          const fid = entry.processingStart - entry.startTime;
-          console.log('📊 FID:', fid);
+        if (!fidLogged) {
+          for (const entry of list.getEntries()) {
+            const fidEntry = entry as any;
+            const fid = fidEntry.processingStart - fidEntry.startTime;
+            if (isDev) {
+              console.log('📊 FID:', fid);
+            }
+            fidLogged = true;
+            break;
+          }
         }
       });
       fidObserver.observe({ entryTypes: ['first-input'] });
 
-      // Cumulative Layout Shift (CLS)
+      // Cumulative Layout Shift (CLS) - only log final value
       let clsValue = 0;
       const clsObserver = new PerformanceObserver((list) => {
         for (const entry of list.getEntries()) {
@@ -70,16 +100,26 @@ const setupPerformanceMonitoring = () => {
             clsValue += (entry as any).value;
           }
         }
-        console.log('📊 CLS:', clsValue);
       });
       clsObserver.observe({ entryTypes: ['layout-shift'] });
+      
+      // Log final CLS on page hide
+      if (isDev) {
+        window.addEventListener('pagehide', () => {
+          if (clsValue > 0) {
+            console.log('📊 CLS:', clsValue);
+          }
+        }, { once: true });
+      }
     } catch (error) {
-      console.warn('Performance monitoring not fully supported:', error);
+      if (isDev) {
+        console.warn('Performance monitoring not fully supported:', error);
+      }
     }
   }
 
-  // Monitor bundle sizes
-  if (performance.getEntriesByType) {
+  // Monitor bundle sizes in development only
+  if (isDev && performance.getEntriesByType) {
     window.addEventListener('load', () => {
       setTimeout(() => {
         const resources = performance.getEntriesByType('resource') as PerformanceResourceTiming[];

@@ -170,6 +170,7 @@ export interface LanguageSpecificTranslations {
     openAria: string;
     closeAria: string;
     sendAria: string;
+    send: string;
   };
   cookieConsent: {
     title: string;
@@ -623,6 +624,7 @@ export const translations: Translations = {
       openAria: "Open AI Assistant Chat",
       closeAria: "Close AI Assistant Chat",
       sendAria: "Send message",
+      send: "Send",
     },
     cookieConsent: {
       title: "Cookie Consent",
@@ -818,12 +820,12 @@ export const translations: Translations = {
         ar: 'Arabisch',
     },
     home: {
-      greeting: 'Hallo, ich bin',
+      greeting: 'Willkommen! Ich bin', // More welcoming and professional
       name: 'Khalil Charfi.',
-      tagline: 'Ich schaffe leistungsstarke digitale Erlebnisse.',
+      tagline: 'Ich entwickle überzeugende digitale Lösungen.', // More natural German phrasing
       intro:
-        "Ich entwerfe und erstelle außergewöhnliche digitale Produkte. Als Full-Stack-Ingenieur bin ich auf die Erstellung intuitiver, leistungsstarker Web- und Mobilanwendungen spezialisiert, die sowohl skalierbar als auch benutzerorientiert sind.",
-      viewWorkBtn: 'Meine Projekte ansehen',
+        "Ich konzipiere und entwickle außergewöhnliche digitale Produkte. Als Full-Stack-Entwickler spezialisiere ich mich auf intuitive, hochperformante Web- und Mobilanwendungen, die skalierbar und benutzerzentriert sind.", // More natural flow, "Full-Stack-Entwickler" is more common than "Ingenieur"
+      viewWorkBtn: 'Projekte ansehen',
       getInTouchBtn: 'Kontakt aufnehmen',
       recommendedForYou: 'Empfohlen für Sie:',
     },
@@ -833,8 +835,8 @@ export const translations: Translations = {
           p1: "Meine Reise in die Tech-Welt begann mit der Faszination, komplexe Probleme mit elegantem Code zu lösen. Ich lebe davon, Ideen in die Realität umzusetzen, von der Konzeption bis zur Bereitstellung, und es ist meine Leidenschaft, nahtlose Benutzeroberflächen zu schaffen, die sowohl schön als auch hochfunktional sind.",
           imagePlaceholder: "Code gestalten, Lösungen bauen.",
       },
-      professionalSummaryTitle: 'Berufliche Zusammenfassung',
-      professionalSummary: 'Full-Stack-Ingenieur mit umfassender Erfahrung in der Bereitstellung skalierbarer Web- und Mobilanwendungen. Kompetent in der Frontend-Entwicklung mit Vue.js und Angular, Backend mit Laravel und Laminas sowie mobilen Apps mit Flutter und Ionic. Leidenschaft für saubere Architektur, Offline-First-Funktionen und DevOps-gesteuerte Bereitstellung. Erfahren in funktionsübergreifenden Teams in Tunesien und Deutschland.',
+      professionalSummaryTitle: 'Berufliches Profil',
+      professionalSummary: 'Full-Stack-Entwickler mit umfangreicher Erfahrung in der Entwicklung skalierbarer Web- und Mobile-Anwendungen. Versiert im Frontend mit Vue.js und Angular, im Backend mit Laravel und Laminas sowie in der mobilen Entwicklung mit Flutter und Ionic. Mit Leidenschaft für Clean Architecture, Offline-First-Ansätze und DevOps-getriebene Deployments. Erfahrung in crossfunktionalen Teams in Tunesien und Deutschland.',
       languagesTitle: 'Sprachen',
       languages: [
         { lang: 'Arabisch', proficiency: 'Muttersprache' },
@@ -1038,9 +1040,9 @@ export const translations: Translations = {
       ],
     },
     contact: {
-              title: 'Lassen Sie uns etwas Großartiges bauen',
-        intro: "Ich bin immer offen für die Diskussion neuer Projekte, Kooperationen oder Möglichkeiten. Haben Sie eine Frage oder möchten Sie einfach nur Hallo sagen? Zögern Sie nicht, mich zu kontaktieren.",
-        message: "Ich bin immer offen für die Diskussion neuer Projekte, Kooperationen oder Möglichkeiten. Haben Sie eine Frage oder möchten Sie einfach nur Hallo sagen? Zögern Sie nicht, mich zu kontaktieren.",
+              title: 'Lassen Sie uns zusammenarbeiten',
+        intro: "Ich freue mich über Austausch zu neuen Projekten, Kooperationen oder beruflichen Möglichkeiten. Sie haben eine Frage oder möchten einfach Hallo sagen? Kontaktieren Sie mich gerne.",
+        message: "Ich freue mich über Austausch zu neuen Projekten, Kooperationen oder beruflichen Möglichkeiten. Sie haben eine Frage oder möchten einfach Hallo sagen? Kontaktieren Sie mich gerne.",
       form: {
         nameLabel: 'Name',
         emailLabel: 'E-Mail',
@@ -1070,6 +1072,7 @@ export const translations: Translations = {
       openAria: "KI-Assistenten-Chat öffnen",
       closeAria: "KI-Assistenten-Chat schließen",
       sendAria: "Nachricht senden",
+      send: "Senden",
     },
     cookieConsent: {
       title: "Cookie Consent",
@@ -1103,15 +1106,15 @@ export const translations: Translations = {
         description: "Entdecken Sie die Projekte und Erfahrungen von Khalil Charfi, einem Spezialisten für skalierbare und benutzerzentrierte Web- und Mobilanwendungen."
     },
     dynamicContent: {
-      defaultGreeting: 'Hallo, ich bin',
-      defaultTagline: 'Ich schaffe leistungsstarke digitale Erlebnisse.',
-      defaultIntro: "Ich entwerfe und erstelle außergewöhnliche digitale Produkte. Als Full-Stack-Ingenieur bin ich auf die Erstellung intuitiver, leistungsstarker Web- und Mobilanwendungen spezialisiert, die sowohl skalierbar als auch benutzerorientiert sind.",
-      viewMyWork: 'Meine Projekte ansehen',
-      professionalSummary: 'Full-stack engineer with extensive experience delivering scalable web and mobile applications. Skilled in front-end development with Vue.js and Angular, back-end with Laravel and Laminas, and mobile apps using Flutter and Ionic. Passionate about clean architecture, offline-first capabilities, and DevOps-driven deployment. Experienced in cross-functional teams across Tunisia and Germany.',
-      expertInAI: 'Experte für maschinelles Lernen und KI-Entwicklung',
-      fullStackProficiency: 'Kompetenz in der Full-Stack-Webentwicklung',
-      problemSolving: 'Starke Problemlösungs- und Analysefähigkeiten',
-      modernFrameworks: 'Erfahrung mit modernen Frameworks und Technologien',
+      defaultGreeting: 'Willkommen! Ich bin',
+      defaultTagline: 'Ich entwickle überzeugende digitale Lösungen.',
+      defaultIntro: "Ich konzipiere und entwickle außergewöhnliche digitale Produkte. Als Full-Stack-Entwickler spezialisiere ich mich auf intuitive, hochperformante Web- und Mobilanwendungen, die skalierbar und benutzerzentriert sind.",
+      viewMyWork: 'Projekte ansehen',
+      professionalSummary: 'Full-Stack-Entwickler mit umfangreicher Erfahrung in der Entwicklung skalierbarer Web- und Mobile-Anwendungen. Versiert im Frontend mit Vue.js und Angular, im Backend mit Laravel und Laminas sowie in der mobilen Entwicklung mit Flutter und Ionic. Mit Leidenschaft für Clean Architecture, Offline-First-Ansätze und DevOps-getriebene Deployments. Erfahrung in crossfunktionalen Teams in Tunesien und Deutschland.',
+      expertInAI: 'Expertise in Machine Learning und KI-Entwicklung',
+      fullStackProficiency: 'Umfassende Full-Stack-Entwicklungskompetenz',
+      problemSolving: 'Ausgeprägte Problemlösungs- und Analysefähigkeiten',
+      modernFrameworks: 'Versiert in modernen Frameworks und Technologien',
       keyHighlights: {
         ml: 'Maschinelles Lernen',
         fullstack: 'Full-Stack-Entwicklung',
@@ -1267,11 +1270,11 @@ export const translations: Translations = {
     home: {
       greeting: 'Bonjour, je suis',
       name: 'Khalil Charfi.',
-      tagline: 'Je crée des expériences numériques puissantes.',
+      tagline: 'Je conçois des expériences numériques d\'exception.', // More elegant and natural French
       intro:
-        "Je conçois et construis des produits numériques exceptionnels. En tant qu\'ingénieur Full-Stack, je me spécialise dans la création d\'applications web et mobiles intuitives et performantes, à la fois évolutives et centrées sur l\'utilisateur.",
-      viewWorkBtn: 'Explorer mes projets',
-      getInTouchBtn: 'Entrer en contact',
+        "Je conçois et développe des produits numériques exceptionnels. En tant que développeur Full-Stack, je me spécialise dans la création d\'applications web et mobiles intuitives et performantes, alliant évolutivité et approche centrée utilisateur.", // More natural flow and better word choice
+      viewWorkBtn: 'Découvrir mes projets',
+      getInTouchBtn: 'Me contacter',
       recommendedForYou: 'Recommandé pour vous :',
     },
     about: {
@@ -1280,8 +1283,8 @@ export const translations: Translations = {
         p1: "Mon parcours dans la technologie a commencé par une fascination pour la résolution de problèmes complexes avec un code élégant. Je m\'épanouis en transformant les idées en réalité, de la conceptualisation au déploiement, et je suis passionné par la création d\'interfaces utilisateur transparentes, à la fois belles et hautement fonctionnelles.",
         imagePlaceholder: "Créer du code, construire des solutions.",
       },
-      professionalSummaryTitle: 'Résumé Professionnel',
-      professionalSummary: 'Ingénieur full-stack avec une vaste expérience dans la livraison d\'applications web et mobiles évolutives. Compétent en développement front-end avec Vue.js et Angular, back-end avec Laravel et Laminas, et applications mobiles utilisant Flutter et Ionic. Passionné par l\'architecture propre, les capacités hors ligne et le déploiement axé sur DevOps. Expérimenté dans des équipes interfonctionnelles en Tunisie et en Allemagne.',
+      professionalSummaryTitle: 'Profil Professionnel',
+      professionalSummary: 'Développeur Full-Stack avec une solide expérience dans la conception d\'applications web et mobiles évolutives. Expert en développement front-end (Vue.js, Angular), back-end (Laravel, Laminas) et mobile (Flutter, Ionic). Passionné par l\'architecture logicielle rigoureuse, les solutions hors ligne et le déploiement DevOps. Expérience confirmée au sein d\'équipes pluridisciplinaires en Tunisie et en Allemagne.',
       languagesTitle: 'Langues',
       languages: [
         { lang: 'Arabe', proficiency: 'Natif' },
@@ -1303,10 +1306,10 @@ export const translations: Translations = {
       focusAI: 'Spécialisation IA',
       focusWebDev: 'Spécialisation Développement Web',
       focusDataScience: 'Spécialisation Data Science',
-      priorityProgramming: 'Programming Priority',
-      priorityFrameworks: 'Frameworks Priority',
-      priorityTools: 'Tools Priority',
-      priorityDatabases: 'Databases Priority',
+      priorityProgramming: 'Priorité Programmation',
+      priorityFrameworks: 'Priorité Frameworks',
+      priorityTools: 'Priorité Outils',
+      priorityDatabases: 'Priorité Bases de données',
     },
     experience: {
       title: 'Expérience',
@@ -1485,9 +1488,9 @@ export const translations: Translations = {
       ],
     },
     contact: {
-              title: 'Construisons Quelque Chose de Grand',
-        intro: "Je suis toujours ouvert à discuter de nouveaux projets, collaborations ou opportunités. Vous avez une question ou voulez simplement dire bonjour ? N\'hésitez pas à me contacter.",
-        message: "Je suis toujours ouvert à discuter de nouveaux projets, collaborations ou opportunités. Vous avez une question ou voulez simplement dire bonjour ? N'hésitez pas à me contacter.",
+              title: 'Créons Ensemble',
+        intro: "Je suis toujours disponible pour échanger sur de nouveaux projets, des collaborations ou des opportunités professionnelles. Une question ou simplement envie de dire bonjour ? N\'hésitez pas à me contacter.",
+        message: "Je suis toujours disponible pour échanger sur de nouveaux projets, des collaborations ou des opportunités professionnelles. Une question ou simplement envie de dire bonjour ? N'hésitez pas à me contacter.",
       form: {
         nameLabel: 'Nom',
         emailLabel: 'E-mail',
@@ -1517,6 +1520,7 @@ export const translations: Translations = {
       openAria: "Ouvrir le chat de l'assistant IA",
       closeAria: "Fermer le chat de l'assistant IA",
       sendAria: "Envoyer le message",
+      send: "Envoyer",
     },
     cookieConsent: {
       title: "Cookie Consent",
@@ -1551,14 +1555,14 @@ export const translations: Translations = {
     },
     dynamicContent: {
       defaultGreeting: 'Bonjour, je suis',
-      defaultTagline: 'Je crée des expériences numériques puissantes.',
-      defaultIntro: "Je conçois et construis des produits numériques exceptionnels. En tant qu'ingénieur Full-Stack, je me spécialise dans la création d'applications web et mobiles intuitives et performantes, à la fois évolutives et centrées sur l'utilisateur.",
-      viewMyWork: 'Explorer mes projets',
-      professionalSummary: 'Ingénieur full-stack avec une vaste expérience dans la livraison d\'applications web et mobiles évolutives. Compétent en front-end development avec Vue.js et Angular, back-end avec Laravel et Laminas, et mobile apps using Flutter and Ionic. Passionné par la conception d\'interfaces utilisateur intuitives et performantes, les capacités hors ligne et le déploiement axé sur DevOps. Expérimenté dans des équipes cross-functional en Tunisie et en Allemagne.',
-      expertInAI: 'Expert en apprentissage automatique et développement IA',
-      fullStackProficiency: 'Compétence en développement web full-stack',
-      problemSolving: 'Fortes compétences en résolution de problèmes et analyse',
-      modernFrameworks: 'Expérience avec des frameworks et technologies modernes',
+      defaultTagline: 'Je conçois des expériences numériques d\'exception.',
+      defaultIntro: "Je conçois et développe des produits numériques exceptionnels. En tant que développeur Full-Stack, je me spécialise dans la création d\'applications web et mobiles intuitives et performantes, alliant évolutivité et approche centrée utilisateur.",
+      viewMyWork: 'Découvrir mes projets',
+      professionalSummary: 'Développeur Full-Stack avec une solide expérience dans la conception d\'applications web et mobiles évolutives. Expert en développement front-end (Vue.js, Angular), back-end (Laravel, Laminas) et mobile (Flutter, Ionic). Passionné par l\'architecture logicielle rigoureuse, les solutions hors ligne et le déploiement DevOps. Expérience confirmée au sein d\'équipes pluridisciplinaires en Tunisie et en Allemagne.',
+      expertInAI: 'Expertise en Machine Learning et développement IA',
+      fullStackProficiency: 'Maîtrise complète du développement Full-Stack',
+      problemSolving: 'Solides compétences en résolution de problèmes et analyse',
+      modernFrameworks: 'Expertise des frameworks et technologies modernes',
       keyHighlights: {
         ml: 'Apprentissage automatique',
         fullstack: 'Développement Full-Stack',
@@ -1714,31 +1718,31 @@ export const translations: Translations = {
     home: {
       greeting: 'مرحباً، أنا',
       name: 'خليل الشرفي.',
-      tagline: 'أصنع تجارب رقمية قوية.',
+      tagline: 'أصمم حلولاً رقمية تُحدث فرقاً.',
       intro:
-        "أقوم بتصميم وبناء منتجات رقمية استثنائية. بصفتي مهندس برمجيات متكامل، أتخصص في إنشاء تطبيقات ويب وجوال بديهية وعالية الأداء، قابلة للتطوير ومتمحورة حول المستخدم.",
-      viewWorkBtn: 'اكتشف مشاريعي',
+        "أصمّم وأطوّر منتجات رقمية متميّزة تجمع بين الابتكار والأداء. بصفتي مطوّر برمجيات متكامل، أتخصص في بناء تطبيقات ويب وجوّال حديثة قابلة للتوسع وسهلة الاستخدام، مع التركيز على تقديم تجربة مستخدم استثنائية.",
+      viewWorkBtn: 'اطّلع على أعمالي',
       getInTouchBtn: 'تواصل معي',
       recommendedForYou: 'موصى به لك:',
     },
     about: {
       title: 'عني',
       sectionContent: {
-          p1: "بدأت رحلتي في مجال التكنولوجيا بشغف لحل المشكلات المعقدة بكود برمجي أنيق. أجد متعتي في تحويل الأفكار إلى حقيقة، من المفهوم إلى التنفيذ، وأنا متحمس لإنشاء واجهات مستخدم سلسة تجمع بين الجمال والوظائف العالية.",
-          imagePlaceholder: "صياغة الكود، بناء الحلول.",
+          p1: "بدأت رحلتي في عالم التقنية بشغف كبير لحل المشكلات المعقدة عبر كود برمجي أنيق ومبتكر. أستمتع بتحويل الأفكار إلى واقع ملموس، من مرحلة المفهوم حتى التنفيذ الكامل. أركّز على تصميم واجهات مستخدم سلسة تجمع بين الجمالية والوظائف المتقدمة لتقديم تجربة استثنائية.",
+          imagePlaceholder: "أكتب الكود، أبني الحلول.",
       },
-      professionalSummaryTitle: 'الملخص المهني',
-      professionalSummary: 'مهندس متكامل ذو خبرة واسعة في تقديم تطبيقات الويب والجوال القابلة للتطوير. ماهر في تطوير الواجهة الأمامية باستخدام Vue.js و Angular، والواجهة الخلفية باستخدام Laravel و Laminas، وتطبيقات الجوال باستخدام Flutter و Ionic. شغوف بالهندسة النظيفة، وقدرات العمل دون اتصال بالإنترنت، والنشر الموجه بـ DevOps. من ذوي الخبرة في فرق متعددة الوظائف في تونس وألمانيا.',
+      professionalSummaryTitle: 'نبذة مهنية',
+      professionalSummary: 'مطوّر برمجيات متكامل بخبرة واسعة في بناء تطبيقات ويب وجوّال قابلة للتوسع. خبير في تطوير الواجهات الأمامية (Vue.js، Angular)، والخلفية (Laravel، Laminas)، والتطبيقات المحمولة (Flutter، Ionic). شغوف بالهندسة البرمجية النظيفة، والحلول دون اتصال بالإنترنت، ونشر التطبيقات باستخدام DevOps. خبرة مثبتة في العمل ضمن فرق متعددة التخصصات في تونس وألمانيا.',
       languagesTitle: 'اللغات',
       languages: [
         { lang: 'العربية', proficiency: 'لغة أم' },
         { lang: 'الإنجليزية', proficiency: 'بطلاقة' },
         { lang: 'الفرنسية', proficiency: 'بطلاقة' },
       ],
-      keyHighlightsTitle: 'النقاط القوية',
+      keyHighlightsTitle: 'أبرز المهارات',
     },
     skills: {
-      title: 'المهارات الرئيسية',
+      title: 'المهارات',
       categories: {
         frontend: { name: 'الواجهة الأمامية', items: ['Vue.js', 'Angular', 'JavaScript/TypeScript', 'HTML5', 'CSS3 (Sass/LESS)', 'Bootstrap'] },
         backend: { name: 'الواجهة الخلفية', items: ['PHP (Laravel, Laminas)', 'Java (Spring Boot)'] },
@@ -1747,11 +1751,11 @@ export const translations: Translations = {
         devops: { name: 'DevOps و CI/CD', items: ['Git', 'Docker', 'Jenkins', 'GitLab CI/CD', 'Bitrise', 'Puppet'] },
         tools: { name: 'أخرى وأدوات', items: ['Drupal', 'Keycloak', 'Firebase', 'Mapbox GL', 'WSO2 CEP', 'JHipster', 'TestCafe', 'Cucumber', 'Grafana', 'Kibana'] },
       },
-      focusAI: 'تركيز الذكاء الاصطناعي',
-      focusWebDev: 'تركيز تطوير الويب',
-      focusDataScience: 'تركيز علم البيانات',
+      focusAI: 'التركيز على الذكاء الاصطناعي',
+      focusWebDev: 'التركيز على تطوير الويب',
+      focusDataScience: 'التركيز على علم البيانات',
       priorityProgramming: 'أولوية البرمجة',
-      priorityFrameworks: 'أولوية الإطارات',
+      priorityFrameworks: 'أولوية الأطر البرمجية',
       priorityTools: 'أولوية الأدوات',
       priorityDatabases: 'أولوية قواعد البيانات',
     },
@@ -1932,26 +1936,26 @@ export const translations: Translations = {
       ],
     },
     contact: {
-              title: 'دعنا نبني شيئًا عظيمًا',
-        intro: "أنا دائمًا منفتح لمناقشة المشاريع الجديدة أو التعاون أو الفرص. هل لديك سؤال أو تريد فقط أن تقول مرحباً؟ لا تتردد في التواصل.",
-        message: "أنا دائمًا منفتح لمناقشة المشاريع الجديدة أو التعاون أو الفرص. هل لديك سؤال أو تريد فقط أن تقول مرحباً؟ لا تتردد في التواصل.",
+      title: 'تواصل معي',
+      intro: "يسعدني التواصل معك لمناقشة المشاريع والفرص المهنية. لديك استفسار أو تود التعاون؟ لا تتردد في مراسلتي.",
+      message: "لنبدأ مشروعك القادم معاً!",
       form: {
         nameLabel: 'الاسم',
         emailLabel: 'البريد الإلكتروني',
         messageLabel: 'الرسالة',
-        sendBtn: 'إرسال الرسالة',
-        submitting: 'جار الإرسال...',
-        successTitle: 'تم إرسال الرسالة!',
-        successMessage: 'شكراً لتواصلك معي! سأقوم بالرد في أقرب وقت ممكن.',
+        sendBtn: 'إرسال',
+        submitting: 'جارٍ الإرسال...',
+        successTitle: 'تم الإرسال بنجاح!',
+        successMessage: 'شكراً لتواصلك! سأرد عليك في أقرب وقت.',
         sendAnother: 'إرسال رسالة أخرى',
-        demoAlert: 'شكرا لرسالتك! (هذه نسخة تجريبية، لم يتم إرسال أي بريد إلكتروني)',
-        emailError: 'الرجاء إدخال عنوان بريد إلكتروني صالح.',
+        demoAlert: 'شكراً لرسالتك! (هذه نسخة تجريبية - لم يتم إرسال بريد فعلي)',
+        emailError: 'يرجى إدخال عنوان بريد إلكتروني صالح.',
         requiredError: 'هذا الحقل مطلوب.',
       },
       connectTitle: 'تواصل معي عبر',
       emailAria: 'إرسال بريد إلكتروني إلى خليل الشرفي',
-      linkedinAria: "ملف خليل الشرفي على LinkedIn",
-      githubAria: "ملف خليل الشرفي على GitHub",
+      linkedinAria: "ملف خليل الشرفي الشخصي على LinkedIn",
+      githubAria: "ملف خليل الشرفي الشخصي على GitHub",
     },
     footer: {
       copyright: '© {{year}} خليل الشرفي. جميع الحقوق محفوظة.',
@@ -1959,27 +1963,28 @@ export const translations: Translations = {
     },
     chatbot: {
       title: "المساعد الذكي",
-      placeholder: "اسأل عن مهاراتي، مشاريعي...",
-      initialMessage: "مرحباً! أنا مساعد خليل الذكي. يمكنني الإجابة على أسئلة حول ملفه الشخصي. كيف يمكنني المساعدة؟",
-      openAria: "افتح محادثة المساعد الذكي",
-      closeAria: "أغلق محادثة المساعد الذكي",
+      placeholder: "اسأل عن المهارات، المشاريع...",
+      initialMessage: "مرحباً! أنا المساعد الذكي لخليل. يمكنني الإجابة على أسئلتك حول ملفه الشخصي. كيف يمكنني مساعدتك؟",
+      openAria: "فتح نافذة المساعد الذكي",
+      closeAria: "إغلاق نافذة المساعد الذكي",
       sendAria: "إرسال الرسالة",
+      send: "إرسال",
     },
     cookieConsent: {
-      title: "Cookie Consent",
-      description: "نحن نستخدم ملفات تعريف الارتباط لتحسين تجربتك على موقعنا. باستمرارك في استخدام الموقع، فإنك توافق على استخدام ملفات تعريف الارتباط.",
-      acceptAllBtn: "قبول جميع",
-      acceptNecessaryBtn: "قبول الضروري",
-      showPreferencesBtn: "إظهار التفضيلات",
+      title: "سياسة ملفات تعريف الارتباط",
+      description: "نستخدم ملفات تعريف الارتباط لتحسين تجربتك على الموقع. باستمرارك في التصفح، فإنك توافق على استخدامها.",
+      acceptAllBtn: "قبول الكل",
+      acceptNecessaryBtn: "الضرورية فقط",
+      showPreferencesBtn: "إدارة التفضيلات",
       closeIconLabel: "إغلاق",
-      preferencesTitle: "تفضيلات الارتباط",
-      savePreferencesBtn: "حفظ التفضيلات",
-      cookieUsageTitle: "استخدام ملفات الارتباط",
-      cookieUsageDescription: "تستخدم ملفات الارتباط لتحسين تجربتك على الموقع. بينما تستخدم ملفات الارتباط الثالثة أيضًا لتحليل كيفية استخدامك للموقع ولتحسين الإعلانات التي قد تهتم بها.",
-      necessaryCookiesTitle: "ملفات الارتباط الضرورية",
-      necessaryCookiesDescription: "تستخدم ملفات الارتباط الضرورية لتحسين الوظيفة الأساسية للموقع. دونها لن يعمل الموقع بشكل صحيح.",
-      analyticsCookiesTitle: "ملفات التحليل",
-              analyticsCookiesDescription: "تستخدم ملفات التحليل لجمع معلومات عن كيفية استخدامك للموقع ولتحسين الإعلانات التي قد تهتم بها."
+      preferencesTitle: "تفضيلات الخصوصية",
+      savePreferencesBtn: "حفظ",
+      cookieUsageTitle: "كيف نستخدم ملفات الارتباط",
+      cookieUsageDescription: "نستخدم ملفات الارتباط لتحسين أداء الموقع وتجربة المستخدم. كما نستخدم ملفات طرف ثالث لتحليل استخدام الموقع.",
+      necessaryCookiesTitle: "ملفات الارتباط الأساسية",
+      necessaryCookiesDescription: "ضرورية لعمل الوظائف الأساسية للموقع. بدونها لن يعمل الموقع بشكل صحيح.",
+      analyticsCookiesTitle: "ملفات التحليلات",
+      analyticsCookiesDescription: "تساعدنا على فهم كيفية استخدام الزوار للموقع وتحسين المحتوى المقدم."
     },
     profileInsights: {
       toggleLabel: "تبديل رؤى الملف الشخصي",
@@ -1998,14 +2003,14 @@ export const translations: Translations = {
     },
     dynamicContent: {
       defaultGreeting: 'مرحباً، أنا',
-      defaultTagline: 'أصنع تجارب رقمية قوية.',
-      defaultIntro: "أقوم بتصميم وبناء منتجات رقمية استثنائية. بصفتي مهندس برمجيات متكامل، أتخصص في إنشاء تطبيقات ويب وجوال بديهية وعالية الأداء، قابلة للتطوير ومتمحورة حول المستخدم.",
-      viewMyWork: 'اكتشف مشاريعي',
-      professionalSummary: 'مهندس متكامل ذو خبرة واسعة في تقديم تطبيقات الويب والجوال القابلة للتطوير. ماهر في تطوير الواجهة الأمامية باستخدام Vue.js و Angular، والواجهة الخلفية باستخدام Laravel و Laminas، وتطبيقات الجوال باستخدام Flutter و Ionic. شغوف بالهندسة النظيفة، وقدرات العمل دون اتصال بالإنترنت، والنشر الموجه بـ DevOps. من ذوي الخبرة في فرق متعددة الوظائف في تونس وألمانيا.',
-      expertInAI: 'خبير في التعلم الآلي وتطوير الذكاء الاصطناعي',
-      fullStackProficiency: 'كفاءة في تطوير الويب الكامل',
-      problemSolving: 'مهارات قوية في حل المشكلات والتحليل',
-      modernFrameworks: 'خبرة مع الإطارات والتقنيات الحديثة',
+      defaultTagline: 'أصمم حلولاً رقمية تُحدث فرقاً.',
+      defaultIntro: "أصمّم وأطوّر منتجات رقمية متميّزة تجمع بين الابتكار والأداء. بصفتي مطوّر برمجيات متكامل، أتخصص في بناء تطبيقات ويب وجوّال حديثة قابلة للتوسع وسهلة الاستخدام، مع التركيز على تقديم تجربة مستخدم استثنائية.",
+      viewMyWork: 'اطّلع على أعمالي',
+      professionalSummary: 'مطوّر برمجيات متكامل بخبرة واسعة في بناء تطبيقات ويب وجوّال قابلة للتوسع. خبير في تطوير الواجهات الأمامية (Vue.js، Angular)، والخلفية (Laravel، Laminas)، والتطبيقات المحمولة (Flutter، Ionic). شغوف بالهندسة البرمجية النظيفة، والحلول دون اتصال بالإنترنت، ونشر التطبيقات باستخدام DevOps. خبرة مثبتة في العمل ضمن فرق متعددة التخصصات في تونس وألمانيا.',
+      expertInAI: 'خبرة في الذكاء الاصطناعي والتعلم الآلي',
+      fullStackProficiency: 'إتقان التطوير البرمجي المتكامل',
+      problemSolving: 'مهارات متقدمة في حل المشكلات التقنية',
+      modernFrameworks: 'خبرة في أحدث الأطر والتقنيات البرمجية',
       keyHighlights: {
         ml: 'التعلم الآلي',
         fullstack: 'تطوير الواجهة الكاملة',
@@ -2102,7 +2107,7 @@ export const translations: Translations = {
         cta: "انضم للمحادثة"
       },
       general_visitor: {
-        greeting: "مرحباً بك في محفظتي!",
+        greeting: "مرحباً بك في صفحتي!",
         tagline: "مطور متكامل ينشئ حلول رقمية مبتكرة",
         cta: "استكشف عملي"
       },

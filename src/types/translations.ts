@@ -198,6 +198,7 @@ export interface BaseTranslations {
     openAria: string;
     closeAria: string;
     sendAria: string;
+    send: string;
   };
   cookieConsent: {
     title: string;

@@ -5,27 +5,37 @@ on:
     branches: [ main, next ]
   pull_request:
     branches: [ main ]
+  workflow_dispatch:
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     
     steps:
+      # 1️⃣ Checkout repository
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
         
+      # 2️⃣ Setup Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '18'
           cache: 'npm'
           
+      # 3️⃣ Install dependencies
       - name: Install dependencies
-        run: npm ci
+        run: |
+          npm ci
+          # Ensure terser is available (should be in devDependencies)
+          npm list terser || npm install --save-dev terser
         
+      # 4️⃣ Create production .env
       - name: Create production .env
         run: |
-          echo "GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY || '' }}" >> .env.production
+          echo "GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY || '' }}" > .env.production
           echo "VITE_ENABLE_CHATBOT=${{ secrets.VITE_ENABLE_CHATBOT || 'false' }}" >> .env.production
           echo "VITE_ENABLE_DYNAMIC_CONTENT=${{ secrets.VITE_ENABLE_DYNAMIC_CONTENT || 'false' }}" >> .env.production
           echo "VITE_SHOW_DEV_ELEMENTS=false" >> .env.production
@@ -33,8 +43,8 @@ jobs:
           echo "VITE_SHOW_PROFILE_INSIGHTS=false" >> .env.production
           echo "VITE_SHOW_TRANSLATION_DEBUG=false" >> .env.production
           echo "VITE_SHOW_DEBUG_INFO=false" >> .env.production
-          echo "NODE_ENV=production" >> .env.production
           
+      # 5️⃣ Test environment variables
       - name: Test environment variables
         run: |
           echo "Testing environment variables..."
@@ -45,20 +55,51 @@ jobs:
             console.log(envContent.replace(/GEMINI_API_KEY=.*/, 'GEMINI_API_KEY=***HIDDEN***'));
           "
           
-      - name: Build
-        run: npm run build:prod
+      # 6️⃣ Build project
+      - name: Build project
+        run: |
+          npm run build:prod
+          
+          # Ensure dist exists
+          if [ ! -d dist ]; then
+            echo "Error: dist/ folder not found. Build failed."
+            exit 1
+          fi
         
-      - name: Deploy to GitHub Pages
+      # 7️⃣ Prepare deploy folder for master branch (next branch only)
+      - name: Prepare deploy folder for master branch
+        if: github.ref == 'refs/heads/next'
+        run: |
+          mkdir -p deploy
+          cp -r dist/* deploy/
+          cp .env.production deploy/
+          cp .env.example deploy/ 2>/dev/null || echo "No .env.example found, skipping"
+          cp README.md deploy/
+          cp package.json deploy/
+          
+      # 8️⃣ Deploy to GitHub Pages (main branch)
+      - name: Deploy to GitHub Pages (main branch)
         uses: peaceiris/actions-gh-pages@v3
         if: github.ref == 'refs/heads/main'
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist
           
-      - name: Deploy to GitHub Pages (Preview)
+      # 9️⃣ Deploy to GitHub Pages Preview (next branch to gh-pages)
+      - name: Deploy to GitHub Pages Preview (next branch)
         uses: peaceiris/actions-gh-pages@v3
-        if: github.ref == 'refs/heads/next'
+        if: github.ref == 'refs/heads/next' && github.event_name == 'push'
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist
-          cname: your-custom-domain.com  # Optional: replace with your custom domain
+          # cname: your-custom-domain.com  # Optional: replace with your custom domain
+          
+      # 🔟 Deploy to master branch (next branch only)
+      - name: Deploy to master branch (production)
+        uses: peaceiris/actions-gh-pages@v3
+        if: github.ref == 'refs/heads/next' && github.event_name == 'push'
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./deploy
+          publish_branch: master
+          force_orphan: true  # replaces entire master content

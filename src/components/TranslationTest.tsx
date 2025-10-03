@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from '../hooks/useTranslation';
 import { validateAllTranslations, generateValidationReport } from '../utils/translationValidator';
-
-interface TranslationTestProps {
-  showDebugInfo?: boolean;
-}
+import type { TranslationTestProps } from '../types/components';
 
 export const TranslationTest: React.FC<TranslationTestProps> = ({ showDebugInfo = false }) => {
   const { t, currentLanguage, baseLanguage, isRTL } = useTranslation();
@@ -107,4 +104,4 @@ export const TranslationTest: React.FC<TranslationTestProps> = ({ showDebugInfo 
   );
 };
 
-export default TranslationTest;
+export { TranslationTest as default };

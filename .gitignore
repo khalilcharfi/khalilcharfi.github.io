@@ -47,7 +47,8 @@ Thumbs.db
 *.sln
 *.sw?
 
-# toggle-git-user.sh
-./toggle-git-user.sh apply
-./toggle-git-user.sh restore
-chmod +x toggle-git-user.sh
+# WASM build artifacts
+wasm-modules/target/
+
+# Documentation (keep in repo but ignore if needed)
+# docs/

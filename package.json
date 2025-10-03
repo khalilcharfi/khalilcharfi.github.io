@@ -14,6 +14,7 @@
     "i18n:fix-missing": "node scripts/fix-missing-translations.js",
     "i18n:complete": "node scripts/complete-translations.js",
     "i18n:check": "npm run i18n:validate && npm run i18n:fix-missing",
+    "i18n:scan": "i18n-check",
     "i18n:validate-json": "node scripts/validate-json-translations.js",
     "perf:audit": "npm run preview & sleep 3 && lighthouse http://localhost:5177 --output html --output-path ./dist/lighthouse-report.html --view",
     "perf:monitor": "node scripts/performance-monitor.js",
@@ -25,7 +26,7 @@
     "@react-three/drei": "9.107.0",
     "@react-three/fiber": "8.16.8",
     "@react-three/postprocessing": "2.17.0",
-    "i18next": "23.11.5",
+    "i18next": "^23.16.8",
     "i18next-browser-languagedetector": "8.0.0",
     "marked": "12.0.2",
     "postprocessing": "6.35.5",
@@ -34,14 +35,17 @@
     "react-hook-consent": "^3.5.3",
     "react-i18next": "14.1.2",
     "simplex-noise": "^4.0.3",
-    "three": "0.165.0"
+    "three": "0.165.0",
+    "vanilla-cookieconsent": "^3.1.0"
   },
   "devDependencies": {
-    "@lingual/i18n-check": "^0.8.8",
+    "@lingual/i18n-check": "^0.8.9",
     "@types/node": "^22.14.0",
     "@types/react-dom": "^19.1.6",
     "@wasm-tool/wasm-pack-plugin": "^1.7.0",
+    "glob": "^11.0.3",
     "rollup-plugin-visualizer": "^6.0.3",
+    "terser": "^5.44.0",
     "typescript": "~5.7.2",
     "vite": "^6.2.0",
     "wasm-pack": "^0.0.0"

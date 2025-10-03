@@ -1,116 +1,103 @@
-// Service Worker for Portfolio Caching
-const CACHE_NAME = 'portfolio-v1';
-const STATIC_CACHE = 'portfolio-static-v1';
-const DYNAMIC_CACHE = 'portfolio-dynamic-v1';
 
-// Assets to cache immediately
-const STATIC_ASSETS = [
+const CACHE_NAME = 'khalil-portfolio-cache-v3.0'; // Updated for Liquid Glass theme
+const ASSETS_TO_CACHE = [
   '/',
-  '/index.html',
-  '/manifest.json',
-  '/icons/icon-192x192.svg',
-  '/icons/icon-512x512.svg'
+  './index.html',
+  './index.css',
+  './manifest.json',
+  './icons/icon-192x192.png',
+  './icons/icon-512x512.png',
+  // Certificates are important visual assets
+  './asset/Certificate Recognizing an E-Health Talk Presentation on Cardiac Monitoring.jpeg',
+  './asset/Certificate Template from Second DAAD Theralytics Workshop in Darmstadt 2016.jpeg',
+  './asset/Certificate of Participation in an E-Health Workshop on Heart Failure.jpeg',
+  './asset/Certificate of Attendance for DAAD E-Health Workshop in Sfax 2016.jpeg',
+  './asset/Certificate of Participation in E-Health Workshop on Cardiac Patient Monitoring.jpeg'
 ];
 
-// Install event - cache static assets
-self.addEventListener('install', (event) => {
-  console.log('Service Worker installing...');
+// Install event: open cache and add core assets
+self.addEventListener('install', event => {
   event.waitUntil(
-    caches.open(STATIC_CACHE)
-      .then((cache) => {
-        console.log('Caching static assets');
-        return cache.addAll(STATIC_ASSETS);
+    caches.open(CACHE_NAME)
+      .then(cache => {
+        console.log('ServiceWorker: Caching core assets');
+        return cache.addAll(ASSETS_TO_CACHE);
       })
-      .then(() => self.skipWaiting())
+      .then(() => self.skipWaiting()) // Force activation of new service worker
+      .catch(error => {
+        console.error('ServiceWorker: Failed to cache assets during install:', error);
+      })
   );
 });
 
-// Activate event - clean up old caches
-self.addEventListener('activate', (event) => {
-  console.log('Service Worker activating...');
+// Activate event: clean up old caches
+self.addEventListener('activate', event => {
   event.waitUntil(
-    caches.keys().then((cacheNames) => {
+    caches.keys().then(cacheNames => {
       return Promise.all(
-        cacheNames.map((cacheName) => {
-          if (cacheName !== STATIC_CACHE && cacheName !== DYNAMIC_CACHE) {
-            console.log('Deleting old cache:', cacheName);
+        cacheNames.map(cacheName => {
+          if (cacheName !== CACHE_NAME) {
+            console.log('ServiceWorker: Clearing old cache:', cacheName);
             return caches.delete(cacheName);
           }
         })
       );
-    }).then(() => self.clients.claim())
+    }).then(() => self.clients.claim()) // Take control of all clients
   );
 });
 
-// Fetch event - serve from cache, fallback to network
-self.addEventListener('fetch', (event) => {
-  const { request } = event;
-  const url = new URL(request.url);
-
-  // Skip non-GET requests
-  if (request.method !== 'GET') return;
-
-  // Skip chrome-extension and other non-http requests
-  if (!url.protocol.startsWith('http')) return;
+// Fetch event: Cache-first, then network strategy
+self.addEventListener('fetch', event => {
+  // We only want to handle GET requests
+  if (event.request.method !== 'GET') {
+    return;
+  }
+  
+  // For external resources like Google Fonts or esm.sh, use a network-first or cache-first-with-revalidation strategy.
+  // For this portfolio, we'll let them pass through to the network as the browser's HTTP cache handles them well.
+  if (event.request.url.startsWith('https://fonts.googleapis.com') ||
+      event.request.url.startsWith('https://fonts.gstatic.com') ||
+      event.request.url.startsWith('https://esm.sh')) {
+    return;
+  }
 
   event.respondWith(
-    caches.match(request)
-      .then((cachedResponse) => {
+    caches.open(CACHE_NAME).then(cache => {
+      return cache.match(event.request).then(cachedResponse => {
+        // Return cached response if found, this is the "cache first" part.
         if (cachedResponse) {
-          console.log('Serving from cache:', request.url);
           return cachedResponse;
         }
 
-        return fetch(request).then((response) => {
-          // Don't cache non-successful responses
-          if (!response || response.status !== 200 || response.type !== 'basic') {
-            return response;
-          }
-
-          // Clone the response for caching
-          const responseToCache = response.clone();
-
-          // Determine which cache to use
-          const cacheName = isStaticAsset(request.url) ? STATIC_CACHE : DYNAMIC_CACHE;
-
-          caches.open(cacheName).then((cache) => {
-            console.log('Caching new resource:', request.url);
-            cache.put(request, responseToCache);
-          });
-
-          return response;
-        }).catch(() => {
-          // Return offline page for navigation requests
-          if (request.destination === 'document') {
-            return caches.match('/index.html');
-          }
+        // If not in cache, fetch from network.
+        return fetch(event.request).then(networkResponse => {
+          // IMPORTANT: You should NOT cache opaque responses (from no-cors requests)
+          // as you cannot check their status. Here we assume all local asset requests are fine.
+          
+          // Clone the response because a response is a stream and can only be consumed once.
+          const responseToCache = networkResponse.clone();
+          cache.put(event.request, responseToCache);
+          
+          return networkResponse;
         });
-      })
+      });
+    }).catch(error => {
+      console.error('ServiceWorker: Error fetching data:', error);
+      // Fallback for navigation requests (SPA support)
+      if (event.request.mode === 'navigate') {
+        return caches.match('./index.html');
+      }
+      return new Response("Network error happened", {
+        status: 408,
+        headers: { "Content-Type": "text/plain" },
+      });
+    })
   );
 });
 
-// Helper function to determine if an asset is static
-function isStaticAsset(url) {
-  return url.includes('/assets/') || 
-         url.includes('/icons/') || 
-         url.includes('.css') || 
-         url.includes('.js') ||
-         url.includes('.svg') ||
-         url.includes('.png') ||
-         url.includes('.jpg') ||
-         url.includes('.jpeg') ||
-         url.includes('.webp');
-}
-
-// Background sync for analytics
-self.addEventListener('sync', (event) => {
-  if (event.tag === 'analytics-sync') {
-    event.waitUntil(syncAnalytics());
+// Optional: listen for messages from the client
+self.addEventListener('message', event => {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
   }
 });
-
-async function syncAnalytics() {
-  // Sync analytics data when connection is restored
-  console.log('Syncing analytics data...');
-  // Implementation would go here
-}

@@ -3,6 +3,7 @@ import { Canvas, useFrame } from '@react-three/fiber';
 import { PointMaterial, Points } from '@react-three/drei';
 import * as THREE from 'three';
 import { createNoise3D } from 'simplex-noise';
+import type { ThreeBackgroundProps } from '../types/components';
 
 // Particle system component
 const ParticleSystem: React.FC = () => {
@@ -68,7 +69,7 @@ const ParticleSystem: React.FC = () => {
 };
 
 // Main background component
-export const ThreeBackground: React.FC = () => {
+export const ThreeBackground: React.FC<ThreeBackgroundProps> = () => {
   return (
     <div className="three-background" style={{
       position: 'fixed',
@@ -87,4 +88,6 @@ export const ThreeBackground: React.FC = () => {
       </Canvas>
     </div>
   );
-}; 
+};
+
+export { ThreeBackground as default }; 

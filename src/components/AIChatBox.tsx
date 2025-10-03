@@ -1,15 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { loadAIModule } from '../utils/lazyLoading';
 import type { GoogleGenAI, Chat } from '@google/genai';
-
-interface AIChatBoxProps {
-  isOpen: boolean;
-  onClose: () => void;
-  theme: string;
-  language: string;
-  buildContext: (lang: string) => string;
-  t: (key: string) => string;
-}
+import type { AIChatBoxProps } from '../types/components';
 
 export const AIChatBox: React.FC<AIChatBoxProps> = ({ 
   isOpen, 
@@ -230,5 +222,5 @@ export const AIChatBox: React.FC<AIChatBoxProps> = ({
   );
 };
 
-export default AIChatBox;
+export { AIChatBox as default };
 
