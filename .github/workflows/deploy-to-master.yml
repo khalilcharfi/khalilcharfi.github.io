@@ -45,10 +45,14 @@ jobs:
       - name: Build project
         run: npm run build:prod
 
-      # 6️⃣ Prepare deploy directory
+      # 6️⃣ Ensure dist/ exists and prepare deploy directory
       - name: Prepare deploy directory
         run: |
-          mkdir deploy
+          if [ ! -d dist ]; then
+            echo "Error: dist/ folder not found. Build may have failed."
+            exit 1
+          fi
+          mkdir -p deploy
           cp -r dist/* deploy/
           cp .env.production deploy/
           cp .env.example deploy/
