@@ -55,7 +55,9 @@ export default defineConfig(({ mode }) => {
         cors: true
       },
       
+  publicDir: 'public',
   build: {
+    copyPublicDir: true,
     rollupOptions: {
       output: {
         manualChunks: (id) => {

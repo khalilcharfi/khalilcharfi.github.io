@@ -1,6 +1,6 @@
 
 // Ultra-simple Service Worker with maximum compatibility
-const CACHE_VERSION = 'v7';
+const CACHE_VERSION = 'v8';
 const CACHE_NAME = `portfolio-cache-${CACHE_VERSION}`;
 
 // Helper function to safely check if URL can be cached
@@ -15,7 +15,7 @@ function isCacheableUrl(url) {
 
 // Install event - robust cache setup
 self.addEventListener('install', (event) => {
-  console.log('Service Worker: Installing v7...');
+  console.log('Service Worker: Installing v8...');
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then((cache) => {
@@ -25,7 +25,9 @@ self.addEventListener('install', (event) => {
         const filesToCache = [
           '/',
           '/index.html',
-          '/manifest.json'
+          '/manifest.json',
+          '/asset/profile-photo.jpg',
+          '/asset/profile-photo.jpeg'
         ];
         
         // Cache files individually to handle failures gracefully

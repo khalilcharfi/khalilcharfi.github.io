@@ -22,7 +22,7 @@ This guide provides step-by-step instructions for deploying your portfolio to Gi
 | `VITE_ENABLE_CHATBOT` | `true` or `false` | ⚠️ Optional (default: `true`) |
 | `VITE_ENABLE_DYNAMIC_CONTENT` | `true` or `false` | ⚠️ Optional (default: `true`) |
 | `VITE_ENABLE_PERSONAS` | `true` or `false` | ⚠️ Optional (default: `true`) |
-| `VITE_SHOW_RECOMMENDED_SECTIONS` | `true` or `false` | ⚠️ Optional (default: `true`) |
+| `VITE_SHOW_RECOMMENDED_SECTIONS` | `true` or `false` | ⚠️ Optional (default: `false`) |
 
 **Important**: Only `GEMINI_API_KEY` is required. All other secrets have sensible defaults.
 

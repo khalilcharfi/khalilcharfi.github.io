@@ -1,12 +1,15 @@
 
-const CACHE_NAME = 'khalil-portfolio-cache-v3.0'; // Updated for Liquid Glass theme
+const CACHE_NAME = 'khalil-portfolio-cache-v4.0'; // Updated for React fix and assets
 const ASSETS_TO_CACHE = [
   '/',
   './index.html',
-  './index.css',
   './manifest.json',
-  './icons/icon-192x192.png',
-  './icons/icon-512x512.png',
+  // Note: CSS and JS files have hashed names that change with each build
+  // They will be cached dynamically on first fetch via cache-first strategy
+  // Only cache static assets here that don't change names
+  './asset/profile-photo.jpg',
+  './asset/profile-photo.jpeg',
+  './asset/profile-photo-placeholder.svg',
   // Certificates are important visual assets
   './asset/Certificate Recognizing an E-Health Talk Presentation on Cardiac Monitoring.jpeg',
   './asset/Certificate Template from Second DAAD Theralytics Workshop in Darmstadt 2016.jpeg',

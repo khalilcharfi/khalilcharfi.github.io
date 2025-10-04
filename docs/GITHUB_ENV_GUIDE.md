@@ -16,7 +16,7 @@ GitHub Pages serves static files, so environment variables need to be **baked in
      - `GEMINI_API_KEY`: Your actual Gemini API key
      - `VITE_ENABLE_CHATBOT`: `true` or `false`
      - `VITE_ENABLE_DYNAMIC_CONTENT`: `true` or `false`
-     - `VITE_SHOW_RECOMMENDED_SECTIONS`: `true` or `false` (controls "Recommended for you" section)
+     - `VITE_SHOW_RECOMMENDED_SECTIONS`: `true` or `false` (controls "Recommended for you" section - default: `false`)
      - `VITE_SHOW_DEV_ELEMENTS`: `false` (for production)
 
 2. **Create GitHub Actions Workflow:**

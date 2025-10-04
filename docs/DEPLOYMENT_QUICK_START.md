@@ -54,7 +54,7 @@ https://YOUR_USERNAME.github.io/khalilcharfi.github.io
 |------------|---------|-------------|
 | `VITE_ENABLE_CHATBOT` | `true` | Enable AI chatbot |
 | `VITE_ENABLE_DYNAMIC_CONTENT` | `true` | Enable dynamic content |
-| `VITE_SHOW_RECOMMENDED_SECTIONS` | `true` | Show "Recommended for you" section |
+| `VITE_SHOW_RECOMMENDED_SECTIONS` | `false` | Show "Recommended for you" section (priority sections) |
 
 ---
 

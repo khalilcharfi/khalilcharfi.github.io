@@ -148,5 +148,5 @@ console.log('   - GEMINI_API_KEY: Your Gemini API key\n');
 console.log('   Optional (have defaults):');
 console.log('   - VITE_ENABLE_CHATBOT: true/false (default: true)');
 console.log('   - VITE_ENABLE_DYNAMIC_CONTENT: true/false (default: true)');
-console.log('   - VITE_SHOW_RECOMMENDED_SECTIONS: true/false (default: true)\n');
+console.log('   - VITE_SHOW_RECOMMENDED_SECTIONS: true/false (default: false)\n');
 

@@ -43,7 +43,7 @@ Repository → Settings → Secrets and variables → Actions
 **Optional (have defaults):**
 - `VITE_ENABLE_CHATBOT` (default: `true`)
 - `VITE_ENABLE_DYNAMIC_CONTENT` (default: `true`)
-- `VITE_SHOW_RECOMMENDED_SECTIONS` (default: `true`)
+- `VITE_SHOW_RECOMMENDED_SECTIONS` (default: `false`)
 
 ### 2. Enable GitHub Pages
 ```

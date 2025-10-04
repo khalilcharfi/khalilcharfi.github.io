@@ -5,8 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
-    "build:prod": "vite build --mode production",
+    "build": "vite build && node scripts/copy-assets.js",
+    "build:prod": "vite build --mode production && node scripts/copy-assets.js",
     "build:analyze": "vite build && open dist/bundle-analysis.html",
     "preview": "vite preview",
     "preview:prod": "vite preview --mode production",
