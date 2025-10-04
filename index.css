@@ -862,82 +862,312 @@ html[dir="rtl"] .publication-card .btn { align-self: flex-end}
 .certificate-info h3 { font-size: 1.1rem; margin-bottom: 0.4rem; color: var(--primary-text)}
 .certificate-info .date { font-size: 0.85rem; color: var(--accent-color); font-weight: 500; margin-bottom: 0}
 
-@keyframes fadeIn { from { opacity: 0} to { opacity: 1} }
-@keyframes scaleIn { from { transform: scale(0.95)} to { transform: scale(1)} }
+/* Modal Animations */
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes modalSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes modalFadeOut {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+
+@keyframes modalSlideDown {
+    from {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(30px) scale(0.95);
+    }
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Modal Overlay */
 .modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background-color: rgba(0, 0, 0, 0.8);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    z-index: 2000;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    position: fixed !important;
+    inset: 0 !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    transform: none !important;
+    background: rgba(0, 0, 0, 0);
+    z-index: 9998;
+    backdrop-filter: blur(0px);
+    -webkit-backdrop-filter: blur(0px);
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
     padding: 1rem;
-    animation: fadeIn 0.3s ease;
-    overflow-y: auto}
+    overflow-y: auto;
+    opacity: 0;
+    transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                backdrop-filter 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.modal-overlay.modal-visible {
+    opacity: 1;
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+/* Modal Content */
 .modal-content {
     background-color: var(--glass-bg);
     border: 1px solid var(--glass-border-color);
     border-radius: var(--border-radius-main);
-    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
     max-width: 90vw;
     max-height: 90vh;
     width: auto;
     max-width: 1000px;
-    position: relative;
+    position: relative !important;
     display: flex;
     flex-direction: column;
-    animation: scaleIn 0.3s ease;
-    overflow: hidden}
-.modal-content img {
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(30px) scale(0.95) !important;
+    transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.3s ease;
+    margin: auto;
+}
+
+.modal-content.modal-content-visible {
+    opacity: 1;
+    transform: translateY(0) scale(1) !important;
+}
+
+/* Modal Image Container */
+.modal-image-container {
+    position: relative;
+    width: 100%;
+    min-height: 300px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-image {
     width: 100%;
     height: auto;
     object-fit: contain;
     max-height: calc(90vh - 150px);
     display: block;
-    border-top-left-radius: var(--border-radius-main);
-    border-top-right-radius: var(--border-radius-main)}
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.modal-image.modal-image-loaded {
+    opacity: 1;
+}
+
+/* Modal Image Loading */
+.modal-image-loading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid rgba(255, 255, 255, 0.1);
+    border-top-color: var(--accent-color);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+/* Modal Info */
 .modal-info {
-    padding: 1.5rem;
+    padding: 2rem 1.5rem;
     text-align: center;
-    background-color: var(--glass-bg);
-    border-top: 1px solid var(--glass-border-color)}
-.modal-info h3 {
-    margin: 0 0 0.5rem 0;
+    background: linear-gradient(180deg, 
+        var(--glass-bg) 0%, 
+        rgba(var(--primary-bg-raw), 0.8) 100%
+    );
+    border-top: 1px solid var(--glass-border-color);
+    position: relative;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.modal-info::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(90deg, 
+        transparent 0%, 
+        var(--accent-color) 50%, 
+        transparent 100%
+    );
+    border-radius: 2px;
+}
+
+.modal-title {
+    margin: 0 0 1rem 0;
     color: var(--primary-text);
-    font-size: 1.1rem}
-.modal-info p {
+    font-family: var(--font-heading);
+    font-size: 1.35rem;
+    font-weight: 600;
+    line-height: 1.4;
+    letter-spacing: -0.02em;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    max-width: 100%;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
+}
+
+.modal-description {
     margin: 0;
     color: var(--secondary-text);
-    font-size: 0.95rem}
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    line-height: 1.6;
+}
+
+.modal-issuer {
+    font-weight: 500;
+    color: var(--primary-text);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.modal-issuer::before {
+    content: '📜';
+    font-size: 1.1em;
+    opacity: 0.8;
+}
+
+.modal-date {
+    color: var(--accent-color);
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.25rem 0.75rem;
+    background: rgba(var(--primary-bg-raw), 0.4);
+    border-radius: var(--border-radius-pill);
+    border: 1px solid rgba(var(--accent-color), 0.2);
+}
+
+.modal-date::before {
+    content: '📅';
+    font-size: 1em;
+}
+
+.modal-separator {
+    color: var(--secondary-text);
+    opacity: 0.4;
+    font-weight: 300;
+}
+
+/* RTL Support for Modal Info */
+html[dir="rtl"] .modal-issuer,
+html[dir="rtl"] .modal-date {
+    flex-direction: row-reverse;
+}
+
+html[dir="rtl"] .modal-title {
+    font-family: var(--font-heading-ar);
+}
+
+html[dir="rtl"] .modal-description {
+    font-family: var(--font-body-ar);
+}
+
+/* Modal Close Button */
 .modal-close-btn {
     position: absolute;
-    top: 10px;
-    right: 10px;
-    background: rgba(0, 0, 0, 0.6);
+    top: 12px;
+    right: 12px;
+    background: rgba(0, 0, 0, 0.7);
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 50%;
     color: white;
-    width: 40px;
-    height: 40px;
-    font-size: 28px;
-    line-height: 1;
+    width: 42px;
+    height: 42px;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     z-index: 10;
-    padding: 0}
+    padding: 0;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
 .modal-close-btn:hover {
-    background-color: var(--accent-color);
-    transform: rotate(90deg);
-    border-color: var(--accent-color)}
+    background: var(--accent-color);
+    border-color: var(--accent-color);
+    transform: rotate(90deg) scale(1.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.modal-close-btn:focus {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 2px;
+}
+
+.modal-close-btn:active {
+    transform: rotate(90deg) scale(0.95);
+}
+
+.modal-close-btn svg {
+    width: 20px;
+    height: 20px;
+    stroke-width: 2.5;
+}
 
 #contact .contact-content { max-width: 800px; margin: 0 auto; text-align: center}
 #contact .contact-intro { margin-left: auto; margin-right: auto}
@@ -1758,26 +1988,73 @@ html[dir="rtl"] .markdown-content ul, html[dir="rtl"] .markdown-content ol {
     .modal-overlay {
         padding: 0.5rem;
         align-items: flex-start;
-        padding-top: 2rem}
+        padding-top: 2rem;
+    }
     
     .modal-content {
-        max-width: 95vw;
+        max-width: 100%;
         width: 100%;
         max-height: calc(100vh - 4rem);
-        margin: 0}
+        margin: 0;
+        border-radius: 12px;
+    }
     
-    .modal-content img {
-        max-height: calc(100vh - 200px)}
+    .modal-image-container {
+        min-height: 200px;
+    }
+    
+    .modal-image {
+        max-height: calc(100vh - 250px);
+    }
     
     .modal-info {
-        padding: 1rem}
+        padding: 1.5rem 1rem;
+    }
     
-    .modal-info h3 {
-        font-size: 1rem}
+    .modal-info::before {
+        width: 40px;
+        height: 2px;
+    }
     
-    .modal-info p {
-        font-size: 0.85rem}
+    .modal-title {
+        font-size: 1.15rem;
+        margin-bottom: 0.75rem;
+    }
     
+    .modal-description {
+        font-size: 0.9rem;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .modal-issuer::before,
+    .modal-date::before {
+        font-size: 0.95em;
+    }
+    
+    .modal-date {
+        padding: 0.2rem 0.6rem;
+        font-size: 0.85rem;
+    }
+    
+    .modal-close-btn {
+        width: 38px;
+        height: 38px;
+        top: 8px;
+        right: 8px;
+    }
+    
+    .modal-close-btn svg {
+        width: 18px;
+        height: 18px;
+    }
+    
+    .spinner {
+        width: 40px;
+        height: 40px;
+        border-width: 3px;
+    }
+
     .modal-close-btn {
         top: 8px;
         right: 8px;
@@ -1977,12 +2254,6 @@ body.theme-transitioning::after {
 
 .scroll-to-top:hover {
     transform: translateY(-3px) scale(1.05)}
-
-.modal-overlay {
-    transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1)}
-
-.modal-content {
-    transition: all 0.4s cubic-bezier(0.4, 0.0, 0.2, 1)}
 
 .profile-insights {
     transition: all 0.4s cubic-bezier(0.4, 0.0, 0.2, 1)}

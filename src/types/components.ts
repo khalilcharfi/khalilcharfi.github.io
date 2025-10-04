@@ -38,7 +38,3 @@ export interface ProfileInsightsProps {
 export interface CookieConsentBannerProps {
   // No props currently
 }
-
-export interface ThreeBackgroundProps {
-  // No props currently
-}

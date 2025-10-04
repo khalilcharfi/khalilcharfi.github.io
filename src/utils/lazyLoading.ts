@@ -1,11 +1,6 @@
 // Lazy Loading Utilities
 import { lazy } from 'react';
 
-// Lazy load heavy Three.js components
-export const LazyThreeBackground = lazy(() => 
-  import('../components/ThreeBackground').then(module => ({ default: module.ThreeBackground }))
-);
-
 // Lazy load other components
 export const LazyVisitorTypeSelector = lazy(() => import('../components/VisitorTypeSelector'));
 
@@ -143,7 +138,6 @@ export const registerServiceWorker = async () => {
 };
 
 export default {
-  LazyThreeBackground,
   LazyVisitorTypeSelector,
   LazyTranslationTest,
   loadAIModule,

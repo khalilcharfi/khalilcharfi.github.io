@@ -200,8 +200,10 @@ select[aria-invalid="true"] {
 }
 
 /* Modal/Dialog Accessibility */
-[role="dialog"],
-[role="alertdialog"] {
+/* Modal dialog positioning - removed to allow custom modal implementations */
+/* Use .modal-overlay and .modal-content classes for custom modal styling */
+
+[role="alertdialog"]:not(.modal-overlay) {
   position: fixed;
   top: 50%;
   left: 50%;
@@ -210,14 +212,6 @@ select[aria-invalid="true"] {
   max-width: 90vw;
   max-height: 90vh;
   overflow: auto;
-}
-
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.75);
-  z-index: 9998;
-  backdrop-filter: blur(4px);
 }
 
 /* Tooltip Accessibility */

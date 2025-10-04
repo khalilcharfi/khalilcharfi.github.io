@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, Suspense, useMemo, useLayoutEffect, Component, createContext, useContext } from 'react';
+import React, { useState, useEffect, useRef, Suspense, useMemo, useLayoutEffect, Component, createContext, useContext, useCallback } from 'react';
 import { createRoot } from 'react-dom/client';
 import { marked } from 'marked';
 import { GoogleGenAI, Chat } from '@google/genai';
@@ -591,49 +591,164 @@ interface CertificateModalProps {
 
 const CertificateModal: React.FC<CertificateModalProps> = ({ cert, onClose }) => {
     const { t } = useTranslation();
-    const modalRef = useRef<HTMLDivElement>(null);
+    const modalOverlayRef = useRef<HTMLDivElement>(null);
+    const modalContentRef = useRef<HTMLDivElement>(null);
+    const closeButtonRef = useRef<HTMLButtonElement>(null);
     const { announce } = useAnnouncer();
+    const [isVisible, setIsVisible] = useState(false);
+    const [imageLoaded, setImageLoaded] = useState(false);
 
-    useEffect(() => {
-        const handleKeyDown = (event: KeyboardEvent) => {
-            if (event.key === 'Escape') {
-                onClose();
-            }
-        };
-        document.addEventListener('keydown', handleKeyDown);
-        return () => document.removeEventListener('keydown', handleKeyDown);
+    // Handle modal close with animation
+    const handleClose = useCallback(() => {
+        setIsVisible(false);
+        setImageLoaded(false);
+        // Wait for animation to complete before calling onClose
+        setTimeout(() => {
+            onClose();
+        }, 300);
     }, [onClose]);
 
+    // Keyboard event handler
+    useEffect(() => {
+        if (!cert) return;
+
+        const handleKeyDown = (event: KeyboardEvent) => {
+            if (event.key === 'Escape') {
+                handleClose();
+            }
+        };
+
+        document.addEventListener('keydown', handleKeyDown);
+        return () => document.removeEventListener('keydown', handleKeyDown);
+    }, [cert, handleClose]);
+
+    // Focus trap implementation
+    useEffect(() => {
+        if (!cert || !modalContentRef.current) return;
+
+        const focusableElements = modalContentRef.current.querySelectorAll<HTMLElement>(
+            'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        );
+        const firstElement = focusableElements[0];
+        const lastElement = focusableElements[focusableElements.length - 1];
+
+        const handleTabKey = (e: KeyboardEvent) => {
+            if (e.key !== 'Tab') return;
+
+            if (e.shiftKey) {
+                if (document.activeElement === firstElement) {
+                    e.preventDefault();
+                    lastElement?.focus();
+                }
+            } else {
+                if (document.activeElement === lastElement) {
+                    e.preventDefault();
+                    firstElement?.focus();
+                }
+            }
+        };
+
+        document.addEventListener('keydown', handleTabKey);
+        return () => document.removeEventListener('keydown', handleTabKey);
+    }, [cert]);
+
+    // Body scroll lock and initial focus
     useEffect(() => {
         if (cert) {
+            // Lock body scroll
+            const scrollBarWidth = window.innerWidth - document.documentElement.clientWidth;
             document.body.style.overflow = 'hidden';
-            modalRef.current?.focus();
+            document.body.style.paddingRight = `${scrollBarWidth}px`;
+            
+            // Trigger animation
+            requestAnimationFrame(() => {
+                setIsVisible(true);
+            });
+
+            // Focus close button after animation
+            setTimeout(() => {
+                closeButtonRef.current?.focus();
+            }, 100);
+
+            // Announce to screen readers
             announce(t('general.viewCertificate') + ': ' + cert.title, 'polite');
         } else {
+            // Restore body scroll
             document.body.style.overflow = '';
+            document.body.style.paddingRight = '';
         }
+
+        return () => {
+            document.body.style.overflow = '';
+            document.body.style.paddingRight = '';
+        };
     }, [cert, announce, t]);
 
     if (!cert) return null;
 
     return (
         <div
-            className="modal-overlay"
-            onClick={onClose}
+            ref={modalOverlayRef}
+            className={`modal-overlay ${isVisible ? 'modal-visible' : ''}`}
+            onClick={handleClose}
             role="dialog"
             aria-modal="true"
             aria-labelledby="cert-modal-title"
-            tabIndex={-1}
-            ref={modalRef}
+            aria-describedby="cert-modal-description"
         >
-            <div className="modal-content" onClick={e => e.stopPropagation()}>
-                <button onClick={onClose} className="modal-close-btn" aria-label={String(t('general.closeModal'))}>
-                    &times;
+            <div 
+                ref={modalContentRef}
+                className={`modal-content ${isVisible ? 'modal-content-visible' : ''}`}
+                onClick={e => e.stopPropagation()}
+            >
+                <button 
+                    ref={closeButtonRef}
+                    onClick={handleClose} 
+                    className="modal-close-btn" 
+                    aria-label={String(t('general.closeModal'))}
+                    type="button"
+                >
+                    <svg 
+                        xmlns="http://www.w3.org/2000/svg" 
+                        viewBox="0 0 24 24" 
+                        fill="none" 
+                        stroke="currentColor" 
+                        strokeWidth="2"
+                        width="24"
+                        height="24"
+                        aria-hidden="true"
+                    >
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
                 </button>
-                <img src={cert.imageUrl} alt={cert.title} loading="lazy" />
+                
+                <div className="modal-image-container">
+                    {!imageLoaded && (
+                        <div className="modal-image-loading" aria-live="polite" aria-busy="true">
+                            <div className="spinner"></div>
+                        </div>
+                    )}
+                    <img 
+                        src={cert.imageUrl} 
+                        alt={cert.title}
+                        className={`modal-image ${imageLoaded ? 'modal-image-loaded' : ''}`}
+                        onLoad={() => setImageLoaded(true)}
+                        onError={(e) => {
+                            const target = e.target as HTMLImageElement;
+                            target.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"%3E%3Crect fill="%23333" width="200" height="200"/%3E%3Ctext fill="%23fff" x="50%25" y="50%25" text-anchor="middle" dominant-baseline="middle"%3EImage Error%3C/text%3E%3C/svg%3E';
+                            setImageLoaded(true);
+                        }}
+                    />
+                </div>
+                
                 <div className="modal-info">
-                    <h3 id="cert-modal-title">{cert.title}</h3>
-                    <p>{cert.issuer} - {cert.date}</p>
+                    <h3 id="cert-modal-title" className="modal-title">{cert.title}</h3>
+                    <p id="cert-modal-description" className="modal-description">
+                        <span className="modal-issuer">{cert.issuer}</span>
+                        <span className="modal-separator" aria-hidden="true"> • </span>
+                        <span className="modal-date">{cert.date}</span>
+                    </p>
                 </div>
             </div>
         </div>
@@ -1204,10 +1319,23 @@ function FractalParticles({ count = 5000, theme }: { count?: number; theme: stri
     };
   }, [optimizedCount, themeConfig]);
 
+  // Object pooling for better performance - reuse vectors instead of creating new ones
   const tempColor = useMemo(() => new THREE.Color(), []);
   const tempVector = useMemo(() => new THREE.Vector3(), []);
+  const tempDisplacement = useMemo(() => new THREE.Vector3(), []);
+  const tempParticlePos = useMemo(() => new THREE.Vector3(), []);
+  const tempDirection = useMemo(() => new THREE.Vector3(), []);
+  const tempTrailDirection = useMemo(() => new THREE.Vector3(), []);
+  const tempExplosionDirection = useMemo(() => new THREE.Vector3(), []);
 
   const paused = useAnimationPause();
+  
+  // Enable frustum culling for automatic performance boost
+  useEffect(() => {
+    if (ref.current) {
+      ref.current.frustumCulled = true;
+    }
+  }, []);
 
   useFrame((state, delta) => {
     if (paused) return;
@@ -1295,72 +1423,72 @@ function FractalParticles({ count = 5000, theme }: { count?: number; theme: stri
         
         let mouseInfluence = 0;
         let mouseColorInfluence = 0;
-        let displacement = new THREE.Vector3();
+        tempDisplacement.set(0, 0, 0); // Reset pooled displacement vector
         
         if (adaptiveSettings.interactionEnabled && localAttractionStrength > 0) {
-          const particlePos = new THREE.Vector3(positionsArray[i3], positionsArray[i3 + 1], positionsArray[i3 + 2]);
-          const distanceToMouse = particlePos.distanceTo(currentMouse.current);
+          tempParticlePos.set(positionsArray[i3], positionsArray[i3 + 1], positionsArray[i3 + 2]);
+          const distanceToMouse = tempParticlePos.distanceTo(currentMouse.current);
           
           if (distanceToMouse < localMouseInfluenceRadius) {
             const influence = (1 - distanceToMouse / localMouseInfluenceRadius) * localAttractionStrength;
             mouseInfluence = influence;
             mouseColorInfluence = influence * colorInfluence.current;
             
-            const direction = new THREE.Vector3()
-              .subVectors(currentMouse.current, particlePos)
-              .normalize();
+            tempDirection.subVectors(currentMouse.current, tempParticlePos).normalize();
             
             switch (interactionMode) {
               case 'attract':
-                displacement.add(direction.multiplyScalar(influence * 2.5));
+                tempDisplacement.addScaledVector(tempDirection, influence * 2.5);
                 break;
                 
               case 'repel':
-                displacement.add(direction.multiplyScalar(-influence * 3.0));
+                tempDisplacement.addScaledVector(tempDirection, -influence * 3.0);
                 break;
                 
               case 'flow':
-                const perpendicular = new THREE.Vector3(-direction.y, direction.x, direction.z);
-                const flowDirection = perpendicular.multiplyScalar(Math.sin(time * 2 + i * 0.1));
-                displacement.add(flowDirection.multiplyScalar(influence * 1.8));
-                displacement.add(direction.multiplyScalar(influence * 0.5)); // Slight attraction
+                const perpX = -tempDirection.y;
+                const perpY = tempDirection.x;
+                const perpZ = tempDirection.z;
+                const flowMult = Math.sin(time * 2 + i * 0.1) * influence * 1.8;
+                tempDisplacement.x += perpX * flowMult;
+                tempDisplacement.y += perpY * flowMult;
+                tempDisplacement.z += perpZ * flowMult;
+                tempDisplacement.addScaledVector(tempDirection, influence * 0.5);
                 break;
                 
               case 'ripple':
                 const ripplePhase = Math.sin(time * 5 - distanceToMouse * 0.1);
-                displacement.add(direction.multiplyScalar(ripplePhase * influence * 2.0));
+                tempDisplacement.addScaledVector(tempDirection, ripplePhase * influence * 2.0);
                 break;
             }
             
-            mouseTrail.current.forEach((trailPos, index) => {
-              const trailDistance = particlePos.distanceTo(trailPos);
-              const trailAge = (mouseTrail.current.length - index) / mouseTrail.current.length;
+            // Optimized trail interaction with for loop instead of forEach
+            for (let t = 0; t < mouseTrail.current.length; t++) {
+              const trailPos = mouseTrail.current[t];
+              const trailDistance = tempParticlePos.distanceTo(trailPos);
+              const trailAge = (mouseTrail.current.length - t) / mouseTrail.current.length;
               const trailInfluence = (1 - trailDistance / (localMouseInfluenceRadius * 0.5)) * trailAge * 0.3;
               
               if (trailInfluence > 0) {
-                const trailDirection = new THREE.Vector3()
-                  .subVectors(trailPos, particlePos)
-                  .normalize();
-                displacement.add(trailDirection.multiplyScalar(trailInfluence));
+                tempTrailDirection.subVectors(trailPos, tempParticlePos).normalize();
+                tempDisplacement.addScaledVector(tempTrailDirection, trailInfluence);
               }
-            });
+            }
           }
           
           if (localRepulsionStrength > 0) {
             const explosionInfluence = (1 - distanceToMouse / (localMouseInfluenceRadius * 2)) * localRepulsionStrength;
             if (explosionInfluence > 0) {
-              const explosionDirection = new THREE.Vector3()
-                .subVectors(particlePos, currentMouse.current)
-                .normalize();
-              displacement.add(explosionDirection.multiplyScalar(explosionInfluence * 4.0));
+              tempExplosionDirection.subVectors(tempParticlePos, currentMouse.current).normalize();
+              tempDisplacement.addScaledVector(tempExplosionDirection, explosionInfluence * 4.0);
             }
           }
         }
         
         const noiseIntensity = themeConfig.noiseIntensity * (1 + mouseInfluence * 0.5);
-        displacement.x += noiseValue * noiseIntensity * speedFactor;
-        displacement.y += noiseValue * noiseIntensity * speedFactor * 0.8;
-        displacement.z += noiseValue * noiseIntensity * speedFactor * 0.6;
+        tempDisplacement.x += noiseValue * noiseIntensity * speedFactor;
+        tempDisplacement.y += noiseValue * noiseIntensity * speedFactor * 0.8;
+        tempDisplacement.z += noiseValue * noiseIntensity * speedFactor * 0.6;
         
         if (theme === 'light' && adaptiveSettings.animationComplexity > 0.2) {
           const waveTime = time * themeConfig.animationSpeed.wave;
@@ -1371,16 +1499,16 @@ function FractalParticles({ count = 5000, theme }: { count?: number; theme: stri
           const flow = Math.sin(waveTime * 0.3 + Math.sqrt(ox*ox + oy*oy) * 0.05) * 1.8 * mouseWaveBoost;
           const spiral = Math.cos(waveTime * 0.5 + i * 0.01) * 0.8;
           
-          displacement.x += (wave1 * 0.4 + flow * 0.3) * speedFactor;
-          displacement.y += (wave2 * 0.5 + Math.sin(waveTime * 0.8 + i * 0.01) * 0.7) * speedFactor;
-          displacement.z += ((wave1 + wave2) * 0.3 + spiral * 0.2) * speedFactor;
+          tempDisplacement.x += (wave1 * 0.4 + flow * 0.3) * speedFactor;
+          tempDisplacement.y += (wave2 * 0.5 + Math.sin(waveTime * 0.8 + i * 0.01) * 0.7) * speedFactor;
+          tempDisplacement.z += ((wave1 + wave2) * 0.3 + spiral * 0.2) * speedFactor;
         } else if (theme === 'dark' && adaptiveSettings.animationComplexity > 0.8) {
           const swirl = Math.sin(time * 0.5 + i * 0.01) * 0.3;
-          displacement.x += Math.cos(time * 0.3 + i * 0.02) * swirl;
-          displacement.y += Math.sin(time * 0.4 + i * 0.015) * swirl;
+          tempDisplacement.x += Math.cos(time * 0.3 + i * 0.02) * swirl;
+          tempDisplacement.y += Math.sin(time * 0.4 + i * 0.015) * swirl;
         }
         
-        const currentPos = tempVector.set(ox, oy, oz).add(displacement);
+        const currentPos = tempVector.set(ox, oy, oz).add(tempDisplacement);
         
         currentPos.x += velocities[i3];
         currentPos.y += velocities[i3 + 1];

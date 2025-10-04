@@ -1,0 +1,45 @@
+name: Validate Translations
+
+on:
+  push:
+    branches: [main, next, develop]
+  pull_request:
+    branches: [main, next, develop]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Validate translation completeness
+        run: npm run i18n:validate
+      
+      - name: Check for missing translations
+        run: |
+          if [ -f translation-errors.log ]; then
+            echo "❌ Translation errors found:"
+            cat translation-errors.log
+            exit 1
+          else
+            echo "✅ All translations are complete!"
+          fi
+      
+      - name: Upload translation report
+        if: failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: translation-errors
+          path: translation-errors.log
+

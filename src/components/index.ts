@@ -6,7 +6,6 @@ export { DynamicContentProvider, useDynamicContent, ProfileInsights, useSectionT
 export { ErrorBoundary } from './ErrorBoundary';
 export { Navbar } from './Navbar';
 export { SkipLinks } from './SkipLinks';
-export { ThreeBackground } from './ThreeBackground';
 export { TranslationTest } from './TranslationTest';
 export { VisitorTypeSelector } from './VisitorTypeSelector';
 
