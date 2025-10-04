@@ -38,7 +38,7 @@ jobs:
       
       - name: Upload translation report
         if: failure()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: translation-errors
           path: translation-errors.log
