@@ -29,7 +29,11 @@ export default defineConfig(({ mode }) => {
         alias: {
           '@': path.resolve(__dirname, '.'),
         },
-        dedupe: ['react', 'react-dom']
+        dedupe: ['react', 'react-dom', 'react/jsx-runtime']
+      },
+      optimizeDeps: {
+        include: ['react', 'react-dom', 'react/jsx-runtime'],
+        exclude: []
       },
       server: {
         port: 5177,
@@ -64,15 +68,14 @@ export default defineConfig(({ mode }) => {
               }
             }
             
-            // Keep React and React-DOM together and prioritize them
-            if (id.includes('react-dom')) {
+            // Keep React and React-DOM together - CRITICAL for proper React hooks
+            if (id.includes('react-dom') || id.includes('react/') || 
+                (id.includes('react') && !id.includes('react-') && !id.includes('@react'))) {
               return 'react-vendor';
             }
-            if (id.includes('react') && !id.includes('react-')) {
-              return 'react-vendor';
-            }
-            // React-based libraries that depend on React
-            if (id.includes('@react-three') || id.includes('react-i18next') || id.includes('react-hook-consent')) {
+            // React-based libraries that depend on React (keep separate to avoid duplication)
+            if (id.includes('@react-three') || id.includes('react-i18next') || 
+                id.includes('react-hook-consent') || id.includes('scheduler')) {
               return 'react-libs';
             }
             if (id.includes('three') || id.includes('simplex-noise') || id.includes('postprocessing')) {
