@@ -28,7 +28,29 @@
 
     <!-- PWA Manifest and Theme Color -->
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#0d1117">
+    <meta name="theme-color" content="#0d1117" media="(prefers-color-scheme: dark)">
+    <meta name="theme-color" content="#f1f5f9" media="(prefers-color-scheme: light)">
+    <meta name="color-scheme" content="dark light">
+
+    <!-- Critical Theme Script - Must run before render to prevent FOUC -->
+    <script>
+        (function() {
+            // Get stored theme or use system preference
+            const storedTheme = localStorage.getItem('theme');
+            const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const theme = storedTheme || (systemPrefersDark ? 'dark' : 'light');
+            
+            // Apply theme immediately to prevent flash
+            document.documentElement.setAttribute('data-theme', theme);
+            document.documentElement.style.colorScheme = theme;
+            
+            // Update meta theme-color dynamically
+            const metaThemeColor = document.querySelector('meta[name="theme-color"]');
+            if (metaThemeColor) {
+                metaThemeColor.setAttribute('content', theme === 'light' ? '#f1f5f9' : '#0d1117');
+            }
+        })();
+    </script>
 
     <!-- Resource Hints for Performance -->
     <link rel="dns-prefetch" href="https://fonts.googleapis.com">

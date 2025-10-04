@@ -56,6 +56,14 @@ export default defineConfig(({ mode }) => {
       output: {
         manualChunks: (id) => {
           if (id.includes('node_modules')) {
+            // Exclude dev-only dependencies in production
+            if (mode === 'production') {
+              // Skip bundling development tools
+              if (id.includes('@axe-core') || id.includes('puppeteer') || id.includes('lighthouse')) {
+                return undefined;
+              }
+            }
+            
             // Keep React and React-DOM together and prioritize them
             if (id.includes('react-dom')) {
               return 'react-vendor';
@@ -67,7 +75,7 @@ export default defineConfig(({ mode }) => {
             if (id.includes('@react-three') || id.includes('react-i18next') || id.includes('react-hook-consent')) {
               return 'react-libs';
             }
-            if (id.includes('three') || id.includes('simplex-noise')) {
+            if (id.includes('three') || id.includes('simplex-noise') || id.includes('postprocessing')) {
               return 'three-vendor';
             }
             if (id.includes('i18next') && !id.includes('react-i18next')) {

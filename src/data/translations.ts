@@ -153,6 +153,10 @@ export interface LanguageSpecificTranslations {
       demoAlert: string;
       emailError: string;
       requiredError: string;
+      nameTooShort: string;
+      nameTooLong: string;
+      messageTooShort: string;
+      messageTooLong: string;
     };
     connectTitle: string;
     emailAria: string;
@@ -606,6 +610,10 @@ export const translations: Translations = {
         demoAlert: 'Thank you for your message! (This is a demo, no email was sent)',
         emailError: 'Please enter a valid email address.',
         requiredError: 'This field is required.',
+        nameTooShort: 'Name must be at least 2 characters long.',
+        nameTooLong: 'Name must not exceed 100 characters.',
+        messageTooShort: 'Message must be at least 10 characters long.',
+        messageTooLong: 'Message must not exceed 1000 characters.',
       },
       connectTitle: 'Connect with me',
       emailAria: 'Email Khalil Charfi',
@@ -1053,6 +1061,10 @@ export const translations: Translations = {
         demoAlert: 'Vielen Dank für Ihre Nachricht! (Dies ist eine Demo, es wurde keine E-Mail gesendet)',
         emailError: 'Bitte geben Sie eine gültige E-Mail-Adresse ein.',
         requiredError: 'Dieses Feld ist erforderlich.',
+        nameTooShort: 'Der Name muss mindestens 2 Zeichen lang sein.',
+        nameTooLong: 'Der Name darf nicht länger als 100 Zeichen sein.',
+        messageTooShort: 'Die Nachricht muss mindestens 10 Zeichen lang sein.',
+        messageTooLong: 'Die Nachricht darf nicht länger als 1000 Zeichen sein.',
       },
       connectTitle: 'Vernetzen Sie mich',
       emailAria: 'E-Mail an Khalil Charfi',
@@ -1500,6 +1512,10 @@ export const translations: Translations = {
         demoAlert: 'Merci pour votre message ! (Ceci est une Demo, es-vous sûr de vouloir envoyer ce message ?)',
         emailError: 'Veuillez entrer une adresse e-mail valide.',
         requiredError: 'Ce champ est obligatoire.',
+        nameTooShort: 'Le nom doit contenir au moins 2 caractères.',
+        nameTooLong: 'Le nom ne doit pas dépasser 100 caractères.',
+        messageTooShort: 'Le message doit contenir au moins 10 caractères.',
+        messageTooLong: 'Le message ne doit pas dépasser 1000 caractères.',
       },
       connectTitle: 'Connectez-vous avec moi',
       emailAria: 'Envoyer un e-mail à Khalil Charfi',
@@ -1947,6 +1963,10 @@ export const translations: Translations = {
         demoAlert: 'شكرا لرسالتك! (هذه نسخة تجريبية، لم يتم إرسال أي بريد إلكتروني)',
         emailError: 'الرجاء إدخال عنوان بريد إلكتروني صالح.',
         requiredError: 'هذا الحقل مطلوب.',
+        nameTooShort: 'يجب أن يحتوي الاسم على حرفين على الأقل.',
+        nameTooLong: 'يجب ألا يتجاوز الاسم 100 حرف.',
+        messageTooShort: 'يجب أن تحتوي الرسالة على 10 أحرف على الأقل.',
+        messageTooLong: 'يجب ألا تتجاوز الرسالة 1000 حرف.',
       },
       connectTitle: 'تواصل معي عبر',
       emailAria: 'إرسال بريد إلكتروني إلى خليل الشرفي',

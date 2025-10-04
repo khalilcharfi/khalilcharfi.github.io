@@ -4,7 +4,17 @@ import { lazy } from 'react';
 // Lazy load other components
 export const LazyVisitorTypeSelector = lazy(() => import('../components/VisitorTypeSelector'));
 
-export const LazyTranslationTest = lazy(() => import('../components/TranslationTest'));
+// Conditional lazy loading for TranslationTest - only load in development when debug is enabled
+export const LazyTranslationTest = lazy(() => {
+  if (process.env.VITE_SHOW_TRANSLATION_DEBUG === 'true' && process.env.NODE_ENV === 'development') {
+    return import('../components/TranslationTest');
+  }
+  // Return empty component if not in debug mode
+  return Promise.resolve({ default: () => null });
+});
+
+// Lazy load ThreeBackground component - saves ~166KB gzipped
+export const LazyThreeBackground = lazy(() => import('../components/ThreeBackground'));
 
 // Conditional lazy loading for AI - only load when chatbot is enabled
 let aiModulePromise: Promise<any> | null = null;

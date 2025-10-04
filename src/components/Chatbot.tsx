@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from '../hooks/useTranslation';
 import { useChatbotAvailability } from '../hooks/useGeminiConnection';
-import { GoogleGenAI, Chat } from '@google/genai';
+import type { Chat } from '@google/genai';
 import { marked } from 'marked';
 import { translations } from '../data/translations';
 import { AiChatIcon, SendIcon } from './icons';
+import { loadAIModule } from '../utils/lazyLoading';
 
 interface Message {
     sender: 'user' | 'ai';
@@ -51,6 +52,14 @@ export const Chatbot: React.FC = () => {
         
         const initializeChat = async () => {
             try {
+                // Lazy load the AI module only when needed
+                const aiModule = await loadAIModule();
+                if (!aiModule) {
+                    console.warn("AI module not available");
+                    return;
+                }
+                
+                const { GoogleGenAI } = aiModule;
                 const apiKey = process.env.API_KEY || process.env.GEMINI_API_KEY;
                 const ai = new GoogleGenAI({ apiKey: apiKey! });
                 const context = buildContext(i18n.language);

@@ -181,6 +181,10 @@ export interface BaseTranslations {
       demoAlert: string;
       emailError: string;
       requiredError: string;
+      nameTooShort: string;
+      nameTooLong: string;
+      messageTooShort: string;
+      messageTooLong: string;
     };
     connectTitle: string;
     emailAria: string;
