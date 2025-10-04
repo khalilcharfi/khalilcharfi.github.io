@@ -1013,7 +1013,7 @@ const App: React.FC = () => {
             const timeout = setTimeout(() => {
                 body.classList.remove('theme-transitioning');
                 setIsThemeTransitioning(false);
-            }, 500); // Match CSS transition duration
+            }, 400); // Match CSS transition duration (0.4s)
             
             return () => clearTimeout(timeout);
         }
