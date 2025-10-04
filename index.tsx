@@ -36,6 +36,7 @@ import {
   AiChatIcon,
   SendIcon
 } from './src/components';
+// import { CustomCursor } from './src/components/CustomCursor'; // Disabled for now
 import { LazyTranslationTest, LazyThreeBackground } from './src/utils/lazyLoading';
 
 // WebGLErrorBoundary, PerformanceMonitor, FractalParticles, and InteractiveBackground
@@ -1121,6 +1122,9 @@ const App: React.FC = () => {
     return (
         <Suspense fallback={t('general.loading')}>
             <>
+                {/* Custom Cursor - Disabled for now */}
+                {/* <CustomCursor /> */}
+                
                 {/* Skip Links for Keyboard Navigation */}
                 <SkipLinks />
                 

@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import { useConsent } from '../context/ConsentContext';
 import { useTranslation } from '../hooks/useTranslation';
 
@@ -8,6 +9,14 @@ export const PrivacySettings: React.FC = () => {
     const [dataSize, setDataSize] = useState(0);
     const [showClearConfirm, setShowClearConfirm] = useState(false);
     const [showExportSuccess, setShowExportSuccess] = useState(false);
+    const [isLoadingData, setIsLoadingData] = useState(false);
+    const [exportError, setExportError] = useState<string | null>(null);
+    const [clearError, setClearError] = useState<string | null>(null);
+    
+    const triggerButtonRef = useRef<HTMLButtonElement>(null);
+    const modalRef = useRef<HTMLDivElement>(null);
+    const firstFocusableRef = useRef<HTMLButtonElement>(null);
+    const lastFocusableRef = useRef<HTMLButtonElement>(null);
     
     const { 
         consent, 
@@ -22,9 +31,27 @@ export const PrivacySettings: React.FC = () => {
     
     const { t } = useTranslation();
 
+    // Calculate data size when modal opens
     useEffect(() => {
         if (isOpen) {
-            setDataSize(getStoredDataSize());
+            setIsLoadingData(true);
+            // Use requestIdleCallback for better performance
+            const calculateSize = () => {
+                try {
+                    setDataSize(getStoredDataSize());
+                } catch (error) {
+                    console.error('Error calculating data size:', error);
+                    setDataSize(0);
+                } finally {
+                    setIsLoadingData(false);
+                }
+            };
+            
+            if ('requestIdleCallback' in window) {
+                requestIdleCallback(calculateSize);
+            } else {
+                setTimeout(calculateSize, 0);
+            }
         }
     }, [isOpen, getStoredDataSize]);
 
@@ -37,62 +64,150 @@ export const PrivacySettings: React.FC = () => {
         return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
     };
 
-    const handleExportData = () => {
-        const data = exportData();
-        const blob = new Blob([data], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `privacy-data-export-${new Date().toISOString().split('T')[0]}.json`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
+    // ESC key handler and body scroll lock
+    useEffect(() => {
+        if (!isOpen) return;
+
+        // Lock body scroll
+        const originalOverflow = document.body.style.overflow;
+        const originalPaddingRight = document.body.style.paddingRight;
+        const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
         
-        setShowExportSuccess(true);
-        setTimeout(() => setShowExportSuccess(false), 3000);
-    };
+        document.body.style.overflow = 'hidden';
+        document.body.style.paddingRight = `${scrollbarWidth}px`;
 
-    const handleClearData = () => {
-        clearAllData();
-        setDataSize(0);
-        setShowClearConfirm(false);
-    };
+        // Handle ESC key
+        const handleEsc = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        };
 
-    if (!isOpen) {
-        return (
-            <button 
-                className="privacy-settings-trigger"
-                onClick={() => setIsOpen(true)}
-                aria-label={String(t('privacy.openSettings'))}
-                title={String(t('privacy.openSettings'))}
-            >
-                <svg 
-                    xmlns="http://www.w3.org/2000/svg" 
-                    viewBox="0 0 24 24" 
-                    fill="none" 
-                    stroke="currentColor" 
-                    strokeWidth="2"
-                    width="20"
-                    height="20"
-                >
-                    <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
-                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9c.26.604.852.997 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z" />
-                </svg>
-            </button>
+        document.addEventListener('keydown', handleEsc);
+
+        return () => {
+            document.body.style.overflow = originalOverflow;
+            document.body.style.paddingRight = originalPaddingRight;
+            document.removeEventListener('keydown', handleEsc);
+        };
+    }, [isOpen]);
+
+    // Focus trap
+    useEffect(() => {
+        if (!isOpen || !modalRef.current) return;
+
+        const modal = modalRef.current;
+        const focusableElements = modal.querySelectorAll<HTMLElement>(
+            'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
         );
-    }
 
-    return (
-        <div className="privacy-settings-overlay" onClick={() => setIsOpen(false)}>
-            <div className="privacy-settings-modal" onClick={(e) => e.stopPropagation()}>
+        const firstFocusable = focusableElements[0];
+        const lastFocusable = focusableElements[focusableElements.length - 1];
+
+        // Focus first element
+        firstFocusable?.focus();
+
+        const handleTab = (e: KeyboardEvent) => {
+            if (e.key !== 'Tab') return;
+
+            if (e.shiftKey) {
+                if (document.activeElement === firstFocusable) {
+                    e.preventDefault();
+                    lastFocusable?.focus();
+                }
+            } else {
+                if (document.activeElement === lastFocusable) {
+                    e.preventDefault();
+                    firstFocusable?.focus();
+                }
+            }
+        };
+
+        modal.addEventListener('keydown', handleTab as any);
+
+        return () => {
+            modal.removeEventListener('keydown', handleTab as any);
+        };
+    }, [isOpen, activeTab]); // Re-run when tab changes to update focusable elements
+
+    const openModal = useCallback(() => {
+        setIsOpen(true);
+        setExportError(null);
+        setClearError(null);
+    }, []);
+
+    const closeModal = useCallback(() => {
+        setIsOpen(false);
+        setShowClearConfirm(false);
+        setShowExportSuccess(false);
+        setExportError(null);
+        setClearError(null);
+        // Return focus to trigger button
+        setTimeout(() => {
+            triggerButtonRef.current?.focus();
+        }, 100);
+    }, []);
+
+    const handleExportData = useCallback(() => {
+        try {
+            setExportError(null);
+            const data = exportData();
+            const blob = new Blob([data], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `privacy-data-export-${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            setShowExportSuccess(true);
+            setTimeout(() => setShowExportSuccess(false), 3000);
+        } catch (error) {
+            console.error('Export error:', error);
+            setExportError('Failed to export data. Please try again.');
+            setTimeout(() => setExportError(null), 5000);
+        }
+    }, [exportData]);
+
+    const handleClearData = useCallback(() => {
+        try {
+            setClearError(null);
+            clearAllData();
+            setDataSize(0);
+            setShowClearConfirm(false);
+        } catch (error) {
+            console.error('Clear data error:', error);
+            setClearError('Failed to clear data. Please try again.');
+            setTimeout(() => setClearError(null), 5000);
+        }
+    }, [clearAllData]);
+
+    const modalContent = isOpen ? (
+        <div 
+            className="privacy-settings-overlay" 
+            onClick={closeModal}
+            role="presentation"
+        >
+            <div 
+                ref={modalRef}
+                className="privacy-settings-modal" 
+                onClick={(e) => e.stopPropagation()}
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="privacy-modal-title"
+                aria-describedby="privacy-modal-description"
+            >
                 {/* Header */}
                 <div className="privacy-settings-header">
-                    <h2>{String(t('privacy.title'))}</h2>
+                    <h2 id="privacy-modal-title">{String(t('privacy.title'))}</h2>
                     <button 
+                        ref={firstFocusableRef}
                         className="privacy-settings-close"
-                        onClick={() => setIsOpen(false)}
+                        onClick={closeModal}
                         aria-label={String(t('common.close'))}
+                        type="button"
                     >
                         <svg 
                             xmlns="http://www.w3.org/2000/svg" 
@@ -130,26 +245,41 @@ export const PrivacySettings: React.FC = () => {
                 )}
 
                 {/* Tabs */}
-                <div className="privacy-settings-tabs">
+                <div className="privacy-settings-tabs" role="tablist" aria-label="Privacy settings sections">
                     <button
                         className={`privacy-tab ${activeTab === 'consent' ? 'active' : ''}`}
                         onClick={() => setActiveTab('consent')}
+                        role="tab"
+                        aria-selected={activeTab === 'consent'}
+                        aria-controls="consent-panel"
+                        id="consent-tab"
+                        type="button"
                     >
-                        {String(t('privacy.consentTab'))}
+                        <span>{String(t('privacy.consentTab'))}</span>
                     </button>
                     <button
                         className={`privacy-tab ${activeTab === 'data' ? 'active' : ''}`}
                         onClick={() => setActiveTab('data')}
+                        role="tab"
+                        aria-selected={activeTab === 'data'}
+                        aria-controls="data-panel"
+                        id="data-tab"
+                        type="button"
                     >
-                        {String(t('privacy.dataTab'))}
+                        <span>{String(t('privacy.dataTab'))}</span>
                     </button>
                 </div>
 
                 {/* Content */}
                 <div className="privacy-settings-content">
                     {activeTab === 'consent' && (
-                        <div className="privacy-consent-panel">
-                            <p className="privacy-intro">{String(t('privacy.consentIntro'))}</p>
+                        <div 
+                            className="privacy-consent-panel"
+                            role="tabpanel"
+                            id="consent-panel"
+                            aria-labelledby="consent-tab"
+                        >
+                            <p id="privacy-modal-description" className="privacy-intro">{String(t('privacy.consentIntro'))}</p>
 
                             {/* Quick Actions */}
                             <div className="privacy-quick-actions">
@@ -157,12 +287,16 @@ export const PrivacySettings: React.FC = () => {
                                     className="privacy-btn privacy-btn-accept"
                                     onClick={() => updateAllConsent(true)}
                                     disabled={respectedDNT}
+                                    type="button"
+                                    aria-label="Accept all privacy categories"
                                 >
                                     {String(t('privacy.acceptAll'))}
                                 </button>
                                 <button
                                     className="privacy-btn privacy-btn-reject"
                                     onClick={() => updateAllConsent(false)}
+                                    type="button"
+                                    aria-label="Reject all optional privacy categories"
                                 >
                                     {String(t('privacy.rejectAll'))}
                                 </button>
@@ -275,11 +409,16 @@ export const PrivacySettings: React.FC = () => {
                     )}
 
                     {activeTab === 'data' && (
-                        <div className="privacy-data-panel">
+                        <div 
+                            className="privacy-data-panel"
+                            role="tabpanel"
+                            id="data-panel"
+                            aria-labelledby="data-tab"
+                        >
                             <p className="privacy-intro">{String(t('privacy.dataIntro'))}</p>
 
                             {/* Data Size Info */}
-                            <div className="privacy-data-info">
+                            <div className="privacy-data-info" role="status" aria-live="polite">
                                 <div className="privacy-data-stat">
                                     <svg 
                                         xmlns="http://www.w3.org/2000/svg" 
@@ -289,12 +428,15 @@ export const PrivacySettings: React.FC = () => {
                                         strokeWidth="2"
                                         width="24"
                                         height="24"
+                                        aria-hidden="true"
                                     >
                                         <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
                                         <path d="M12 2v20M3.5 7l8.5 5 8.5-5" />
                                     </svg>
                                     <div>
-                                        <strong>{formatBytes(dataSize)}</strong>
+                                        <strong aria-label={`Data size: ${formatBytes(dataSize)}`}>
+                                            {isLoadingData ? 'Calculating...' : formatBytes(dataSize)}
+                                        </strong>
                                         <p>{String(t('privacy.storedData'))}</p>
                                     </div>
                                 </div>
@@ -321,12 +463,19 @@ export const PrivacySettings: React.FC = () => {
                                     <button
                                         className="privacy-btn privacy-btn-secondary"
                                         onClick={handleExportData}
+                                        type="button"
+                                        aria-label="Export all stored privacy data as JSON file"
                                     >
                                         {String(t('privacy.exportButton'))}
                                     </button>
                                     {showExportSuccess && (
-                                        <div className="privacy-success-message">
+                                        <div className="privacy-success-message" role="status" aria-live="polite">
                                             ✓ {String(t('privacy.exportSuccess'))}
+                                        </div>
+                                    )}
+                                    {exportError && (
+                                        <div className="privacy-error-message" role="alert" aria-live="assertive">
+                                            ⚠️ {exportError}
                                         </div>
                                     )}
                                 </div>
@@ -353,11 +502,13 @@ export const PrivacySettings: React.FC = () => {
                                         <button
                                             className="privacy-btn privacy-btn-danger"
                                             onClick={() => setShowClearConfirm(true)}
+                                            type="button"
+                                            aria-label="Delete all stored privacy data"
                                         >
                                             {String(t('privacy.clearButton'))}
                                         </button>
                                     ) : (
-                                        <div className="privacy-confirm-actions">
+                                        <div className="privacy-confirm-actions" role="alert">
                                             <p className="privacy-warning-text">
                                                 {String(t('privacy.clearWarning'))}
                                             </p>
@@ -365,16 +516,26 @@ export const PrivacySettings: React.FC = () => {
                                                 <button
                                                     className="privacy-btn privacy-btn-danger"
                                                     onClick={handleClearData}
+                                                    type="button"
+                                                    aria-label="Confirm deletion of all data"
                                                 >
                                                     {String(t('privacy.confirmClear'))}
                                                 </button>
                                                 <button
+                                                    ref={lastFocusableRef}
                                                     className="privacy-btn privacy-btn-secondary"
                                                     onClick={() => setShowClearConfirm(false)}
+                                                    type="button"
+                                                    aria-label="Cancel data deletion"
                                                 >
                                                     {String(t('common.cancel'))}
                                                 </button>
                                             </div>
+                                        </div>
+                                    )}
+                                    {clearError && (
+                                        <div className="privacy-error-message" role="alert" aria-live="assertive">
+                                            ⚠️ {clearError}
                                         </div>
                                     )}
                                 </div>
@@ -384,6 +545,34 @@ export const PrivacySettings: React.FC = () => {
                 </div>
             </div>
         </div>
+    ) : null;
+
+    return (
+        <>
+            <button 
+                ref={triggerButtonRef}
+                className="privacy-settings-trigger"
+                onClick={openModal}
+                aria-label={String(t('privacy.openSettings'))}
+                title={String(t('privacy.openSettings'))}
+                aria-haspopup="dialog"
+            >
+                <svg 
+                    xmlns="http://www.w3.org/2000/svg" 
+                    viewBox="0 0 24 24" 
+                    fill="none" 
+                    stroke="currentColor" 
+                    strokeWidth="2"
+                    width="20"
+                    height="20"
+                    aria-hidden="true"
+                >
+                    <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
+                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9c.26.604.852.997 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z" />
+                </svg>
+            </button>
+            {typeof document !== 'undefined' && createPortal(modalContent, document.body)}
+        </>
     );
 };
 

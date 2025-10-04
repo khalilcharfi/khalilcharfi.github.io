@@ -2556,23 +2556,43 @@ canvas {
         animation: none !important}
 }
 /* ========================================
-   PRIVACY SETTINGS STYLES
+   PRIVACY SETTINGS STYLES - REDESIGNED
+   Modern Glassmorphism Design with Enhanced UX
    ======================================== */
 
-/* Privacy Settings Trigger Button */
+/* Privacy Settings Trigger Button - Enhanced */
 .privacy-settings-trigger {
-    background: transparent;
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--blur-strength));
+    -webkit-backdrop-filter: blur(var(--blur-strength));
     border: 1px solid var(--glass-border-color);
     color: var(--secondary-text);
     cursor: pointer;
-    padding: 0.6rem;
+    padding: 0.65rem;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all var(--transition-fast);
+    transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
     position: relative;
     z-index: 1001;
+    min-width: 44px;
+    min-height: 44px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.privacy-settings-trigger::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: 50%;
+    padding: 2px;
+    background: linear-gradient(135deg, var(--accent-color), rgba(0, 166, 255, 0.5));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.3s ease;
 }
 
 .privacy-settings-trigger:hover,
@@ -2580,219 +2600,494 @@ canvas {
     color: var(--accent-color);
     transform: rotate(90deg) scale(1.1);
     border-color: var(--accent-color);
-    background: rgba(0, 166, 255, 0.1);
+    background: rgba(0, 166, 255, 0.15);
+    box-shadow: 0 4px 16px rgba(0, 166, 255, 0.3);
 }
 
-/* Privacy Settings Overlay */
+.privacy-settings-trigger:hover::before,
+.privacy-settings-trigger:focus-visible::before {
+    opacity: 1;
+}
+
+.privacy-settings-trigger:focus-visible {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 3px;
+}
+
+/* Privacy Settings Overlay - Enhanced with better backdrop */
 .privacy-settings-overlay {
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
+    background: linear-gradient(
+        135deg,
+        rgba(0, 0, 0, 0.8) 0%,
+        rgba(0, 0, 0, 0.7) 50%,
+        rgba(0, 0, 0, 0.8) 100%
+    );
+    backdrop-filter: blur(12px) saturate(150%);
+    -webkit-backdrop-filter: blur(12px) saturate(150%);
     z-index: 10000;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 1rem;
-    animation: fadeIn 0.3s ease;
+    padding: 1.5rem;
+    animation: overlayFadeIn 0.4s cubic-bezier(0.4, 0.0, 0.2, 1);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
-@keyframes fadeIn {
+@keyframes overlayFadeIn {
     from {
         opacity: 0;
+        backdrop-filter: blur(0px);
+        -webkit-backdrop-filter: blur(0px);
     }
     to {
         opacity: 1;
+        backdrop-filter: blur(12px) saturate(150%);
+        -webkit-backdrop-filter: blur(12px) saturate(150%);
     }
 }
 
-/* Privacy Settings Modal */
+/* Privacy Settings Modal - Redesigned with Glassmorphism */
 .privacy-settings-modal {
     background: var(--card-bg);
-    border-radius: var(--border-radius);
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-    max-width: 700px;
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border-radius: var(--border-radius-main, 16px);
+    box-shadow: 
+        0 8px 32px var(--shadow-color, rgba(0, 0, 0, 0.4)),
+        0 24px 64px var(--shadow-hover-color, rgba(0, 0, 0, 0.3)),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1),
+        0 0 0 1px var(--glass-border-color);
+    max-width: 750px;
     width: 100%;
     max-height: 90vh;
     display: flex;
     flex-direction: column;
-    animation: slideUp 0.3s ease;
+    animation: modalSlideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
     border: 1px solid var(--glass-border-color);
+    position: relative;
+    z-index: 10001;
+    margin: auto;
+    overflow: hidden;
 }
 
-@keyframes slideUp {
+/* Light theme adjustments */
+html[data-theme="light"] .privacy-settings-modal {
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.1),
+        0 24px 64px rgba(0, 0, 0, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.8),
+        0 0 0 1px var(--glass-border-color);
+}
+
+/* Enhanced entrance animation */
+@keyframes modalSlideUp {
     from {
-        transform: translateY(20px);
+        transform: translateY(40px) scale(0.95);
         opacity: 0;
     }
     to {
-        transform: translateY(0);
+        transform: translateY(0) scale(1);
         opacity: 1;
     }
 }
 
-/* Header */
+/* Ambient glow effect */
+.privacy-settings-modal::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(
+        135deg,
+        rgba(0, 166, 255, 0.2),
+        transparent 50%,
+        rgba(0, 166, 255, 0.1)
+    );
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+    opacity: 0.5;
+}
+
+/* Header - Redesigned with gradient and icons */
 .privacy-settings-header {
-    padding: 1.5rem 2rem;
-    border-bottom: 1px solid var(--glass-border-color);
+    padding: 2rem 2.5rem;
+    border-bottom: 1px solid rgba(var(--accent-color-raw, 0, 166, 255), 0.2);
     display: flex;
     justify-content: space-between;
     align-items: center;
     flex-shrink: 0;
+    gap: 1.5rem;
+    position: sticky;
+    top: 0;
+    background: var(--card-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    z-index: 10;
+    border-radius: var(--border-radius-main, 16px) var(--border-radius-main, 16px) 0 0;
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+html[data-theme="light"] .privacy-settings-header {
+    background: rgba(255, 255, 255, 0.98);
+    border-bottom: 1px solid rgba(var(--accent-color-raw, 79, 70, 229), 0.15);
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.05);
 }
 
 .privacy-settings-header h2 {
     margin: 0;
-    font-size: 1.5rem;
-    color: var(--primary-text);
+    font-size: 1.75rem;
+    font-weight: 700;
+    background: linear-gradient(
+        135deg,
+        var(--primary-text) 0%,
+        var(--accent-color) 100%
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    flex: 1;
+    line-height: 1.2;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.privacy-settings-header h2::before {
+    content: '';
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    background: linear-gradient(135deg, var(--accent-color), rgba(0, 166, 255, 0.6));
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 166, 255, 0.3);
+    flex-shrink: 0;
+    mask: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>');
+    -webkit-mask: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>');
+    mask-size: contain;
+    -webkit-mask-size: contain;
 }
 
 .privacy-settings-close {
-    background: transparent;
-    border: none;
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border-color);
     color: var(--secondary-text);
     cursor: pointer;
-    padding: 0.5rem;
+    padding: 0.65rem;
     border-radius: 50%;
-    transition: all var(--transition-fast);
+    transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-shrink: 0;
+    min-width: 48px;
+    min-height: 48px;
+    position: relative;
+    z-index: 11;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.privacy-settings-close:hover {
+.privacy-settings-close:hover,
+.privacy-settings-close:focus-visible {
     color: var(--accent-color);
-    background: rgba(0, 166, 255, 0.1);
-    transform: rotate(90deg);
+    background: rgba(0, 166, 255, 0.15);
+    border-color: var(--accent-color);
+    transform: scale(1.1);
+    box-shadow: 0 4px 16px rgba(0, 166, 255, 0.3);
 }
 
-/* DNT Banner */
+.privacy-settings-close:focus-visible {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 3px;
+}
+
+/* DNT Banner - Enhanced Design */
 .privacy-dnt-banner {
-    background: linear-gradient(135deg, rgba(0, 166, 255, 0.15), rgba(0, 166, 255, 0.05));
-    border: 1px solid var(--accent-color);
-    border-radius: var(--border-radius-small);
-    padding: 1rem 1.5rem;
-    margin: 1.5rem 2rem 0;
+    background: linear-gradient(
+        135deg,
+        rgba(0, 166, 255, 0.2) 0%,
+        rgba(0, 166, 255, 0.1) 50%,
+        rgba(0, 166, 255, 0.05) 100%
+    );
+    border: 1px solid rgba(0, 166, 255, 0.4);
+    border-radius: var(--border-radius, 12px);
+    padding: 1.25rem 1.75rem;
+    margin: 2rem 2.5rem 0;
     display: flex;
-    gap: 1rem;
+    gap: 1.25rem;
     align-items: flex-start;
+    box-shadow: 
+        0 4px 16px rgba(0, 166, 255, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.privacy-dnt-banner::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: var(--accent-color);
+    box-shadow: 0 0 12px var(--accent-color);
 }
 
 .privacy-dnt-banner svg {
     color: var(--accent-color);
     flex-shrink: 0;
     margin-top: 0.2rem;
+    filter: drop-shadow(0 2px 8px rgba(0, 166, 255, 0.4));
 }
 
 .privacy-dnt-banner strong {
     display: block;
     color: var(--accent-color);
-    margin-bottom: 0.25rem;
+    margin-bottom: 0.5rem;
+    font-size: 1.05rem;
+    font-weight: 600;
 }
 
 .privacy-dnt-banner p {
     margin: 0;
     font-size: 0.9rem;
     color: var(--secondary-text);
+    line-height: 1.6;
 }
 
-/* Tabs */
+/* Tabs - Redesigned with Modern Pill Style */
 .privacy-settings-tabs {
     display: flex;
-    gap: 0.5rem;
-    padding: 1.5rem 2rem 0;
-    border-bottom: 1px solid var(--glass-border-color);
+    gap: 0.75rem;
+    padding: 1.75rem 2.5rem 1.5rem;
+    border-bottom: 1px solid rgba(var(--accent-color-raw, 0, 166, 255), 0.15);
     flex-shrink: 0;
+    position: sticky;
+    top: 0;
+    background: var(--card-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    z-index: 9;
+    margin: 0;
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+
+html[data-theme="light"] .privacy-settings-tabs {
+    background: rgba(255, 255, 255, 0.98);
+    border-bottom: 1px solid rgba(var(--accent-color-raw, 79, 70, 229), 0.12);
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.03);
 }
 
 .privacy-tab {
-    background: transparent;
-    border: none;
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border-color);
     color: var(--secondary-text);
     cursor: pointer;
-    padding: 0.75rem 1.5rem;
-    border-radius: var(--border-radius-small) var(--border-radius-small) 0 0;
-    font-weight: 500;
-    transition: all var(--transition-fast);
+    padding: 0.85rem 1.75rem;
+    border-radius: var(--border-radius-pill, 50px);
+    font-weight: 600;
+    transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
     position: relative;
+    font-size: 0.95rem;
+    min-height: 48px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
 }
 
-.privacy-tab:hover {
+.privacy-tab::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, var(--accent-color), rgba(0, 166, 255, 0.6));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.privacy-tab span {
+    position: relative;
+    z-index: 1;
+}
+
+.privacy-tab:hover,
+.privacy-tab:focus-visible {
     color: var(--primary-text);
-    background: rgba(var(--accent-color-raw, 0, 166, 255), 0.05);
+    border-color: rgba(var(--accent-color-raw, 0, 166, 255), 0.3);
+    box-shadow: 0 4px 16px rgba(0, 166, 255, 0.15);
+    transform: translateY(-2px);
+}
+
+.privacy-tab:hover::before {
+    opacity: 0.05;
+}
+
+.privacy-tab:focus-visible {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 2px;
 }
 
 .privacy-tab.active {
-    color: var(--accent-color);
-    background: rgba(var(--accent-color-raw, 0, 166, 255), 0.1);
+    color: white;
+    background: linear-gradient(135deg, var(--accent-color), rgba(0, 166, 255, 0.8));
+    border-color: var(--accent-color);
+    box-shadow: 
+        0 4px 16px rgba(0, 166, 255, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+}
+
+html[data-theme="light"] .privacy-tab.active {
+    background: linear-gradient(135deg, var(--accent-color), rgba(79, 70, 229, 0.9));
+    box-shadow: 
+        0 4px 16px rgba(79, 70, 229, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.privacy-tab.active::before {
+    opacity: 0;
 }
 
 .privacy-tab.active::after {
     content: '';
     position: absolute;
-    bottom: -1px;
-    left: 0;
-    right: 0;
-    height: 2px;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.2),
+        transparent 50%,
+        rgba(0, 0, 0, 0.1)
+    );
+    pointer-events: none;
+}
+
+/* Content Area - Enhanced */
+.privacy-settings-content {
+    padding: 2.5rem;
+    overflow-y: auto;
+    flex: 1;
+    scroll-behavior: smooth;
+}
+
+.privacy-settings-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.privacy-settings-content::-webkit-scrollbar-track {
+    background: var(--hover-bg);
+    border-radius: 4px;
+}
+
+.privacy-settings-content::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, var(--accent-color), rgba(0, 166, 255, 0.6));
+    border-radius: 4px;
+}
+
+.privacy-settings-content::-webkit-scrollbar-thumb:hover {
     background: var(--accent-color);
 }
 
-/* Content Area */
-.privacy-settings-content {
-    padding: 2rem;
-    overflow-y: auto;
-    flex: 1;
-}
-
 .privacy-intro {
-    margin: 0 0 1.5rem;
+    margin: 0 0 2rem;
     color: var(--secondary-text);
-    line-height: 1.6;
+    line-height: 1.7;
+    font-size: 1rem;
+    padding: 1.25rem;
+    background: var(--glass-bg);
+    border-left: 3px solid var(--accent-color);
+    border-radius: var(--border-radius-small);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
-/* Quick Actions */
+/* Quick Actions - Enhanced Design */
 .privacy-quick-actions {
     display: flex;
-    gap: 1rem;
-    margin-bottom: 2rem;
+    gap: 1.25rem;
+    margin-bottom: 2.5rem;
 }
 
 .privacy-btn {
-    padding: 0.75rem 1.5rem;
-    border-radius: var(--border-radius-small);
-    font-weight: 500;
+    padding: 1rem 2rem;
+    border-radius: var(--border-radius, 12px);
+    font-weight: 600;
     cursor: pointer;
-    transition: all var(--transition-fast);
+    transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
     border: none;
     font-size: 1rem;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-height: 44px;
+    min-height: 52px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.privacy-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.1),
+        transparent 50%,
+        rgba(0, 0, 0, 0.05)
+    );
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.privacy-btn:hover::before {
+    opacity: 1;
 }
 
 .privacy-btn:disabled {
     opacity: 0.5;
     cursor: not-allowed;
+    transform: none !important;
 }
 
 .privacy-btn-accept {
     background: linear-gradient(135deg, var(--accent-color), rgba(0, 166, 255, 0.8));
     color: white;
     flex: 1;
+    box-shadow: 0 4px 16px rgba(0, 166, 255, 0.3);
+}
+
+html[data-theme="light"] .privacy-btn-accept {
+    background: linear-gradient(135deg, var(--accent-color), rgba(79, 70, 229, 0.9));
+    box-shadow: 0 4px 16px rgba(79, 70, 229, 0.25);
 }
 
 .privacy-btn-accept:hover:not(:disabled) {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 166, 255, 0.3);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(0, 166, 255, 0.4);
+}
+
+html[data-theme="light"] .privacy-btn-accept:hover:not(:disabled) {
+    box-shadow: 0 8px 24px rgba(79, 70, 229, 0.35);
 }
 
 .privacy-btn-reject {
-    background: var(--card-bg);
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     color: var(--primary-text);
     border: 1px solid var(--glass-border-color);
     flex: 1;
@@ -2800,11 +3095,15 @@ canvas {
 
 .privacy-btn-reject:hover:not(:disabled) {
     background: var(--hover-bg);
-    transform: translateY(-2px);
+    border-color: var(--accent-color);
+    transform: translateY(-3px);
+    box-shadow: 0 4px 16px rgba(0, 166, 255, 0.15);
 }
 
 .privacy-btn-secondary {
-    background: var(--card-bg);
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     color: var(--primary-text);
     border: 1px solid var(--glass-border-color);
     width: 100%;
@@ -2813,60 +3112,94 @@ canvas {
 .privacy-btn-secondary:hover:not(:disabled) {
     background: var(--hover-bg);
     border-color: var(--accent-color);
+    transform: translateY(-3px);
+    box-shadow: 0 4px 16px rgba(0, 166, 255, 0.15);
 }
 
 .privacy-btn-danger {
     background: linear-gradient(135deg, #dc3545, #c82333);
     color: white;
     width: 100%;
+    box-shadow: 0 4px 16px rgba(220, 53, 69, 0.3);
 }
 
 .privacy-btn-danger:hover:not(:disabled) {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(220, 53, 69, 0.4);
 }
 
-/* Consent Items */
+/* Consent Items - Redesigned with Modern Cards */
 .privacy-consent-items {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 1.25rem;
 }
 
 .privacy-consent-item {
     background: var(--hover-bg);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     border: 1px solid var(--glass-border-color);
-    border-radius: var(--border-radius-small);
-    padding: 1.25rem;
-    transition: all var(--transition-fast);
+    border-radius: var(--border-radius, 12px);
+    padding: 1.5rem;
+    transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 2px 8px var(--shadow-soft-color);
+}
+
+html[data-theme="light"] .privacy-consent-item {
+    background: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.privacy-consent-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(180deg, var(--accent-color), rgba(0, 166, 255, 0.3));
+    opacity: 0;
+    transition: opacity 0.3s ease;
 }
 
 .privacy-consent-item:hover {
-    border-color: var(--accent-color);
-    box-shadow: 0 2px 8px rgba(0, 166, 255, 0.1);
+    border-color: rgba(var(--accent-color-raw, 0, 166, 255), 0.4);
+    box-shadow: 0 4px 16px rgba(0, 166, 255, 0.15);
+    transform: translateX(4px);
+}
+
+.privacy-consent-item:hover::before {
+    opacity: 1;
 }
 
 .privacy-consent-header {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    gap: 1rem;
+    gap: 1.5rem;
 }
 
 .privacy-consent-header h3 {
-    margin: 0 0 0.5rem;
-    font-size: 1.1rem;
+    margin: 0 0 0.75rem;
+    font-size: 1.15rem;
+    font-weight: 600;
     color: var(--primary-text);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 
 .privacy-consent-header p {
     margin: 0;
     font-size: 0.9rem;
     color: var(--secondary-text);
-    line-height: 1.5;
+    line-height: 1.6;
 }
 
-/* Toggle Switch */
+/* Toggle Switch - Enhanced with Theme Support */
 .privacy-toggle {
     position: relative;
     width: 50px;
@@ -2888,8 +3221,14 @@ canvas {
     right: 0;
     bottom: 0;
     background-color: var(--glass-border-color);
-    transition: 0.3s;
+    transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
     border-radius: 26px;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+html[data-theme="light"] .privacy-toggle-slider {
+    background-color: rgba(0, 0, 0, 0.1);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .privacy-toggle-slider:before {
@@ -2900,12 +3239,22 @@ canvas {
     left: 3px;
     bottom: 3px;
     background-color: white;
-    transition: 0.3s;
+    transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
     border-radius: 50%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .privacy-toggle input:checked + .privacy-toggle-slider {
     background-color: var(--accent-color);
+    box-shadow: 
+        inset 0 2px 4px rgba(0, 0, 0, 0.1),
+        0 0 8px rgba(var(--accent-color-raw, 0, 166, 255), 0.3);
+}
+
+html[data-theme="light"] .privacy-toggle input:checked + .privacy-toggle-slider {
+    box-shadow: 
+        inset 0 2px 4px rgba(0, 0, 0, 0.05),
+        0 0 8px rgba(79, 70, 229, 0.2);
 }
 
 .privacy-toggle input:checked + .privacy-toggle-slider:before {
@@ -3028,6 +3377,31 @@ canvas {
     color: #28a745;
     border-radius: var(--border-radius-small);
     font-size: 0.9rem;
+    border: 1px solid rgba(40, 167, 69, 0.3);
+    animation: slideDown 0.3s ease;
+}
+
+.privacy-error-message {
+    margin-top: 0.75rem;
+    padding: 0.75rem;
+    background: rgba(220, 53, 69, 0.1);
+    color: #dc3545;
+    border-radius: var(--border-radius-small);
+    font-size: 0.9rem;
+    border: 1px solid rgba(220, 53, 69, 0.3);
+    font-weight: 500;
+    animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .privacy-confirm-actions {
@@ -3066,6 +3440,45 @@ canvas {
     text-align: center;
 }
 
+/* Loading State */
+.privacy-data-stat strong {
+    min-height: 2rem;
+    display: flex;
+    align-items: center;
+}
+
+/* Improved Touch Targets for Mobile */
+@media (hover: none) and (pointer: coarse) {
+    .privacy-toggle {
+        width: 60px;
+        height: 34px;
+        min-width: 60px;
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+    }
+    
+    .privacy-toggle-slider:before {
+        height: 26px;
+        width: 26px;
+    }
+    
+    .privacy-toggle input:checked + .privacy-toggle-slider:before {
+        transform: translateX(26px);
+    }
+    
+    .privacy-tab {
+        min-height: 48px;
+        padding: 1rem 1.5rem;
+    }
+    
+    .privacy-settings-close {
+        min-width: 48px;
+        min-height: 48px;
+        padding: 0.75rem;
+    }
+}
+
 /* Responsive */
 @media (max-width: 768px) {
     .privacy-settings-overlay {
@@ -3076,46 +3489,121 @@ canvas {
     .privacy-settings-modal {
         max-width: 100%;
         max-height: 95vh;
+        min-height: 60vh;
         border-radius: var(--border-radius) var(--border-radius) 0 0;
+        animation: slideUpMobile 0.3s ease;
+    }
+    
+    @keyframes slideUpMobile {
+        from {
+            transform: translateY(100%);
+        }
+        to {
+            transform: translateY(0);
+        }
     }
     
     .privacy-settings-header,
     .privacy-settings-tabs,
     .privacy-settings-content {
-        padding-left: 1rem;
-        padding-right: 1rem;
+        padding-left: 1.25rem;
+        padding-right: 1.25rem;
+    }
+    
+    .privacy-settings-content {
+        padding-top: 1.5rem;
+        padding-bottom: 1.5rem;
     }
     
     .privacy-quick-actions {
         flex-direction: column;
+        gap: 0.75rem;
     }
     
     .privacy-data-actions {
         grid-template-columns: 1fr;
+        gap: 1.25rem;
     }
     
     .privacy-consent-header {
-        flex-direction: column;
-        align-items: flex-start;
+        gap: 1.5rem;
+    }
+    
+    .privacy-consent-header > div {
+        flex: 1;
     }
     
     .privacy-toggle {
-        align-self: flex-end;
+        flex-shrink: 0;
+        margin-top: 0.5rem;
     }
     
     .privacy-dnt-banner {
         margin: 1rem;
+        font-size: 0.9rem;
+    }
+    
+    .privacy-action-card {
+        padding: 1.25rem;
+    }
+    
+    .privacy-consent-item {
+        padding: 1rem;
     }
 }
 
 @media (max-width: 480px) {
     .privacy-settings-header h2 {
-        font-size: 1.25rem;
+        font-size: 1.2rem;
     }
     
     .privacy-btn {
         font-size: 0.9rem;
-        padding: 0.65rem 1rem;
+        padding: 0.75rem 1.25rem;
+        min-height: 48px;
+    }
+    
+    .privacy-tab {
+        font-size: 0.9rem;
+        padding: 0.75rem 1rem;
+    }
+    
+    .privacy-consent-header h3 {
+        font-size: 1rem;
+    }
+    
+    .privacy-consent-header p {
+        font-size: 0.85rem;
+    }
+    
+    .privacy-action-card h3 {
+        font-size: 1.1rem;
+    }
+    
+    .privacy-action-card p {
+        font-size: 0.85rem;
+    }
+}
+
+/* Accessibility: Reduce Motion */
+@media (prefers-reduced-motion: reduce) {
+    .privacy-settings-overlay,
+    .privacy-settings-modal,
+    .privacy-success-message,
+    .privacy-error-message {
+        animation: none !important;
+    }
+    
+    .privacy-settings-close:hover {
+        transform: none !important;
+    }
+    
+    .privacy-btn:hover {
+        transform: none !important;
+    }
+    
+    .privacy-action-card:hover {
+        transform: none !important;
     }
 }
 

@@ -10,7 +10,6 @@ import {
   Color,
   MathUtils,
   NormalBlending,
-  AdditiveBlending,
   NoToneMapping,
   LinearToneMapping,
   SRGBColorSpace
@@ -187,30 +186,30 @@ function FractalParticles({ count = 5000, theme }: { count?: number; theme: stri
     };
 
     const darkConfig = {
-      baseColor: new Color('#00D9FF'),
-      highlightColor: new Color('#FFFFFF'),
-      attractColor: new Color('#FF6B9D'),
-      repelColor: new Color('#FFE066'),
-      accentColor: new Color('#B794F6'),
-      secondaryColor: new Color('#F59E0B'),
-      tertiaryColor: new Color('#34D399'),
+      baseColor: new Color('#5B21B6'),
+      highlightColor: new Color('#7C3AED'),
+      attractColor: new Color('#DC2626'),
+      repelColor: new Color('#EA580C'),
+      accentColor: new Color('#6366F1'),
+      secondaryColor: new Color('#059669'),
+      tertiaryColor: new Color('#0891B2'),
       particleSize: {
-        min: 0.012 * qualityMultiplier,
-        max: 0.028 * qualityMultiplier
+        min: Math.max(0.028 * qualityMultiplier, 0.025),
+        max: Math.max(0.055 * qualityMultiplier, 0.048)
       },
       animationSpeed: {
-        base: 0.5 * complexityMultiplier,
-        max: 1.0 * complexityMultiplier
+        base: 0.35 * complexityMultiplier,
+        max: 0.7 * complexityMultiplier
       },
-      noiseIntensity: 2.0 * adaptiveSettings.noiseComplexity,
-      interactionRadius: adaptiveSettings.interactionEnabled ? 7.0 : 0,
-      bloomIntensity: 0.8 * qualityMultiplier,
-      opacity: 0.9,
-      blending: AdditiveBlending,
-      distribution: 'galaxy' as const,
-      colorVariation: 0.8 * qualityMultiplier,
-      waveAmplitude: 3.0,
-      spiralTightness: 1.2
+      noiseIntensity: Math.max(2.2 * adaptiveSettings.noiseComplexity, 1.5),
+      interactionRadius: adaptiveSettings.interactionEnabled ? 6.5 : 0,
+      bloomIntensity: Math.max(0.5 * qualityMultiplier, 0.35),
+      opacity: 0.75,
+      blending: NormalBlending,
+      distribution: 'organic' as const,
+      colorVariation: Math.max(0.8 * qualityMultiplier, 0.6),
+      waveAmplitude: 3.5,
+      spiralTightness: 0.8
     };
 
     return theme === 'light' ? lightConfig : darkConfig;
@@ -372,32 +371,16 @@ function FractalParticles({ count = 5000, theme }: { count?: number; theme: stri
 
       tempColor.copy(themeConfig.baseColor);
 
-      if (theme === 'light') {
-        const primaryMix = colorVariation * 0.4 * adaptiveSettings.renderQuality;
-        const accentMix = colorVariation * 0.3 * adaptiveSettings.renderQuality;
-        const secondaryMix = Math.sin(time * 0.15 + i * 0.02) * 0.2 + 0.2;
+      const primaryMix = colorVariation * 0.4 * adaptiveSettings.renderQuality;
+      const accentMix = colorVariation * 0.3 * adaptiveSettings.renderQuality;
+      const secondaryMix = Math.sin(time * 0.15 + i * 0.02) * 0.2 + 0.2;
 
-        tempColor.lerp(themeConfig.highlightColor, primaryMix);
-        tempColor.lerp(themeConfig.accentColor, accentMix);
-        tempColor.lerp(themeConfig.secondaryColor, secondaryMix * adaptiveSettings.renderQuality);
+      tempColor.lerp(themeConfig.highlightColor, primaryMix);
+      tempColor.lerp(themeConfig.accentColor, accentMix);
+      tempColor.lerp(themeConfig.secondaryColor, secondaryMix * adaptiveSettings.renderQuality);
 
-        const tertiaryMix = Math.cos(time * 0.12 + i * 0.015) * 0.15 + 0.15;
-        tempColor.lerp(themeConfig.tertiaryColor, tertiaryMix * adaptiveSettings.renderQuality);
-      } else {
-        const energyMix = Math.sin(time * 0.3 + i * 0.05) * 0.3 + 0.3;
-        const accentMix = colorVariation * 0.4;
-
-        tempColor.lerp(themeConfig.highlightColor, energyMix * adaptiveSettings.renderQuality);
-        tempColor.lerp(themeConfig.accentColor, accentMix * adaptiveSettings.renderQuality);
-
-        const pulseMix = Math.sin(time * 0.2 + i * 0.01) * 0.2 + 0.2;
-        tempColor.lerp(themeConfig.tertiaryColor, pulseMix * adaptiveSettings.renderQuality);
-
-        if (mouseInfluence > 0) {
-          const interactionColor = isAttracting ? themeConfig.attractColor : themeConfig.repelColor;
-          tempColor.lerp(interactionColor, mouseInfluence * 0.4);
-        }
-      }
+      const tertiaryMix = Math.cos(time * 0.12 + i * 0.015) * 0.15 + 0.15;
+      tempColor.lerp(themeConfig.tertiaryColor, tertiaryMix * adaptiveSettings.renderQuality);
 
       colorsArray[i3] = tempColor.r;
       colorsArray[i3 + 1] = tempColor.g;
@@ -445,14 +428,14 @@ function FractalParticles({ count = 5000, theme }: { count?: number; theme: stri
     ),
     React.createElement(PointMaterial, {
       transparent: true,
-      size: (theme === 'light' ? 0.038 : 0.022) * adaptiveSettings.renderQuality,
+      size: 0.038 * adaptiveSettings.renderQuality,
       sizeAttenuation: true,
       depthWrite: false,
       depthTest: true,
       vertexColors: true,
       opacity: themeConfig.opacity,
       blending: themeConfig.blending,
-      alphaTest: theme === 'light' ? 0.02 : 0.01
+      alphaTest: 0.02
     })
   );
 }
@@ -487,24 +470,14 @@ export const ThreeBackground: React.FC<ThreeBackgroundProps> = ({ theme }) => {
   }, [theme]);
 
   const bloomConfig = useMemo(() => {
-    if (theme === 'light') {
-      return {
-        luminanceThreshold: 0.45,
-        intensity: 0.7,
-        levels: 8,
-        mipmapBlur: true,
-        radius: 0.9
-      };
-    } else {
-      return {
-        luminanceThreshold: 0.1,
-        intensity: 1.2,
-        levels: 9,
-        mipmapBlur: true,
-        radius: 0.9
-      };
-    }
-  }, [theme]);
+    return {
+      luminanceThreshold: 0.45,
+      intensity: 0.7,
+      levels: 8,
+      mipmapBlur: true,
+      radius: 0.9
+    };
+  }, []);
 
   useEffect(() => {
     if (hasError) {
