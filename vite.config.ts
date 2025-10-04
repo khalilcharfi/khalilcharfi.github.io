@@ -68,6 +68,10 @@ export default defineConfig(({ mode }) => {
               if (id.includes('@axe-core') || id.includes('puppeteer') || id.includes('lighthouse')) {
                 return undefined;
               }
+              // Skip TranslationTest in production builds
+              if (id.includes('TranslationTest')) {
+                return undefined;
+              }
             }
             
             // Keep React and React-DOM together - CRITICAL for proper React hooks
@@ -80,6 +84,18 @@ export default defineConfig(({ mode }) => {
                 id.includes('react-hook-consent') || id.includes('scheduler')) {
               return 'react-libs';
             }
+            // Split Three.js for better tree-shaking
+            if (id.includes('three/')) {
+              // Core Three.js modules
+              if (id.includes('three/src/')) {
+                return 'three-core';
+              }
+              // Three.js examples/addons (usually larger)
+              if (id.includes('three/examples/')) {
+                return 'three-addons';
+              }
+            }
+            // Main Three.js bundle, simplex-noise, and postprocessing
             if (id.includes('three') || id.includes('simplex-noise') || id.includes('postprocessing')) {
               return 'three-vendor';
             }
@@ -98,6 +114,12 @@ export default defineConfig(({ mode }) => {
         chunkFileNames: 'assets/[name]-[hash].js',
         entryFileNames: 'assets/[name]-[hash].js',
         assetFileNames: 'assets/[name]-[hash].[ext]'
+      },
+      // Enable tree-shaking
+      treeshake: {
+        moduleSideEffects: false,
+        propertyReadSideEffects: false,
+        tryCatchDeoptimization: false
       }
     },
     chunkSizeWarningLimit: 1000,

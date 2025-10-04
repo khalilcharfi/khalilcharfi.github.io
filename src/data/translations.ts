@@ -191,6 +191,57 @@ export interface LanguageSpecificTranslations {
     analyticsCookiesTitle: string;
     analyticsCookiesDescription: string;
   };
+  privacy: {
+    title: string;
+    openSettings: string;
+    consentTab: string;
+    dataTab: string;
+    consentIntro: string;
+    dataIntro: string;
+    acceptAll: string;
+    rejectAll: string;
+    exportData: string;
+    exportDescription: string;
+    exportButton: string;
+    exportSuccess: string;
+    clearData: string;
+    clearDescription: string;
+    clearButton: string;
+    clearWarning: string;
+    confirmClear: string;
+    storedData: string;
+    lastUpdated: string;
+    dntActive: string;
+    dntDescription: string;
+    necessary: {
+      title: string;
+      description: string;
+    };
+    analytics: {
+      title: string;
+      description: string;
+    };
+    functional: {
+      title: string;
+      description: string;
+    };
+    personalization: {
+      title: string;
+      description: string;
+    };
+    marketing: {
+      title: string;
+      description: string;
+    };
+  };
+  common: {
+    close: string;
+    cancel: string;
+    save: string;
+    delete: string;
+    edit: string;
+    confirm: string;
+  };
   profileInsights: {
     toggleLabel: string;
     title: string;
@@ -558,7 +609,7 @@ export const translations: Translations = {
           issuer: 'DAAD Workshop on E-health',
           date: 'December 7-9, 2016',
           location: 'Darmstadt, Germany',
-          imageUrl: './asset/Certificate Recognizing an E-Health Talk Presentation on Cardiac Monitoring.jpeg',
+          imageUrl: '/asset/Certificate-Recognizing-an-E-Health-Talk-Presentation-on-Cardiac-Monitoring.jpeg',
         },
         {
           id: 'cert-attendance-theralytics-darmstadt-2016',
@@ -566,7 +617,7 @@ export const translations: Translations = {
           issuer: 'DAAD Theralytics Workshop',
           date: 'December 7-9, 2016',
           location: 'Darmstadt, Germany',
-          imageUrl: './asset/Certificate Template from Second DAAD Theralytics Workshop in Darmstadt 2016.jpeg',
+          imageUrl: '/asset/Certificate-Template-from-Second-DAAD-Theralytics-Workshop-in-Darmstadt-2016.jpeg',
         },
         {
           id: 'cert-presentation-sfax-2016',
@@ -575,7 +626,7 @@ export const translations: Translations = {
           issuer: 'DAAD Workshop on E-health',
           date: 'September 28, 2016',
           location: 'Sfax, Tunisia',
-          imageUrl: './asset/Certificate of Participation in an E-Health Workshop on Heart Failure.jpeg',
+          imageUrl: '/asset/Certificate-of-Participation-in-an-E-Health-Workshop-on-Heart-Failure.jpeg',
         },
         {
           id: 'cert-attendance-sfax-2016',
@@ -583,14 +634,14 @@ export const translations: Translations = {
           issuer: 'DAAD E-Health Workshop',
           date: 'September 28, 2016',
           location: 'Sfax, Tunisia',
-          imageUrl: './asset/Certificate of Attendance for DAAD E-Health Workshop in Sfax 2016.jpeg',
+          imageUrl: '/asset/Certificate-of-Attendance-for-DAAD-E-Health-Workshop-in-Sfax-2016.jpeg',
         },
         {
           id: 'cert-cardiac-patient-monitoring',
           title: 'Certificate of Participation in E-Health Workshop on Cardiac Patient Monitoring',
           issuer: 'DAAD E-Health Workshop',
           date: '2016',
-          imageUrl: './asset/Certificate of Participation in E-Health Workshop on Cardiac Patient Monitoring.jpeg',
+          imageUrl: '/asset/Certificate-of-Participation-in-E-Health-Workshop-on-Cardiac-Patient-Monitoring.jpeg',
         },
       ],
     },
@@ -647,6 +698,57 @@ export const translations: Translations = {
       necessaryCookiesDescription: "These cookies are necessary for the website to function properly. Without these cookies, the website would not work properly.",
       analyticsCookiesTitle: "Analytics cookies",
       analyticsCookiesDescription: "These cookies are used to collect information about how you use the website. We use this information to improve our website and tailor our advertisements to your interests."
+    },
+    privacy: {
+      title: "Privacy Settings",
+      openSettings: "Open privacy settings",
+      consentTab: "Consent",
+      dataTab: "Your Data",
+      consentIntro: "Manage your consent preferences for data collection and tracking. You can enable or disable different categories based on your preferences.",
+      dataIntro: "View and manage your stored data. You have full control over your information with options to export or delete your data at any time.",
+      acceptAll: "Accept All",
+      rejectAll: "Reject All",
+      exportData: "Export Your Data",
+      exportDescription: "Download all your stored data in JSON format. This includes your preferences, analytics data, and any other information we've collected.",
+      exportButton: "Download Data",
+      exportSuccess: "Data exported successfully!",
+      clearData: "Clear All Data",
+      clearDescription: "Permanently delete all your stored data from this browser. This action cannot be undone.",
+      clearButton: "Clear Data",
+      clearWarning: "⚠️ This will permanently delete all your data. This action cannot be undone.",
+      confirmClear: "Yes, Clear Everything",
+      storedData: "Stored Data",
+      lastUpdated: "Last Updated",
+      dntActive: "Do Not Track Enabled",
+      dntDescription: "Your browser has Do Not Track enabled. We respect your privacy choice and have disabled all optional tracking.",
+      necessary: {
+        title: "Necessary Cookies",
+        description: "Essential cookies required for the website to function properly. These cannot be disabled as they are critical for basic site operations."
+      },
+      analytics: {
+        title: "Analytics & Performance",
+        description: "Cookies that help us understand how visitors interact with our website, allowing us to improve performance and user experience."
+      },
+      functional: {
+        title: "Functional Cookies",
+        description: "Cookies that enable enhanced functionality and personalization, such as remembering your preferences and settings."
+      },
+      personalization: {
+        title: "Personalization",
+        description: "Cookies that allow us to personalize content and recommendations based on your interests and browsing behavior."
+      },
+      marketing: {
+        title: "Marketing & Advertising",
+        description: "Cookies used to track visitors across websites to display relevant advertisements and measure campaign effectiveness."
+      }
+    },
+    common: {
+      close: "Close",
+      cancel: "Cancel",
+      save: "Save",
+      delete: "Delete",
+      edit: "Edit",
+      confirm: "Confirm"
     },
     profileInsights: {
       toggleLabel: "Toggle Profile Insights",
@@ -1009,7 +1111,7 @@ export const translations: Translations = {
           issuer: 'DAAD Workshop für E-Health',
           date: '7.-9. Dezember 2016',
           location: 'Darmstadt, Deutschland',
-          imageUrl: './asset/Certificate Recognizing an E-Health Talk Presentation on Cardiac Monitoring.jpeg',
+          imageUrl: '/asset/Certificate-Recognizing-an-E-Health-Talk-Presentation-on-Cardiac-Monitoring.jpeg',
         },
         {
           id: 'cert-attendance-theralytics-darmstadt-2016',
@@ -1017,7 +1119,7 @@ export const translations: Translations = {
           issuer: 'DAAD Theralytics Workshop',
           date: '7.-9. Dezember 2016',
           location: 'Darmstadt, Deutschland',
-          imageUrl: './asset/Certificate Template from Second DAAD Theralytics Workshop in Darmstadt 2016.jpeg',
+          imageUrl: '/asset/Certificate-Template-from-Second-DAAD-Theralytics-Workshop-in-Darmstadt-2016.jpeg',
         },
         {
           id: 'cert-presentation-sfax-2016',
@@ -1026,7 +1128,7 @@ export const translations: Translations = {
           issuer: 'DAAD Workshop für E-Health',
           date: '28. September 2016',
           location: 'Sfax, Tunesien',
-          imageUrl: './asset/Certificate of Participation in an E-Health Workshop on Heart Failure.jpeg',
+          imageUrl: '/asset/Certificate-of-Participation-in-an-E-Health-Workshop-on-Heart-Failure.jpeg',
         },
         {
           id: 'cert-attendance-sfax-2016',
@@ -1034,14 +1136,14 @@ export const translations: Translations = {
           issuer: 'DAAD E-Health Workshop',
           date: '28. September 2016',
           location: 'Sfax, Tunesien',
-          imageUrl: './asset/Certificate of Attendance for DAAD E-Health Workshop in Sfax 2016.jpeg',
+          imageUrl: '/asset/Certificate-of-Attendance-for-DAAD-E-Health-Workshop-in-Sfax-2016.jpeg',
         },
         {
           id: 'cert-cardiac-patient-monitoring',
           title: 'Teilnahmezertifikat E-Health Workshop über Herzpatientenüberwachung',
           issuer: 'DAAD E-Health Workshop',
           date: '2016',
-          imageUrl: './asset/Certificate of Participation in E-Health Workshop on Cardiac Patient Monitoring.jpeg',
+          imageUrl: '/asset/Certificate-of-Participation-in-E-Health-Workshop-on-Cardiac-Patient-Monitoring.jpeg',
         },
       ],
     },
@@ -1460,7 +1562,7 @@ export const translations: Translations = {
           issuer: 'Atelier DAAD sur l\'E-santé',
           date: '7-9 décembre 2016',
           location: 'Darmstadt, Allemagne',
-          imageUrl: './asset/Certificate Recognizing an E-Health Talk Presentation on Cardiac Monitoring.jpeg',
+          imageUrl: '/asset/Certificate-Recognizing-an-E-Health-Talk-Presentation-on-Cardiac-Monitoring.jpeg',
         },
         {
           id: 'cert-attendance-theralytics-darmstadt-2016',
@@ -1468,7 +1570,7 @@ export const translations: Translations = {
           issuer: 'Atelier DAAD Theralytics',
           date: '7-9 décembre 2016',
           location: 'Darmstadt, Allemagne',
-          imageUrl: './asset/Certificate Template from Second DAAD Theralytics Workshop in Darmstadt 2016.jpeg',
+          imageUrl: '/asset/Certificate-Template-from-Second-DAAD-Theralytics-Workshop-in-Darmstadt-2016.jpeg',
         },
         {
           id: 'cert-presentation-sfax-2016',
@@ -1477,7 +1579,7 @@ export const translations: Translations = {
           issuer: 'Atelier DAAD sur l\'E-santé',
           date: '28 septembre 2016',
           location: 'Sfax, Tunisie',
-          imageUrl: './asset/Certificate of Participation in an E-Health Workshop on Heart Failure.jpeg',
+          imageUrl: '/asset/Certificate-of-Participation-in-an-E-Health-Workshop-on-Heart-Failure.jpeg',
         },
         {
           id: 'cert-attendance-sfax-2016',
@@ -1485,14 +1587,14 @@ export const translations: Translations = {
           issuer: 'Atelier DAAD E-santé',
           date: '28 septembre 2016',
           location: 'Sfax, Tunisie',
-          imageUrl: './asset/Certificate of Attendance for DAAD E-Health Workshop in Sfax 2016.jpeg',
+          imageUrl: '/asset/Certificate-of-Attendance-for-DAAD-E-Health-Workshop-in-Sfax-2016.jpeg',
         },
         {
           id: 'cert-cardiac-patient-monitoring',
           title: 'Certificat de Participation à l\'Atelier E-Santé sur la Surveillance des Patients Cardiaques',
           issuer: 'DAAD E-Health Workshop',
           date: '2016',
-          imageUrl: './asset/Certificate of Participation in E-Health Workshop on Cardiac Patient Monitoring.jpeg',
+          imageUrl: '/asset/Certificate-of-Participation-in-E-Health-Workshop-on-Cardiac-Patient-Monitoring.jpeg',
         },
       ],
     },
@@ -1911,7 +2013,7 @@ export const translations: Translations = {
           issuer: 'ورشة عمل DAAD للصحة الإلكترونية',
           date: '7-9 ديسمبر 2016',
           location: 'دارمشتات، ألمانيا',
-          imageUrl: './asset/Certificate Recognizing an E-Health Talk Presentation on Cardiac Monitoring.jpeg',
+          imageUrl: '/asset/Certificate-Recognizing-an-E-Health-Talk-Presentation-on-Cardiac-Monitoring.jpeg',
         },
         {
           id: 'cert-attendance-theralytics-darmstadt-2016',
@@ -1919,7 +2021,7 @@ export const translations: Translations = {
           issuer: 'ورشة عمل DAAD Theralytics',
           date: '7-9 ديسمبر 2016',
           location: 'دارمشتات، ألمانيا',
-          imageUrl: './asset/Certificate Template from Second DAAD Theralytics Workshop in Darmstadt 2016.jpeg',
+          imageUrl: '/asset/Certificate-Template-from-Second-DAAD-Theralytics-Workshop-in-Darmstadt-2016.jpeg',
         },
         {
           id: 'cert-presentation-sfax-2016',
@@ -1928,7 +2030,7 @@ export const translations: Translations = {
           issuer: 'ورشة عمل DAAD للصحة الإلكترونية',
           date: '28 سبتمبر 2016',
           location: 'صفاقس، تونس',
-          imageUrl: './asset/Certificate of Participation in an E-Health Workshop on Heart Failure.jpeg',
+          imageUrl: '/asset/Certificate-of-Participation-in-an-E-Health-Workshop-on-Heart-Failure.jpeg',
         },
         {
           id: 'cert-attendance-sfax-2016',
@@ -1936,14 +2038,14 @@ export const translations: Translations = {
           issuer: 'ورشة عمل DAAD للصحة الإلكترونية',
           date: '28 سبتمبر 2016',
           location: 'صفاقس، تونس',
-          imageUrl: './asset/Certificate of Attendance for DAAD E-Health Workshop in Sfax 2016.jpeg',
+          imageUrl: '/asset/Certificate-of-Attendance-for-DAAD-E-Health-Workshop-in-Sfax-2016.jpeg',
         },
         {
           id: 'cert-cardiac-patient-monitoring',
           title: 'شهادة مشاركة في ورشة عمل الصحة الإلكترونية حول مراقبة مرضى القلب',
           issuer: 'DAAD E-Health Workshop',
           date: '2016',
-          imageUrl: './asset/Certificate of Participation in E-Health Workshop on Cardiac Patient Monitoring.jpeg',
+          imageUrl: '/asset/Certificate-of-Participation-in-E-Health-Workshop-on-Cardiac-Patient-Monitoring.jpeg',
         },
       ],
     },

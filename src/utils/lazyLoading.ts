@@ -6,11 +6,14 @@ export const LazyVisitorTypeSelector = lazy(() => import('../components/VisitorT
 
 // Conditional lazy loading for TranslationTest - only load in development when debug is enabled
 export const LazyTranslationTest = lazy(() => {
-  if (process.env.VITE_SHOW_TRANSLATION_DEBUG === 'true' && process.env.NODE_ENV === 'development') {
+  // Only load TranslationTest in development mode OR when explicitly enabled
+  if (import.meta.env.DEV || import.meta.env.VITE_SHOW_TRANSLATION_DEBUG === 'true') {
     return import('../components/TranslationTest');
   }
-  // Return empty component if not in debug mode
-  return Promise.resolve({ default: () => null });
+  // Return empty component in production (saves ~23 KB gzipped)
+  return Promise.resolve({ 
+    default: () => null 
+  }) as Promise<{ default: React.ComponentType<any> }>;
 });
 
 // Lazy load ThreeBackground component - saves ~166KB gzipped

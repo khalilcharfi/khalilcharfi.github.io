@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from '../hooks/useTranslation';
 import { NavLink, ThemeToggle, LanguageSwitcher } from './ui';
+import { PrivacySettings } from './PrivacySettings';
 import { smoothScrollTo } from '../utils/navigation';
 
 interface NavControls {
@@ -10,6 +11,7 @@ interface NavControls {
 
 const NavControls: React.FC<NavControls> = ({ theme, toggleTheme }) => (
     <>
+        <PrivacySettings />
         <ThemeToggle theme={theme} toggleTheme={toggleTheme} />
         <LanguageSwitcher />
     </>

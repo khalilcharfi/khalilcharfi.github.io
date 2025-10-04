@@ -33,6 +33,10 @@ const ALL_PERSONAS = [
   'international_client',
   'local_tech_community',
 
+  // Developer / Technical
+  'software_developer',
+  'peer_developer',
+
   // General
   'general_visitor',
   'returning_visitor',
@@ -48,6 +52,7 @@ type Persona = typeof ALL_PERSONAS[number];
 const DEFAULT_ENABLED_PERSONAS: readonly Persona[] = [
   'general_visitor',
   'returning_visitor',
+  'software_developer',
   'recruiter',
   'hr_manager',
   'agency_recruiter',

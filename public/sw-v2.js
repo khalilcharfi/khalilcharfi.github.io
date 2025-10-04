@@ -1,6 +1,6 @@
 
 // Ultra-simple Service Worker with maximum compatibility
-const CACHE_VERSION = 'v8';
+const CACHE_VERSION = 'v9';
 const CACHE_NAME = `portfolio-cache-${CACHE_VERSION}`;
 
 // Helper function to safely check if URL can be cached
@@ -15,7 +15,7 @@ function isCacheableUrl(url) {
 
 // Install event - robust cache setup
 self.addEventListener('install', (event) => {
-  console.log('Service Worker: Installing v8...');
+  console.log('Service Worker: Installing v9...');
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then((cache) => {
@@ -54,7 +54,7 @@ self.addEventListener('install', (event) => {
 
 // Activate event - clean up old caches
 self.addEventListener('activate', (event) => {
-  console.log('Service Worker: Activating v7...');
+  console.log('Service Worker: Activating v9...');
   event.waitUntil(
     caches.keys()
       .then((cacheNames) => {
@@ -77,24 +77,33 @@ self.addEventListener('activate', (event) => {
 // Fetch event - ultra-safe strategy
 self.addEventListener('fetch', (event) => {
   const { request } = event;
-  const url = new URL(request.url);
-
+  
+  // Early exit conditions - don't even parse URL if we know we should skip
   // Skip non-GET requests
   if (request.method !== 'GET') {
     return;
   }
-
-  // Completely ignore problematic URL schemes
-  if (url.protocol !== 'http:' && url.protocol !== 'https:') {
-    console.log('Service Worker: Ignoring non-HTTP request:', request.url);
+  
+  // Skip CORS-restricted external domains completely (before URL parsing)
+  // This prevents FetchEvent errors for opaque responses
+  if (request.url.includes('media.licdn.com') || 
+      request.url.includes('profile-images.xing.com') ||
+      request.url.includes('xingassets.com')) {
+    // Don't intercept - let browser handle naturally
     return;
   }
-
-  // Ignore chrome-extension URLs completely
+  
+  // Skip chrome-extension URLs completely
   if (request.url.includes('chrome-extension://') || 
       request.url.includes('moz-extension://') || 
       request.url.includes('edge-extension://')) {
-    console.log('Service Worker: Ignoring extension request:', request.url);
+    return;
+  }
+
+  const url = new URL(request.url);
+
+  // Completely ignore problematic URL schemes
+  if (url.protocol !== 'http:' && url.protocol !== 'https:') {
     return;
   }
 

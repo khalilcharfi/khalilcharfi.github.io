@@ -147,14 +147,11 @@ const About: React.FC = () => {
     // Try to fetch profile photo from multiple sources on mount
     useEffect(() => {
         const profilePhotoUrls = [
-            // Method 1: Try LinkedIn CDN (from your actual profile)
-            'https://media.licdn.com/dms/image/v2/C4E03AQF6BDo91VspjA/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1516850012125?e=1762387200&v=beta&t=Nafggbtv4kkFpCF0qrXTVqAfXWNon4YWvd_kmKGlWUo',
-            // Method 2: Try XING profile photo (from https://www.xing.com/profile/Khalil_Charfi2)
-            'https://profile-images.xing.com/images/khalilcharfi2/web/image.jpg',
-            'https://x1.xingassets.com/assets/profile_images/khalil_charfi2/image.jpg',
-            'https://www.xing.com/image/Khalil_Charfi2',
-            // Method 3: Fallback to local asset
-            '/asset/profile-photo.jpg'
+            // Note: Direct LinkedIn CDN URLs cause CORS errors and cannot be used
+            // LinkedIn blocks cross-origin image requests
+            // Fallback to local asset
+            '/asset/profile-photo.jpg',
+            '/asset/profile-photo.jpeg'
         ];
 
         let currentIndex = 0;
@@ -252,7 +249,6 @@ const About: React.FC = () => {
                         alt="Khalil Charfi - Professional Profile" 
                         className="profile-photo"
                         loading="lazy"
-                        crossOrigin="anonymous"
                         onError={(e) => {
                             const target = e.target as HTMLImageElement;
                             if (photoRetryCount < 2) {

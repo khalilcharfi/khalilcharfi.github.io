@@ -8,11 +8,14 @@ This portfolio application supports multiple visitor personas/profiles to tailor
 
 ## Default Enabled Personas
 
-The following 5 personas are enabled by default:
+The following 6 personas are enabled by default:
 
 ### General Visitors
-- ✅ **general_visitor** - Generic visitors exploring the portfolio
+- ✅ **general_visitor** - Generic visitors exploring the portfolio (always enabled as fallback)
 - ✅ **returning_visitor** - Users who have visited before
+
+### Developer / Technical
+- ✅ **software_developer** - Software developers and engineers exploring the portfolio
 
 ### Recruitment Professionals
 - ✅ **recruiter** - Professional recruiters
@@ -41,8 +44,12 @@ The following 5 personas are enabled by default:
 - `international_client` ❌ (disabled)
 - `local_tech_community` ❌ (disabled)
 
+### Developer / Technical (2 total)
+- `software_developer` ✅ (enabled)
+- `peer_developer` ❌ (disabled)
+
 ### General (3 total)
-- `general_visitor` ✅ (enabled)
+- `general_visitor` ✅ (enabled - fallback)
 - `returning_visitor` ✅ (enabled)
 - `potential_collaborator` ❌ (disabled)
 
@@ -56,6 +63,7 @@ Edit the `DEFAULT_ENABLED_PERSONAS` array in `/src/config/personaSettings.ts`:
 const DEFAULT_ENABLED_PERSONAS: readonly Persona[] = [
   'general_visitor',
   'returning_visitor',
+  'software_developer',
   'recruiter',
   'hr_manager',
   'agency_recruiter',
@@ -83,7 +91,7 @@ VITE_DISABLED_PERSONAS=technical_lead,c_level_executive
 
 #### Enable All Personas
 ```bash
-VITE_ENABLED_PERSONAS=recruiter,hr_manager,technical_lead,c_level_executive,agency_recruiter,startup_founder,product_manager,project_manager,business_owner,enterprise_client,local_business,remote_work_advocate,international_client,local_tech_community,general_visitor,returning_visitor,potential_collaborator
+VITE_ENABLED_PERSONAS=recruiter,hr_manager,technical_lead,c_level_executive,agency_recruiter,startup_founder,product_manager,project_manager,business_owner,enterprise_client,local_business,remote_work_advocate,international_client,local_tech_community,software_developer,peer_developer,general_visitor,returning_visitor,potential_collaborator
 ```
 
 ### Priority Order

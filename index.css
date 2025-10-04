@@ -2556,6 +2556,570 @@ canvas {
         animation: none !important}
 }
 /* ========================================
+   PRIVACY SETTINGS STYLES
+   ======================================== */
+
+/* Privacy Settings Trigger Button */
+.privacy-settings-trigger {
+    background: transparent;
+    border: 1px solid var(--glass-border-color);
+    color: var(--secondary-text);
+    cursor: pointer;
+    padding: 0.6rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--transition-fast);
+    position: relative;
+    z-index: 1001;
+}
+
+.privacy-settings-trigger:hover,
+.privacy-settings-trigger:focus-visible {
+    color: var(--accent-color);
+    transform: rotate(90deg) scale(1.1);
+    border-color: var(--accent-color);
+    background: rgba(0, 166, 255, 0.1);
+}
+
+/* Privacy Settings Overlay */
+.privacy-settings-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* Privacy Settings Modal */
+.privacy-settings-modal {
+    background: var(--card-bg);
+    border-radius: var(--border-radius);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    max-width: 700px;
+    width: 100%;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    animation: slideUp 0.3s ease;
+    border: 1px solid var(--glass-border-color);
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Header */
+.privacy-settings-header {
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid var(--glass-border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.privacy-settings-header h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: var(--primary-text);
+}
+
+.privacy-settings-close {
+    background: transparent;
+    border: none;
+    color: var(--secondary-text);
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 50%;
+    transition: all var(--transition-fast);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.privacy-settings-close:hover {
+    color: var(--accent-color);
+    background: rgba(0, 166, 255, 0.1);
+    transform: rotate(90deg);
+}
+
+/* DNT Banner */
+.privacy-dnt-banner {
+    background: linear-gradient(135deg, rgba(0, 166, 255, 0.15), rgba(0, 166, 255, 0.05));
+    border: 1px solid var(--accent-color);
+    border-radius: var(--border-radius-small);
+    padding: 1rem 1.5rem;
+    margin: 1.5rem 2rem 0;
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+}
+
+.privacy-dnt-banner svg {
+    color: var(--accent-color);
+    flex-shrink: 0;
+    margin-top: 0.2rem;
+}
+
+.privacy-dnt-banner strong {
+    display: block;
+    color: var(--accent-color);
+    margin-bottom: 0.25rem;
+}
+
+.privacy-dnt-banner p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--secondary-text);
+}
+
+/* Tabs */
+.privacy-settings-tabs {
+    display: flex;
+    gap: 0.5rem;
+    padding: 1.5rem 2rem 0;
+    border-bottom: 1px solid var(--glass-border-color);
+    flex-shrink: 0;
+}
+
+.privacy-tab {
+    background: transparent;
+    border: none;
+    color: var(--secondary-text);
+    cursor: pointer;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--border-radius-small) var(--border-radius-small) 0 0;
+    font-weight: 500;
+    transition: all var(--transition-fast);
+    position: relative;
+}
+
+.privacy-tab:hover {
+    color: var(--primary-text);
+    background: rgba(var(--accent-color-raw, 0, 166, 255), 0.05);
+}
+
+.privacy-tab.active {
+    color: var(--accent-color);
+    background: rgba(var(--accent-color-raw, 0, 166, 255), 0.1);
+}
+
+.privacy-tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--accent-color);
+}
+
+/* Content Area */
+.privacy-settings-content {
+    padding: 2rem;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.privacy-intro {
+    margin: 0 0 1.5rem;
+    color: var(--secondary-text);
+    line-height: 1.6;
+}
+
+/* Quick Actions */
+.privacy-quick-actions {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.privacy-btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--border-radius-small);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    border: none;
+    font-size: 1rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+}
+
+.privacy-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.privacy-btn-accept {
+    background: linear-gradient(135deg, var(--accent-color), rgba(0, 166, 255, 0.8));
+    color: white;
+    flex: 1;
+}
+
+.privacy-btn-accept:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 166, 255, 0.3);
+}
+
+.privacy-btn-reject {
+    background: var(--card-bg);
+    color: var(--primary-text);
+    border: 1px solid var(--glass-border-color);
+    flex: 1;
+}
+
+.privacy-btn-reject:hover:not(:disabled) {
+    background: var(--hover-bg);
+    transform: translateY(-2px);
+}
+
+.privacy-btn-secondary {
+    background: var(--card-bg);
+    color: var(--primary-text);
+    border: 1px solid var(--glass-border-color);
+    width: 100%;
+}
+
+.privacy-btn-secondary:hover:not(:disabled) {
+    background: var(--hover-bg);
+    border-color: var(--accent-color);
+}
+
+.privacy-btn-danger {
+    background: linear-gradient(135deg, #dc3545, #c82333);
+    color: white;
+    width: 100%;
+}
+
+.privacy-btn-danger:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+}
+
+/* Consent Items */
+.privacy-consent-items {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.privacy-consent-item {
+    background: var(--hover-bg);
+    border: 1px solid var(--glass-border-color);
+    border-radius: var(--border-radius-small);
+    padding: 1.25rem;
+    transition: all var(--transition-fast);
+}
+
+.privacy-consent-item:hover {
+    border-color: var(--accent-color);
+    box-shadow: 0 2px 8px rgba(0, 166, 255, 0.1);
+}
+
+.privacy-consent-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+}
+
+.privacy-consent-header h3 {
+    margin: 0 0 0.5rem;
+    font-size: 1.1rem;
+    color: var(--primary-text);
+}
+
+.privacy-consent-header p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--secondary-text);
+    line-height: 1.5;
+}
+
+/* Toggle Switch */
+.privacy-toggle {
+    position: relative;
+    width: 50px;
+    height: 26px;
+    flex-shrink: 0;
+}
+
+.privacy-toggle input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.privacy-toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--glass-border-color);
+    transition: 0.3s;
+    border-radius: 26px;
+}
+
+.privacy-toggle-slider:before {
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: 0.3s;
+    border-radius: 50%;
+}
+
+.privacy-toggle input:checked + .privacy-toggle-slider {
+    background-color: var(--accent-color);
+}
+
+.privacy-toggle input:checked + .privacy-toggle-slider:before {
+    transform: translateX(24px);
+}
+
+.privacy-toggle.disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.privacy-toggle.disabled .privacy-toggle-slider {
+    cursor: not-allowed;
+}
+
+/* Data Panel */
+.privacy-data-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.privacy-data-info {
+    background: var(--hover-bg);
+    border: 1px solid var(--glass-border-color);
+    border-radius: var(--border-radius-small);
+    padding: 1.5rem;
+}
+
+.privacy-data-stat {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.privacy-data-stat svg {
+    color: var(--accent-color);
+    flex-shrink: 0;
+}
+
+.privacy-data-stat strong {
+    display: block;
+    font-size: 1.5rem;
+    color: var(--primary-text);
+    margin-bottom: 0.25rem;
+}
+
+.privacy-data-stat p {
+    margin: 0;
+    color: var(--secondary-text);
+    font-size: 0.9rem;
+}
+
+/* Data Actions */
+.privacy-data-actions {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+}
+
+.privacy-action-card {
+    background: var(--hover-bg);
+    border: 1px solid var(--glass-border-color);
+    border-radius: var(--border-radius-small);
+    padding: 1.5rem;
+    text-align: center;
+    transition: all var(--transition-fast);
+}
+
+.privacy-action-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    border-color: var(--accent-color);
+}
+
+.privacy-danger-card:hover {
+    border-color: #dc3545;
+}
+
+.privacy-action-icon {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: rgba(var(--accent-color-raw, 0, 166, 255), 0.1);
+}
+
+.privacy-danger-card .privacy-action-icon {
+    background: rgba(220, 53, 69, 0.1);
+}
+
+.privacy-action-icon svg {
+    color: var(--accent-color);
+}
+
+.privacy-danger-card .privacy-action-icon svg {
+    color: #dc3545;
+}
+
+.privacy-action-card h3 {
+    margin: 0 0 0.75rem;
+    font-size: 1.2rem;
+    color: var(--primary-text);
+}
+
+.privacy-action-card p {
+    margin: 0 0 1.25rem;
+    color: var(--secondary-text);
+    line-height: 1.5;
+    font-size: 0.9rem;
+}
+
+.privacy-success-message {
+    margin-top: 0.75rem;
+    padding: 0.5rem;
+    background: rgba(40, 167, 69, 0.1);
+    color: #28a745;
+    border-radius: var(--border-radius-small);
+    font-size: 0.9rem;
+}
+
+.privacy-confirm-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.privacy-warning-text {
+    margin: 0 0 1rem;
+    padding: 0.75rem;
+    background: rgba(220, 53, 69, 0.1);
+    border: 1px solid rgba(220, 53, 69, 0.3);
+    border-radius: var(--border-radius-small);
+    color: #dc3545;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.privacy-confirm-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.privacy-footer-text {
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--glass-border-color);
+}
+
+.privacy-footer-text p {
+    margin: 0;
+    font-size: 0.85rem;
+    color: var(--secondary-text);
+    text-align: center;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .privacy-settings-overlay {
+        padding: 0;
+        align-items: flex-end;
+    }
+    
+    .privacy-settings-modal {
+        max-width: 100%;
+        max-height: 95vh;
+        border-radius: var(--border-radius) var(--border-radius) 0 0;
+    }
+    
+    .privacy-settings-header,
+    .privacy-settings-tabs,
+    .privacy-settings-content {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+    
+    .privacy-quick-actions {
+        flex-direction: column;
+    }
+    
+    .privacy-data-actions {
+        grid-template-columns: 1fr;
+    }
+    
+    .privacy-consent-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .privacy-toggle {
+        align-self: flex-end;
+    }
+    
+    .privacy-dnt-banner {
+        margin: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .privacy-settings-header h2 {
+        font-size: 1.25rem;
+    }
+    
+    .privacy-btn {
+        font-size: 0.9rem;
+        padding: 0.65rem 1rem;
+    }
+}
+
+/* ========================================
    NO-JS / JS-ERROR FALLBACK STYLES
    ======================================== */
 
