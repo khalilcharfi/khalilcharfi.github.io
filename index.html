@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html class="no-js" lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -32,9 +32,12 @@
     <meta name="theme-color" content="#f1f5f9" media="(prefers-color-scheme: light)">
     <meta name="color-scheme" content="dark light">
 
-    <!-- Critical Theme Script - Must run before render to prevent FOUC -->
+    <!-- JS Detection & Theme Script - Must run before render -->
     <script>
         (function() {
+            // Remove no-js class immediately if JS is working
+            document.documentElement.classList.remove('no-js');
+            
             // Get stored theme or use system preference
             const storedTheme = localStorage.getItem('theme');
             const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -70,6 +73,9 @@
             --primary-text: #c9d1d9;
             --secondary-text: #8b949e;
             --nav-height: 90px;
+            --fallback-bg: #fff3cd;
+            --fallback-fg: #452700;
+            --fallback-border: #ffecb5;
         }
         html[data-theme="light"] {
             --accent-color: #4F46E5;
@@ -77,15 +83,64 @@
             --primary-bg: rgb(var(--primary-bg-raw));
             --primary-text: #1e293b;
             --secondary-text: #475569;
+            --fallback-bg: #fff3cd;
+            --fallback-fg: #452700;
+            --fallback-border: #ffecb5;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: 'Roboto', sans-serif;
+            font-family: 'Roboto', system-ui, -apple-system, sans-serif;
             background: var(--primary-bg);
             color: var(--primary-text);
             min-height: 100vh;
             overflow-x: hidden;
         }
+        
+        /* No-JS Fallback Banner */
+        .no-js-banner {
+            display: none;
+            box-sizing: border-box;
+            padding: 0.75rem 1rem;
+            text-align: center;
+            background: var(--fallback-bg);
+            color: var(--fallback-fg);
+            border-bottom: 2px solid var(--fallback-border);
+            font-size: clamp(0.85rem, 2vw, 1rem);
+            line-height: 1.4;
+            position: relative;
+            z-index: 10000;
+        }
+        .no-js .no-js-banner {
+            display: block;
+            animation: fadeIn 0.4s ease-out both;
+        }
+        .no-js-banner a {
+            color: var(--fallback-fg);
+            text-decoration: underline;
+            font-weight: 500;
+        }
+        .no-js-banner a:hover {
+            text-decoration: none;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* JS Load Error State */
+        .js-load-error .no-js-banner {
+            display: block;
+            animation: fadeIn 0.4s ease-out both;
+        }
+        
+        /* Reduced motion support */
+        @media (prefers-reduced-motion: reduce) {
+            .no-js-banner {
+                animation: none;
+            }
+        }
+        
+        /* Initial Loading Screen */
         #initial-loading {
             position: fixed;
             top: 0;
@@ -99,6 +154,10 @@
             justify-content: center;
             z-index: 9999;
             transition: opacity 0.3s ease;
+        }
+        .no-js #initial-loading,
+        .js-load-error #initial-loading {
+            display: none;
         }
         .loading-spinner {
             width: 50px;
@@ -116,6 +175,83 @@
             color: var(--secondary-text);
             font-size: 14px;
         }
+        
+        /* Static Fallback Content */
+        .static-content {
+            display: none;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+            line-height: 1.7;
+        }
+        .no-js .static-content,
+        .js-load-error .static-content {
+            display: block;
+        }
+        .static-content h1 {
+            font-size: clamp(2rem, 5vw, 3rem);
+            margin-bottom: 1rem;
+            color: var(--primary-text);
+        }
+        .static-content h2 {
+            font-size: clamp(1.5rem, 4vw, 2rem);
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: var(--primary-text);
+        }
+        .static-content p {
+            margin-bottom: 1rem;
+            color: var(--secondary-text);
+        }
+        .static-content ul {
+            margin-left: 2rem;
+            margin-bottom: 1rem;
+        }
+        .static-content li {
+            margin-bottom: 0.5rem;
+            color: var(--secondary-text);
+        }
+        .static-content a {
+            color: var(--accent-color);
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: border-color 0.2s;
+        }
+        .static-content a:hover {
+            border-bottom-color: var(--accent-color);
+        }
+        .contact-links {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            margin-top: 1.5rem;
+        }
+        .contact-links a {
+            padding: 0.75rem 1.5rem;
+            background: var(--accent-color);
+            color: white;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .contact-links a:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: var(--accent-color);
+            color: white;
+            padding: 8px 16px;
+            text-decoration: none;
+            z-index: 100;
+        }
+        .skip-link:focus {
+            top: 0;
+        }
     </style>
 
     <!-- Preload critical fonts with font-display swap -->
@@ -130,26 +266,77 @@
     <link rel="preload" href="src/styles/accessibility.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="src/styles/accessibility.css"></noscript>
     
-    <script type="module" src="index.tsx"></script>
+    <script type="module" src="index.tsx" defer onerror="document.documentElement.classList.add('js-load-error')"></script>
 </head>
 <body>
-    <!-- Initial Loading Screen -->
+    <!-- Skip to Content Link -->
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+    
+    <!-- No-JS / JS-Error Fallback Banner -->
+    <div class="no-js-banner" role="status" aria-live="polite">
+        <svg aria-hidden="true" width="20" height="20" style="display: inline-block; vertical-align: middle; margin-right: 8px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"></path>
+            <line x1="12" y1="9" x2="12" y2="13"></line>
+            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+        </svg>
+        <strong>Interactive features unavailable.</strong> You can still browse all content and contact me directly.
+    </div>
+    
+    <!-- Initial Loading Screen (Hidden when JS disabled/failed) -->
     <div id="initial-loading">
         <div class="loading-spinner"></div>
         <div class="loading-text">Loading Portfolio...</div>
     </div>
     
-    <noscript>
-      <div style="padding: 2rem; text-align: center; font-family: system-ui, sans-serif;">
-        <h1>JavaScript Required</h1>
-        <p>You need to enable JavaScript to run this app.</p>
-        <p>This portfolio website requires JavaScript for interactive features and optimal experience.</p>
-      </div>
-    </noscript>
+    <!-- Static Fallback Content (Shown only when JS disabled/failed) -->
+    <div class="static-content">
+        <h1>Khalil Charfi</h1>
+        <p style="font-size: 1.25rem; margin-bottom: 2rem;">Full-Stack Engineer | Digital Experience Architect</p>
+        
+        <h2>About</h2>
+        <p>
+            Full-Stack Engineer with expertise in building scalable web and mobile applications. 
+            Specialized in modern JavaScript frameworks, cloud architecture, and user-centric design.
+        </p>
+        
+        <h2>Core Skills</h2>
+        <ul>
+            <li><strong>Frontend:</strong> React, TypeScript, Vue.js, Next.js, Modern CSS</li>
+            <li><strong>Backend:</strong> Node.js, Python, Java, REST APIs, GraphQL</li>
+            <li><strong>Cloud & DevOps:</strong> AWS, Docker, Kubernetes, CI/CD</li>
+            <li><strong>Database:</strong> PostgreSQL, MongoDB, Redis</li>
+        </ul>
+        
+        <h2>Professional Experience</h2>
+        <p>
+            Extensive experience in developing enterprise-grade applications, leading technical teams, 
+            and implementing best practices for code quality, performance, and accessibility.
+        </p>
+        
+        <h2>Get In Touch</h2>
+        <div class="contact-links">
+            <a href="mailto:khalilcharfi8@gmail.com">Email Me</a>
+            <a href="https://www.linkedin.com/in/khalil-charfi/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+            <a href="https://github.com/khalil-charfi" target="_blank" rel="noopener noreferrer">GitHub</a>
+        </div>
+        
+        <p style="margin-top: 3rem; padding-top: 2rem; border-top: 1px solid rgba(128, 128, 128, 0.3); font-size: 0.9rem;">
+            <strong>Note:</strong> For the full interactive experience with animations, live demos, and AI-powered features, 
+            please enable JavaScript in your browser.
+        </p>
+    </div>
     
     <!-- ARIA Live Region for Screen Reader Announcements -->
     <div id="a11y-live-region" role="status" aria-live="polite" aria-atomic="true" class="sr-only"></div>
     
+    <!-- React Root (Hidden when JS disabled/failed) -->
     <div id="root"></div>
+    
+    <noscript>
+        <style>
+            #root { display: none !important; }
+            .static-content { display: block !important; }
+        </style>
+    </noscript>
 </body>
 </html>

@@ -36,6 +36,11 @@
     --blur-strength: 16px;
     --focus-outline-color: var(--accent-color);
 
+    /* No-JS Fallback Variables */
+    --fallback-bg: #fff3cd;
+    --fallback-fg: #452700;
+    --fallback-border: #ffecb5;
+
     /* Theme transition timing for smooth switching */
     --theme-transition-duration: 0.4s;
     --theme-transition-timing: cubic-bezier(0.4, 0.0, 0.2, 1);
@@ -1903,7 +1908,17 @@ html[dir="rtl"] .markdown-content ul, html[dir="rtl"] .markdown-content ol {
     scroll-behavior: auto !important;
     transition-duration: 0s !important;
     transition-delay: 0s !important}
-
+  
+  /* Disable staggered animations for mobile menu */
+  .nav-links li {
+    opacity: 1 !important;
+    transform: none !important;
+    transition-delay: 0s !important;
+  }
+  
+  .nav-links.open li {
+    transition-delay: 0s !important;
+  }
 }
 
 /* Responsive */
@@ -1918,46 +1933,223 @@ html[dir="rtl"] .markdown-content ul, html[dir="rtl"] .markdown-content ol {
     .section-title { font-size: 2rem}
     .desktop-controls { display: none}
     .nav-toggle { display: block}
-    .nav-links { position: fixed; top: 0; right: 0; width: 100%; height: 100vh; background-color: var(--nav-mobile-bg); backdrop-filter: blur(var(--blur-strength)); -webkit-backdrop-filter: blur(var(--blur-strength)); flex-direction: column; justify-content: center; align-items: center; gap: 2rem; clip-path: circle(0% at calc(100% - 45px) 45px); transition: clip-path 0.5s cubic-bezier(0.77, 0, 0.175, 1); pointer-events: none}
+    .nav-links { 
+        position: fixed; 
+        top: 0; 
+        right: 0; 
+        width: 100%; 
+        height: 100vh; 
+        height: 100dvh; /* Use dynamic viewport height for better mobile support */
+        background-color: var(--nav-mobile-bg); 
+        backdrop-filter: blur(var(--blur-strength)); 
+        -webkit-backdrop-filter: blur(var(--blur-strength)); 
+        flex-direction: column; 
+        justify-content: flex-start; /* Changed from center to flex-start */
+        align-items: center; 
+        gap: 1rem; /* Reduced from 2rem to 1rem for better spacing */
+        padding: calc(var(--nav-height) + 2rem) 1.5rem 2rem; /* Added top padding to avoid navbar, side and bottom padding */
+        clip-path: circle(0% at calc(100% - 45px) 45px); 
+        transition: clip-path 0.5s cubic-bezier(0.77, 0, 0.175, 1); 
+        pointer-events: none;
+        overflow-y: auto; /* Enable vertical scrolling */
+        overflow-x: hidden;
+        -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+        overscroll-behavior: contain; /* Prevent scroll chaining */
+    }
     html[dir="rtl"] .nav-links { clip-path: circle(0% at 45px 45px)}
-    .nav-links.open { clip-path: circle(150% at calc(100% - 45px) 45px); pointer-events: all}
+    .nav-links.open { 
+        clip-path: circle(150% at calc(100% - 45px) 45px); 
+        pointer-events: all;
+    }
     html[dir="rtl"] .nav-links.open { clip-path: circle(150% at 45px 45px)}
+    
+    /* Style scrollbar for mobile menu */
+    .nav-links::-webkit-scrollbar {
+        width: 4px;
+    }
+    .nav-links::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    .nav-links::-webkit-scrollbar-thumb {
+        background: rgba(var(--accent-color-raw, 0, 166, 255), 0.3);
+        border-radius: 2px;
+    }
+    .nav-links::-webkit-scrollbar-thumb:hover {
+        background: rgba(var(--accent-color-raw, 0, 166, 255), 0.5);
+    }
+    
+    .nav-links li {
+        width: 100%;
+        max-width: 400px; /* Limit width for better readability */
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+    
+    /* Staggered animation for menu items when menu opens */
+    .nav-links.open li {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    
+    .nav-links.open li:nth-child(1) { transition-delay: 0.05s; }
+    .nav-links.open li:nth-child(2) { transition-delay: 0.1s; }
+    .nav-links.open li:nth-child(3) { transition-delay: 0.15s; }
+    .nav-links.open li:nth-child(4) { transition-delay: 0.2s; }
+    .nav-links.open li:nth-child(5) { transition-delay: 0.25s; }
+    .nav-links.open li:nth-child(6) { transition-delay: 0.3s; }
+    .nav-links.open li:nth-child(7) { transition-delay: 0.35s; }
+    .nav-links.open li:nth-child(8) { transition-delay: 0.4s; }
+    .nav-links.open li:nth-child(9) { transition-delay: 0.45s; }
+    .nav-links.open li:nth-child(10) { transition-delay: 0.5s; } /* For mobile-controls */
+    
     .nav-links a {
-        font-size: 1.5rem;
+        font-size: 1.25rem; /* Slightly reduced from 1.5rem */
         font-weight: 600;
+        width: 100%; /* Full width of parent li */
+        text-align: center;
         transition: color 0.3s cubic-bezier(0.4, 0.0, 0.2, 1),
                     background-color 0.3s cubic-bezier(0.4, 0.0, 0.2, 1),
                     border-color 0.3s cubic-bezier(0.4, 0.0, 0.2, 1),
-                    box-shadow 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
-            /* Mobile liquid glass adjustments - more conservative for performance */
-    --liquid-glass-edge-size: 10px;
-    --liquid-glass-edge-inset: 10px;
-    --liquid-glass-displacement: 30px;
-    --liquid-glass-ripples: 10px;
-    backdrop-filter: blur(12px) contrast(90%) saturate(110%) !important;
-    transform: translate3d(0, 0, 0) !important;
-    min-height: 48px;
-    min-width: 48px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+                    box-shadow 0.3s cubic-bezier(0.4, 0.0, 0.2, 1),
+                    transform 0.2s ease;
+        /* Mobile liquid glass adjustments - more conservative for performance */
+        --liquid-glass-edge-size: 10px;
+        --liquid-glass-edge-inset: 10px;
+        --liquid-glass-displacement: 30px;
+        --liquid-glass-ripples: 10px;
+        backdrop-filter: blur(12px) contrast(90%) saturate(110%) !important;
+        transform: translate3d(0, 0, 0) !important;
+        min-height: 48px; /* Minimum touch target size */
+        min-width: 48px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
         -webkit-transform: translate3d(0, 0, 0) !important;
         -webkit-backface-visibility: hidden !important;
-        backface-visibility: hidden !important}
+        backface-visibility: hidden !important;
+        padding: 0.75rem 1.5rem; /* Better padding for touch targets */
+    }
+    
+    /* Enhanced active and hover states for mobile */
+    .nav-links a.active {
+        background: linear-gradient(135deg, rgba(0, 166, 255, 0.2), rgba(0, 166, 255, 0.1));
+        border-color: var(--accent-color);
+        color: var(--accent-color);
+    }
+    
+    .nav-links a:active {
+        transform: scale(0.98) translate3d(0, 0, 0) !important;
+    }
+    
     .mobile-controls {
         display: flex;
         gap: 1.5rem;
-        position: absolute;
-        bottom: 5vh;
-        left: 50%;
-        transform: translateX(-50%);
-        width: max-content;
-        padding: 1rem}
-     .mobile-controls .theme-toggle-btn {
-        padding: 0.5rem}
+        position: relative; /* Changed from absolute to relative */
+        margin-top: auto; /* Push to bottom using flexbox */
+        padding: 1.5rem 1rem;
+        width: 100%;
+        max-width: 400px;
+        justify-content: center;
+        flex-shrink: 0; /* Prevent shrinking */
+        border-top: 1px solid var(--glass-border-color);
+        padding-top: 2rem;
+        margin-top: 2rem;
+    }
+    
+    .mobile-controls .theme-toggle-btn {
+        padding: 0.75rem; /* Increased for better touch target */
+        min-width: 48px;
+        min-height: 48px;
+    }
+    
     .mobile-controls .language-switcher-toggle {
-        padding: 0.5rem 0.8rem}
+        padding: 0.75rem 1rem; /* Increased for better touch target */
+        min-height: 48px;
+    }
+    
     .mobile-controls .language-options {
-        bottom: calc(100% + 10px);
-        top: auto}
+        bottom: auto;
+        top: calc(100% + 10px); /* Changed to open downward */
+        max-height: 40vh; /* Limit height */
+        overflow-y: auto; /* Allow scrolling if needed */
+    }
+    
+    /* Improved hamburger button visual feedback */
+    .nav-toggle {
+        position: relative;
+        z-index: 1001;
+        transition: transform 0.2s ease, color 0.3s ease;
+    }
+    
+    .nav-toggle:active {
+        transform: scale(0.9);
+    }
+    
+    /* Add backdrop for better menu visibility */
+    .nav-links::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.3);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        pointer-events: none;
+        z-index: -1;
+    }
+    
+    .nav-links.open::before {
+        opacity: 1;
+    }
+}
+
+/* Extra small screens */
+@media (max-width: 380px) {
+    .nav-links a {
+        font-size: 1.1rem; /* Further reduce font size */
+        padding: 0.6rem 1rem;
+    }
+    
+    .nav-links {
+        gap: 0.75rem; /* Reduce gap for very small screens */
+        padding: calc(var(--nav-height) + 1.5rem) 1rem 1.5rem;
+    }
+    
+    .mobile-controls {
+        gap: 1rem;
+        padding: 1rem 0.5rem;
+        margin-top: 1.5rem;
+        padding-top: 1.5rem;
+    }
+    
+    .mobile-controls .theme-toggle-btn,
+    .mobile-controls .language-switcher-toggle {
+        padding: 0.6rem 0.8rem;
+        min-width: 44px;
+        min-height: 44px;
+    }
+}
+
+/* Landscape orientation on mobile */
+@media (max-width: 768px) and (orientation: landscape) {
+    .nav-links {
+        padding: calc(var(--nav-height) + 1rem) 1rem 1rem;
+        gap: 0.5rem;
+    }
+    
+    .nav-links a {
+        font-size: 1rem;
+        padding: 0.5rem 1rem;
+        min-height: 40px;
+    }
+    
+    .mobile-controls {
+        padding: 1rem;
+        margin-top: 1rem;
+        padding-top: 1rem;
+    }
+    
     #home {
         align-items: center;
         text-align: center;
@@ -2362,4 +2554,80 @@ canvas {
 
     .nav-links a.active::before {
         animation: none !important}
+}
+/* ========================================
+   NO-JS / JS-ERROR FALLBACK STYLES
+   ======================================== */
+
+/* Hide React-dependent content when JS fails */
+.no-js #root,
+.js-load-error #root {
+    display: none !important;
+}
+
+/* Hide navigation and interactive elements when JS fails */
+.no-js .navbar,
+.js-load-error .navbar,
+.no-js .chatbot-container,
+.js-load-error .chatbot-container,
+.no-js .scroll-to-top,
+.js-load-error .scroll-to-top,
+.no-js .profile-insights,
+.js-load-error .profile-insights,
+.no-js .visitor-controls,
+.js-load-error .visitor-controls {
+    display: none !important;
+}
+
+/* Ensure fallback banner has proper styling */
+.no-js-banner svg {
+    flex-shrink: 0;
+}
+
+/* Ensure static content is properly styled */
+.static-content {
+    padding-top: 2rem;
+    padding-bottom: 4rem;
+}
+
+.static-content h1,
+.static-content h2 {
+    font-family: var(--font-heading);
+}
+
+/* Responsive adjustments for static content */
+@media (max-width: 768px) {
+    .static-content {
+        padding: 1.5rem 1rem 3rem;
+    }
+    
+    .contact-links {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .contact-links a {
+        text-align: center;
+        width: 100%;
+    }
+    
+    .no-js-banner {
+        font-size: 0.85rem;
+        padding: 0.5rem 0.75rem;
+    }
+}
+
+/* Print styles for no-JS content */
+@media print {
+    .no-js-banner {
+        display: none;
+    }
+    
+    .static-content {
+        max-width: 100%;
+    }
+    
+    .contact-links a {
+        page-break-inside: avoid;
+    }
 }

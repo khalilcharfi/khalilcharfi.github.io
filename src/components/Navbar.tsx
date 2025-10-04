@@ -46,6 +46,13 @@ export const Navbar: React.FC<NavbarProps> = ({ activeSection, setActiveSectionD
         setIsMobileMenuOpen(false);
     };
 
+    const handleBackdropClick = (e: React.MouseEvent<HTMLUListElement>) => {
+        // Close menu when clicking on the backdrop (the ul element itself, not its children)
+        if (e.target === e.currentTarget) {
+            setIsMobileMenuOpen(false);
+        }
+    };
+
     return (
         <nav className="navbar">
             <div className="container">
@@ -78,7 +85,10 @@ export const Navbar: React.FC<NavbarProps> = ({ activeSection, setActiveSectionD
                         </svg>
                     )}
                 </button>
-                <ul className={`nav-links ${isMobileMenuOpen ? 'open' : ''}`}>
+                <ul 
+                    className={`nav-links ${isMobileMenuOpen ? 'open' : ''}`}
+                    onClick={handleBackdropClick}
+                >
                     {sectionDetails.map(section => (
                         <NavLink
                             key={section.id}
