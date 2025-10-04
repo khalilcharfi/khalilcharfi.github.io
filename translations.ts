@@ -210,7 +210,6 @@ export interface LanguageSpecificTranslations {
     defaultIntro: string;
     viewMyWork: string;
     professionalSummary: string;
-    expertInAI: string;
     fullStackProficiency: string;
     problemSolving: string;
     modernFrameworks: string;
@@ -665,7 +664,6 @@ export const translations: Translations = {
       defaultIntro: "I design and build exceptional digital products. As a Full-Stack Engineer, I specialize in creating intuitive, high-performance web and mobile applications that are both scalable and user-centric.",
       viewMyWork: 'Explore My Projects',
       professionalSummary: 'Full-stack engineer with extensive experience delivering scalable web and mobile applications. Skilled in front-end development with Vue.js and Angular, back-end with Laravel and Laminas, and mobile apps using Flutter and Ionic. Passionate about clean architecture, offline-first capabilities, and DevOps-driven deployment. Experienced in cross-functional teams across Tunisia and Germany.',
-      expertInAI: 'Expert in machine learning and AI development',
       fullStackProficiency: 'Full-stack web development proficiency',
       problemSolving: 'Strong problem-solving and analytical skills',
       modernFrameworks: 'Experience with modern frameworks and technologies',
@@ -1114,7 +1112,6 @@ export const translations: Translations = {
       defaultIntro: "Ich konzipiere und entwickle außergewöhnliche digitale Produkte. Als Full-Stack-Entwickler spezialisiere ich mich auf intuitive, hochperformante Web- und Mobilanwendungen, die skalierbar und benutzerzentriert sind.",
       viewMyWork: 'Projekte ansehen',
       professionalSummary: 'Full-Stack-Entwickler mit umfangreicher Erfahrung in der Entwicklung skalierbarer Web- und Mobile-Anwendungen. Versiert im Frontend mit Vue.js und Angular, im Backend mit Laravel und Laminas sowie in der mobilen Entwicklung mit Flutter und Ionic. Mit Leidenschaft für Clean Architecture, Offline-First-Ansätze und DevOps-getriebene Deployments. Erfahrung in crossfunktionalen Teams in Tunesien und Deutschland.',
-      expertInAI: 'Expertise in Machine Learning und KI-Entwicklung',
       fullStackProficiency: 'Umfassende Full-Stack-Entwicklungskompetenz',
       problemSolving: 'Ausgeprägte Problemlösungs- und Analysefähigkeiten',
       modernFrameworks: 'Versiert in modernen Frameworks und Technologien',
@@ -1563,7 +1560,6 @@ export const translations: Translations = {
       defaultIntro: "Je conçois et développe des produits numériques exceptionnels. En tant que développeur Full-Stack, je me spécialise dans la création d\'applications web et mobiles intuitives et performantes, alliant évolutivité et approche centrée utilisateur.",
       viewMyWork: 'Découvrir mes projets',
       professionalSummary: 'Développeur Full-Stack avec une solide expérience dans la conception d\'applications web et mobiles évolutives. Expert en développement front-end (Vue.js, Angular), back-end (Laravel, Laminas) et mobile (Flutter, Ionic). Passionné par l\'architecture logicielle rigoureuse, les solutions hors ligne et le déploiement DevOps. Expérience confirmée au sein d\'équipes pluridisciplinaires en Tunisie et en Allemagne.',
-      expertInAI: 'Expertise en Machine Learning et développement IA',
       fullStackProficiency: 'Maîtrise complète du développement Full-Stack',
       problemSolving: 'Solides compétences en résolution de problèmes et analyse',
       modernFrameworks: 'Expertise des frameworks et technologies modernes',
@@ -1631,52 +1627,7 @@ export const translations: Translations = {
         greeting: "Bienvenue Chef de Projet !",
         tagline: "Développeur Fiable avec Historique de Livraison Prouvé",
         cta: "Planifier Votre Prochain Projet"
-      },
-              business_owner: {
-          greeting: "Hallo Geschäftsinhaber!",
-          tagline: "Technologie-Lösungspartner für Geschäftswachstum",
-          cta: "Geschäftslösungen erkunden"
-        },
-        enterprise_client: {
-          greeting: "Willkommen Unternehmenspartner!",
-          tagline: "Enterprise-Lösungen mit Sicherheit & Skalierbarkeit",
-          cta: "Unternehmensbedürfnisse besprechen"
-        },
-        local_business: {
-          greeting: "Hallo lokales Unternehmen!",
-          tagline: "Ihr Nachbarschafts-Tech-Partner für digitales Wachstum",
-          cta: "Lokale Innovation unterstützen"
-        },
-        remote_work_advocate: {
-          greeting: "Grüße Remote-Work-Champion!",
-          tagline: "Erfahrener Remote-Entwickler mit globalen Kollaborationsfähigkeiten",
-          cta: "Explorer Remote Opportunities"
-        },
-        international_client: {
-          greeting: "Willkommen internationaler Partner!",
-          tagline: "Global Developer with Cross-Cultural Project Experience",
-          cta: "Connect Across Borders"
-        },
-        local_tech_community: {
-          greeting: "Hey Tech-Community!",
-          tagline: "Active Community Member & Knowledge Sharing Enthusiast",
-          cta: "Join the Conversation"
-        },
-        general_visitor: {
-          greeting: "Willkommen zu meinem Portfolio!",
-          tagline: "Full-Stack-Entwickler für innovative digitale Lösungen",
-          cta: "Meine Arbeit erkunden"
-        },
-        returning_visitor: {
-          greeting: "Willkommen zurück!",
-          tagline: "Entdecke was neu ist in meiner Entwicklungsreise",
-          cta: "Neueste Updates ansehen"
-        },
-        potential_collaborator: {
-          greeting: "Hello Future Collaborator!",
-          tagline: "Open Source Contributor Ready for Partnership",
-          cta: "Start Collaboration"
-        }
+      }
     }
   },
   ar: {
@@ -2012,7 +1963,6 @@ export const translations: Translations = {
       defaultIntro: "أصمّم وأطوّر منتجات رقمية متميّزة تجمع بين الابتكار والأداء. بصفتي مطوّر برمجيات متكامل، أتخصص في بناء تطبيقات ويب وجوّال حديثة قابلة للتوسع وسهلة الاستخدام، مع التركيز على تقديم تجربة مستخدم استثنائية.",
       viewMyWork: 'اطّلع على أعمالي',
       professionalSummary: 'مطوّر برمجيات متكامل بخبرة واسعة في بناء تطبيقات ويب وجوّال قابلة للتوسع. خبير في تطوير الواجهات الأمامية (Vue.js، Angular)، والخلفية (Laravel، Laminas)، والتطبيقات المحمولة (Flutter، Ionic). شغوف بالهندسة البرمجية النظيفة، والحلول دون اتصال بالإنترنت، ونشر التطبيقات باستخدام DevOps. خبرة مثبتة في العمل ضمن فرق متعددة التخصصات في تونس وألمانيا.',
-      expertInAI: 'خبرة في الذكاء الاصطناعي والتعلم الآلي',
       fullStackProficiency: 'إتقان التطوير البرمجي المتكامل',
       problemSolving: 'مهارات متقدمة في حل المشكلات التقنية',
       modernFrameworks: 'خبرة في أحدث الأطر والتقنيات البرمجية',

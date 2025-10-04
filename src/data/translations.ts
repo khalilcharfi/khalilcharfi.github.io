@@ -81,10 +81,6 @@ export interface LanguageSpecificTranslations {
       devops: { name: string; items: string[] };
       tools: { name: string; items: string[] };
     };
-    focusAreasLabel: string;
-    focusAI: string;
-    focusWebDev: string;
-    focusDataScience: string;
     priorityProgramming: string;
     priorityFrameworks: string;
     priorityTools: string;
@@ -266,15 +262,19 @@ export interface LanguageSpecificTranslations {
     defaultIntro: string;
     viewMyWork: string;
     professionalSummary: string;
-    expertInAI: string;
     fullStackProficiency: string;
     problemSolving: string;
     modernFrameworks: string;
     keyHighlights: {
-      ml: string;
       fullstack: string;
+      mobile: string;
+      scalable: string;
+      cicd: string;
+      cleanCode: string;
       problemSolving: string;
-      experience: string;
+      teamwork: string;
+      security: string;
+      passion: string;
     };
   };
   dates: {
@@ -464,10 +464,6 @@ export const translations: Translations = {
         devops: { name: 'DevOps & CI/CD', items: ['Git', 'Docker', 'Jenkins', 'GitLab CI/CD', 'Bitrise', 'Puppet'] },
         tools: { name: 'Others & Tools', items: ['Drupal', 'Keycloak', 'Firebase', 'Mapbox GL', 'WSO2 CEP', 'JHipster', 'TestCafe', 'Cucumber', 'Grafana', 'Kibana'] },
       },
-      focusAreasLabel: 'Focus areas:',
-      focusAI: 'AI Focus',
-      focusWebDev: 'Web Development Focus',
-      focusDataScience: 'Data Science Focus',
       priorityProgramming: 'Programming Priority',
       priorityFrameworks: 'Frameworks Priority',
       priorityTools: 'Tools Priority',
@@ -777,15 +773,19 @@ export const translations: Translations = {
       defaultIntro: "I design and build exceptional digital products. As a Full-Stack Engineer, I specialize in creating intuitive, high-performance web and mobile applications that are both scalable and user-centric.",
       viewMyWork: 'Explore My Projects',
       professionalSummary: 'Full-stack engineer with extensive experience delivering scalable web and mobile applications. Skilled in front-end development with Vue.js and Angular, back-end with Laravel and Laminas, and mobile apps using Flutter and Ionic. Passionate about clean architecture, offline-first capabilities, and DevOps-driven deployment. Experienced in cross-functional teams across Tunisia and Germany.',
-      expertInAI: 'Expert in machine learning and AI development',
       fullStackProficiency: 'Full-stack web development proficiency',
       problemSolving: 'Strong problem-solving and analytical skills',
       modernFrameworks: 'Experience with modern frameworks and technologies',
       keyHighlights: {
-        ml: 'Machine Learning',
-        fullstack: 'Full-Stack Development',
-        problemSolving: 'Problem Solving',
-        experience: 'Extensive Experience',
+        fullstack: 'High proficiency in Full-Stack Web Development using Vue.js, Angular, Laravel, and Laminas',
+        mobile: 'Distinguished expertise in Hybrid Mobile App Development using Flutter and Ionic',
+        scalable: 'Strong ability to design and implement scalable offline-first systems',
+        cicd: 'Mastery of CI/CD practices using GitLab, Bitrise, Jenkins, and Puppet',
+        cleanCode: 'Commitment to Clean Architecture and writing maintainable, organized code',
+        problemSolving: 'High-level problem-solving skills with focus on performance analysis and UX optimization',
+        teamwork: 'Experience working with cross-functional teams across different cultures in Tunisia and Germany',
+        security: 'Extensive knowledge of Digital Security and Identity Management using Keycloak and Firebase',
+        passion: 'Continuous passion for modern technologies and ongoing learning in Web, Mobile, and DevOps',
       },
     },
     dates: {
@@ -969,10 +969,6 @@ export const translations: Translations = {
         devops: { name: 'DevOps & CI/CD', items: ['Git', 'Docker', 'Jenkins', 'GitLab CI/CD', 'Bitrise', 'Puppet'] },
         tools: { name: 'Sonstiges & Werkzeuge', items: ['Drupal', 'Keycloak', 'Firebase', 'Mapbox GL', 'WSO2 CEP', 'JHipster', 'TestCafe', 'Cucumber', 'Grafana', 'Kibana'] },
       },
-      focusAreasLabel: 'Schwerpunkte:',
-      focusAI: 'Schwerpunkt KI',
-      focusWebDev: 'Schwerpunkt Webentwicklung',
-      focusDataScience: 'Schwerpunkt Data Science',
       priorityProgramming: 'Programmierung Priorität',
       priorityFrameworks: 'Frameworks Priorität',
       priorityTools: 'Werkzeuge Priorität',
@@ -1282,15 +1278,19 @@ export const translations: Translations = {
       defaultIntro: "Ich entwerfe und erstelle außergewöhnliche digitale Produkte. Als Full-Stack-Ingenieur bin ich auf die Erstellung intuitiver, leistungsstarker Web- und Mobilanwendungen spezialisiert, die sowohl skalierbar als auch benutzerorientiert sind.",
       viewMyWork: 'Meine Projekte ansehen',
       professionalSummary: 'Full-Stack-Ingenieur mit umfassender Erfahrung in der Bereitstellung skalierbarer Web- und Mobilanwendungen. Kompetent in der Frontend-Entwicklung mit Vue.js und Angular, Backend mit Laravel und Laminas sowie mobilen Apps mit Flutter und Ionic. Leidenschaft für saubere Architektur, Offline-First-Funktionen und DevOps-gesteuerte Bereitstellung. Erfahren in funktionsübergreifenden Teams in Tunesien und Deutschland.',
-      expertInAI: 'Experte für maschinelles Lernen und KI-Entwicklung',
       fullStackProficiency: 'Kompetenz in der Full-Stack-Webentwicklung',
       problemSolving: 'Starke Problemlösungs- und Analysefähigkeiten',
       modernFrameworks: 'Erfahrung mit modernen Frameworks und Technologien',
       keyHighlights: {
-        ml: 'Maschinelles Lernen',
-        fullstack: 'Full-Stack-Entwicklung',
-        problemSolving: 'Problemlösung',
-        experience: 'Umfangreiche Erfahrung',
+        fullstack: 'Hohe Kompetenz in Full-Stack-Webentwicklung mit Vue.js, Angular, Laravel und Laminas',
+        mobile: 'Hervorragende Expertise in hybrider Mobile-App-Entwicklung mit Flutter und Ionic',
+        scalable: 'Starke Fähigkeit zur Gestaltung und Implementierung skalierbarer Offline-First-Systeme',
+        cicd: 'Beherrschung von CI/CD-Praktiken mit GitLab, Bitrise, Jenkins und Puppet',
+        cleanCode: 'Engagement für Clean Architecture und das Schreiben von wartbarem, organisiertem Code',
+        problemSolving: 'Hochentwickelte Problemlösungsfähigkeiten mit Fokus auf Performance-Analyse und UX-Optimierung',
+        teamwork: 'Erfahrung in der Zusammenarbeit mit funktionsübergreifenden Teams verschiedener Kulturen in Tunesien und Deutschland',
+        security: 'Umfassendes Wissen über digitale Sicherheit und Identitätsmanagement mit Keycloak und Firebase',
+        passion: 'Kontinuierliche Leidenschaft für moderne Technologien und fortlaufendes Lernen in Web, Mobile und DevOps',
       },
     },
     dates: {
@@ -1474,10 +1474,6 @@ export const translations: Translations = {
         devops: { name: 'DevOps & CI/CD', items: ['Git', 'Docker', 'Jenkins', 'GitLab CI/CD', 'Bitrise', 'Puppet'] },
         tools: { name: 'Autres & Outils', items: ['Drupal', 'Keycloak', 'Firebase', 'Mapbox GL', 'WSO2 CEP', 'JHipster', 'TestCafe', 'Cucumber', 'Grafana', 'Kibana'] },
       },
-      focusAreasLabel: 'Domaines de spécialisation :',
-      focusAI: 'Spécialisation IA',
-      focusWebDev: 'Spécialisation Développement Web',
-      focusDataScience: 'Spécialisation Data Science',
       priorityProgramming: 'Priorité Programmation',
       priorityFrameworks: 'Priorité Frameworks',
       priorityTools: 'Priorité Outils',
@@ -1787,15 +1783,19 @@ export const translations: Translations = {
       defaultIntro: "Je conçois et construis des produits numériques exceptionnels. En tant qu'ingénieur Full-Stack, je me spécialise dans la création d'applications web et mobiles intuitives et performantes, à la fois évolutives et centrées sur l'utilisateur.",
       viewMyWork: 'Explorer mes projets',
       professionalSummary: 'Ingénieur full-stack avec une vaste expérience dans la livraison d\'applications web et mobiles évolutives. Compétent en front-end development avec Vue.js et Angular, back-end avec Laravel et Laminas, et mobile apps using Flutter and Ionic. Passionné par la conception d\'interfaces utilisateur intuitives et performantes, les capacités hors ligne et le déploiement axé sur DevOps. Expérimenté dans des équipes cross-functional en Tunisie et en Allemagne.',
-      expertInAI: 'Expert en apprentissage automatique et développement IA',
       fullStackProficiency: 'Compétence en développement web full-stack',
       problemSolving: 'Fortes compétences en résolution de problèmes et analyse',
       modernFrameworks: 'Expérience avec des frameworks et technologies modernes',
       keyHighlights: {
-        ml: 'Apprentissage automatique',
-        fullstack: 'Développement Full-Stack',
-        problemSolving: 'Résolution de problèmes',
-        experience: 'Expérience étendue',
+        fullstack: 'Haute compétence en Développement Web Full-Stack avec Vue.js, Angular, Laravel et Laminas',
+        mobile: 'Expertise distinguée en Développement d\'Applications Mobiles Hybrides avec Flutter et Ionic',
+        scalable: 'Forte capacité à concevoir et implémenter des systèmes évolutifs fonctionnant hors ligne (Offline-first)',
+        cicd: 'Maîtrise des pratiques CI/CD avec GitLab, Bitrise, Jenkins et Puppet',
+        cleanCode: 'Engagement envers l\'Architecture Propre et l\'écriture de code maintenable et organisé',
+        problemSolving: 'Compétences avancées en résolution de problèmes avec focus sur l\'analyse de performance et l\'optimisation UX',
+        teamwork: 'Expérience de travail avec des équipes pluridisciplinaires de cultures différentes en Tunisie et en Allemagne',
+        security: 'Connaissance approfondie de la Sécurité Numérique et de la Gestion des Identités avec Keycloak et Firebase',
+        passion: 'Passion continue pour les technologies modernes et l\'apprentissage continu dans le Web, Mobile et DevOps',
       },
     },
     dates: {
@@ -1914,7 +1914,7 @@ export const translations: Translations = {
       publications: 'المنشورات',
       certificates: 'الشهادات',
       contact: 'الاتصال',
-      logoAlt: 'KC',
+      logoAlt: 'خ ش',
       toggleNav: 'تبديل التنقل',
     },
     general: {
@@ -1946,7 +1946,7 @@ export const translations: Translations = {
     home: {
       greeting: 'مرحباً، أنا',
       name: 'خليل الشرفي.',
-      tagline: 'أصنع تجارب رقمية قوية.',
+      tagline: 'مهندس برمجيات متكامل يتمتع بخبرة واسعة في تطوير تطبيقات الويب والموبايل القابلة للتوسع. أُجيد العمل على واجهات المستخدم باستخدام Vue.js وAngular، وتطوير الأنظمة الخلفية باستخدام Laravel وLaminas، إلى جانب بناء تطبيقات هجينة (Hybrid) باستخدام Flutter وIonic. أؤمن بأهمية كتابة كود نظيف وقابل للصيانة، وأهتم بتطبيق أفضل ممارسات الـDevOps في التكامل المستمر (CI/CD) ونشر التطبيقات. لدي خبرة عملية مع فرق تطوير متعددة التخصصات في تونس وألمانيا، مما أكسبني قدرة عالية على التكيّف والعمل ضمن بيئات تطوير متنوعة.',
       intro:
         "أقوم بتصميم وبناء منتجات رقمية استثنائية. بصفتي مهندس برمجيات متكامل، أتخصص في إنشاء تطبيقات ويب وجوال بديهية وعالية الأداء، قابلة للتطوير ومتمحورة حول المستخدم.",
       viewWorkBtn: 'اكتشف مشاريعي',
@@ -1979,10 +1979,6 @@ export const translations: Translations = {
         devops: { name: 'DevOps و CI/CD', items: ['Git', 'Docker', 'Jenkins', 'GitLab CI/CD', 'Bitrise', 'Puppet'] },
         tools: { name: 'أخرى وأدوات', items: ['Drupal', 'Keycloak', 'Firebase', 'Mapbox GL', 'WSO2 CEP', 'JHipster', 'TestCafe', 'Cucumber', 'Grafana', 'Kibana'] },
       },
-      focusAreasLabel: 'مجالات التركيز:',
-      focusAI: 'التركيز على الذكاء الاصطناعي',
-      focusWebDev: 'التركيز على تطوير الويب',
-      focusDataScience: 'التركيز على علم البيانات',
       priorityProgramming: 'أولوية البرمجة',
       priorityFrameworks: 'أولوية الإطارات',
       priorityTools: 'أولوية الأدوات',
@@ -2292,15 +2288,19 @@ export const translations: Translations = {
       defaultIntro: "أقوم بتصميم وبناء منتجات رقمية استثنائية. بصفتي مهندس برمجيات متكامل، أتخصص في إنشاء تطبيقات ويب وجوال بديهية وعالية الأداء، قابلة للتطوير ومتمحورة حول المستخدم.",
       viewMyWork: 'اكتشف مشاريعي',
       professionalSummary: 'مهندس متكامل ذو خبرة واسعة في تقديم تطبيقات الويب والجوال القابلة للتطوير. ماهر في تطوير الواجهة الأمامية باستخدام Vue.js و Angular، والواجهة الخلفية باستخدام Laravel و Laminas، وتطبيقات الجوال باستخدام Flutter و Ionic. شغوف بالهندسة النظيفة، وقدرات العمل دون اتصال بالإنترنت، والنشر الموجه بـ DevOps. من ذوي الخبرة في فرق متعددة الوظائف في تونس وألمانيا.',
-      expertInAI: 'خبير في التعلم الآلي وتطوير الذكاء الاصطناعي',
       fullStackProficiency: 'كفاءة في تطوير الويب الكامل',
       problemSolving: 'مهارات قوية في حل المشكلات والتحليل',
       modernFrameworks: 'خبرة مع الإطارات والتقنيات الحديثة',
       keyHighlights: {
-        ml: 'التعلم الآلي',
-        fullstack: 'تطوير الواجهة الكاملة',
-        problemSolving: 'حل المشكلات',
-        experience: 'خبرة واسعة',
+        fullstack: 'كفاءة عالية في تطوير الويب الكامل (Full-Stack Development) باستخدام Vue.js وAngular وLaravel وLaminas',
+        mobile: 'خبرة متميزة في تطوير تطبيقات الموبايل الهجينة باستخدام Flutter وIonic',
+        scalable: 'قدرة قوية على تصميم وتنفيذ أنظمة قابلة للتوسع تدعم العمل دون اتصال بالإنترنت (Offline-first)',
+        cicd: 'إتقان ممارسات التكامل والنشر المستمر (CI/CD) باستخدام GitLab وBitrise وJenkins وPuppet',
+        cleanCode: 'التزام بالهندسة النظيفة وكتابة كود منظم وقابل للصيانة',
+        problemSolving: 'مهارة عالية في حل المشكلات وتحليل الأداء وتحسين تجربة المستخدم',
+        teamwork: 'خبرة في العمل ضمن فرق تطوير متعددة التخصصات وثقافات مختلفة في تونس وألمانيا',
+        security: 'إلمام واسع بالأمن الرقمي وإدارة الهويات باستخدام Keycloak وFirebase',
+        passion: 'شغف دائم بالتقنيات الحديثة والتعلم المستمر في مجالات الويب والموبايل وDevOps',
       },
     },
     dates: {

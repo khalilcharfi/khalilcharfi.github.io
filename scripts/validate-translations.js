@@ -12,30 +12,47 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Load the translations file
-const translationsPath = path.join(__dirname, '../translations.ts');
-const translationsContent = fs.readFileSync(translationsPath, 'utf8');
+// Load the translations file - try both locations
+let translationsPath = path.join(__dirname, '../src/data/translations.ts');
+if (!fs.existsSync(translationsPath)) {
+  translationsPath = path.join(__dirname, '../translations.ts');
+}
 
-// Extract the translations object by finding the content between the export and the closing brace
-const exportMatch = translationsContent.match(/export const translations: Translations = \{([\s\S]*)\};/);
-if (!exportMatch) {
-  console.error('❌ Could not parse translations.ts file');
+if (!fs.existsSync(translationsPath)) {
+  console.error('❌ Could not find translations.ts file');
   process.exit(1);
 }
 
-// Parse the JSON content
+// Import and evaluate the TypeScript file using dynamic import
 let translations;
 try {
-  const jsonContent = exportMatch[1];
-  // Clean up the content to make it valid JSON
-  const cleanedContent = jsonContent
-    .replace(/(\w+):/g, '"$1":') // Add quotes around keys
-    .replace(/'/g, '"') // Replace single quotes with double quotes
-    .replace(/,(\s*[}\]])/g, '$1'); // Remove trailing commas
+  // Create a temporary JS file by removing TypeScript types
+  const translationsContent = fs.readFileSync(translationsPath, 'utf8');
   
-  translations = JSON.parse(`{${cleanedContent}}`);
+  // Extract just the translations object value
+  const exportMatch = translationsContent.match(/export const translations(?:: Translations)? = (\{[\s\S]*?\n\});?\s*$/m);
+  if (!exportMatch) {
+    console.error('❌ Could not parse translations.ts file structure');
+    process.exit(1);
+  }
+  
+  // Create a temporary file that exports the translations as a module
+  const tempFile = path.join(__dirname, '../temp-translations.mjs');
+  const jsContent = `export const translations = ${exportMatch[1]};`;
+  fs.writeFileSync(tempFile, jsContent, 'utf8');
+  
+  // Import the temporary file
+  const module = await import(`file://${tempFile}`);
+  translations = module.translations;
+  
+  // Clean up temp file
+  fs.unlinkSync(tempFile);
 } catch (error) {
-  console.error('❌ Error parsing translations:', error.message);
+  console.error('❌ Error loading translations:', error.message);
+  console.error('This might be due to:');
+  console.error('1. Invalid JavaScript syntax in translations.ts');
+  console.error('2. Unescaped special characters in strings');
+  console.error('3. Malformed object structure');
   process.exit(1);
 }
 
