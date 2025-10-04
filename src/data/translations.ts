@@ -194,6 +194,8 @@ export interface LanguageSpecificTranslations {
   };
   privacy: {
     title: string;
+    settings: string;
+    footerText: string;
     openSettings: string;
     consentTab: string;
     dataTab: string;
@@ -475,7 +477,7 @@ export const translations: Translations = {
       title: 'Experience',
       items: [
         {
-          title: 'Software Engineer – Front-End Developer',
+          title: 'Software Engineer – Fullstack Developer',
           company: 'CHECK24 Vergleichsportal GmbH',
           location: 'Frankfurt, Germany',
           date: 'Aug 2022 – Present',
@@ -703,6 +705,8 @@ export const translations: Translations = {
     },
     privacy: {
       title: "Privacy Settings",
+      settings: "Privacy Settings",
+      footerText: "Your privacy matters. All data is stored locally.",
       openSettings: "Open privacy settings",
       consentTab: "Consent",
       dataTab: "Your Data",
@@ -978,7 +982,7 @@ export const translations: Translations = {
       title: 'Erfahrung',
       items: [
         {
-          title: 'Software Engineer – Front-End Entwickler',
+          title: 'Software Engineer – Fullstack Entwickler',
           company: 'CHECK24 Vergleichsportal GmbH',
           location: 'Frankfurt, Deutschland',
           date: 'Aug 2022 – Heute',
@@ -1196,13 +1200,66 @@ export const translations: Translations = {
       showPreferencesBtn: "Einstellungen anzeigen",
       closeIconLabel: "Schließen",
       preferencesTitle: "Cookie-Einstellungen",
-      savePreferencesBtn: "Enregistrer les préférences",
-      cookieUsageTitle: "Utilisation des cookies",
-      cookieUsageDescription: "Ce site web utilise des cookies pour améliorer votre expérience lorsque vous naviguez sur le site. Parmi ces cookies, les cookies nécessaires sont stockés dans votre navigateur car ils sont indispensables pour le bon fonctionnement des fonctionnalités de base du site. Nous utilisons également des cookies tiers qui nous aident à analyser et à comprendre comment vous utilisez ce site, et à nous aider à améliorer l'annonce de publicités qui pourraient vous intéresser.",
-      necessaryCookiesTitle: "Cookies nécessaires",
-      necessaryCookiesDescription: "Ces cookies sont nécessaires pour que le site fonctionne correctement. Sans ces cookies, le site ne fonctionnerait pas correctement.",
-      analyticsCookiesTitle: "Cookies d'analyse",
-              analyticsCookiesDescription: "Ces cookies sont utilisés pour collecter des informations sur la manière dont vous utilisez le site. Nous utilisons ces informations pour améliorer notre site et personnaliser l'annonce de publicités qui pourrait vous intéresser."
+      savePreferencesBtn: "Einstellungen speichern",
+      cookieUsageTitle: "Cookie-Verwendung",
+      cookieUsageDescription: "Diese Website verwendet Cookies, um Ihre Erfahrung beim Navigieren auf der Website zu verbessern. Von diesen Cookies werden die als notwendig kategorisierten Cookies in Ihrem Browser gespeichert, da sie für das Funktionieren der grundlegenden Funktionen der Website unerlässlich sind.",
+      necessaryCookiesTitle: "Notwendige Cookies",
+      necessaryCookiesDescription: "Diese Cookies sind notwendig, damit die Website ordnungsgemäß funktioniert. Ohne diese Cookies würde die Website nicht richtig funktionieren.",
+      analyticsCookiesTitle: "Analyse-Cookies",
+      analyticsCookiesDescription: "Diese Cookies werden verwendet, um Informationen darüber zu sammeln, wie Sie die Website nutzen. Wir verwenden diese Informationen, um unsere Website zu verbessern."
+    },
+    privacy: {
+      title: "Datenschutzeinstellungen",
+      settings: "Datenschutzeinstellungen",
+      footerText: "Ihre Privatsphäre ist wichtig. Alle Daten werden lokal gespeichert.",
+      openSettings: "Datenschutzeinstellungen öffnen",
+      consentTab: "Zustimmung",
+      dataTab: "Ihre Daten",
+      consentIntro: "Verwalten Sie Ihre Zustimmungspräferenzen für Datenerfassung und Tracking. Sie können verschiedene Kategorien basierend auf Ihren Präferenzen aktivieren oder deaktivieren.",
+      dataIntro: "Sehen und verwalten Sie Ihre gespeicherten Daten. Sie haben jederzeit die volle Kontrolle über Ihre Informationen mit Optionen zum Exportieren oder Löschen Ihrer Daten.",
+      acceptAll: "Alle akzeptieren",
+      rejectAll: "Alle ablehnen",
+      exportData: "Ihre Daten exportieren",
+      exportDescription: "Laden Sie alle Ihre gespeicherten Daten im JSON-Format herunter. Dies umfasst Ihre Präferenzen, Analysedaten und alle anderen Informationen, die wir gesammelt haben.",
+      exportButton: "Daten herunterladen",
+      exportSuccess: "Daten erfolgreich exportiert!",
+      clearData: "Alle Daten löschen",
+      clearDescription: "Löschen Sie dauerhaft alle Ihre gespeicherten Daten aus diesem Browser. Diese Aktion kann nicht rückgängig gemacht werden.",
+      clearButton: "Daten löschen",
+      clearWarning: "⚠️ Dies wird alle Ihre Daten dauerhaft löschen. Diese Aktion kann nicht rückgängig gemacht werden.",
+      confirmClear: "Ja, alles löschen",
+      storedData: "Gespeicherte Daten",
+      lastUpdated: "Zuletzt aktualisiert",
+      dntActive: "Do Not Track aktiviert",
+      dntDescription: "Ihr Browser hat Do Not Track aktiviert. Wir respektieren Ihre Datenschutzwahl und haben alle optionalen Tracking-Funktionen deaktiviert.",
+      necessary: {
+        title: "Notwendige Cookies",
+        description: "Wesentliche Cookies, die für das ordnungsgemäße Funktionieren der Website erforderlich sind. Diese können nicht deaktiviert werden, da sie für grundlegende Website-Funktionen entscheidend sind."
+      },
+      analytics: {
+        title: "Analyse & Leistung",
+        description: "Cookies, die uns helfen zu verstehen, wie Besucher mit unserer Website interagieren, damit wir die Leistung und Benutzererfahrung verbessern können."
+      },
+      functional: {
+        title: "Funktionale Cookies",
+        description: "Cookies, die erweiterte Funktionalität und Personalisierung ermöglichen, wie z.B. das Speichern Ihrer Präferenzen und Einstellungen."
+      },
+      personalization: {
+        title: "Personalisierung",
+        description: "Cookies, die es uns ermöglichen, Inhalte und Empfehlungen basierend auf Ihren Interessen und Ihrem Surfverhalten zu personalisieren."
+      },
+      marketing: {
+        title: "Marketing & Werbung",
+        description: "Cookies, die verwendet werden, um Besucher über Websites hinweg zu verfolgen, um relevante Werbung anzuzeigen und die Kampagneneffektivität zu messen."
+      }
+    },
+    common: {
+      close: "Schließen",
+      cancel: "Abbrechen",
+      save: "Speichern",
+      delete: "Löschen",
+      edit: "Bearbeiten",
+      confirm: "Bestätigen"
     },
     profileInsights: {
       toggleLabel: "Basculer les aperçus du profil",
@@ -1430,7 +1487,7 @@ export const translations: Translations = {
       title: 'Expérience',
       items: [
          {
-          title: 'Ingénieur Logiciel – Développeur Front-End',
+          title: 'Ingénieur Logiciel – Développeur Fullstack',
           company: 'CHECK24 Vergleichsportal GmbH',
           location: 'Francfort, Allemagne',
           date: 'Août 2022 – Présent',
@@ -1654,7 +1711,60 @@ export const translations: Translations = {
       necessaryCookiesTitle: "Cookies nécessaires",
       necessaryCookiesDescription: "Ces cookies sont nécessaires pour que le site fonctionne correctement. Sans ces cookies, le site ne fonctionnerait pas correctement.",
       analyticsCookiesTitle: "Cookies d'analyse",
-              analyticsCookiesDescription: "Ces cookies sont utilisés pour collecter des informations sur la manière dont vous utilisez le site. Nous utilisons ces informations pour améliorer notre site et personnaliser l'annonce de publicités qui pourrait vous intéresser."
+      analyticsCookiesDescription: "Ces cookies sont utilisés pour collecter des informations sur la manière dont vous utilisez le site. Nous utilisons ces informations pour améliorer notre site et personnaliser l'annonce de publicités qui pourrait vous intéresser."
+    },
+    privacy: {
+      title: "Paramètres de confidentialité",
+      settings: "Paramètres de confidentialité",
+      footerText: "Votre vie privée compte. Toutes les données sont stockées localement.",
+      openSettings: "Ouvrir les paramètres de confidentialité",
+      consentTab: "Consentement",
+      dataTab: "Vos données",
+      consentIntro: "Gérez vos préférences de consentement pour la collecte et le suivi des données. Vous pouvez activer ou désactiver différentes catégories en fonction de vos préférences.",
+      dataIntro: "Consultez et gérez vos données stockées. Vous avez un contrôle total sur vos informations avec des options pour exporter ou supprimer vos données à tout moment.",
+      acceptAll: "Tout accepter",
+      rejectAll: "Tout refuser",
+      exportData: "Exporter vos données",
+      exportDescription: "Téléchargez toutes vos données stockées au format JSON. Cela inclut vos préférences, les données d'analyse et toutes les autres informations que nous avons collectées.",
+      exportButton: "Télécharger les données",
+      exportSuccess: "Données exportées avec succès !",
+      clearData: "Effacer toutes les données",
+      clearDescription: "Supprimez définitivement toutes vos données stockées de ce navigateur. Cette action ne peut pas être annulée.",
+      clearButton: "Effacer les données",
+      clearWarning: "⚠️ Cela supprimera définitivement toutes vos données. Cette action ne peut pas être annulée.",
+      confirmClear: "Oui, tout effacer",
+      storedData: "Données stockées",
+      lastUpdated: "Dernière mise à jour",
+      dntActive: "Do Not Track activé",
+      dntDescription: "Votre navigateur a activé Do Not Track. Nous respectons votre choix de confidentialité et avons désactivé tout suivi optionnel.",
+      necessary: {
+        title: "Cookies nécessaires",
+        description: "Cookies essentiels requis pour que le site Web fonctionne correctement. Ceux-ci ne peuvent pas être désactivés car ils sont essentiels pour les opérations de base du site."
+      },
+      analytics: {
+        title: "Analyse et performance",
+        description: "Cookies qui nous aident à comprendre comment les visiteurs interagissent avec notre site Web, nous permettant d'améliorer les performances et l'expérience utilisateur."
+      },
+      functional: {
+        title: "Cookies fonctionnels",
+        description: "Cookies qui permettent des fonctionnalités améliorées et une personnalisation, comme la mémorisation de vos préférences et paramètres."
+      },
+      personalization: {
+        title: "Personnalisation",
+        description: "Cookies qui nous permettent de personnaliser le contenu et les recommandations en fonction de vos intérêts et de votre comportement de navigation."
+      },
+      marketing: {
+        title: "Marketing et publicité",
+        description: "Cookies utilisés pour suivre les visiteurs sur les sites Web afin d'afficher des publicités pertinentes et de mesurer l'efficacité des campagnes."
+      }
+    },
+    common: {
+      close: "Fermer",
+      cancel: "Annuler",
+      save: "Enregistrer",
+      delete: "Supprimer",
+      edit: "Modifier",
+      confirm: "Confirmer"
     },
     profileInsights: {
       toggleLabel: "Basculer les aperçus du profil",
@@ -1804,7 +1914,7 @@ export const translations: Translations = {
       publications: 'المنشورات',
       certificates: 'الشهادات',
       contact: 'الاتصال',
-      logoAlt: 'خ.ش',
+      logoAlt: 'KC',
       toggleNav: 'تبديل التنقل',
     },
     general: {
@@ -1882,7 +1992,7 @@ export const translations: Translations = {
       title: 'الخبرة',
       items: [
         {
-          title: 'مهندس برمجيات – مطور الواجهة الأمامية',
+          title: 'مهندس برمجيات – مطور متكامل',
           company: 'CHECK24 Vergleichsportal GmbH',
           location: 'فرانكفورت، ألمانيا',
           date: 'أغسطس 2022 – حتى الآن',
@@ -2106,7 +2216,60 @@ export const translations: Translations = {
       necessaryCookiesTitle: "ملفات الارتباط الضرورية",
       necessaryCookiesDescription: "تستخدم ملفات الارتباط الضرورية لتحسين الوظيفة الأساسية للموقع. دونها لن يعمل الموقع بشكل صحيح.",
       analyticsCookiesTitle: "ملفات التحليل",
-              analyticsCookiesDescription: "تستخدم ملفات التحليل لجمع معلومات عن كيفية استخدامك للموقع ولتحسين الإعلانات التي قد تهتم بها."
+      analyticsCookiesDescription: "تستخدم ملفات التحليل لجمع معلومات عن كيفية استخدامك للموقع ولتحسين الإعلانات التي قد تهتم بها."
+    },
+    privacy: {
+      title: "إعدادات الخصوصية",
+      settings: "إعدادات الخصوصية",
+      footerText: "خصوصيتك مهمة. يتم تخزين جميع البيانات محلياً.",
+      openSettings: "فتح إعدادات الخصوصية",
+      consentTab: "الموافقة",
+      dataTab: "بياناتك",
+      consentIntro: "إدارة تفضيلات الموافقة الخاصة بك لجمع البيانات والتتبع. يمكنك تمكين أو تعطيل فئات مختلفة بناءً على تفضيلاتك.",
+      dataIntro: "عرض وإدارة بياناتك المخزنة. لديك السيطرة الكاملة على معلوماتك مع خيارات لتصدير أو حذف بياناتك في أي وقت.",
+      acceptAll: "قبول الكل",
+      rejectAll: "رفض الكل",
+      exportData: "تصدير بياناتك",
+      exportDescription: "قم بتنزيل جميع بياناتك المخزنة بتنسيق JSON. يتضمن ذلك تفضيلاتك وبيانات التحليلات وأي معلومات أخرى قمنا بجمعها.",
+      exportButton: "تحميل البيانات",
+      exportSuccess: "تم تصدير البيانات بنجاح!",
+      clearData: "مسح جميع البيانات",
+      clearDescription: "احذف نهائياً جميع بياناتك المخزنة من هذا المتصفح. لا يمكن التراجع عن هذا الإجراء.",
+      clearButton: "مسح البيانات",
+      clearWarning: "⚠️ سيؤدي هذا إلى حذف جميع بياناتك نهائياً. لا يمكن التراجع عن هذا الإجراء.",
+      confirmClear: "نعم، امسح كل شيء",
+      storedData: "البيانات المخزنة",
+      lastUpdated: "آخر تحديث",
+      dntActive: "تم تفعيل عدم التتبع",
+      dntDescription: "متصفحك لديه خاصية عدم التتبع مفعلة. نحن نحترم اختيارك للخصوصية وقمنا بتعطيل جميع التتبع الاختياري.",
+      necessary: {
+        title: "ملفات تعريف الارتباط الضرورية",
+        description: "ملفات تعريف الارتباط الأساسية المطلوبة لعمل الموقع بشكل صحيح. لا يمكن تعطيلها لأنها حاسمة للعمليات الأساسية للموقع."
+      },
+      analytics: {
+        title: "التحليلات والأداء",
+        description: "ملفات تعريف الارتباط التي تساعدنا على فهم كيفية تفاعل الزوار مع موقعنا، مما يسمح لنا بتحسين الأداء وتجربة المستخدم."
+      },
+      functional: {
+        title: "ملفات تعريف الارتباط الوظيفية",
+        description: "ملفات تعريف الارتباط التي تمكن الوظائف المحسنة والتخصيص، مثل تذكر تفضيلاتك وإعداداتك."
+      },
+      personalization: {
+        title: "التخصيص",
+        description: "ملفات تعريف الارتباط التي تسمح لنا بتخصيص المحتوى والتوصيات بناءً على اهتماماتك وسلوك التصفح الخاص بك."
+      },
+      marketing: {
+        title: "التسويق والإعلان",
+        description: "ملفات تعريف الارتباط المستخدمة لتتبع الزوار عبر مواقع الويب لعرض الإعلانات ذات الصلة وقياس فعالية الحملة."
+      }
+    },
+    common: {
+      close: "إغلاق",
+      cancel: "إلغاء",
+      save: "حفظ",
+      delete: "حذف",
+      edit: "تعديل",
+      confirm: "تأكيد"
     },
     profileInsights: {
       toggleLabel: "تبديل رؤى الملف الشخصي",

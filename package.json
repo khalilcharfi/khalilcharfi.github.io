@@ -5,8 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && node scripts/copy-assets.js",
-    "build:prod": "vite build --mode production && node scripts/copy-assets.js",
+    "build": "vite build && node scripts/copy-assets.js && node scripts/generate-sitemap.js",
+    "build:prod": "vite build --mode production && node scripts/copy-assets.js && node scripts/generate-sitemap.js",
     "build:analyze": "vite build && open dist/bundle-analysis.html",
     "preview": "vite preview",
     "preview:prod": "vite preview --mode production",
@@ -33,7 +33,10 @@
     "test:playwright:webkit": "playwright test --project=webkit",
     "test:playwright:mobile": "playwright test --project='Mobile Chrome' --project='Mobile Safari'",
     "test:playwright:report": "playwright show-report test-results/playwright-report",
-    "test:all": "npm run test:a11y && npm run test:playwright"
+    "test:all": "npm run test:a11y && npm run test:playwright",
+    "seo:generate": "node scripts/generate-sitemap.js",
+    "seo:validate": "node scripts/seo-validator.js",
+    "seo:check": "npm run seo:generate && npm run seo:validate"
   },
   "dependencies": {
     "@google/genai": "latest",

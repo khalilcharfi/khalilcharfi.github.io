@@ -1,0 +1,108 @@
+# Khalil Charfi - Full-Stack Engineer Portfolio
+
+> Portfolio of Khalil Charfi, a Full-Stack Engineer specializing in React, TypeScript, Node.js, and cloud architecture. This site showcases professional experience, technical skills, projects, publications, and certifications.
+
+## About Khalil Charfi
+
+Khalil Charfi is a Full-Stack Engineer with expertise in building scalable web and mobile applications. Specialized in modern JavaScript frameworks, cloud architecture, and user-centric design.
+
+- [Portfolio Home](https://khalilcharfi.github.io/): Main landing page with overview
+- [About Section](https://khalilcharfi.github.io/#about): Professional background and key highlights
+- [Contact](https://khalilcharfi.github.io/#contact): Get in touch via email or social media
+
+## Core Technical Skills
+
+- [Skills Overview](https://khalilcharfi.github.io/#skills): Comprehensive breakdown of technical expertise
+
+**Frontend Technologies**: React, TypeScript, Vue.js, Next.js, Modern CSS, Responsive Design
+
+**Backend Technologies**: Node.js, Python, Java, REST APIs, GraphQL, Microservices
+
+**Cloud & DevOps**: AWS, Docker, Kubernetes, CI/CD, Infrastructure as Code
+
+**Database Systems**: PostgreSQL, MongoDB, Redis, MySQL
+
+**Development Practices**: Agile/Scrum, Test-Driven Development, Code Review, Git Workflow
+
+## Professional Experience
+
+- [Experience Timeline](https://khalilcharfi.github.io/#experience): Detailed work history and achievements
+
+Key roles include developing enterprise-grade applications, leading technical teams, and implementing best practices for code quality, performance, and accessibility.
+
+## Featured Projects
+
+- [Projects Portfolio](https://khalilcharfi.github.io/#projects): Live demos and GitHub repositories
+
+Projects demonstrate expertise in:
+- Building scalable web applications with React and TypeScript
+- Implementing modern UI/UX patterns
+- Cloud-native architecture and deployment
+- Performance optimization and accessibility compliance
+- Integration with third-party APIs and services
+
+## Academic Publications
+
+- [Publications](https://khalilcharfi.github.io/#publications): Research papers and academic contributions
+
+Publications in peer-reviewed journals covering topics in computer science, software engineering, and digital health technologies.
+
+## Education & Certifications
+
+- [Education](https://khalilcharfi.github.io/#education): Academic background and degrees
+- [Certificates](https://khalilcharfi.github.io/#certificates): Professional certifications and training
+
+Academic background includes degrees from University of Sfax with focus on computer science and software engineering. Multiple certifications in e-health, digital technologies, and professional development.
+
+## Professional Links
+
+- GitHub: [https://github.com/khalil-charfi](https://github.com/khalil-charfi)
+- LinkedIn: [https://www.linkedin.com/in/khalil-charfi/](https://www.linkedin.com/in/khalil-charfi/)
+
+## Optional
+
+- [Resume/CV](https://khalilcharfi.github.io/#experience): Downloadable curriculum vitae
+- [Testimonials](https://khalilcharfi.github.io/#contact): Client feedback and recommendations
+- [Blog Posts](https://khalilcharfi.github.io/): Technical articles and insights (if available)
+
+## Technical Implementation
+
+This portfolio is built with:
+- **Frontend Framework**: React 18 with TypeScript
+- **Build Tool**: Vite for optimized bundling
+- **3D Graphics**: Three.js with React Three Fiber
+- **Internationalization**: i18next for multi-language support
+- **Styling**: Modern CSS with custom properties
+- **PWA Features**: Service worker and offline support
+- **Performance**: Optimized code splitting and lazy loading
+- **Accessibility**: WCAG 2.1 AA compliant
+
+## Languages Supported
+
+- English (primary)
+- Arabic
+- French
+- German
+
+## Key Highlights
+
+1. **Full-Stack Expertise**: Comprehensive experience across frontend, backend, and infrastructure
+2. **Modern Tech Stack**: Proficient in React, TypeScript, Node.js, and cloud technologies
+3. **Scalable Solutions**: Track record of building high-performance, scalable applications
+4. **Research Background**: Published academic research in computer science domains
+5. **Continuous Learning**: Multiple certifications demonstrating ongoing professional development
+
+## SEO & Discovery
+
+- Sitemap: [https://khalilcharfi.github.io/sitemap.xml](https://khalilcharfi.github.io/sitemap.xml)
+- Robots.txt: [https://khalilcharfi.github.io/robots.txt](https://khalilcharfi.github.io/robots.txt)
+- Structured Data: JSON-LD schema markup for Person and Organization
+- Open Graph & Twitter Cards: Optimized social media sharing
+
+## Last Updated
+
+Portfolio last updated: 2025-10-04
+
+---
+
+*This llms.txt file is designed to help AI models and language models better understand and reference Khalil Charfi's professional portfolio. For the most up-to-date information, please visit the live website at https://khalilcharfi.github.io/*

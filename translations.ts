@@ -421,7 +421,7 @@ export const translations: Translations = {
       title: 'Experience',
       items: [
         {
-          title: 'Software Engineer – Front-End Developer',
+          title: 'Software Engineer – Fullstack Developer',
           company: 'CHECK24 Vergleichsportal GmbH',
           location: 'Frankfurt, Germany',
           date: 'Aug 2022 – Present',
@@ -870,7 +870,7 @@ export const translations: Translations = {
       title: 'Erfahrung',
       items: [
         {
-          title: 'Software Engineer – Front-End Entwickler',
+          title: 'Software Engineer – Fullstack Entwickler',
           company: 'CHECK24 Vergleichsportal GmbH',
           location: 'Frankfurt, Deutschland',
           date: 'Aug 2022 – Heute',
@@ -1319,7 +1319,7 @@ export const translations: Translations = {
       title: 'Expérience',
       items: [
          {
-          title: 'Ingénieur Logiciel – Développeur Front-End',
+          title: 'Ingénieur Logiciel – Développeur Fullstack',
           company: 'CHECK24 Vergleichsportal GmbH',
           location: 'Francfort, Allemagne',
           date: 'Août 2022 – Présent',
@@ -1690,7 +1690,7 @@ export const translations: Translations = {
       publications: 'المنشورات',
       certificates: 'الشهادات',
       contact: 'الاتصال',
-      logoAlt: 'خ.ش',
+      logoAlt: 'KC',
       toggleNav: 'تبديل التنقل',
     },
     general: {
@@ -1768,7 +1768,7 @@ export const translations: Translations = {
       title: 'الخبرة',
       items: [
         {
-          title: 'مهندس برمجيات – مطور الواجهة الأمامية',
+          title: 'مهندس برمجيات – مطور متكامل',
           company: 'CHECK24 Vergleichsportal GmbH',
           location: 'فرانكفورت، ألمانيا',
           date: 'أغسطس 2022 – حتى الآن',

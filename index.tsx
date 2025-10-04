@@ -36,6 +36,7 @@ import {
   AiChatIcon,
   SendIcon
 } from './src/components';
+import { getSectionIds } from './src/config/sections';
 // import { CustomCursor } from './src/components/CustomCursor'; // Disabled for now
 import { LazyTranslationTest, LazyThreeBackground } from './src/utils/lazyLoading';
 
@@ -687,7 +688,6 @@ const Contact: React.FC = () => {
                 </form>
                 <div className="social-links animate-in">
                     <h3>{t('contact.connectTitle')}</h3>
-                    <a href="mailto:khalilcharfi8@gmail.com" aria-label={String(t('contact.emailAria'))} target="_blank" rel="noopener noreferrer"><MailIcon /></a>
                     <a href="https://www.linkedin.com/in/khalil-charfi/" aria-label={String(t('contact.linkedinAria'))} target="_blank" rel="noopener noreferrer"><LinkedinIcon /></a>
                     <a href="https://github.com/khalil-charfi" aria-label={String(t('contact.githubAria'))} target="_blank" rel="noopener noreferrer"><GithubIcon /></a>
                 </div>
@@ -1063,6 +1063,22 @@ const App: React.FC = () => {
         }
     }, [VisitorTypeSelector]);
     
+    // Memoize enabled sections to avoid recalculating on every render
+    const enabledSections = useMemo(() => getSectionIds(), []);
+
+    // Create a section component map for cleaner rendering
+    const sectionComponents = useMemo(() => ({
+        'home': <Home key="home" />,
+        'about': <About key="about" />,
+        'skills': <Skills key="skills" />,
+        'projects': <Projects key="projects" />,
+        'experience': <Experience key="experience" />,
+        'education': <Education key="education" />,
+        'publications': <Publications key="publications" />,
+        'certificates': <Certificates key="certificates" onCertClick={setSelectedCert} />,
+        'contact': <Contact key="contact" />
+    }), [setSelectedCert]);
+
     useEffect(() => {
         const observer = new IntersectionObserver(
             (entries) => {
@@ -1072,10 +1088,16 @@ const App: React.FC = () => {
             },
             { rootMargin: '-30% 0px -70% 0px', threshold: 0 }
         );
+        
+        // Only observe sections that are actually rendered
         const sections = document.querySelectorAll('section');
-        sections.forEach(section => observer.observe(section));
-        return () => sections.forEach(section => observer.unobserve(section));
-    }, []);
+        const sectionsArray = Array.from(sections).filter(
+            section => enabledSections.includes(section.id)
+        );
+        
+        sectionsArray.forEach(section => observer.observe(section));
+        return () => sectionsArray.forEach(section => observer.unobserve(section));
+    }, [enabledSections]);
 
     const [isScrollToTopVisible, setScrollToTopVisible] = useState(false);
     useEffect(() => {
@@ -1155,15 +1177,7 @@ const App: React.FC = () => {
                 </Suspense>
                 <Navbar activeSection={activeSection} setActiveSectionDirectly={setActiveSection} theme={theme} toggleTheme={toggleTheme} />
                 <main id="main-content" role="main" aria-label={String(t('general.skipToMain'))}>
-                    <Home />
-                    <About />
-                    <Skills />
-                    <Projects />
-                    <Experience />
-                    <Education />
-                    <Publications />
-                    <Certificates onCertClick={setSelectedCert} />
-                    <Contact />
+                    {enabledSections.map((id) => sectionComponents[id as keyof typeof sectionComponents]).filter(Boolean)}
                     {SHOW_PROFILE_INSIGHTS && <ProfileInsights chatbotOpen={isChatbotAvailable && !isChatbotChecking} scrollToTopVisible={isScrollToTopVisible} />}
                 </main>
                 

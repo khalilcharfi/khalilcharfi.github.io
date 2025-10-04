@@ -1,0 +1,68 @@
+# Robots.txt for Khalil Charfi Portfolio
+# Allow all crawlers to access the site
+User-agent: *
+Allow: /
+
+# AI/LLM-specific bots - explicitly allow llms.txt
+User-agent: GPTBot
+Allow: /
+Allow: /llms.txt
+
+User-agent: ChatGPT-User
+Allow: /
+Allow: /llms.txt
+
+User-agent: ClaudeBot
+Allow: /
+Allow: /llms.txt
+
+User-agent: Claude-Web
+Allow: /
+Allow: /llms.txt
+
+User-agent: PerplexityBot
+Allow: /
+Allow: /llms.txt
+
+User-agent: anthropic-ai
+Allow: /
+Allow: /llms.txt
+
+User-agent: Applebot-Extended
+Allow: /
+Allow: /llms.txt
+
+User-agent: Bytespider
+Allow: /
+Allow: /llms.txt
+
+User-agent: Google-Extended
+Allow: /
+Allow: /llms.txt
+
+User-agent: cohere-ai
+Allow: /
+Allow: /llms.txt
+
+# Sitemap location
+Sitemap: https://khalilcharfi.github.io/sitemap.xml
+
+# LLMs.txt location for AI/LLM discovery
+# This file provides structured content overview for AI models
+# Learn more: https://llmstxt.org/
+
+# Disallow crawling of development/test files if any
+Disallow: /test/
+Disallow: /dev/
+Disallow: /*.json$
+
+# Allow crawling of images and assets
+Allow: /asset/
+Allow: /assets/
+Allow: /icons/
+Allow: /llms.txt
+Allow: /sitemap.xml
+
+# Crawl-delay (optional, be nice to server)
+# Uncomment if needed
+# Crawl-delay: 1

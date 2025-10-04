@@ -39,7 +39,6 @@ export const Chatbot: React.FC = () => {
             projects: bundle.projects,
             publications: bundle.publications,
             contactInfo: {
-                email: "khalilcharfi8@gmail.com",
                 linkedin: "https://www.linkedin.com/in/khalil-charfi/",
                 github: "https://github.com/khalil-charfi"
             }

@@ -276,7 +276,7 @@ Example:
   "@type": "Person",
   "name": "Khalil Charfi",
   "jobTitle": "Full-Stack Engineer",
-  "email": "khalilcharfi8@gmail.com"
+  "url": "https://khalilcharfi.github.io/"
 }
 </script>
 ```

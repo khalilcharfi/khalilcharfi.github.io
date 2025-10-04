@@ -44,3 +44,27 @@ try {
   process.exit(1);
 }
 
+// Copy SEO files from public to dist
+console.log('\n📦 Copying SEO files to dist...');
+const seoFiles = ['robots.txt', 'llms.txt', 'sitemap.xml'];
+const publicDir = 'public';
+const distRoot = 'dist';
+
+try {
+  for (const file of seoFiles) {
+    const sourcePath = join(publicDir, file);
+    const destPath = join(distRoot, file);
+    
+    if (existsSync(sourcePath)) {
+      copyFileSync(sourcePath, destPath);
+      console.log(`✓ Copied: ${file}`);
+    } else {
+      console.log(`⚠ Skipped: ${file} (not found in public/)`);
+    }
+  }
+  console.log('✅ SEO files copied successfully!');
+} catch (error) {
+  console.error('❌ Error copying SEO files:', error);
+  process.exit(1);
+}
+

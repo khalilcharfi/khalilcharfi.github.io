@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from '../hooks/useTranslation';
+import { getSectionIds } from '../config/sections';
 import { NavLink, ThemeToggle, LanguageSwitcher } from './ui';
 import { PrivacySettings } from './PrivacySettings';
 import { smoothScrollTo } from '../utils/navigation';
@@ -14,17 +15,7 @@ interface NavbarProps {
 export const Navbar: React.FC<NavbarProps> = ({ activeSection, setActiveSectionDirectly, theme, toggleTheme }) => {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const { t } = useTranslation();
-    const sectionDetails = [
-        { id: 'home', labelKey: 'nav.home' },
-        { id: 'about', labelKey: 'nav.about' },
-        { id: 'skills', labelKey: 'nav.skills' },
-        { id: 'projects', labelKey: 'nav.projects' },
-        { id: 'experience', labelKey: 'nav.experience' },
-        { id: 'education', labelKey: 'nav.education' },
-        { id: 'publications', labelKey: 'nav.publications' },
-        { id: 'certificates', labelKey: 'nav.certificates' },
-        { id: 'contact', labelKey: 'nav.contact' }
-    ];
+    const sectionDetails = getSectionIds().map((id) => ({ id, labelKey: `nav.${id}` }));
 
     useEffect(() => {
         document.body.classList.toggle('mobile-menu-open', isMobileMenuOpen);

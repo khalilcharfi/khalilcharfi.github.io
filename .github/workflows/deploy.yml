@@ -1,79 +1,61 @@
-name: Deploy Next Branch to gh-pages
+name: Deploy Portfolio to GitHub Pages
 
 on:
   push:
-    branches: [ next ]
+    branches:
+      - main
+      - next
   workflow_dispatch:
 
-# Sets permissions of the GITHUB_TOKEN to allow deployment to gh-pages branch
 permissions:
-  contents: write
+  contents: read
+  pages: write
+  id-token: write
 
-# Allow only one concurrent deployment
 concurrency:
-  group: "gh-pages-deployment"
+  group: "pages"
   cancel-in-progress: false
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
     
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-        
+      
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
-          
+      
       - name: Install dependencies
         run: npm ci
-        
-      - name: Create production environment file
-        run: |
-          echo "# Production Environment Variables" > .env.production
-          echo "GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }}" >> .env.production
-          echo "VITE_ENABLE_CHATBOT=${{ secrets.VITE_ENABLE_CHATBOT || 'true' }}" >> .env.production
-          echo "VITE_ENABLE_DYNAMIC_CONTENT=${{ secrets.VITE_ENABLE_DYNAMIC_CONTENT || 'true' }}" >> .env.production
-          echo "VITE_ENABLE_PERSONAS=${{ secrets.VITE_ENABLE_PERSONAS || 'true' }}" >> .env.production
-          echo "VITE_FORCE_DEFAULT_CONTENT=${{ secrets.VITE_FORCE_DEFAULT_CONTENT || 'false' }}" >> .env.production
-          echo "VITE_SHOW_RECOMMENDED_SECTIONS=${{ secrets.VITE_SHOW_RECOMMENDED_SECTIONS || 'true' }}" >> .env.production
-          echo "VITE_SHOW_DEV_ELEMENTS=false" >> .env.production
-          echo "VITE_SHOW_VISITOR_CONTROLS=false" >> .env.production
-          echo "VITE_SHOW_PROFILE_INSIGHTS=false" >> .env.production
-          echo "VITE_SHOW_TRANSLATION_DEBUG=false" >> .env.production
-          echo "VITE_SHOW_DEBUG_INFO=false" >> .env.production
-          echo "NODE_ENV=production" >> .env.production
-          
+      
       - name: Build project
         run: npm run build:prod
-        
-      - name: Verify build output
-        run: |
-          if [ ! -d "dist" ]; then
-            echo "❌ Error: dist directory not found!"
-            exit 1
-          fi
-          if [ ! -f "dist/index.html" ]; then
-            echo "❌ Error: index.html not found in dist!"
-            exit 1
-          fi
-          echo "✅ Build output verified successfully"
+        env:
+          NODE_ENV: production
       
-      - name: Add .nojekyll file
-        run: touch dist/.nojekyll
-        
-      - name: Deploy to gh-pages branch
-        uses: peaceiris/actions-gh-pages@v4
+      - name: Verify SEO files
+        run: |
+          echo "Checking for SEO files..."
+          ls -la dist/robots.txt dist/sitemap.xml dist/llms.txt || echo "Warning: Some SEO files may be missing"
+      
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist
-          publish_branch: gh-pages
-          force_orphan: true
-          user_name: 'github-actions[bot]'
-          user_email: 'github-actions[bot]@users.noreply.github.com'
-          commit_message: 'Deploy from next branch 🚀'
+          path: './dist'
+  
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
