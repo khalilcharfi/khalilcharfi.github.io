@@ -8,7 +8,7 @@
     <title>Khalil Charfi - Portfolio</title>
     <meta name="description" content="Full-Stack Engineer specializing in modern web technologies and digital experiences.">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <link rel="icon" type="image/svg+xml" href="/icons/icon-192x192.svg" />
     
     <!-- Liquid Glass SVG Filters -->
     
@@ -47,7 +47,7 @@
             --primary-bg: rgb(var(--primary-bg-raw));
             --primary-text: #c9d1d9;
             --secondary-text: #8b949e;
-            --nav-height: 70px;
+            --nav-height: 90px;
         }
         html[data-theme="light"] {
             --accent-color: #4F46E5;
@@ -104,29 +104,10 @@
     <link rel="preload" href="index.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="index.css"></noscript>
     
-    <script type="importmap">
-{
-  "imports": {
-    "react": "https://esm.sh/react@18.2.0",
-    "react/": "https://esm.sh/react@18.2.0/",
-    "react-dom": "https://esm.sh/react-dom@18.2.0",
-    "react-dom/": "https://esm.sh/react-dom@18.2.0/",
-    "react-dom/client": "https://esm.sh/react-dom@18.2.0/client",
-    "@google/genai": "https://esm.sh/@google/genai",
-    "i18next": "https://esm.sh/i18next@23.11.5",
-    "react-i18next": "https://esm.sh/react-i18next@14.1.2?external=react,i18next",
-    "i18next-browser-languagedetector": "https://esm.sh/i18next-browser-languagedetector@8.0.0?external=i18next",
-    "marked": "https://esm.sh/marked@12.0.2",
-    "three": "https://esm.sh/three@0.165.0",
-    "three/addons/": "https://esm.sh/three@0.165.0/examples/jsm/",
-    "@react-three/fiber": "https://esm.sh/@react-three/fiber@8.16.8?external=react,react-dom,three",
-    "@react-three/drei": "https://esm.sh/@react-three/drei@9.107.0?external=react,react-dom,three,@react-three/fiber",
-    "postprocessing": "https://esm.sh/postprocessing@6.35.5?external=three",
-    "@react-three/postprocessing": "https://esm.sh/@react-three/postprocessing@2.17.0?external=react,react-dom,three,@react-three/fiber,postprocessing",
-    "simplex-noise": "https://esm.sh/simplex-noise@4.0.1"
-  }
-}
-</script>
+    <!-- Accessibility Styles -->
+    <link rel="preload" href="src/styles/accessibility.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="src/styles/accessibility.css"></noscript>
+    
     <script type="module" src="index.tsx"></script>
 </head>
 <body>
@@ -137,8 +118,15 @@
     </div>
     
     <noscript>
-      You need to enable JavaScript to run this app.
+      <div style="padding: 2rem; text-align: center; font-family: system-ui, sans-serif;">
+        <h1>JavaScript Required</h1>
+        <p>You need to enable JavaScript to run this app.</p>
+        <p>This portfolio website requires JavaScript for interactive features and optimal experience.</p>
+      </div>
     </noscript>
+    
+    <!-- ARIA Live Region for Screen Reader Announcements -->
+    <div id="a11y-live-region" role="status" aria-live="polite" aria-atomic="true" class="sr-only"></div>
     
     <div id="root"></div>
 </body>

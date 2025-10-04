@@ -9,7 +9,7 @@ import * as THREE from 'three';
 import { createNoise3D } from 'simplex-noise';
 
 import './src/i18n';
-import { useTranslation, useGeminiConnectionCheck } from './src/hooks';
+import { useTranslation, useGeminiConnectionCheck, useReducedMotion, useAnnouncer } from './src/hooks';
 import { CertificateItem, translations } from './src/data/translations';
 import { 
   DynamicContentProvider, 
@@ -32,6 +32,7 @@ import {
   Section, 
   Navbar, 
   Chatbot,
+  SkipLinks,
   UserIcon,
   AwardIcon,
   GithubIcon,
@@ -538,9 +539,9 @@ const Contact: React.FC = () => {
                 </form>
                 <div className="social-links animate-in">
                     <h3>{t('contact.connectTitle')}</h3>
-                    <a href="mailto:khalilcharfi8@gmail.com" aria-label={t('contact.emailAria')} target="_blank" rel="noopener noreferrer"><MailIcon /></a>
-                    <a href="https://www.linkedin.com/in/khalil-charfi/" aria-label={t('contact.linkedinAria')} target="_blank" rel="noopener noreferrer"><LinkedinIcon /></a>
-                    <a href="https://github.com/khalil-charfi" aria-label={t('contact.githubAria')} target="_blank" rel="noopener noreferrer"><GithubIcon /></a>
+                    <a href="mailto:khalilcharfi8@gmail.com" aria-label={String(t('contact.emailAria'))} target="_blank" rel="noopener noreferrer"><MailIcon /></a>
+                    <a href="https://www.linkedin.com/in/khalil-charfi/" aria-label={String(t('contact.linkedinAria'))} target="_blank" rel="noopener noreferrer"><LinkedinIcon /></a>
+                    <a href="https://github.com/khalil-charfi" aria-label={String(t('contact.githubAria'))} target="_blank" rel="noopener noreferrer"><GithubIcon /></a>
                 </div>
             </div>
         </Section>
@@ -574,8 +575,8 @@ const ScrollToTop: React.FC<ScrollToTopProps> = ({ chatbotVisible, isVisible }) 
             type="button"
             onClick={() => smoothScrollTo('home')}
             className={`scroll-to-top${isVisible ? ' visible' : ''}`}
-            aria-label={t('general.scrollToTop')}
-            title={t('general.scrollToTop')}
+            aria-label={String(t('general.scrollToTop'))}
+            title={String(t('general.scrollToTop'))}
             style={{ bottom }}
         >
             <ArrowUpIcon />
@@ -591,6 +592,7 @@ interface CertificateModalProps {
 const CertificateModal: React.FC<CertificateModalProps> = ({ cert, onClose }) => {
     const { t } = useTranslation();
     const modalRef = useRef<HTMLDivElement>(null);
+    const { announce } = useAnnouncer();
 
     useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {
@@ -606,10 +608,11 @@ const CertificateModal: React.FC<CertificateModalProps> = ({ cert, onClose }) =>
         if (cert) {
             document.body.style.overflow = 'hidden';
             modalRef.current?.focus();
+            announce(t('general.viewCertificate') + ': ' + cert.title, 'polite');
         } else {
             document.body.style.overflow = '';
         }
-    }, [cert]);
+    }, [cert, announce, t]);
 
     if (!cert) return null;
 
@@ -624,7 +627,7 @@ const CertificateModal: React.FC<CertificateModalProps> = ({ cert, onClose }) =>
             ref={modalRef}
         >
             <div className="modal-content" onClick={e => e.stopPropagation()}>
-                <button onClick={onClose} className="modal-close-btn" aria-label={t('general.closeModal')}>
+                <button onClick={onClose} className="modal-close-btn" aria-label={String(t('general.closeModal'))}>
                     &times;
                 </button>
                 <img src={cert.imageUrl} alt={cert.title} loading="lazy" />
@@ -1648,6 +1651,8 @@ const App: React.FC = () => {
     const { t, i18n } = useTranslation();
     const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'dark');
     const [isThemeTransitioning, setIsThemeTransitioning] = useState(false);
+    const reducedMotion = useReducedMotion();
+    const { announce } = useAnnouncer();
     const [activeSection, setActiveSection] = useState('home');
     const [selectedCert, setSelectedCert] = useState<CertificateItem | null>(null);
     const [isPageLoaded, setIsPageLoaded] = useState(false);
@@ -1673,6 +1678,25 @@ const App: React.FC = () => {
         if (loadingScreen) {
             loadingScreen.style.opacity = '0';
             setTimeout(() => loadingScreen.remove(), 300);
+        }
+
+        // Add keyboard navigation class for focus styles
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === 'Tab') {
+                document.body.classList.add('keyboard-nav');
+            }
+        };
+
+        const handleMouseDown = () => {
+            document.body.classList.remove('keyboard-nav');
+        };
+
+        document.addEventListener('keydown', handleKeyDown);
+        document.addEventListener('mousedown', handleMouseDown);
+        
+        // Apply reduced motion class if user prefers
+        if (reducedMotion) {
+            document.body.classList.add('reduce-motion');
         }
         
         // Initialize performance optimizations
@@ -1700,8 +1724,12 @@ const App: React.FC = () => {
         };
 
         window.addEventListener('scroll', handleScroll, { passive: true });
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, []);
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+            document.removeEventListener('keydown', handleKeyDown);
+            document.removeEventListener('mousedown', handleMouseDown);
+        };
+    }, [reducedMotion]);
 
     useLayoutEffect(() => {
         document.documentElement.setAttribute('data-theme', theme);
@@ -1724,7 +1752,14 @@ const App: React.FC = () => {
 
     const toggleTheme = () => {
         setIsThemeTransitioning(true);
-        setTheme(prev => (prev === 'light' ? 'dark' : 'light'));
+        const newTheme = theme === 'light' ? 'dark' : 'light';
+        setTheme(newTheme);
+        
+        // Announce theme change to screen readers
+        const message = newTheme === 'light' 
+            ? t('theme.changedToLight') 
+            : t('theme.changedToDark');
+        announce(message, 'polite');
     };
 
     useEffect(() => {
@@ -1814,6 +1849,9 @@ const App: React.FC = () => {
     return (
         <Suspense fallback={t('general.loading')}>
             <>
+                {/* Skip Links for Keyboard Navigation */}
+                <SkipLinks />
+                
                 {/* Visitor Type Selector - Optional */}
                 {PERSONAS_FEATURE_ENABLED && SHOW_VISITOR_CONTROLS && (
                   <div className="visitor-controls">
@@ -1838,7 +1876,7 @@ const App: React.FC = () => {
 
                 <InteractiveBackground theme={theme} />
                 <Navbar activeSection={activeSection} setActiveSectionDirectly={setActiveSection} theme={theme} toggleTheme={toggleTheme} />
-                <main>
+                <main id="main-content" role="main" aria-label={String(t('general.skipToMain'))}>
                     <Home />
                     <About />
                     <Skills />
@@ -2034,7 +2072,7 @@ const App: React.FC = () => {
     );
 };
 
-export const useConsent = () => useContext(ConsentContext);
+// ConsentContext is imported from './src/context'
 
 const root = createRoot(document.getElementById('root')!);
 root.render(

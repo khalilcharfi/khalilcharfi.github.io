@@ -28,7 +28,8 @@ export default defineConfig(({ mode }) => {
       resolve: {
         alias: {
           '@': path.resolve(__dirname, '.'),
-        }
+        },
+        dedupe: ['react', 'react-dom']
       },
       server: {
         port: 5177,
@@ -55,13 +56,21 @@ export default defineConfig(({ mode }) => {
       output: {
         manualChunks: (id) => {
           if (id.includes('node_modules')) {
-            if (id.includes('react') || id.includes('react-dom')) {
+            // Keep React and React-DOM together and prioritize them
+            if (id.includes('react-dom')) {
               return 'react-vendor';
             }
-            if (id.includes('three') || id.includes('@react-three')) {
+            if (id.includes('react') && !id.includes('react-')) {
+              return 'react-vendor';
+            }
+            // React-based libraries that depend on React
+            if (id.includes('@react-three') || id.includes('react-i18next') || id.includes('react-hook-consent')) {
+              return 'react-libs';
+            }
+            if (id.includes('three') || id.includes('simplex-noise')) {
               return 'three-vendor';
             }
-            if (id.includes('i18next') || id.includes('i18n')) {
+            if (id.includes('i18next') && !id.includes('react-i18next')) {
               return 'i18n-vendor';
             }
             if (id.includes('marked') || id.includes('cookie')) {
@@ -69,9 +78,6 @@ export default defineConfig(({ mode }) => {
             }
             if (id.includes('@google/genai')) {
               return 'ai-vendor';
-            }
-            if (id.includes('simplex-noise')) {
-              return 'three-vendor'; // Group with Three.js
             }
             return 'vendor';
           }

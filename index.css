@@ -870,59 +870,74 @@ html[dir="rtl"] .publication-card .btn { align-self: flex-end}
     left: 0;
     width: 100vw;
     height: 100vh;
-    background-color: rgba(var(--primary-bg-raw), 0.7);
+    background-color: rgba(0, 0, 0, 0.8);
     backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     z-index: 2000;
     display: flex;
     justify-content: center;
     align-items: center;
     padding: 1rem;
-    animation: fadeIn 0.3s ease}
+    animation: fadeIn 0.3s ease;
+    overflow-y: auto}
 .modal-content {
     background-color: var(--glass-bg);
     border: 1px solid var(--glass-border-color);
     border-radius: var(--border-radius-main);
-    box-shadow: 0 16px 40px var(--shadow-hover-color);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.3);
     max-width: 90vw;
     max-height: 90vh;
-    width: 800px;
+    width: auto;
+    max-width: 1000px;
     position: relative;
     display: flex;
     flex-direction: column;
-    animation: scaleIn 0.3s ease}
+    animation: scaleIn 0.3s ease;
+    overflow: hidden}
 .modal-content img {
     width: 100%;
     height: auto;
     object-fit: contain;
-    max-height: calc(90vh - 100px); /* Adjust based on info height */
+    max-height: calc(90vh - 150px);
+    display: block;
     border-top-left-radius: var(--border-radius-main);
     border-top-right-radius: var(--border-radius-main)}
 .modal-info {
     padding: 1.5rem;
-    text-align: center}
+    text-align: center;
+    background-color: var(--glass-bg);
+    border-top: 1px solid var(--glass-border-color)}
 .modal-info h3 {
-    margin-bottom: 0.5rem}
+    margin: 0 0 0.5rem 0;
+    color: var(--primary-text);
+    font-size: 1.1rem}
 .modal-info p {
-    margin-bottom: 0}
+    margin: 0;
+    color: var(--secondary-text);
+    font-size: 0.95rem}
 .modal-close-btn {
     position: absolute;
     top: 10px;
-    right: 15px;
-    background: rgba(var(--primary-bg-raw), 0.5);
-    border: 1px solid var(--glass-border-color);
+    right: 10px;
+    background: rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 50%;
-    color: var(--primary-text);
-    width: 36px;
-    height: 36px;
-    font-size: 24px;
-    line-height: 36px;
-    text-align: center;
+    color: white;
+    width: 40px;
+    height: 40px;
+    font-size: 28px;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     cursor: pointer;
-    transition: all var(--transition-fast)}
+    transition: all 0.2s ease;
+    z-index: 10;
+    padding: 0}
 .modal-close-btn:hover {
     background-color: var(--accent-color);
-    color: white;
-    transform: rotate(90deg)}
+    transform: rotate(90deg);
+    border-color: var(--accent-color)}
 
 #contact .contact-content { max-width: 800px; margin: 0 auto; text-align: center}
 #contact .contact-intro { margin-left: auto; margin-right: auto}
@@ -1738,6 +1753,37 @@ html[dir="rtl"] .markdown-content ul, html[dir="rtl"] .markdown-content ol {
         transform: translateY(0)}
     .chat-window:not(.open) {
         transform: translateY(100%)}
+
+    /* Modal mobile styles */
+    .modal-overlay {
+        padding: 0.5rem;
+        align-items: flex-start;
+        padding-top: 2rem}
+    
+    .modal-content {
+        max-width: 95vw;
+        width: 100%;
+        max-height: calc(100vh - 4rem);
+        margin: 0}
+    
+    .modal-content img {
+        max-height: calc(100vh - 200px)}
+    
+    .modal-info {
+        padding: 1rem}
+    
+    .modal-info h3 {
+        font-size: 1rem}
+    
+    .modal-info p {
+        font-size: 0.85rem}
+    
+    .modal-close-btn {
+        top: 8px;
+        right: 8px;
+        width: 36px;
+        height: 36px;
+        font-size: 24px}
 
 }
 
