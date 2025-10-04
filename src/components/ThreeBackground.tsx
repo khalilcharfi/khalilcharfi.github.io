@@ -469,15 +469,20 @@ export const ThreeBackground: React.FC<ThreeBackgroundProps> = ({ theme }) => {
 
   const bgColor = theme === 'light' ? '#F3F4F6' : '#0D1117';
 
-  // Handle smooth theme transitions
+  // Handle smooth theme transitions with optimized timing
   useEffect(() => {
     if (previousTheme.current !== theme) {
       setIsTransitioning(true);
-      const timer = setTimeout(() => {
-        setIsTransitioning(false);
-      }, 500); // Match CSS transition duration
-      previousTheme.current = theme;
-      return () => clearTimeout(timer);
+      
+      // Use RAF to sync with browser paint
+      requestAnimationFrame(() => {
+        const timer = setTimeout(() => {
+          setIsTransitioning(false);
+          previousTheme.current = theme;
+        }, 400); // Match CSS transition duration (0.4s)
+        
+        return () => clearTimeout(timer);
+      });
     }
   }, [theme]);
 
@@ -552,8 +557,9 @@ export const ThreeBackground: React.FC<ThreeBackgroundProps> = ({ theme }) => {
       width: '100%', 
       height: '100%', 
       zIndex: -1,
-      transition: 'opacity 0.5s cubic-bezier(0.4, 0.0, 0.2, 1)',
-      opacity: isTransitioning ? 0.6 : 1
+      transition: 'opacity 0.4s cubic-bezier(0.4, 0.0, 0.2, 1)',
+      opacity: isTransitioning ? 0.85 : 1,
+      willChange: isTransitioning ? 'opacity' : 'auto'
     }}>
       <WebGLErrorBoundary
         fallback={
@@ -587,7 +593,8 @@ export const ThreeBackground: React.FC<ThreeBackgroundProps> = ({ theme }) => {
             width: '100%',
             height: '100%',
             background: bgColor,
-            transition: 'background-color 0.5s cubic-bezier(0.4, 0.0, 0.2, 1)'
+            transition: 'background-color 0.4s cubic-bezier(0.4, 0.0, 0.2, 1)',
+            willChange: isTransitioning ? 'background-color' : 'auto'
           }}
           gl={{
             antialias: true,
