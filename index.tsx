@@ -290,7 +290,7 @@ const Skills: React.FC = () => {
         <Section id="skills">
             <h2 className="section-title animate-in">{personalizedContent.skills.title}</h2>
             <p className="skills-focus animate-in">
-                Focus areas: {personalizedContent.skills.focusAreas.join(', ')}
+                {t('skills.focusAreasLabel')} {personalizedContent.skills.focusAreas.join(', ')}
             </p>
             <div className="card-grid">
                 {categories && typeof categories === 'object' && 

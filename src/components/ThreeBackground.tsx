@@ -171,10 +171,10 @@ function FractalParticles({ count = 5000, theme }: { count?: number; theme: stri
         max: Math.max(0.055 * qualityMultiplier, 0.048)
       },
       animationSpeed: {
-        base: 0.35 * complexityMultiplier,
-        max: 0.7 * complexityMultiplier
+        base: 0.15 * complexityMultiplier,
+        max: 0.3 * complexityMultiplier
       },
-      noiseIntensity: Math.max(2.2 * adaptiveSettings.noiseComplexity, 1.5),
+      noiseIntensity: Math.max(1.2 * adaptiveSettings.noiseComplexity, 0.8),
       interactionRadius: adaptiveSettings.interactionEnabled ? 6.5 : 0,
       bloomIntensity: Math.max(0.5 * qualityMultiplier, 0.35),
       opacity: 0.75,
@@ -198,10 +198,10 @@ function FractalParticles({ count = 5000, theme }: { count?: number; theme: stri
         max: Math.max(0.055 * qualityMultiplier, 0.048)
       },
       animationSpeed: {
-        base: 0.35 * complexityMultiplier,
-        max: 0.7 * complexityMultiplier
+        base: 0.15 * complexityMultiplier,
+        max: 0.3 * complexityMultiplier
       },
-      noiseIntensity: Math.max(2.2 * adaptiveSettings.noiseComplexity, 1.5),
+      noiseIntensity: Math.max(1.2 * adaptiveSettings.noiseComplexity, 0.8),
       interactionRadius: adaptiveSettings.interactionEnabled ? 6.5 : 0,
       bloomIntensity: Math.max(0.5 * qualityMultiplier, 0.35),
       opacity: 0.75,
@@ -373,13 +373,13 @@ function FractalParticles({ count = 5000, theme }: { count?: number; theme: stri
 
       const primaryMix = colorVariation * 0.4 * adaptiveSettings.renderQuality;
       const accentMix = colorVariation * 0.3 * adaptiveSettings.renderQuality;
-      const secondaryMix = Math.sin(time * 0.15 + i * 0.02) * 0.2 + 0.2;
+      const secondaryMix = Math.sin(time * 0.08 + i * 0.01) * 0.2 + 0.2;
 
       tempColor.lerp(themeConfig.highlightColor, primaryMix);
       tempColor.lerp(themeConfig.accentColor, accentMix);
       tempColor.lerp(themeConfig.secondaryColor, secondaryMix * adaptiveSettings.renderQuality);
 
-      const tertiaryMix = Math.cos(time * 0.12 + i * 0.015) * 0.15 + 0.15;
+      const tertiaryMix = Math.cos(time * 0.06 + i * 0.008) * 0.15 + 0.15;
       tempColor.lerp(themeConfig.tertiaryColor, tertiaryMix * adaptiveSettings.renderQuality);
 
       colorsArray[i3] = tempColor.r;
@@ -387,7 +387,7 @@ function FractalParticles({ count = 5000, theme }: { count?: number; theme: stri
       colorsArray[i3 + 2] = tempColor.b;
 
       if (sizesArray) {
-        const baseSizeVariation = Math.sin(time * 0.5 + i * 0.02) * 0.2 + 1;
+        const baseSizeVariation = Math.sin(time * 0.25 + i * 0.01) * 0.15 + 1;
         const mouseSizeBoost = 1 + mouseInfluence * 0.8;
         const baseSize = themeConfig.particleSize.min + sizeFactor * (themeConfig.particleSize.max - themeConfig.particleSize.min);
         sizesArray[i] = baseSize * baseSizeVariation * mouseSizeBoost;

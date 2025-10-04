@@ -417,49 +417,18 @@ export const PrivacySettings: React.FC = () => {
                         >
                             <p className="privacy-intro">{String(t('privacy.dataIntro'))}</p>
 
-                            {/* Data Size Info */}
+                            {/* Data Size Info - Compact */}
                             <div className="privacy-data-info" role="status" aria-live="polite">
-                                <div className="privacy-data-stat">
-                                    <svg 
-                                        xmlns="http://www.w3.org/2000/svg" 
-                                        viewBox="0 0 24 24" 
-                                        fill="none" 
-                                        stroke="currentColor" 
-                                        strokeWidth="2"
-                                        width="24"
-                                        height="24"
-                                        aria-hidden="true"
-                                    >
-                                        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
-                                        <path d="M12 2v20M3.5 7l8.5 5 8.5-5" />
-                                    </svg>
-                                    <div>
-                                        <strong aria-label={`Data size: ${formatBytes(dataSize)}`}>
-                                            {isLoadingData ? 'Calculating...' : formatBytes(dataSize)}
-                                        </strong>
-                                        <p>{String(t('privacy.storedData'))}</p>
-                                    </div>
-                                </div>
+                                <strong aria-label={`Data size: ${formatBytes(dataSize)}`}>
+                                    {isLoadingData ? 'Calculating...' : formatBytes(dataSize)}
+                                </strong>
+                                <span>{String(t('privacy.storedData'))}</span>
                             </div>
 
-                            {/* Data Actions */}
+                            {/* Data Actions - Compact */}
                             <div className="privacy-data-actions">
                                 <div className="privacy-action-card">
-                                    <div className="privacy-action-icon">
-                                        <svg 
-                                            xmlns="http://www.w3.org/2000/svg" 
-                                            viewBox="0 0 24 24" 
-                                            fill="none" 
-                                            stroke="currentColor" 
-                                            strokeWidth="2"
-                                            width="32"
-                                            height="32"
-                                        >
-                                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3" />
-                                        </svg>
-                                    </div>
                                     <h3>{String(t('privacy.exportData'))}</h3>
-                                    <p>{String(t('privacy.exportDescription'))}</p>
                                     <button
                                         className="privacy-btn privacy-btn-secondary"
                                         onClick={handleExportData}
@@ -481,22 +450,7 @@ export const PrivacySettings: React.FC = () => {
                                 </div>
 
                                 <div className="privacy-action-card privacy-danger-card">
-                                    <div className="privacy-action-icon">
-                                        <svg 
-                                            xmlns="http://www.w3.org/2000/svg" 
-                                            viewBox="0 0 24 24" 
-                                            fill="none" 
-                                            stroke="currentColor" 
-                                            strokeWidth="2"
-                                            width="32"
-                                            height="32"
-                                        >
-                                            <path d="M3 6h18M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
-                                            <path d="M10 11v6M14 11v6" />
-                                        </svg>
-                                    </div>
                                     <h3>{String(t('privacy.clearData'))}</h3>
-                                    <p>{String(t('privacy.clearDescription'))}</p>
                                     
                                     {!showClearConfirm ? (
                                         <button
@@ -543,6 +497,13 @@ export const PrivacySettings: React.FC = () => {
                         </div>
                     )}
                 </div>
+
+                {/* Footer */}
+                <div className="privacy-settings-footer">
+                    <p className="privacy-footer-text">
+                        {String(t('privacy.footerText', 'Your privacy matters. All data is stored locally.'))}
+                    </p>
+                </div>
             </div>
         </div>
     ) : null;
@@ -570,6 +531,7 @@ export const PrivacySettings: React.FC = () => {
                     <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
                     <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9c.26.604.852.997 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z" />
                 </svg>
+                <span className="privacy-settings-label">{String(t('privacy.settings'))}</span>
             </button>
             {typeof document !== 'undefined' && createPortal(modalContent, document.body)}
         </>

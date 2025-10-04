@@ -4,19 +4,6 @@ import { NavLink, ThemeToggle, LanguageSwitcher } from './ui';
 import { PrivacySettings } from './PrivacySettings';
 import { smoothScrollTo } from '../utils/navigation';
 
-interface NavControls {
-    theme: string;
-    toggleTheme: () => void;
-}
-
-const NavControls: React.FC<NavControls> = ({ theme, toggleTheme }) => (
-    <>
-        <PrivacySettings />
-        <ThemeToggle theme={theme} toggleTheme={toggleTheme} />
-        <LanguageSwitcher />
-    </>
-);
-
 interface NavbarProps {
     activeSection: string;
     setActiveSectionDirectly: (id: string) => void;
@@ -71,6 +58,14 @@ export const Navbar: React.FC<NavbarProps> = ({ activeSection, setActiveSectionD
                         {String(t('nav.logoAlt'))}
                     </a>
                 </div>
+                
+                {/* Header controls - always visible on mobile */}
+                <div className="header-controls">
+                    <PrivacySettings />
+                    <ThemeToggle theme={theme} toggleTheme={toggleTheme} />
+                    <LanguageSwitcher />
+                </div>
+                
                 <button
                     className="nav-toggle"
                     aria-label={String(t('nav.toggleNav'))}
@@ -100,12 +95,13 @@ export const Navbar: React.FC<NavbarProps> = ({ activeSection, setActiveSectionD
                             onClick={() => handleLinkClick(section.id)}
                         />
                     ))}
-                    <li className="mobile-controls">
-                        <NavControls theme={theme} toggleTheme={toggleTheme} />
-                    </li>
                 </ul>
+                
+                {/* Desktop controls - includes all controls */}
                 <div className="desktop-controls">
-                    <NavControls theme={theme} toggleTheme={toggleTheme} />
+                    <PrivacySettings />
+                    <ThemeToggle theme={theme} toggleTheme={toggleTheme} />
+                    <LanguageSwitcher />
                 </div>
             </div>
         </nav>

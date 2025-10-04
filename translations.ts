@@ -81,6 +81,7 @@ export interface LanguageSpecificTranslations {
       devops: { name: string; items: string[] };
       tools: { name: string; items: string[] };
     };
+    focusAreasLabel: string;
     focusAI: string;
     focusWebDev: string;
     focusDataScience: string;
@@ -407,6 +408,7 @@ export const translations: Translations = {
         devops: { name: 'DevOps & CI/CD', items: ['Git', 'Docker', 'Jenkins', 'GitLab CI/CD', 'Bitrise', 'Puppet'] },
         tools: { name: 'Others & Tools', items: ['Drupal', 'Keycloak', 'Firebase', 'Mapbox GL', 'WSO2 CEP', 'JHipster', 'TestCafe', 'Cucumber', 'Grafana', 'Kibana'] },
       },
+      focusAreasLabel: 'Focus areas:',
       focusAI: 'AI Focus',
       focusWebDev: 'Web Development Focus',
       focusDataScience: 'Data Science Focus',
@@ -855,6 +857,7 @@ export const translations: Translations = {
         devops: { name: 'DevOps & CI/CD', items: ['Git', 'Docker', 'Jenkins', 'GitLab CI/CD', 'Bitrise', 'Puppet'] },
         tools: { name: 'Sonstiges & Werkzeuge', items: ['Drupal', 'Keycloak', 'Firebase', 'Mapbox GL', 'WSO2 CEP', 'JHipster', 'TestCafe', 'Cucumber', 'Grafana', 'Kibana'] },
       },
+      focusAreasLabel: 'Schwerpunkte:',
       focusAI: 'Schwerpunkt KI',
       focusWebDev: 'Schwerpunkt Webentwicklung',
       focusDataScience: 'Schwerpunkt Data Science',
@@ -1303,6 +1306,7 @@ export const translations: Translations = {
         devops: { name: 'DevOps & CI/CD', items: ['Git', 'Docker', 'Jenkins', 'GitLab CI/CD', 'Bitrise', 'Puppet'] },
         tools: { name: 'Autres & Outils', items: ['Drupal', 'Keycloak', 'Firebase', 'Mapbox GL', 'WSO2 CEP', 'JHipster', 'TestCafe', 'Cucumber', 'Grafana', 'Kibana'] },
       },
+      focusAreasLabel: 'Domaines de spécialisation :',
       focusAI: 'Spécialisation IA',
       focusWebDev: 'Spécialisation Développement Web',
       focusDataScience: 'Spécialisation Data Science',
@@ -1751,6 +1755,7 @@ export const translations: Translations = {
         devops: { name: 'DevOps و CI/CD', items: ['Git', 'Docker', 'Jenkins', 'GitLab CI/CD', 'Bitrise', 'Puppet'] },
         tools: { name: 'أخرى وأدوات', items: ['Drupal', 'Keycloak', 'Firebase', 'Mapbox GL', 'WSO2 CEP', 'JHipster', 'TestCafe', 'Cucumber', 'Grafana', 'Kibana'] },
       },
+      focusAreasLabel: 'مجالات التركيز:',
       focusAI: 'التركيز على الذكاء الاصطناعي',
       focusWebDev: 'التركيز على تطوير الويب',
       focusDataScience: 'التركيز على علم البيانات',
