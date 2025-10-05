@@ -121,12 +121,7 @@ const getDefaultContent = (t: (key: string, options?: any) => string | object): 
   },
   skills: {
     title: t('skills.title') as string,
-    priorityOrder: [
-      t('skills.priorityProgramming') as string, 
-      t('skills.priorityFrameworks') as string, 
-      t('skills.priorityTools') as string, 
-      t('skills.priorityDatabases') as string
-    ]
+    priorityOrder: ['frontend', 'backend', 'mobile', 'databases', 'devops', 'tools']
   },
   contact: {
     title: t('contact.title') as string,

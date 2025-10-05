@@ -26,10 +26,18 @@ This portfolio includes comprehensive SEO optimization:
 
 ✅ **Technical SEO**
 - `robots.txt` with AI bot support
-- `sitemap.xml` auto-generated
+- `sitemap.xml` auto-generated with multilingual support
 - Canonical URLs
 - Structured data (Schema.org)
 - HTTPS enabled
+
+✅ **Multilingual SEO** 🌍
+- Hreflang tags for all 4 languages (EN, DE, FR, AR)
+- Dynamic meta tags per language
+- Language-specific Open Graph tags
+- RTL support for Arabic
+- SEO-optimized sitemap with language variants
+- **[📖 Complete Multilingual SEO Guide](./docs/MULTILINGUAL_SEO_GUIDE.md)**
 
 ✅ **AI/LLM Optimization**
 - `llms.txt` for AI discovery
@@ -37,15 +45,15 @@ This portfolio includes comprehensive SEO optimization:
 - Structured content overview
 
 ✅ **Social Media**
-- Open Graph tags
+- Open Graph tags (with language variants)
 - Twitter Cards
 - Optimized sharing images
 
 ### Quick SEO Commands
 
 ```bash
-# Generate sitemap
-npm run seo:generate
+# Generate multilingual sitemap
+npm run generate:sitemap
 
 # Validate SEO implementation
 npm run seo:validate
@@ -54,7 +62,11 @@ npm run seo:validate
 npm run seo:check
 ```
 
-📖 **Full Documentation**: [Complete Development Guide](./docs/GUIDE.md)
+📖 **Documentation**:
+- [Complete Development Guide](./docs/GUIDE.md)
+- [Multilingual SEO Guide](./docs/MULTILINGUAL_SEO_GUIDE.md) 🌍
+- [SEO Quick Start](./docs/SEO_QUICK_START.md)
+- [Performance Guide](./docs/PERFORMANCE_OPTIMIZATION_GUIDE.md)
 
 ## 🛠️ Installation
 

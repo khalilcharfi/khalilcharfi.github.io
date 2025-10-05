@@ -26,6 +26,7 @@ import {
   Navbar, 
   Chatbot,
   SkipLinks,
+  SEOHead,
   UserIcon,
   AwardIcon,
   GithubIcon,
@@ -1038,17 +1039,8 @@ const App: React.FC = () => {
         });
     };
 
-    useEffect(() => {
-        const seo = t('seo', { returnObjects: true }) as { title: string, description: string };
-        if(seo && typeof seo.title === 'string' && typeof seo.description === 'string') {
-            document.title = seo.title;
-            document.querySelector('meta[name="description"]')?.setAttribute('content', seo.description);
-            document.querySelector('meta[property="og:title"]')?.setAttribute('content', seo.title);
-            document.querySelector('meta[property="og:description"]')?.setAttribute('content', seo.description);
-            document.querySelector('meta[property="twitter:title"]')?.setAttribute('content', seo.title);
-            document.querySelector('meta[property="twitter:description"]')?.setAttribute('content', seo.description);
-        }
-    }, [i18n.language, t]);
+    // SEO meta tags are now handled by the SEOHead component
+    // which automatically updates based on language and active section
 
     // TranslationTest is now lazy loaded via LazyTranslationTest - no need for dynamic import
 
@@ -1141,6 +1133,9 @@ const App: React.FC = () => {
     return (
         <Suspense fallback={t('general.loading')}>
             <>
+                {/* SEO Meta Tags - Multilingual Support */}
+                <SEOHead currentSection={activeSection} />
+                
                 {/* Custom Cursor - Disabled for now */}
                 {/* <CustomCursor /> */}
                 

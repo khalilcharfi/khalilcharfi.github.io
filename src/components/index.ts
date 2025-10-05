@@ -6,6 +6,7 @@ export { DynamicContentProvider, useDynamicContent, ProfileInsights, useSectionT
 export { ErrorBoundary } from './ErrorBoundary';
 export { Navbar } from './Navbar';
 export { PrivacySettings } from './PrivacySettings';
+export { SEOHead } from './SEOHead';
 export { SkipLinks } from './SkipLinks';
 // ThreeBackground is lazy-loaded only - not exported here to avoid static bundling
 export { TranslationTest } from './TranslationTest';
