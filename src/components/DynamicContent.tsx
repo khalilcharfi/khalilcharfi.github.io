@@ -94,9 +94,9 @@ export const SHOW_DEBUG_INFO: boolean = (import.meta as any).env?.VITE_SHOW_DEBU
 // Chatbot configuration
 export const ENABLE_CHATBOT: boolean = (import.meta as any).env?.VITE_ENABLE_CHATBOT !== 'false';
 
-// Recommended sections configuration - DISABLED BY DEFAULT
-// Priority sections will only render when explicitly enabled via VITE_SHOW_RECOMMENDED_SECTIONS=true
-export const SHOW_RECOMMENDED_SECTIONS: boolean = (import.meta as any).env?.VITE_SHOW_RECOMMENDED_SECTIONS === 'true';
+// Recommended sections configuration - PERMANENTLY DISABLED
+// Priority sections feature is disabled and will not render
+export const SHOW_RECOMMENDED_SECTIONS: boolean = false;
 
 // Environment detection
 export const IS_DEVELOPMENT: boolean = (import.meta as any).env?.DEV === true;

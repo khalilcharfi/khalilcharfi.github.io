@@ -1,5 +1,5 @@
 
-const CACHE_NAME = 'khalil-portfolio-cache-v4.0'; // Updated for React fix and assets
+const CACHE_NAME = 'khalil-portfolio-cache-v4.1'; // Updated for CORS fix
 const ASSETS_TO_CACHE = [
   '/',
   './index.html',
@@ -56,11 +56,14 @@ self.addEventListener('fetch', event => {
     return;
   }
   
-  // For external resources like Google Fonts or esm.sh, use a network-first or cache-first-with-revalidation strategy.
-  // For this portfolio, we'll let them pass through to the network as the browser's HTTP cache handles them well.
+  // Skip external resources and CORS-restricted domains
+  // These should be handled by the browser's native cache
   if (event.request.url.startsWith('https://fonts.googleapis.com') ||
       event.request.url.startsWith('https://fonts.gstatic.com') ||
-      event.request.url.startsWith('https://esm.sh')) {
+      event.request.url.startsWith('https://esm.sh') ||
+      event.request.url.includes('media.licdn.com') ||
+      event.request.url.includes('profile-images.xing.com') ||
+      event.request.url.includes('xingassets.com')) {
     return;
   }
 
