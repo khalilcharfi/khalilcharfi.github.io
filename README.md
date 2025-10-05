@@ -2,8 +2,6 @@
 
 A modern, interactive portfolio website showcasing professional experience, technical skills, projects, publications, and certifications.
 
-![Portfolio Preview](https://khalilcharfi.github.io/asset/profile-photo.jpg)
-
 ## 🚀 Features
 
 - **Modern Tech Stack**: React 18, TypeScript, Vite, Three.js

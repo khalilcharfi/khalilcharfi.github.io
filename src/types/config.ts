@@ -19,7 +19,6 @@ export interface PersonalizedContent {
   };
   skills: {
     title: string;
-    focusAreas: string[];
     priorityOrder: string[];
   };
   projects: {

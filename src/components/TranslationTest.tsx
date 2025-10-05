@@ -12,7 +12,6 @@ export const TranslationTest: React.FC<TranslationTestProps> = ({ showDebugInfo 
   const testKeys = [
     'about.title',
     'dynamicContent.professionalSummary',
-    'dynamicContent.expertInAI',
     'dynamicContent.fullStackProficiency',
     'dynamicContent.problemSolving',
     'dynamicContent.modernFrameworks',

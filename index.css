@@ -271,7 +271,7 @@ html[data-theme="light"] .btn-outline:hover, html[data-theme="light"] .btn-outli
     background-color: rgba(var(--primary-bg-raw), 0.95)}
 .navbar .container { display: flex; justify-content: space-between; align-items: center; width: 100%}
 .nav-logo { font-family: var(--font-heading); font-size: 1.8rem; font-weight: 700; flex-shrink: 0}
-html[dir="rtl"] .nav-logo { font-family: var(--font-heading-ar)}
+html[dir="rtl"] .nav-logo { font-family: var(--font-heading-ar); letter-spacing: 0.05em}
 .nav-logo a { color: var(--primary-text); transition: color var(--transition-fast), text-shadow var(--transition-fast); padding: 0.5rem; border-radius: var(--border-radius-small)}
 .nav-logo a:hover, .nav-logo a:focus-visible { color: var(--accent-color); text-shadow: 0 0 6px var(--accent-glow)}
 

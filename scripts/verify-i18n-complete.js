@@ -45,7 +45,6 @@ const testKeys = [
   'about.keyHighlightsTitle',
   'about.languagesTitle',
   'dynamicContent.professionalSummary',
-  'dynamicContent.expertInAI',
   'dynamicContent.fullStackProficiency',
   'dynamicContent.problemSolving',
   'dynamicContent.modernFrameworks'
@@ -103,7 +102,6 @@ if (results.missing.length > 0) {
   console.log('\n✨ The i18n implementation is now complete for:');
   console.log('  - about.title');
   console.log('  - dynamicContent.professionalSummary');
-  console.log('  - dynamicContent.expertInAI');
   console.log('  - dynamicContent.fullStackProficiency');
   console.log('  - dynamicContent.problemSolving');
   console.log('  - dynamicContent.modernFrameworks');

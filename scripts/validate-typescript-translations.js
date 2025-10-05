@@ -45,7 +45,7 @@ const expectedKeys = [
   'about.title', 'about.professionalSummary', 'about.keyHighlights', 'about.languages',
   'about.languages.arabic', 'about.languages.english', 'about.languages.french',
   'skills.title', 'skills.focusAI', 'skills.focusWebDev', 'skills.focusDataScience',
-  'dynamicContent.professionalSummary', 'dynamicContent.expertInAI', 'dynamicContent.fullStackProficiency',
+  'dynamicContent.professionalSummary', 'dynamicContent.fullStackProficiency',
   'dynamicContent.problemSolving', 'dynamicContent.modernFrameworks'
 ];
 

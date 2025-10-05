@@ -71,12 +71,6 @@ const missingKeys = {
     fr: 'Ingénieur full-stack avec une vaste expérience dans la livraison d\'applications web et mobiles évolutives. Compétent en développement front-end avec Vue.js et Angular, back-end avec Laravel et Laminas, et applications mobiles utilisant Flutter et Ionic. Passionné par l\'architecture propre, les capacités hors ligne et le déploiement axé sur DevOps. Expérimenté dans des équipes interfonctionnelles en Tunisie et en Allemagne.',
     ar: 'مهندس متكامل ذو خبرة واسعة في تقديم تطبيقات الويب والجوال القابلة للتطوير. ماهر في تطوير الواجهة الأمامية باستخدام Vue.js و Angular، والواجهة الخلفية باستخدام Laravel و Laminas، وتطبيقات الجوال باستخدام Flutter و Ionic. شغوف بالهندسة النظيفة، وقدرات العمل دون اتصال بالإنترنت، والنشر الموجه بـ DevOps. من ذوي الخبرة في فرق متعددة الوظائف في تونس وألمانيا.'
   },
-  'dynamicContent.expertInAI': {
-    en: 'Expert in machine learning and AI development',
-    de: 'Experte für maschinelles Lernen und KI-Entwicklung',
-    fr: 'Expert en apprentissage automatique et développement IA',
-    ar: 'خبير في التعلم الآلي وتطوير الذكاء الاصطناعي'
-  },
   'dynamicContent.fullStackProficiency': {
     en: 'Full-stack web development proficiency',
     de: 'Kompetenz in der Full-Stack-Webentwicklung',

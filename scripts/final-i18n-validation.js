@@ -41,7 +41,6 @@ function getNestedProperty(obj, path) {
 const originallyRequestedKeys = [
   'about.title',
   'dynamicContent.professionalSummary',
-  'dynamicContent.expertInAI',
   'dynamicContent.fullStackProficiency',
   'dynamicContent.problemSolving',
   'dynamicContent.modernFrameworks'

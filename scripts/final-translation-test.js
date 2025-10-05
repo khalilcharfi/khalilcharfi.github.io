@@ -25,7 +25,6 @@ const testKeys = [
   'about.keyHighlightsTitle',
   'about.languagesTitle',
   'dynamicContent.professionalSummary',
-  'dynamicContent.expertInAI',
   'dynamicContent.fullStackProficiency',
   'dynamicContent.problemSolving',
   'dynamicContent.modernFrameworks'
@@ -82,7 +81,6 @@ if (results.missing.length > 0) {
   console.log(`  ✓ about.keyHighlightsTitle - Available in all languages`);
   console.log(`  ✓ about.languagesTitle - Available in all languages`);
   console.log(`  ✓ dynamicContent.professionalSummary - Available in all languages`);
-  console.log(`  ✓ dynamicContent.expertInAI - Available in all languages`);
   console.log(`  ✓ dynamicContent.fullStackProficiency - Available in all languages`);
   console.log(`  ✓ dynamicContent.problemSolving - Available in all languages`);
   console.log(`  ✓ dynamicContent.modernFrameworks - Available in all languages`);

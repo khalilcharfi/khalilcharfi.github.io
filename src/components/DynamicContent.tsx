@@ -57,7 +57,6 @@ interface SimplePersonalizedContent {
   };
   skills: {
     title: string;
-    focusAreas: string[];
     priorityOrder: string[];
   };
   contact: {
@@ -115,7 +114,6 @@ const getDefaultContent = (t: (key: string, options?: any) => string | object): 
     title: t('about.title') as string,
     professionalSummary: t('dynamicContent.professionalSummary') as string,
     keyHighlights: [
-      t('dynamicContent.expertInAI') as string,
       t('dynamicContent.fullStackProficiency') as string,
       t('dynamicContent.problemSolving') as string,
       t('dynamicContent.modernFrameworks') as string
@@ -123,11 +121,6 @@ const getDefaultContent = (t: (key: string, options?: any) => string | object): 
   },
   skills: {
     title: t('skills.title') as string,
-    focusAreas: [
-      t('skills.focusAI') as string, 
-      t('skills.focusWebDev') as string, 
-      t('skills.focusDataScience') as string
-    ],
     priorityOrder: [
       t('skills.priorityProgramming') as string, 
       t('skills.priorityFrameworks') as string, 

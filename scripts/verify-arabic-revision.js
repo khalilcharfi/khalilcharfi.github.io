@@ -62,7 +62,6 @@ const verificationChecks = [
   {
     section: 'Dynamic Content',
     keys: [
-      { key: 'dynamicContent.expertInAI', expected: 'خبرة في الذكاء الاصطناعي والتعلم الآلي', context: 'Professional terminology' },
       { key: 'dynamicContent.fullStackProficiency', expected: 'إتقان التطوير البرمجي المتكامل', context: 'Concise and clear' },
       { key: 'dynamicContent.problemSolving', expected: 'مهارات متقدمة في حل المشكلات التقنية', context: 'Specific to technical context' },
       { key: 'dynamicContent.modernFrameworks', expected: 'خبرة في أحدث الأطر والتقنيات البرمجية', context: 'Technical clarity' },

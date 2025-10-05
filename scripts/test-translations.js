@@ -28,7 +28,6 @@ const testKeys = [
   'about.languages.english',
   'about.languages.french',
   'dynamicContent.professionalSummary',
-  'dynamicContent.expertInAI',
   'dynamicContent.fullStackProficiency',
   'dynamicContent.problemSolving',
   'dynamicContent.modernFrameworks'

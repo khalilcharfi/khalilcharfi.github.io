@@ -241,7 +241,6 @@ export interface BaseTranslations {
     defaultIntro: string;
     viewMyWork: string;
     professionalSummary: string;
-    expertInAI: string;
     fullStackProficiency: string;
     problemSolving: string;
     modernFrameworks: string;

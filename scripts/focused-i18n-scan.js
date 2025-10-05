@@ -209,7 +209,6 @@ function main() {
     console.log('\n🚀 The originally requested keys are all working:');
     console.log('  ✅ about.title');
     console.log('  ✅ dynamicContent.professionalSummary');
-    console.log('  ✅ dynamicContent.expertInAI');
     console.log('  ✅ dynamicContent.fullStackProficiency');
     console.log('  ✅ dynamicContent.problemSolving');
     console.log('  ✅ dynamicContent.modernFrameworks');
