@@ -54,7 +54,7 @@ npm run seo:validate
 npm run seo:check
 ```
 
-📖 **Full Documentation**: [SEO Quick Start Guide](./docs/SEO_QUICK_START.md)
+📖 **Full Documentation**: [Complete Development Guide](./docs/GUIDE.md)
 
 ## 🛠️ Installation
 
