@@ -1,7 +1,7 @@
 import type { Preview } from '@storybook/react-vite';
 
 // Import our UI components styles
-import '../src/components/ui/ui-components.css';
+import '../src/shared/ui/styles/ui-components.css';
 
 // Import main application styles for proper theming and fonts
 import '../index.css';

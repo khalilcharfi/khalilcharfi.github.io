@@ -1856,51 +1856,51 @@ export const translations: Translations = {
         tagline: "Développeur Fiable avec Historique de Livraison Prouvé",
         cta: "Planifier Votre Prochain Projet"
       },
-              business_owner: {
-          greeting: "Hallo Geschäftsinhaber!",
-          tagline: "Technologie-Lösungspartner für Geschäftswachstum",
-          cta: "Geschäftslösungen erkunden"
-        },
-        enterprise_client: {
-          greeting: "Willkommen Unternehmenspartner!",
-          tagline: "Enterprise-Lösungen mit Sicherheit & Skalierbarkeit",
-          cta: "Unternehmensbedürfnisse besprechen"
-        },
-        local_business: {
-          greeting: "Hallo lokales Unternehmen!",
-          tagline: "Ihr Nachbarschafts-Tech-Partner für digitales Wachstum",
-          cta: "Lokale Innovation unterstützen"
-        },
-        remote_work_advocate: {
-          greeting: "Grüße Remote-Work-Champion!",
-          tagline: "Erfahrener Remote-Entwickler mit globalen Kollaborationsfähigkeiten",
-          cta: "Explorer Remote Opportunities"
-        },
-        international_client: {
-          greeting: "Willkommen internationaler Partner!",
-          tagline: "Global Developer with Cross-Cultural Project Experience",
-          cta: "Connect Across Borders"
-        },
-        local_tech_community: {
-          greeting: "Hey Tech-Community!",
-          tagline: "Active Community Member & Knowledge Sharing Enthusiast",
-          cta: "Join the Conversation"
-        },
-        general_visitor: {
-          greeting: "Willkommen zu meinem Portfolio!",
-          tagline: "Full-Stack-Entwickler für innovative digitale Lösungen",
-          cta: "Meine Arbeit erkunden"
-        },
-        returning_visitor: {
-          greeting: "Willkommen zurück!",
-          tagline: "Entdecke was neu ist in meiner Entwicklungsreise",
-          cta: "Neueste Updates ansehen"
-        },
-        potential_collaborator: {
-          greeting: "Hello Future Collaborator!",
-          tagline: "Open Source Contributor Ready for Partnership",
-          cta: "Start Collaboration"
-        }
+      business_owner: {
+        greeting: "Bonjour Propriétaire d'Entreprise !",
+        tagline: "Partenaire de Solutions Technologiques pour la Croissance des Affaires",
+        cta: "Explorer les Solutions Business"
+      },
+      enterprise_client: {
+        greeting: "Bienvenue Partenaire d'Entreprise !",
+        tagline: "Solutions de Niveau Entreprise avec Sécurité & Évolutivité",
+        cta: "Discuter des Besoins d'Entreprise"
+      },
+      local_business: {
+        greeting: "Bonjour Entreprise Locale !",
+        tagline: "Votre Partenaire Technologique de Quartier pour la Croissance Numérique",
+        cta: "Soutenir l'Innovation Locale"
+      },
+      remote_work_advocate: {
+        greeting: "Salutations Champion du Travail à Distance !",
+        tagline: "Développeur à Distance Expérimenté avec Compétences de Collaboration Mondiale",
+        cta: "Explorer les Opportunités à Distance"
+      },
+      international_client: {
+        greeting: "Bienvenue Partenaire International !",
+        tagline: "Développeur Global avec Expérience de Projets Interculturels",
+        cta: "Connecter au-delà des Frontières"
+      },
+      local_tech_community: {
+        greeting: "Salut Communauté Tech !",
+        tagline: "Membre Actif de la Communauté & Passionné de Partage de Connaissances",
+        cta: "Rejoindre la Conversation"
+      },
+      general_visitor: {
+        greeting: "Bienvenue sur Mon Portfolio !",
+        tagline: "Développeur Full-Stack Créant des Solutions Numériques Innovantes",
+        cta: "Explorer Mon Travail"
+      },
+      returning_visitor: {
+        greeting: "Bon Retour !",
+        tagline: "Découvrez les Nouveautés de Mon Parcours de Développement",
+        cta: "Voir les Mises à Jour Récentes"
+      },
+      potential_collaborator: {
+        greeting: "Bonjour Futur Collaborateur !",
+        tagline: "Contributeur Open Source Prêt pour un Partenariat",
+        cta: "Commencer la Collaboration"
+      }
     }
   },
   ar: {

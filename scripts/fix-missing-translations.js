@@ -13,7 +13,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Load the translations file
-const translationsPath = path.join(__dirname, '../translations.ts');
+const translationsPath = path.join(__dirname, '../src/features/i18n/data/translations.ts');
 let translationsContent = fs.readFileSync(translationsPath, 'utf8');
 
 // Extract the translations object by finding the content between the export and the closing brace

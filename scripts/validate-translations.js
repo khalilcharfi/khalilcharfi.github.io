@@ -12,8 +12,11 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Load the translations file - try both locations
-let translationsPath = path.join(__dirname, '../src/data/translations.ts');
+// Load the translations file - try multiple locations
+let translationsPath = path.join(__dirname, '../src/features/i18n/data/translations.ts');
+if (!fs.existsSync(translationsPath)) {
+  translationsPath = path.join(__dirname, '../src/data/translations.ts');
+}
 if (!fs.existsSync(translationsPath)) {
   translationsPath = path.join(__dirname, '../translations.ts');
 }
