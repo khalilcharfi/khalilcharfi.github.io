@@ -1,9 +1,19 @@
 <header>
-    <h1 itemprop="name">{{profile.name}}</h1>
-    <p itemprop="jobTitle" style="font-size: 1.25rem; margin-bottom: 1rem; font-weight: 500;">
-        {{profile.title}}
-    </p>
-    <p style="color: var(--secondary-text); margin-bottom: 2rem;">
-        {{profile.location}} • {{profile.status}}
-    </p>
+    <figure style="margin: 0 0 1.5rem 0; text-align: center;">
+        <img src="{{profile.photo}}" 
+             alt="{{profile.name}}" 
+             itemprop="image"
+             width="150" 
+             height="150"
+             style="border-radius: 50%; border: 3px solid var(--accent-color); object-fit: cover;">
+        <figcaption style="margin-top: 1rem;">
+            <h1 itemprop="name" style="margin: 0;">{{profile.name}}</h1>
+            <p itemprop="jobTitle" style="font-size: 1.25rem; margin: 0.5rem 0; font-weight: 500;">
+                {{profile.title}}
+            </p>
+            <p style="color: var(--secondary-text); margin: 0;">
+                <data value="{{profile.location}}">{{profile.location}}</data> • <mark style="background: transparent; color: var(--accent-color); font-weight: 500;">{{profile.status}}</mark>
+            </p>
+        </figcaption>
+    </figure>
 </header>

@@ -2,11 +2,7 @@
 import React, { createContext, useContext, useEffect, useState, ReactNode, useRef } from 'react';
 import { useTranslation } from '../../i18n';
 import { PERSONAS_FEATURE_ENABLED } from '../../../shared/config';
-import type { DynamicContentProviderProps, ProfileInsightsProps } from '../../../shared/types';
-import type { EnvironmentConfig } from '../../../shared/types';
 
-// Import useConsent - will be provided by context provider
-// Using a simple implementation that listens to cookie consent events
 const useConsent = () => {
   const [consent, setConsent] = useState<{ analytics: boolean }>({ analytics: false });
 

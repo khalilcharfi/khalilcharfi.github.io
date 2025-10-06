@@ -2,13 +2,19 @@
     <h2>{{t.education.title}}</h2>
     
     {{#each t.education.items}}
-    <article>
-        <h3 style="font-size: 1.15rem; margin-bottom: 0.5rem;">{{this.degree}}</h3>
-        <p style="color: var(--accent-color); font-weight: 500;">
-            {{this.institution}} | {{this.location}}
-        </p>
-        <p style="color: var(--secondary-text);"><em>{{this.date}}</em></p>
-        <p>{{this.description}}</p>
+    <article style="margin-bottom: 1.5rem;" itemscope itemtype="https://schema.org/EducationalOccupationalCredential">
+        <header>
+            <h3 style="font-size: 1.15rem; margin-bottom: 0.5rem;" itemprop="credentialCategory">{{this.degree}}</h3>
+            <p style="color: var(--accent-color); font-weight: 500;">
+                <span itemprop="educationalLevel">{{this.institution}}</span>{{#if this.location}} | {{this.location}}{{/if}}
+            </p>
+            <p style="color: var(--secondary-text);">
+                <time datetime="{{this.date}}" itemprop="validFrom"><em>{{this.date}}</em></time>
+            </p>
+        </header>
+        {{#if this.description}}
+        <p itemprop="description">{{this.description}}</p>
+        {{/if}}
     </article>
     {{/each}}
 </section>

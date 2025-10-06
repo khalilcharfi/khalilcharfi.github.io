@@ -10,6 +10,9 @@ Modern, interactive portfolio website with React, TypeScript, and Three.js.
 - **[HTML Templating](./docs/HTML_TEMPLATING_GUIDE.md)** - Handlebars templating system for static HTML generation
 - **[Templating Options](./docs/TEMPLATING_OPTIONS.md)** - Comparison of templating approaches
 - **[No-JS Testing Guide](./docs/NO_JS_TESTING.md)** - Testing progressive enhancement and no-JS fallback
+- **[No-JS i18n Guide](./docs/NO_JS_I18N.md)** - Multilingual support without JavaScript
+- **[Multilingual No-JS](./docs/MULTILINGUAL_NO_JS.md)** - Pre-rendered language-specific HTML files
+- **[HTML5 Native Components](./docs/HTML5_NATIVE_COMPONENTS.md)** - Modern HTML5 elements for no-JS functionality
 - **[Improvements Summary](./docs/IMPROVEMENTS_SUMMARY.md)** - Detailed changelog of recent improvements
 
 ## ✨ Features

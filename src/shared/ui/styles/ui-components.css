@@ -274,6 +274,9 @@
     list-style: none;
     padding: 0.25rem;
     margin: 0;
+    /* Scroll optimization */
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
 }
 
 .dropdown-option {
@@ -376,6 +379,9 @@
     padding: 1.5rem;
     overflow-y: auto;
     flex: 1;
+    /* Scroll optimization */
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
 }
 
 .modal-footer {

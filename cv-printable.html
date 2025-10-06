@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Khalil Charfi - Curriculum Vitae</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* ============================================
+           PROFESSIONAL CV - LIGHT THEME
+           Based on Original Layout
+           ============================================ */
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --bg-white: #ffffff;
+            --text-dark: #414141;
+            --text-gray: #414141;
+            --text-light: #999999;
+            --accent-blue: #0395DE;
+            --accent-cyan: #0395DE;
+            --border-light: #e0e6ed;
+            --tag-bg: #f8f9fa;
+            --tag-border: #dee2e6;
+        }
+        
+        body {
+            font-family: 'Roboto', 'Source Sans Pro', sans-serif;
+            font-size: 11pt;
+            line-height: 1.5;
+            color: var(--text-dark);
+            background: var(--bg-white);
+            margin: 0;
+            padding: 0;
+        }
+        
+        .cv-container {
+            max-width: 210mm;
+            margin: 0 auto;
+            padding: 8mm 14mm 18mm 14mm;
+            background: var(--bg-white);
+        }
+        
+        /* ============================================
+           PRINT STYLES
+           ============================================ */
+        @media print {
+            body {
+                margin: 0;
+                padding: 0;
+            }
+            
+            .cv-container {
+                max-width: 100%;
+                padding: 10mm 12mm;
+                margin: 0;
+            }
+            
+            .no-print {
+                display: none !important;
+            }
+            
+            section {
+                page-break-inside: auto;
+            }
+            
+            .experience-entry {
+                page-break-inside: auto;
+            }
+            
+            h2.section-title {
+                page-break-after: avoid;
+            }
+            
+            @page {
+                margin: 8mm;
+                size: A4;
+            }
+        }
+        
+        /* ============================================
+           HEADER
+           ============================================ */
+        .cv-header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--border-light);
+        }
+        
+        .cv-name {
+            font-size: 32pt;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+            letter-spacing: 0px;
+        }
+        
+        .cv-title {
+            font-size: 9pt;
+            color: var(--accent-blue);
+            text-transform: none;
+            letter-spacing: 0px;
+            margin-bottom: 12px;
+            font-weight: 400;
+        }
+        
+        .cv-contact-badges {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .contact-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            background: transparent;
+            border: 1.5px solid var(--accent-blue);
+            color: var(--accent-blue);
+            font-size: 7.5pt;
+            text-decoration: none;
+            border-radius: 3px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+        
+        .contact-badge:hover {
+            background: var(--accent-blue);
+            color: white;
+        }
+        
+        /* ============================================
+           SECTIONS
+           ============================================ */
+        section {
+            margin-bottom: 18px;
+        }
+        
+        .section-title {
+            font-size: 16pt;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #cccccc;
+        }
+        
+        .section-title .pro {
+            color: var(--accent-blue);
+        }
+        
+        /* ============================================
+           EXPERIENCE ENTRIES
+           ============================================ */
+        .experience-entry {
+            margin-bottom: 16px;
+            position: relative;
+            padding-left: 70px;
+        }
+        
+        .company-logo {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 50px;
+            height: 50px;
+            background: #f8f9fa;
+            border: 2px solid var(--border-light);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        
+        .company-logo img {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+        }
+        
+        .entry-header {
+            margin-bottom: 4px;
+        }
+        
+        .company-name {
+            font-size: 11pt;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 2px;
+            display: inline-block;
+            padding: 3px 10px;
+            background: #f8f9fa;
+            border-left: 3px solid var(--accent-blue);
+        }
+        
+        .entry-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 3px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .job-title {
+            font-size: 9pt;
+            color: var(--accent-cyan);
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            font-weight: 600;
+        }
+        
+        .entry-location {
+            font-size: 8pt;
+            color: var(--text-light);
+            font-style: italic;
+        }
+        
+        .entry-date {
+            font-size: 8pt;
+            color: var(--text-light);
+            font-style: italic;
+            margin-bottom: 6px;
+        }
+        
+        .entry-description {
+            list-style: none;
+            padding: 0;
+            margin: 6px 0;
+        }
+        
+        .entry-description li {
+            position: relative;
+            padding-left: 15px;
+            margin-bottom: 4px;
+            font-size: 9pt;
+            line-height: 1.6;
+            color: var(--text-dark);
+        }
+        
+        .entry-description li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: var(--accent-blue);
+            font-weight: bold;
+            font-size: 10pt;
+        }
+        
+        .project-name {
+            font-weight: 700;
+            color: var(--accent-cyan);
+        }
+        
+        .highlight-box {
+            background: #e8f4f8;
+            padding: 2px 8px;
+            border-left: 3px solid var(--accent-blue);
+            display: inline-block;
+            font-weight: 600;
+        }
+        
+        /* ============================================
+           TECH TAGS
+           ============================================ */
+        .tech-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            margin-top: 6px;
+        }
+        
+        .tech-tag {
+            display: inline-block;
+            padding: 2px 8px;
+            background: var(--tag-bg);
+            border: 1px solid var(--tag-border);
+            color: var(--text-gray);
+            font-size: 7pt;
+            border-radius: 3px;
+            font-weight: 500;
+        }
+        
+        /* ============================================
+           SKILLS SECTION
+           ============================================ */
+        .skills-grid {
+            display: grid;
+            gap: 6px;
+        }
+        
+        .skill-row {
+            display: grid;
+            grid-template-columns: 220px 1fr;
+            gap: 20px;
+            font-size: 9pt;
+            padding: 8px 0;
+            border-bottom: none;
+        }
+        
+        .skill-row:last-child {
+            border-bottom: none;
+        }
+        
+        .skill-category {
+            font-weight: 700;
+            color: var(--text-gray);
+            text-align: right;
+        }
+        
+        .skill-items {
+            color: var(--text-dark);
+            line-height: 1.5;
+        }
+        
+        /* ============================================
+           PRINT BUTTON
+           ============================================ */
+        .print-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--accent-blue);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 5px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            font-family: 'Roboto', sans-serif;
+        }
+        
+        .print-button:hover {
+            background: var(--accent-cyan);
+            box-shadow: 0 6px 16px rgba(52, 152, 219, 0.4);
+            transform: translateY(-2px);
+        }
+        
+        /* ============================================
+           FOOTER
+           ============================================ */
+        .cv-footer {
+            margin-top: 20px;
+            padding-top: 10px;
+            border-top: 1px solid var(--border-light);
+            text-align: center;
+            font-size: 7pt;
+            color: var(--text-light);
+        }
+    </style>
+</head>
+<body>
+    <!-- Print Button -->
+    <button class="print-button no-print" onclick="window.print()">🖨️ Print CV</button>
+
+    <div class="cv-container">
+        <!-- ============================================
+             HEADER
+             ============================================ -->
+        <header class="cv-header">
+            <h1 class="cv-name">Khalil Charfi</h1>
+            <div class="cv-title">Software Engineer • Full-Stack Developer</div>
+            <div class="cv-contact-badges">
+                <a href="mailto:khalil.charfi@example.com" class="contact-badge">📧 khalil.charfi@example.com</a>
+                <a href="tel:+49XXXXXXXXXX" class="contact-badge">📱 +49 XXX-XXXX-XXXX</a>
+                <a href="https://khalilcharfi.github.io" class="contact-badge" target="_blank">🌐 khalilcharfi.github.io</a>
+            </div>
+        </header>
+
+        <!-- ============================================
+             PROFESSIONAL EXPERIENCE
+             ============================================ -->
+        <section>
+            <h2 class="section-title"><span class="pro">Pro</span>fessional Experience</h2>
+            
+            <!-- CHECK24 -->
+            <div class="experience-entry">
+                <div class="company-logo">
+                    <img src="asset/company-logos/check24.png" alt="CHECK24">
+                </div>
+                <div class="entry-header">
+                    <div class="company-name">CHECK24 Vergleichsportal GmbH</div>
+                </div>
+                <div class="entry-meta">
+                    <div class="job-title">Software Engineer – Front-End Developer</div>
+                    <div class="entry-location">Frankfurt am Main, Germany</div>
+                </div>
+                <div class="entry-date">August 2022 – Present</div>
+                <ul class="entry-description">
+                    <li>Played a key role in front-end development for Germany's leading online comparison platform, significantly improving page load times and user engagement through the use of Vue.js and Laminas.</li>
+                    <li>Enhanced the <span class="highlight-box">Fahrradversicherung (bicycle insurance)</span> product by implementing advanced features and an online calculator with RESTful API integration, contributing to a more user-friendly experience.</li>
+                    <li>Implemented and maintained Drupal components, actively contributing to their redesign for improved user experience.</li>
+                    <li>Integrated tracking and analytics within Drupal components, providing valuable data for performance analysis.</li>
+                    <li>Optimized application performance through strategic caching mechanisms and efficient query optimizations.</li>
+                    <li>Proficiently conducted end-to-end testing with TestCafe and Cucumber, ensuring the reliability of features.</li>
+                    <li>Gained familiarity with monitoring and observability tools such as Grafana and Kibana, and infrastructure tools like Jenkins and Puppet.</li>
+                </ul>
+                <div class="tech-tags">
+                    <span class="tech-tag">Vue.js</span>
+                    <span class="tech-tag">Laminas</span>
+                    <span class="tech-tag">CSS/LESS</span>
+                    <span class="tech-tag">Git</span>
+                    <span class="tech-tag">PHP</span>
+                    <span class="tech-tag">MySQL</span>
+                    <span class="tech-tag">Drupal</span>
+                    <span class="tech-tag">TestCafe</span>
+                    <span class="tech-tag">Cucumber</span>
+                    <span class="tech-tag">Grafana</span>
+                    <span class="tech-tag">Kibana</span>
+                    <span class="tech-tag">Jenkins</span>
+                    <span class="tech-tag">Puppet</span>
+                </div>
+            </div>
+
+            <!-- ASM -->
+            <div class="experience-entry">
+                <div class="company-logo">
+                    <img src="asset/company-logos/asmdev.jpg" alt="ASM">
+                </div>
+                <div class="entry-header">
+                    <div class="company-name">ASM - All Soft Multimedia</div>
+                </div>
+                <div class="entry-meta">
+                    <div class="job-title">Software Engineer – Full-Stack Developer</div>
+                    <div class="entry-location">Sfax, Tunisia</div>
+                </div>
+                <div class="entry-date">January 2019 – August 2022</div>
+                <ul class="entry-description">
+                    <li>Led the development and deployment of robust full-stack web and mobile applications, utilizing Laravel (back-end) and Angular (front-end) to deliver scalable and user-friendly solutions.</li>
+                    <li>Engineered offline-capable mobile apps using Flutter and Ionic, ensuring a consistent user experience across diverse network conditions.</li>
+                    <li><strong class="project-name">Cover 3D Mobile:</strong> Developed a cross-platform (iOS/Android) Ionic and Capacitor mobile application for sales management within the exterior carpentry sector. Integrated Keycloak for secure authentication, CouchDB/PouchDB for offline data synchronization, and established CI/CD pipelines with GitLab and Bitrise for streamlined deployment. The app features dynamic forms, pricing calculations, and multimedia capture.</li>
+                    <li><strong class="project-name">3andi:</strong> Developed a digital loyalty card application with real-time promotional notifications and user engagement analytics, leveraging Firebase and Laravel APIs to enhance customer loyalty programs.</li>
+                    <li><strong class="project-name">3andi Partner:</strong> Designed a comprehensive business-facing platform for managing promotions, sales points, and accounts, using a secure Laravel-based back-end and an intuitive Angular front-end.</li>
+                    <li><strong class="project-name">ProRestau Mobile:</strong> Developed a feature-rich restaurant management application utilizing Laravel, enabling real-time order tracking, efficient customer management, and seamless data synchronization between mobile devices and web platforms.</li>
+                    <li><strong class="project-name">ProInventory:</strong> Created a mobile application that streamlines inventory management through efficient data entry, search, visualization, barcode scanning, and real-time database updates.</li>
+                    <li><strong class="project-name">ProCaisse Mobility:</strong> Contributed to the development of an Android application that extends commercial management software, offering mobile solutions for precise tracking of merchandise movements, generating necessary documents, and enabling mobile printing via Bluetooth.</li>
+                    <li><strong class="project-name">ASM Merchandiser:</strong> Engineered a mobile application for sales teams to conduct in-store visits, generate detailed reports, and collect visual data for sales performance analysis.</li>
+                    <li>Implemented robust security measures, including secure authentication and role-based access control, using Keycloak across multiple applications.</li>
+                    <li>Streamlined deployment workflows by implementing and managing CI/CD pipelines using GitLab and Bitrise, facilitating efficient automated testing and deployment.</li>
+                </ul>
+                <div class="tech-tags">
+                    <span class="tech-tag">Laravel</span>
+                    <span class="tech-tag">Ionic</span>
+                    <span class="tech-tag">Capacitor</span>
+                    <span class="tech-tag">Flutter</span>
+                    <span class="tech-tag">Angular</span>
+                    <span class="tech-tag">Firebase</span>
+                    <span class="tech-tag">Keycloak</span>
+                    <span class="tech-tag">CouchDB</span>
+                    <span class="tech-tag">GitLab CI/CD</span>
+                    <span class="tech-tag">Bitrise</span>
+                    <span class="tech-tag">Android</span>
+                    <span class="tech-tag">Bluetooth</span>
+                    <span class="tech-tag">REST APIs</span>
+                    <span class="tech-tag">Cordova</span>
+                    <span class="tech-tag">PouchDB</span>
+                </div>
+            </div>
+
+            <!-- MyBus -->
+            <div class="experience-entry">
+                <div class="company-logo">
+                    <img src="asset/company-logos/mybus.png" alt="MyBus">
+                </div>
+                <div class="entry-header">
+                    <div class="company-name">MyBus - Monkey Factory</div>
+                </div>
+                <div class="entry-meta">
+                    <div class="job-title">Software Engineer – Mobile Developer</div>
+                    <div class="entry-location">Sfax, Tunisia</div>
+                </div>
+                <div class="entry-date">March 2020 – November 2020</div>
+                <ul class="entry-description">
+                    <li>Developed a cross-platform mobile public transport application using Ionic and Angular, providing real-time bus tracking and location visualization through Mapbox GL JS integration.</li>
+                    <li>Integrated GraphQL with Apollo Client to ensure efficient data management and enhance application responsiveness.</li>
+                </ul>
+                <div class="tech-tags">
+                    <span class="tech-tag">Ionic</span>
+                    <span class="tech-tag">Angular</span>
+                    <span class="tech-tag">GraphQL</span>
+                    <span class="tech-tag">Apollo Client</span>
+                    <span class="tech-tag">Docker</span>
+                    <span class="tech-tag">GitLab CI/CD</span>
+                    <span class="tech-tag">Mapbox</span>
+                    <span class="tech-tag">Mapbox GL JS</span>
+                </div>
+            </div>
+
+            <!-- Softtodo -->
+            <div class="experience-entry">
+                <div class="company-logo">
+                    <img src="asset/company-logos/soft2do.png" alt="Softtodo">
+                </div>
+                <div class="entry-header">
+                    <div class="company-name">Softtodo IT Solutions</div>
+                </div>
+                <div class="entry-meta">
+                    <div class="job-title">Software Engineer – Front-End Developer</div>
+                    <div class="entry-location">Sfax, Tunisia</div>
+                </div>
+                <div class="entry-date">May 2018 – December 2018</div>
+                <ul class="entry-description">
+                    <li>Redesigned and optimized front-end modules for the <span class="highlight-box">IRIDION</span> platform (marketing/e-commerce), significantly enhancing user engagement and contributing to improved conversion rates.</li>
+                    <li>Integrated dynamic JSP components to facilitate A/B testing and implemented responsive layouts using Bootstrap, ensuring optimal display across various devices.</li>
+                </ul>
+                <div class="tech-tags">
+                    <span class="tech-tag">JSP</span>
+                    <span class="tech-tag">CSS</span>
+                    <span class="tech-tag">Bootstrap</span>
+                    <span class="tech-tag">Git</span>
+                    <span class="tech-tag">JavaScript</span>
+                    <span class="tech-tag">jQuery</span>
+                </div>
+            </div>
+
+            <!-- ASM Android -->
+            <div class="experience-entry">
+                <div class="company-logo">
+                    <img src="asset/company-logos/asm.jpg" alt="ASM">
+                </div>
+                <div class="entry-header">
+                    <div class="company-name">ASM - All Soft Multimedia</div>
+                </div>
+                <div class="entry-meta">
+                    <div class="job-title">Mobile Software Engineer – Android Developer</div>
+                    <div class="entry-location">Sfax, Tunisia</div>
+                </div>
+                <div class="entry-date">March 2017 – May 2018</div>
+                <ul class="entry-description">
+                    <li>Developed a range of Android applications using Java and Laravel, tailored to specific business needs, with a focus on offline functionality and secure data synchronization using SQLite.</li>
+                    <li>Implemented robust offline functionality with secure synchronization capabilities, leveraging SQLite and Laravel for seamless data handling.</li>
+                    <li><strong class="project-name">DUX Mobile:</strong> Designed an offline-capable ERP companion application, providing sales teams with access to critical data and tools, significantly enhancing their operational efficiency.</li>
+                    <li><strong class="project-name">ProCaisse Mobile:</strong> Developed a mobile sales management application that enables efficient management of customer invoices, product information, and sales transactions, featuring offline and online data synchronization via Laravel.</li>
+                    <li><strong class="project-name">FastQueue:</strong> Engineered a queue management system with Bluetooth-enabled real-time counter updates, utilizing Laravel for backend event handling and data management.</li>
+                    <li>Optimized database queries and improved API performance, ensuring smooth operation under high usage.</li>
+                    <li>Collaborated with back-end teams to design scalable and secure RESTful APIs, maintaining strict adherence to industry standards.</li>
+                </ul>
+                <div class="tech-tags">
+                    <span class="tech-tag">Laravel (PHP)</span>
+                    <span class="tech-tag">Java</span>
+                    <span class="tech-tag">SQLite</span>
+                    <span class="tech-tag">RESTful APIs</span>
+                    <span class="tech-tag">Bluetooth</span>
+                </div>
+            </div>
+
+            <!-- University Research -->
+            <div class="experience-entry">
+                <div class="company-logo">
+                    <img src="asset/company-logos/marburg.png" alt="University of Marburg">
+                </div>
+                <div class="entry-header">
+                    <div class="company-name">University of Marburg, Department of Mathematics and Computer Science</div>
+                </div>
+                <div class="entry-meta">
+                    <div class="job-title">Researcher for the FUSION DIVISION PROJECT 'THERALYTICS'</div>
+                    <div class="entry-location">Marburg, Germany</div>
+                </div>
+                <div class="entry-date">October 2016 – December 2016</div>
+                <ul class="entry-description">
+                    <li>Conducted evaluation and testing of a prototype for a remote health monitoring system designed for cardiac patients. Integrated IoT-enabled devices and sensors to capture patient vitals and detect abnormalities in real time.</li>
+                    <li>Implemented real-time data processing using Complex Event Processing (CEP) techniques with WSO2 CEP, enabling early detection of cardiac events.</li>
+                    <li>Collaborated with an international team to refine system performance and ensure compliance with healthcare monitoring standards.</li>
+                </ul>
+                <div class="tech-tags">
+                    <span class="tech-tag">Java</span>
+                    <span class="tech-tag">JHipster</span>
+                    <span class="tech-tag">Spring Boot</span>
+                    <span class="tech-tag">MongoDB</span>
+                    <span class="tech-tag">WSO2 CEP</span>
+                    <span class="tech-tag">IoT</span>
+                </div>
+            </div>
+
+            <!-- Digital Research Centre -->
+            <div class="experience-entry">
+                <div class="company-logo">
+                    <img src="asset/company-logos/crns.png" alt="Digital Research Centre of Sfax">
+                </div>
+                <div class="entry-header">
+                    <div class="company-name">Digital Research Centre of Sfax</div>
+                </div>
+                <div class="entry-meta">
+                    <div class="job-title">Researcher for the FUSION DIVISION PROJECT 'THERALYTICS'</div>
+                    <div class="entry-location">Sfax, Tunisia</div>
+                </div>
+                <div class="entry-date">February 2016 – February 2017</div>
+                <ul class="entry-description">
+                    <li>Developed a real-time health monitoring system integrating IoT devices for cardiac patients to track vitals in real time.</li>
+                    <li>Implemented rule-based Complex Event Processing (CEP) to detect critical health events and generate alerts dynamically.</li>
+                    <li>Designed a scalable architecture using JHipster and Spring Boot for managing and analyzing healthcare data.</li>
+                    <li>Collaborated on the integration of healthcare standards to ensure the system's reliability and interoperability.</li>
+                </ul>
+                <div class="tech-tags">
+                    <span class="tech-tag">Java</span>
+                    <span class="tech-tag">IoT</span>
+                    <span class="tech-tag">CEP</span>
+                    <span class="tech-tag">MongoDB</span>
+                    <span class="tech-tag">Spring Boot</span>
+                    <span class="tech-tag">AngularJS 1.x</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================
+             SKILLS
+             ============================================ -->
+        <section>
+            <h2 class="section-title">Skills</h2>
+            <div class="skills-grid">
+                <div class="skill-row">
+                    <div class="skill-category">Programming Languages</div>
+                    <div class="skill-items">PHP, JavaScript, TypeScript, Java, SQL</div>
+                </div>
+                <div class="skill-row">
+                    <div class="skill-category">Front-End Frameworks & Libraries</div>
+                    <div class="skill-items">Vue.js, Angular, Bootstrap, jQuery</div>
+                </div>
+                <div class="skill-row">
+                    <div class="skill-category">Back-End Frameworks</div>
+                    <div class="skill-items">Laravel, Laminas, Spring Framework</div>
+                </div>
+                <div class="skill-row">
+                    <div class="skill-category">Mobile Development</div>
+                    <div class="skill-items">Ionic, Capacitor, Flutter, Android Development</div>
+                </div>
+                <div class="skill-row">
+                    <div class="skill-category">Databases</div>
+                    <div class="skill-items">MySQL, Microsoft SQL Server, MongoDB, SQLite, CouchDB, PouchDB</div>
+                </div>
+                <div class="skill-row">
+                    <div class="skill-category">DevOps & Tools</div>
+                    <div class="skill-items">Git, Docker, GitLab CI/CD, Bitrise, TestCafe, Cucumber, Rancher, SonarQube, Jenkins, Puppet</div>
+                </div>
+                <div class="skill-row">
+                    <div class="skill-category">CMS & Other Technologies</div>
+                    <div class="skill-items">Drupal, RESTful APIs, GraphQL, Apollo Client, Keycloak, Firebase, Mapbox GL JS, WSO2 CEP</div>
+                </div>
+                <div class="skill-row">
+                    <div class="skill-category">Operating Systems</div>
+                    <div class="skill-items">Windows, Linux, macOS</div>
+                </div>
+                <div class="skill-row">
+                    <div class="skill-category">Languages</div>
+                    <div class="skill-items">Arabic, English, French</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================
+             FOOTER
+             ============================================ -->
+        <footer class="cv-footer">
+            <p>2025 · Khalil Charfi · Curriculum Vitae · Page 1</p>
+        </footer>
+    </div>
+
+    <script>
+        // Print functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            document.addEventListener('keydown', function(e) {
+                if ((e.ctrlKey || e.metaKey) && e.key === 'p') {
+                    e.preventDefault();
+                    window.print();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

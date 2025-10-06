@@ -87,6 +87,10 @@ Handlebars.registerHelper('lt', function(a, b) {
   return a < b;
 });
 
+Handlebars.registerHelper('eq', function(a, b) {
+  return a === b;
+});
+
 // Load and register partials
 console.log('📄 Loading Handlebars templates...');
 const partialsDir = path.join(__dirname, '../templates/partials');
@@ -107,32 +111,92 @@ const template = Handlebars.compile(templateSource);
 
 console.log('✅ Templates loaded successfully\n');
 
-// Generate HTML
-console.log('🔨 Generating HTML...');
-const html = template({
+// Generate HTML for all languages
+console.log('🔨 Generating HTML for all languages...\n');
+
+const languages = ['en', 'de', 'fr', 'ar'];
+const generatedFiles = [];
+
+// Generate default index.html (English)
+console.log('📝 Generating index.html (default: English)...');
+const defaultHtml = template({
   lang: 'en',
   profile,
   t: translations.en,
+  allTranslations: translations, // Pass all translations for i18n attributes
   jsonLd
 });
 
-// Write output
-const outputPath = path.join(__dirname, '../index.html');
-fs.writeFileSync(outputPath, html, 'utf8');
+const defaultPath = path.join(__dirname, '../index.html');
+fs.writeFileSync(defaultPath, defaultHtml, 'utf8');
+generatedFiles.push({ lang: 'en', path: defaultPath, size: defaultHtml.length });
+console.log(`   ✓ index.html (${(defaultHtml.length / 1024).toFixed(2)} KB)\n`);
 
-console.log('✅ Successfully generated index.html\n');
+// Generate language-specific versions
+console.log('🌐 Generating language-specific versions...');
+languages.forEach(lang => {
+  if (lang === 'en') return; // Skip default, already generated
+  
+  const langHtml = template({
+    lang,
+    profile,
+    t: translations[lang],
+    allTranslations: translations,
+    jsonLd: JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": profile.name,
+      "url": profile.website,
+      "image": profile.photo,
+      "sameAs": [profile.github, profile.linkedin],
+      "jobTitle": "Full-Stack Engineer",
+      "worksFor": {
+        "@type": "Organization",
+        "name": "Independent"
+      },
+      "description": translations[lang].about.professionalSummary,
+      "knowsAbout": translations[lang].skills.categories.frontend.items.concat(
+        translations[lang].skills.categories.backend.items
+      ).slice(0, 8),
+      "inLanguage": ["en", "de", "fr", "ar"],
+      "alumniOf": {
+        "@type": "EducationalOrganization",
+        "name": translations[lang].education.items[0].institution
+      }
+    }, null, 2)
+  });
+  
+  const langPath = path.join(__dirname, `../index.${lang}.html`);
+  fs.writeFileSync(langPath, langHtml, 'utf8');
+  generatedFiles.push({ lang, path: langPath, size: langHtml.length });
+  console.log(`   ✓ index.${lang}.html (${(langHtml.length / 1024).toFixed(2)} KB)`);
+});
+
+console.log('\n✅ Successfully generated all HTML files\n');
 console.log('📊 Statistics:');
-console.log(`   Output: ${outputPath}`);
-console.log(`   Size: ${(html.length / 1024).toFixed(2)} KB`);
-console.log(`   Sections: ${partialFiles.length} partials`);
+console.log(`   Files generated: ${generatedFiles.length}`);
+console.log(`   Languages: ${languages.join(', ')}`);
+console.log(`   Total size: ${(generatedFiles.reduce((sum, f) => sum + f.size, 0) / 1024).toFixed(2)} KB`);
+console.log(`   Partials: ${partialFiles.length}`);
+console.log('\n📁 Generated files:');
+generatedFiles.forEach(f => {
+  console.log(`   - ${path.basename(f.path)} (${f.lang})`);
+});
 console.log('\n🎯 Features:');
+console.log('   ✓ Multi-language static HTML generation');
 console.log('   ✓ Dynamic content from translations');
-console.log('   ✓ Handlebars templating with partials');
-console.log('   ✓ Native HTML5 semantic elements');
+console.log('   ✓ Client-side language detection with JS');
+console.log('   ✓ Server-side language-specific files');
 console.log('   ✓ No JavaScript required for content');
-console.log('   ✓ Schema.org microdata');
-console.log('   ✓ SEO optimized');
-console.log('   ✓ Accessibility compliant');
+console.log('   ✓ Schema.org microdata per language');
+console.log('   ✓ SEO optimized with hreflang');
+console.log('   ✓ RTL support for Arabic');
+console.log('\n💡 Usage:');
+console.log('   Default (EN): https://example.com/');
+console.log('   German:       https://example.com/index.de.html');
+console.log('   French:       https://example.com/index.fr.html');
+console.log('   Arabic:       https://example.com/index.ar.html');
+console.log('   With JS:      https://example.com/?lang=de (auto-detects)');
 console.log('\n💡 Commands:');
 console.log('   Regenerate: npm run generate:html');
 console.log('   Test no-JS: npm run test:no-js');

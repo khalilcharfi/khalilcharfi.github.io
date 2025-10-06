@@ -4,7 +4,8 @@
         {{t.contact.description}}
     </p>
     
-    <div class="contact-links">
+    <!-- HTML5 Native Contact Links -->
+    <nav class="contact-links" aria-label="Social Media Links">
         <a href="{{profile.linkedin}}" 
            target="_blank" 
            rel="noopener noreferrer"
@@ -19,12 +20,20 @@
            aria-label="View {{profile.name}}'s projects on GitHub">
             {{t.contact.github}}
         </a>
-    </div>
+    </nav>
     
-    <p style="margin-top: 1.5rem; padding: 1rem; background: rgba(128, 128, 128, 0.1); border-radius: 8px;">
-        <strong>📧 Email:</strong> {{profile.email}}<br>
-        <strong>📍 Location:</strong> {{profile.location}}<br>
-        <strong>💼 Status:</strong> Open to opportunities<br>
-        <strong>🌐 Work Authorization:</strong> EU Work Permit
-    </p>
+    <!-- HTML5 Definition List for Contact Info -->
+    <dl style="margin-top: 1.5rem; padding: 1rem; background: rgba(128, 128, 128, 0.1); border-radius: 8px;">
+        <dt style="display: inline; font-weight: bold;">📧 Email:</dt>
+        <dd style="display: inline; margin: 0;">{{profile.email}}</dd><br>
+        
+        <dt style="display: inline; font-weight: bold;">📍 Location:</dt>
+        <dd style="display: inline; margin: 0;">{{profile.location}}</dd><br>
+        
+        <dt style="display: inline; font-weight: bold;">💼 Status:</dt>
+        <dd style="display: inline; margin: 0;">Open to opportunities</dd><br>
+        
+        <dt style="display: inline; font-weight: bold;">🌐 Work Authorization:</dt>
+        <dd style="display: inline; margin: 0;">EU Work Permit</dd>
+    </dl>
 </section>

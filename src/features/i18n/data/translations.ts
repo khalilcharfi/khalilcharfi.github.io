@@ -36,6 +36,7 @@ export interface LanguageSpecificTranslations {
     skipToNav: string; // Accessibility
     openInNewTab: string; // Accessibility
     externalLink: string; // Accessibility
+    you: string; // For chat user label
   };
   theme: {
     toggleLight: string;
@@ -46,6 +47,7 @@ export interface LanguageSpecificTranslations {
   languageSwitcher: {
     label: string; // For accessibility if it's just an icon
     en: string;
+    'en-GB': string;
     de: string;
     fr: string;
     ar: string;
@@ -171,6 +173,9 @@ export interface LanguageSpecificTranslations {
     openAria: string;
     closeAria: string;
     sendAria: string;
+    send: string;
+    error: string;
+    loadingModule: string;
   };
   cookieConsent: {
     title: string;
@@ -255,6 +260,11 @@ export interface LanguageSpecificTranslations {
   seo: {
     title: string;
     description: string;
+  };
+  noJs: {
+    bannerTitle: string;
+    bannerMessage: string;
+    footerNote: string;
   };
   dynamicContent: {
     defaultGreeting: string;
@@ -414,6 +424,7 @@ export const translations: Translations = {
         skipToNav: 'Skip to navigation',
         openInNewTab: 'Open in new tab',
         externalLink: 'External link',
+        you: 'You',
     },
     theme: {
       toggleLight: 'Switch to light mode',
@@ -424,6 +435,7 @@ export const translations: Translations = {
     languageSwitcher: {
         label: 'Change language',
         en: 'English',
+        'en-GB': 'English (UK)',
         de: 'German',
         fr: 'French',
         ar: 'Arabic',
@@ -609,7 +621,7 @@ export const translations: Translations = {
           issuer: 'DAAD Workshop on E-health',
           date: 'December 7-9, 2016',
           location: 'Darmstadt, Germany',
-          imageUrl: '/asset/Certificate-Recognizing-an-E-Health-Talk-Presentation-on-Cardiac-Monitoring.jpeg',
+          imageUrl: '/asset/certificates/Certificate-Recognizing-an-E-Health-Talk-Presentation-on-Cardiac-Monitoring.jpeg',
         },
         {
           id: 'cert-attendance-theralytics-darmstadt-2016',
@@ -617,7 +629,7 @@ export const translations: Translations = {
           issuer: 'DAAD Theralytics Workshop',
           date: 'December 7-9, 2016',
           location: 'Darmstadt, Germany',
-          imageUrl: '/asset/Certificate-Template-from-Second-DAAD-Theralytics-Workshop-in-Darmstadt-2016.jpeg',
+          imageUrl: '/asset/certificates/Certificate-Template-from-Second-DAAD-Theralytics-Workshop-in-Darmstadt-2016.jpeg',
         },
         {
           id: 'cert-presentation-sfax-2016',
@@ -626,7 +638,7 @@ export const translations: Translations = {
           issuer: 'DAAD Workshop on E-health',
           date: 'September 28, 2016',
           location: 'Sfax, Tunisia',
-          imageUrl: '/asset/Certificate-of-Participation-in-an-E-Health-Workshop-on-Heart-Failure.jpeg',
+          imageUrl: '/asset/certificates/Certificate-of-Participation-in-an-E-Health-Workshop-on-Heart-Failure.jpeg',
         },
         {
           id: 'cert-attendance-sfax-2016',
@@ -634,14 +646,14 @@ export const translations: Translations = {
           issuer: 'DAAD E-Health Workshop',
           date: 'September 28, 2016',
           location: 'Sfax, Tunisia',
-          imageUrl: '/asset/Certificate-of-Attendance-for-DAAD-E-Health-Workshop-in-Sfax-2016.jpeg',
+          imageUrl: '/asset/certificates/Certificate-of-Attendance-for-DAAD-E-Health-Workshop-in-Sfax-2016.jpeg',
         },
         {
           id: 'cert-cardiac-patient-monitoring',
           title: 'Certificate of Participation in E-Health Workshop on Cardiac Patient Monitoring',
           issuer: 'DAAD E-Health Workshop',
           date: '2016',
-          imageUrl: '/asset/Certificate-of-Participation-in-E-Health-Workshop-on-Cardiac-Patient-Monitoring.jpeg',
+          imageUrl: '/asset/certificates/Certificate-of-Participation-in-E-Health-Workshop-on-Cardiac-Patient-Monitoring.jpeg',
         },
       ],
     },
@@ -682,6 +694,9 @@ export const translations: Translations = {
       openAria: "Open AI Assistant Chat",
       closeAria: "Close AI Assistant Chat",
       sendAria: "Send message",
+      send: "Send",
+      error: "Sorry, I encountered an error. Please try again.",
+      loadingModule: "Loading AI module...",
     },
     cookieConsent: {
       title: "Cookie Consent",
@@ -766,6 +781,11 @@ export const translations: Translations = {
     seo: {
         title: "Khalil Charfi | Full-Stack Engineer Portfolio",
         description: "Explore the projects and experience of Khalil Charfi, a specialist in scalable and user-centric web and mobile applications."
+    },
+    noJs: {
+      bannerTitle: "Interactive features unavailable.",
+      bannerMessage: "You can still browse all content and contact me directly.",
+      footerNote: "Enhanced Experience Available: Enable JavaScript for the full interactive portfolio with 3D animations, live project demos, AI-powered chatbot, multilingual support (English, German, French, Arabic), and dynamic content personalization."
     },
     dynamicContent: {
       defaultGreeting: 'Hello, I am',
@@ -919,6 +939,7 @@ export const translations: Translations = {
         skipToNav: 'Zum Navigationsmenü springen',
         openInNewTab: 'In neuem Tab öffnen',
         externalLink: 'Externer Link',
+        you: 'Du',
     },
     theme: {
       toggleLight: 'Zum hellen Modus wechseln',
@@ -929,6 +950,7 @@ export const translations: Translations = {
      languageSwitcher: {
         label: 'Sprache ändern',
         en: 'Englisch',
+        'en-GB': 'Englisch (UK)',
         de: 'Deutsch',
         fr: 'Französisch',
         ar: 'Arabisch',
@@ -1114,7 +1136,7 @@ export const translations: Translations = {
           issuer: 'DAAD Workshop für E-Health',
           date: '7.-9. Dezember 2016',
           location: 'Darmstadt, Deutschland',
-          imageUrl: '/asset/Certificate-Recognizing-an-E-Health-Talk-Presentation-on-Cardiac-Monitoring.jpeg',
+          imageUrl: '/asset/certificates/Certificate-Recognizing-an-E-Health-Talk-Presentation-on-Cardiac-Monitoring.jpeg',
         },
         {
           id: 'cert-attendance-theralytics-darmstadt-2016',
@@ -1122,7 +1144,7 @@ export const translations: Translations = {
           issuer: 'DAAD Theralytics Workshop',
           date: '7.-9. Dezember 2016',
           location: 'Darmstadt, Deutschland',
-          imageUrl: '/asset/Certificate-Template-from-Second-DAAD-Theralytics-Workshop-in-Darmstadt-2016.jpeg',
+          imageUrl: '/asset/certificates/Certificate-Template-from-Second-DAAD-Theralytics-Workshop-in-Darmstadt-2016.jpeg',
         },
         {
           id: 'cert-presentation-sfax-2016',
@@ -1131,7 +1153,7 @@ export const translations: Translations = {
           issuer: 'DAAD Workshop für E-Health',
           date: '28. September 2016',
           location: 'Sfax, Tunesien',
-          imageUrl: '/asset/Certificate-of-Participation-in-an-E-Health-Workshop-on-Heart-Failure.jpeg',
+          imageUrl: '/asset/certificates/Certificate-of-Participation-in-an-E-Health-Workshop-on-Heart-Failure.jpeg',
         },
         {
           id: 'cert-attendance-sfax-2016',
@@ -1139,14 +1161,14 @@ export const translations: Translations = {
           issuer: 'DAAD E-Health Workshop',
           date: '28. September 2016',
           location: 'Sfax, Tunesien',
-          imageUrl: '/asset/Certificate-of-Attendance-for-DAAD-E-Health-Workshop-in-Sfax-2016.jpeg',
+          imageUrl: '/asset/certificates/Certificate-of-Attendance-for-DAAD-E-Health-Workshop-in-Sfax-2016.jpeg',
         },
         {
           id: 'cert-cardiac-patient-monitoring',
           title: 'Teilnahmezertifikat E-Health Workshop über Herzpatientenüberwachung',
           issuer: 'DAAD E-Health Workshop',
           date: '2016',
-          imageUrl: '/asset/Certificate-of-Participation-in-E-Health-Workshop-on-Cardiac-Patient-Monitoring.jpeg',
+          imageUrl: '/asset/certificates/Certificate-of-Participation-in-E-Health-Workshop-on-Cardiac-Patient-Monitoring.jpeg',
         },
       ],
     },
@@ -1187,6 +1209,9 @@ export const translations: Translations = {
       openAria: "KI-Assistenten-Chat öffnen",
       closeAria: "KI-Assistenten-Chat schließen",
       sendAria: "Nachricht senden",
+      send: "Senden",
+      error: "Entschuldigung, es ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.",
+      loadingModule: "Lade KI-Modul...",
     },
     cookieConsent: {
       title: "Cookie Consent",
@@ -1271,6 +1296,11 @@ export const translations: Translations = {
     seo: {
         title: "Khalil Charfi | Full-Stack-Ingenieur Portfolio",
         description: "Entdecken Sie die Projekte und Erfahrungen von Khalil Charfi, einem Spezialisten für skalierbare und benutzerzentrierte Web- und Mobilanwendungen."
+    },
+    noJs: {
+      bannerTitle: "Interaktive Funktionen nicht verfügbar.",
+      bannerMessage: "Sie können alle Inhalte durchsuchen und mich direkt kontaktieren.",
+      footerNote: "Erweiterte Erfahrung verfügbar: Aktivieren Sie JavaScript für das vollständige interaktive Portfolio mit 3D-Animationen, Live-Projektdemos, KI-gestütztem Chatbot, mehrsprachiger Unterstützung (Englisch, Deutsch, Französisch, Arabisch) und dynamischer Inhaltspersonalisierung."
     },
     dynamicContent: {
       defaultGreeting: 'Hallo, ich bin',
@@ -1424,6 +1454,7 @@ export const translations: Translations = {
         skipToNav: 'Passer au menu de navigation',
         openInNewTab: 'Ouvrir dans un nouvel onglet',
         externalLink: 'Lien externe',
+        you: 'Vous',
     },
     theme: {
       toggleLight: 'Passer en mode clair',
@@ -1434,6 +1465,7 @@ export const translations: Translations = {
     languageSwitcher: {
         label: 'Changer de langue',
         en: 'Anglais',
+        'en-GB': 'Anglais (UK)',
         de: 'Allemand',
         fr: 'Français',
         ar: 'Arabe',
@@ -1619,7 +1651,7 @@ export const translations: Translations = {
           issuer: 'Atelier DAAD sur l\'E-santé',
           date: '7-9 décembre 2016',
           location: 'Darmstadt, Allemagne',
-          imageUrl: '/asset/Certificate-Recognizing-an-E-Health-Talk-Presentation-on-Cardiac-Monitoring.jpeg',
+          imageUrl: '/asset/certificates/Certificate-Recognizing-an-E-Health-Talk-Presentation-on-Cardiac-Monitoring.jpeg',
         },
         {
           id: 'cert-attendance-theralytics-darmstadt-2016',
@@ -1627,7 +1659,7 @@ export const translations: Translations = {
           issuer: 'Atelier DAAD Theralytics',
           date: '7-9 décembre 2016',
           location: 'Darmstadt, Allemagne',
-          imageUrl: '/asset/Certificate-Template-from-Second-DAAD-Theralytics-Workshop-in-Darmstadt-2016.jpeg',
+          imageUrl: '/asset/certificates/Certificate-Template-from-Second-DAAD-Theralytics-Workshop-in-Darmstadt-2016.jpeg',
         },
         {
           id: 'cert-presentation-sfax-2016',
@@ -1636,7 +1668,7 @@ export const translations: Translations = {
           issuer: 'Atelier DAAD sur l\'E-santé',
           date: '28 septembre 2016',
           location: 'Sfax, Tunisie',
-          imageUrl: '/asset/Certificate-of-Participation-in-an-E-Health-Workshop-on-Heart-Failure.jpeg',
+          imageUrl: '/asset/certificates/Certificate-of-Participation-in-an-E-Health-Workshop-on-Heart-Failure.jpeg',
         },
         {
           id: 'cert-attendance-sfax-2016',
@@ -1644,14 +1676,14 @@ export const translations: Translations = {
           issuer: 'Atelier DAAD E-santé',
           date: '28 septembre 2016',
           location: 'Sfax, Tunisie',
-          imageUrl: '/asset/Certificate-of-Attendance-for-DAAD-E-Health-Workshop-in-Sfax-2016.jpeg',
+          imageUrl: '/asset/certificates/Certificate-of-Attendance-for-DAAD-E-Health-Workshop-in-Sfax-2016.jpeg',
         },
         {
           id: 'cert-cardiac-patient-monitoring',
           title: 'Certificat de Participation à l\'Atelier E-Santé sur la Surveillance des Patients Cardiaques',
           issuer: 'DAAD E-Health Workshop',
           date: '2016',
-          imageUrl: '/asset/Certificate-of-Participation-in-E-Health-Workshop-on-Cardiac-Patient-Monitoring.jpeg',
+          imageUrl: '/asset/certificates/Certificate-of-Participation-in-E-Health-Workshop-on-Cardiac-Patient-Monitoring.jpeg',
         },
       ],
     },
@@ -1692,6 +1724,9 @@ export const translations: Translations = {
       openAria: "Ouvrir le chat de l'assistant IA",
       closeAria: "Fermer le chat de l'assistant IA",
       sendAria: "Envoyer le message",
+      send: "Envoyer",
+      error: "Désolé, une erreur s'est produite. Veuillez réessayer.",
+      loadingModule: "Chargement du module IA...",
     },
     cookieConsent: {
       title: "Cookie Consent",
@@ -1776,6 +1811,11 @@ export const translations: Translations = {
     seo: {
         title: "Khalil Charfi | Portfolio d'Ingénieur Full-Stack",
         description: "Découvrez les projets et l'expérience de Khalil Charfi, spécialiste des applications web et mobiles évolutives et centrées sur l'utilisateur."
+    },
+    noJs: {
+      bannerTitle: "Fonctionnalités interactives non disponibles.",
+      bannerMessage: "Vous pouvez toujours parcourir tout le contenu et me contacter directement.",
+      footerNote: "Expérience améliorée disponible : Activez JavaScript pour le portfolio interactif complet avec des animations 3D, des démos de projets en direct, un chatbot alimenté par l'IA, un support multilingue (anglais, allemand, français, arabe) et une personnalisation dynamique du contenu."
     },
     dynamicContent: {
       defaultGreeting: 'Bonjour, je suis',
@@ -1929,6 +1969,7 @@ export const translations: Translations = {
         skipToNav: 'التخطي إلى قائمة التنقل',
         openInNewTab: 'فتح في علامة تبويب جديدة',
         externalLink: 'رابط خارجي',
+        you: 'أنت',
     },
     theme: {
       toggleLight: 'التحويل إلى الوضع الفاتح',
@@ -1939,6 +1980,7 @@ export const translations: Translations = {
      languageSwitcher: {
         label: 'تغيير اللغة',
         en: 'الإنجليزية',
+        'en-GB': 'الإنجليزية (المملكة المتحدة)',
         de: 'الألمانية',
         fr: 'الفرنسية',
         ar: 'العربية',
@@ -2124,7 +2166,7 @@ export const translations: Translations = {
           issuer: 'ورشة عمل DAAD للصحة الإلكترونية',
           date: '7-9 ديسمبر 2016',
           location: 'دارمشتات، ألمانيا',
-          imageUrl: '/asset/Certificate-Recognizing-an-E-Health-Talk-Presentation-on-Cardiac-Monitoring.jpeg',
+          imageUrl: '/asset/certificates/Certificate-Recognizing-an-E-Health-Talk-Presentation-on-Cardiac-Monitoring.jpeg',
         },
         {
           id: 'cert-attendance-theralytics-darmstadt-2016',
@@ -2132,7 +2174,7 @@ export const translations: Translations = {
           issuer: 'ورشة عمل DAAD Theralytics',
           date: '7-9 ديسمبر 2016',
           location: 'دارمشتات، ألمانيا',
-          imageUrl: '/asset/Certificate-Template-from-Second-DAAD-Theralytics-Workshop-in-Darmstadt-2016.jpeg',
+          imageUrl: '/asset/certificates/Certificate-Template-from-Second-DAAD-Theralytics-Workshop-in-Darmstadt-2016.jpeg',
         },
         {
           id: 'cert-presentation-sfax-2016',
@@ -2141,7 +2183,7 @@ export const translations: Translations = {
           issuer: 'ورشة عمل DAAD للصحة الإلكترونية',
           date: '28 سبتمبر 2016',
           location: 'صفاقس، تونس',
-          imageUrl: '/asset/Certificate-of-Participation-in-an-E-Health-Workshop-on-Heart-Failure.jpeg',
+          imageUrl: '/asset/certificates/Certificate-of-Participation-in-an-E-Health-Workshop-on-Heart-Failure.jpeg',
         },
         {
           id: 'cert-attendance-sfax-2016',
@@ -2149,14 +2191,14 @@ export const translations: Translations = {
           issuer: 'ورشة عمل DAAD للصحة الإلكترونية',
           date: '28 سبتمبر 2016',
           location: 'صفاقس، تونس',
-          imageUrl: '/asset/Certificate-of-Attendance-for-DAAD-E-Health-Workshop-in-Sfax-2016.jpeg',
+          imageUrl: '/asset/certificates/Certificate-of-Attendance-for-DAAD-E-Health-Workshop-in-Sfax-2016.jpeg',
         },
         {
           id: 'cert-cardiac-patient-monitoring',
           title: 'شهادة مشاركة في ورشة عمل الصحة الإلكترونية حول مراقبة مرضى القلب',
           issuer: 'DAAD E-Health Workshop',
           date: '2016',
-          imageUrl: '/asset/Certificate-of-Participation-in-E-Health-Workshop-on-Cardiac-Patient-Monitoring.jpeg',
+          imageUrl: '/asset/certificates/Certificate-of-Participation-in-E-Health-Workshop-on-Cardiac-Patient-Monitoring.jpeg',
         },
       ],
     },
@@ -2197,6 +2239,9 @@ export const translations: Translations = {
       openAria: "افتح محادثة المساعد الذكي",
       closeAria: "أغلق محادثة المساعد الذكي",
       sendAria: "إرسال الرسالة",
+      send: "إرسال",
+      error: "عذراً، حدث خطأ. يرجى المحاولة مرة أخرى.",
+      loadingModule: "جاري تحميل وحدة الذكاء الاصطناعي...",
     },
     cookieConsent: {
       title: "Cookie Consent",
@@ -2281,6 +2326,11 @@ export const translations: Translations = {
     seo: {
         title: "خليل الشرفي | ملف أعمال مهندس برمجيات متكامل",
         description: "استكشف مشاريع وخبرات خليل الشرفي، المتخصص في تطبيقات الويب والجوال القابلة للتطوير والمتمحورة حول المستخدم."
+    },
+    noJs: {
+      bannerTitle: "الميزات التفاعلية غير متاحة.",
+      bannerMessage: "يمكنك تصفح جميع المحتويات والتواصل معي مباشرة.",
+      footerNote: "تجربة محسّنة متاحة: قم بتفعيل JavaScript للحصول على المحفظة التفاعلية الكاملة مع رسوم متحركة ثلاثية الأبعاد، وعروض توضيحية حية للمشاريع، وروبوت محادثة مدعوم بالذكاء الاصطناعي، ودعم متعدد اللغات (الإنجليزية، الألمانية، الفرنسية، العربية)، وتخصيص ديناميكي للمحتوى."
     },
     dynamicContent: {
       defaultGreeting: 'مرحباً، أنا',

@@ -1,147 +1,99 @@
-import React, { useState, useEffect } from 'react';
-import { loadAIModule } from '../../../shared/utils';
-import type { GoogleGenAI, Chat } from '@google/genai';
+import React, { useState, useCallback, useMemo } from 'react';
 import type { AIChatBoxProps } from '../../../shared/types';
+import { useChatInitialization } from '../hooks/useChatInitialization';
+import { useChatMessages } from '../hooks/useChatMessages';
+import { ChatMessage } from './ChatMessage';
+import { CHATBOX_STYLES, CHAT_COLORS } from '../constants';
 
 export const AIChatBox: React.FC<AIChatBoxProps> = ({ 
   isOpen, 
   onClose, 
   theme, 
   language, 
-  buildContext, 
   t
 }) => {
-  const [chat, setChat] = useState<Chat | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [messages, setMessages] = useState<Array<{ role: string; content: string }>>([]);
   const [input, setInput] = useState('');
-  const [aiModule, setAiModule] = useState<typeof GoogleGenAI | null>(null);
+  
+  const languageName = useMemo(
+    () => String(t(`languageSwitcher.${language}`)) || 'English',
+    [language, t]
+  );
+  
+  const errorMessage = useMemo(
+    () => t('chatbot.error') || 'An error occurred',
+    [t]
+  );
 
-  // Load AI module on mount
-  useEffect(() => {
-    if (isOpen && !aiModule) {
-      loadAIModule().then((module) => {
-        if (module) {
-          setAiModule(module.GoogleGenAI);
-          setIsLoading(false);
-        } else {
-          setError('Failed to load AI module');
-          setIsLoading(false);
-        }
-      });
-    }
-  }, [isOpen, aiModule]);
+  const { chat, isLoading: isInitializing, error } = useChatInitialization({
+    isOpen,
+    language,
+    languageName,
+  });
 
-  // Initialize chat when AI module is loaded
-  useEffect(() => {
-    if (aiModule && !chat && isOpen) {
-      try {
-        const apiKey = process.env.API_KEY || process.env.GEMINI_API_KEY;
-        const ai = new aiModule({ apiKey: apiKey! });
-        const context = buildContext(language);
-        
-        const newChat = ai.chats.create({
-          model: 'gemini-2.5-flash-preview-04-17',
-          config: {
-            temperature: 0.7,
-            topP: 0.95,
-            topK: 40,
-            maxOutputTokens: 2048,
-          },
-          history: [
-            {
-              role: 'user',
-              parts: [{ text: context }]
-            },
-            {
-              role: 'model',
-              parts: [{ text: `Understood. I'll answer questions about your professional background, projects, and expertise based on the information provided. How can I help you today?` }]
-            }
-          ]
-        });
-        
-        setChat(newChat);
-      } catch (err) {
-        console.error('Failed to initialize chat:', err);
-        setError('Failed to initialize chat');
-      }
-    }
-  }, [aiModule, chat, isOpen, language, buildContext]);
+  const { messages, isLoading: isSending, sendMessage } = useChatMessages();
 
-  const handleSend = async () => {
-    if (!input.trim() || !chat) return;
+  const colors = CHAT_COLORS[theme as keyof typeof CHAT_COLORS] || CHAT_COLORS.light;
 
-    const userMessage = { role: 'user', content: input };
-    setMessages([...messages, userMessage]);
+  const handleSend = useCallback(async () => {
+    if (!input.trim() || !chat || isSending) return;
+    
+    await sendMessage(input, chat, errorMessage);
     setInput('');
-    setIsLoading(true);
+  }, [input, chat, isSending, sendMessage, errorMessage]);
 
-    try {
-      const response = await chat.sendMessage(input);
-      const botMessage = { 
-        role: 'assistant', 
-        content: response.text || 'No response received' 
-      };
-      setMessages(prev => [...prev, botMessage]);
-    } catch (err) {
-      console.error('Chat error:', err);
-      setMessages(prev => [...prev, { 
-        role: 'assistant', 
-        content: 'Sorry, I encountered an error.' 
-      }]);
-    } finally {
-      setIsLoading(false);
+  const handleKeyPress = useCallback((e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSend();
     }
-  };
+  }, [handleSend]);
 
   if (!isOpen) return null;
+
+  const isDisabled = !chat || isSending || isInitializing;
+  const userLabel = t('general.you') || 'You';
 
   return (
     <div 
       className="chatbox-overlay"
       style={{
-        position: 'fixed',
-        bottom: '80px',
-        right: '20px',
-        width: '400px',
-        maxWidth: '90vw',
-        height: '500px',
-        backgroundColor: theme === 'dark' ? '#1a1a1a' : '#ffffff',
-        borderRadius: '12px',
+        ...CHATBOX_STYLES,
+        backgroundColor: colors.background,
+        border: `1px solid ${colors.border}`,
         boxShadow: '0 4px 20px rgba(0,0,0,0.3)',
         display: 'flex',
         flexDirection: 'column',
-        zIndex: 1000,
-        border: `1px solid ${theme === 'dark' ? '#333' : '#e0e0e0'}`
       }}
     >
+      {/* Header */}
       <div 
         style={{
           padding: '16px',
-          borderBottom: `1px solid ${theme === 'dark' ? '#333' : '#e0e0e0'}`,
+          borderBottom: `1px solid ${colors.border}`,
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center'
         }}
       >
-        <h3 style={{ margin: 0, color: theme === 'dark' ? '#fff' : '#000' }}>
+        <h3 style={{ margin: 0, color: colors.text }}>
           {t('chatbot.title')}
         </h3>
         <button 
           onClick={onClose}
+          aria-label={t('chatbot.closeAria')}
           style={{
             background: 'none',
             border: 'none',
             fontSize: '24px',
             cursor: 'pointer',
-            color: theme === 'dark' ? '#fff' : '#000'
+            color: colors.text
           }}
         >
           ×
         </button>
       </div>
       
+      {/* Messages */}
       <div 
         style={{
           flex: 1,
@@ -149,9 +101,9 @@ export const AIChatBox: React.FC<AIChatBoxProps> = ({
           padding: '16px'
         }}
       >
-        {isLoading && !aiModule && (
-          <div style={{ textAlign: 'center', color: theme === 'dark' ? '#888' : '#666' }}>
-            Loading AI module...
+        {isInitializing && (
+          <div style={{ textAlign: 'center', color: colors.loadingText }}>
+            {t('chatbot.loadingModule')}
           </div>
         )}
         {error && (
@@ -160,28 +112,21 @@ export const AIChatBox: React.FC<AIChatBoxProps> = ({
           </div>
         )}
         {messages.map((msg, idx) => (
-          <div 
+          <ChatMessage
             key={idx}
-            style={{
-              marginBottom: '12px',
-              padding: '12px',
-              backgroundColor: msg.role === 'user' 
-                ? (theme === 'dark' ? '#2a2a2a' : '#f0f0f0')
-                : (theme === 'dark' ? '#1e3a5f' : '#e3f2fd'),
-              borderRadius: '8px',
-              color: theme === 'dark' ? '#fff' : '#000'
-            }}
-          >
-            <strong>{msg.role === 'user' ? 'You' : 'AI'}:</strong>
-            <p style={{ margin: '4px 0 0 0' }}>{msg.content}</p>
-          </div>
+            message={msg}
+            theme={theme as 'light' | 'dark'}
+            userLabel={userLabel}
+            aiLabel="AI"
+          />
         ))}
       </div>
       
+      {/* Input */}
       <div 
         style={{
           padding: '16px',
-          borderTop: `1px solid ${theme === 'dark' ? '#333' : '#e0e0e0'}`,
+          borderTop: `1px solid ${colors.border}`,
           display: 'flex',
           gap: '8px'
         }}
@@ -190,29 +135,30 @@ export const AIChatBox: React.FC<AIChatBoxProps> = ({
           type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          onKeyPress={(e) => e.key === 'Enter' && handleSend()}
+          onKeyPress={handleKeyPress}
           placeholder={t('chatbot.placeholder')}
-          disabled={!chat || isLoading}
+          disabled={isDisabled}
           style={{
             flex: 1,
             padding: '12px',
             borderRadius: '8px',
-            border: `1px solid ${theme === 'dark' ? '#333' : '#e0e0e0'}`,
+            border: `1px solid ${colors.border}`,
             backgroundColor: theme === 'dark' ? '#2a2a2a' : '#fff',
-            color: theme === 'dark' ? '#fff' : '#000'
+            color: colors.text
           }}
         />
         <button 
           onClick={handleSend}
-          disabled={!chat || isLoading || !input.trim()}
+          disabled={isDisabled || !input.trim()}
+          aria-label={t('chatbot.sendAria')}
           style={{
             padding: '12px 24px',
             borderRadius: '8px',
             border: 'none',
             backgroundColor: '#4CAF50',
             color: '#fff',
-            cursor: chat && !isLoading ? 'pointer' : 'not-allowed',
-            opacity: chat && !isLoading ? 1 : 0.5
+            cursor: isDisabled ? 'not-allowed' : 'pointer',
+            opacity: isDisabled ? 0.5 : 1
           }}
         >
           {t('chatbot.send')}
@@ -222,5 +168,5 @@ export const AIChatBox: React.FC<AIChatBoxProps> = ({
   );
 };
 
-export { AIChatBox as default };
+export default AIChatBox;
 

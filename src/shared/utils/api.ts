@@ -1,4 +1,5 @@
 import { GoogleGenAI } from '@google/genai';
+import { getModelConfig } from '../../features/chatbot/utils/chatConfig';
 
 export const validateApiKey = (apiKey: string | undefined): { isValid: boolean; error?: string } => {
     if (!apiKey) {
@@ -27,15 +28,17 @@ export const testGeminiConnection = async (apiKey: string): Promise<{ success: b
     for (let attempt = 0; attempt < maxRetries; attempt++) {
         try {
             const ai = new GoogleGenAI({ apiKey });
+            const modelConfig = getModelConfig();
             
             const chat = ai.chats.create({
-                model: 'gemini-2.5-flash-preview-04-17',
+                model: modelConfig.model,
                 config: { 
+                    ...modelConfig.config,
                     systemInstruction: 'You are a test assistant. Respond with "OK".' 
                 },
             });
             
-            await chat.sendMessage({ message: ['Test'] });
+            await chat.sendMessage('Test' as any);
             
             return { success: true };
         } catch (error: any) {

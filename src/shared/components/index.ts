@@ -4,6 +4,7 @@ export { ErrorBoundary, AnalyticsErrorBoundary, withErrorBoundary } from './feed
 export { CustomCursor } from './feedback/CustomCursor';
 export { ThreeBackground } from './feedback/ThreeBackground';
 export * from './icons';
+export * from './debug';
 
 // Re-export from features for convenience
 export { SEOHead } from '../../features/seo';

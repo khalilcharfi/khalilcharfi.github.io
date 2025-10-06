@@ -26,8 +26,8 @@ self.addEventListener('install', (event) => {
           '/',
           '/index.html',
           '/manifest.json',
-          '/asset/profile-photo.jpg',
-          '/asset/profile-photo.jpeg'
+          '/asset/profile/profile-photo.jpg',
+          '/asset/profile/profile-photo.jpeg'
         ];
         
         // Cache files individually to handle failures gracefully

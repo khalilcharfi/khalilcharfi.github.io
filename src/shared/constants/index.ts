@@ -20,7 +20,7 @@ export const SCROLL = {
 } as const;
 
 export const POSITION = {
-  SCROLL_TOP_WITH_CHATBOT: 95,
+  SCROLL_TOP_WITH_CHATBOT: 25, // Now positioned horizontally, same bottom as chatbot
   SCROLL_TOP_DEFAULT: 25,
 } as const;
 

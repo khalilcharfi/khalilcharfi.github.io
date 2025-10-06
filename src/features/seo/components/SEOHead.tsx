@@ -27,7 +27,7 @@ interface SEOHeadProps {
 }
 
 const SITE_URL = 'https://khalilcharfi.github.io';
-const DEFAULT_IMAGE = `${SITE_URL}/asset/profile-photo.jpg`;
+const DEFAULT_IMAGE = `${SITE_URL}/asset/profile/profile-photo.jpg`;
 
 // Supported languages with their ISO codes
 const LANGUAGES = {

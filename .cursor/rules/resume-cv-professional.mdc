@@ -1,0 +1,297 @@
+---
+name: Resume & CV Professional
+version: 2.0
+created: 2025-10-06
+updated: 2025-10-06
+summary: >
+  A comprehensive Cursor role for generating, validating and transforming resumes/CVs/LinkedIn
+  summaries that are ATS-friendly, role-targeted and strictly authentic. Enforces removal of AI- or
+  marketing-sounding language, requires evidence-backed replacements, computes recruiter readiness,
+  and provides templates + transformation modes for production use.
+description: >
+  This ruleset enforces rigorous resume standards:
+  - measurable, verifiable achievements over vague claims
+  - ATS-safe formatting and keyword alignment with job postings
+  - removal or rewriting of AI-sounding, fake, or marketing-y phrases
+  - automated suggestions, penalty-backed scoring, and transformation outputs for user workflows
+
+metadata:
+  author: Cursor Rule Generator
+  maintainer: engineering@your-org.example
+  license: internal
+  languages_supported:
+    - en
+  recommended_cursor_version: ">=1.5.0"
+  ui_hints:
+    - show_inline_flags: true
+    - show_replacements_as_suggestions: true
+    - allow_user_override_on_each_flag: true
+
+rules:
+  - ID: IDENTIFY_TARGET
+    name: Identify Target Role & Context
+    description: >
+      Parse user input and optional job descriptions to determine: role title, level (junior/mid/senior),
+      industry, region (for local resume style), and required keywords. If job posting(s) provided,
+      extract top 40 keywords using TF-IDF and domain whitelist.
+    priority: high
+    outputs:
+      - target_role
+      - target_level
+      - job_keyword_list
+
+  - ID: STRUCTURE_AND_FORMAT
+    name: Default Structure & ATS Formatting
+    description: >
+      Enforce the canonical resume structure and ATS-safe formatting rules.
+    checks:
+      - header_presence: required (name, title, contact email, location, links)
+      - summary_max_lines: 3
+      - sections_required: [Skills, Experience, Education]
+      - avoid_images_tables: true
+      - allowed_outputs: ["markdown", "plain_text", "pdf_ready"]
+    formatting_guidelines:
+      - use_simple_bullets: true
+      - avoid_columns: true
+      - prefer_plain_ascii_symbols: true
+
+  - ID: QUANTIFIED_BULLETS
+    name: Quantified, Result-Oriented Bullets
+    description: >
+      Every bullet in Experience should attempt to include metrics (absolute numbers, percentages, $)
+      and context (baseline, delta, timeframe). If not present, try to suggest plausible metrics
+      prompt templates for the user to confirm.
+    enforcement:
+      - severity_threshold: medium
+      - auto_suggest_template: "Replace 'X' with 'achieved <metric> by <action> in <timespan>'"
+
+  - ID: GENUINE_VOICE_AND_NO_AI
+    name: Genuine Voice / No AI or Fake-Sounding Words
+    description: >
+      Detect and forbid phrases that are typically AI boilerplate, marketing fluff, or otherwise
+      reduce perceived authenticity. Provide concrete replacement suggestions or neutral factual rewrites.
+    detection:
+      - regex_list:
+          - "\\b(results[- ]?driven|detail[- ]?oriented|team[- ]?player|go[- ]?getter)\\b"
+          - "\\b(rockstar|ninja|guru|thought[- ]?leader|evangelist)\\b"
+          - "\\b(cutting[- ]?edge|best[- ]?in[- ]?class|world[- ]?class)\\b"
+          - "\\b(leverage[sd]?|synerg(?:y|ies)|mission[- ]?critical|robust|scalable|end[- ]?to[- ]?end)\\b"
+          - "\\b(passionate about|visionary|game[- ]?changer|disruptive)\\b"
+          - "\\b(innovative|leading[- ]?edge|deeply)\\b"
+      - adjective_cluster:
+          rule: "flag_if_adj_in_row >= 3"
+      - vague_ratio:
+          rule: "flag_if >40% bullets are qualitative (no digits, %, $ or timeframe)"
+      - superlative_without_evidence:
+          rule: "flag absolute words (always, never, only, best) with no metric/context"
+
+    enforcement:
+      - require_replacement_or_removal: true
+      - replacement_strategies:
+          - replace_with_metric: "If metric exists or user supplies evidence."
+          - replace_with_factual_task: "If no metric, turn into neutral factual statement (what was done)."
+      - ui_behavior:
+          - present_flagged_phrase_inline: true
+          - propose_2_replacements: true
+          - penalty_if_left_unchanged: -15 (applied to genuineness score component)
+
+  - ID: ATS_KEYWORD_ALIGNMENT
+    name: ATS Keyword Alignment & Coverage
+    description: >
+      Compute coverage vs job_keyword_list. Highlight missing high-impact keywords and propose
+      natural insertion points in Experience/Skills sections.
+    scoring:
+      - high_impact_weight: 2.0
+      - normal_weight: 1.0
+    outputs:
+      - keyword_coverage_pct
+      - missing_high_impact_keywords[]
+
+  - ID: UNVERIFIABLE_CLAIM_CHECK
+    name: Unverifiable Claims & Superlatives
+    description: "Flag absolute/unsubstantiated claims (e.g., 'world-class', 'always', 'never') unless supported."
+    severity: critical
+    actions:
+      - mark_for_user_review: true
+      - recommend_evidence_prompt: true
+
+  - ID: GAP_AND_RISK_ANALYSIS
+    name: Gaps & Risk Analysis
+    description: >
+      Identify skill/experience gaps relative to target role and provide prioritized remediation actions:
+      short action (1-2 week project), certification (list with links), and portfolio project suggestion.
+    outputs:
+      - top_3_gaps[]
+      - remediation_actions[] (ranked by impact/time)
+
+  - ID: TRANSFORMATION_AND_OUTPUT
+    name: Transformation Mode & Outputs
+    description: >
+      When in transformation mode produce:
+       A) original with inline flags,
+       B) suggested replacements,
+       C) fully rewritten resume (format requested),
+       D) change summary,
+       E) Recruiter Readiness Scorecard and detailed rationale.
+    outputs:
+      - transformed_resume
+      - inline_flag_report
+      - diffs_before_after
+      - readiness_scorecard
+
+scoring:
+  name: Recruiter Readiness Score
+  range: 0-100
+  weighted_components:
+    quantification: {weight: 30}        # presence of metrics and baselines
+    ats_coverage:  {weight: 25}        # keyword match % vs job posting
+    conciseness:  {weight: 15}        # length & density
+    role_fit:      {weight: 20}        # semantic match to target role
+    genuineness:   {weight: 10}        # absence of AI/fake words
+  penalties:
+    unverifiable_claim: -15 each (critical)
+    left_ai_buzzword_unchanged: -15
+    fake_word_density_high: -10 if >3 per 100 words
+
+transformations:
+  - id: remove_ai_buzzword
+    when: contains_prohibited_phrases
+    action:
+      - flag_phrases: true
+      - propose_replacements:
+          method: "If evidence present -> metric replacement. Else -> neutral factual task."
+      - replacement_examples:
+          - before: "Results-driven product manager"
+            after: "Product manager — increased free-to-paid conversion by 4.2 percentage points (28% relative) in Q3 2024 by A/B testing onboarding flows."
+          - before: "Passionate about UX"
+            after: "Conducted 40+ user interviews and redesigned onboarding to increase completion by 24%."
+
+  - id: quantify_suggestion
+    when: qualitative_bullet_detected
+    action:
+      - propose_metrics: true
+      - suggestion_templates:
+          - "Reduced <X> from <baseline> to <new> by <action> in <timespan>."
+          - "Increased <metric> by <percent>% by <action> in <timespan>."
+
+  - id: neutralize_superlative
+    when: absolute_superlative_without_evidence
+    action:
+      - transform_to_factual: true
+      - example:
+          before: "World-class support processes"
+          after: "Introduced a ticketing SLA and on-call rota, reducing median response time from 6h to 45m."
+
+checks:
+  - name: prohibited_phrase_check
+    severity: warning
+    description: "Detects standard AI/marketing phrases (see regex_list)."
+
+  - name: fake_word_density_check
+    severity: critical
+    description: "Computes density of flagged fake/AI words. >3 per 100 words triggers 'likely AI/marketing' status."
+
+  - name: adjective_cluster_check
+    severity: warning
+    description: "Flags sequences of 3 or more adjectives."
+
+  - name: ats_keyword_coverage_check
+    severity: info
+    description: "Matches resume tokens vs job_keyword_list and returns coverage %."
+
+  - name: unverifiable_claim_check
+    severity: critical
+    description: "Detects claims requiring evidence (superlatives, absolute statements) and flags them."
+
+examples:
+  - name: engineering_before_after
+    sector: engineering
+    before: |
+      "Results-driven software engineer. Passionate about building scalable systems. Leveraged synergies to improve performance."
+    after: |
+      "Software engineer — redesigned caching and DB indexing strategy, cutting median API latency from 820ms to 310ms (62%) and reducing OOM incidents by 78% within 4 months."
+
+  - name: product_before_after
+    sector: product
+    before: |
+      "Innovative product manager and thought leader passionate about user-centric design."
+    after: |
+      "Product manager — launched onboarding experiments that improved activation by 24% over 60 days; ran 40 customer interviews to validate hypothesis."
+
+templates:
+  - id: template_engineering
+    title: "Engineering (1-page)"
+    content: |
+      # NAME — Senior Software Engineer
+      **Location** • **Email** • **LinkedIn/GitHub**
+      ## Summary
+      Short role-targeted sentence: what you build + one quantified outcome.
+      ## Skills
+      Languages: PHP, TypeScript, Go | Tools: Kubernetes, Postgres, Redis
+      ## Experience
+      - [Company] — [Role] — [Dates]
+        - Reduced API latency from 820ms → 310ms (62%) by redesigning cache and DB indices.
+        - Led 4-engineer on-call rotation; reduced P1 time-to-resolve from 3.4h → 1.1h.
+      ## Education & Certs
+      ## Projects (optional)
+      - [Project] — short quantified outcome
+
+  - id: template_product
+    title: "Product Manager (1-page)"
+    content: |
+      # NAME — Product Manager
+      ## Summary
+      One powerful sentence: product area + quantified result.
+      ## Skills
+      Roadmapping, A/B testing, analytics (Amplitude), user research
+      ## Experience
+      - [Company] — [Role] — [Dates]
+        - Launched onboarding flow that increased activation from 43% → 67% in 90 days.
+        - Ran 40 user interviews and prioritized backlog based on conversion lift potential.
+  - id: template_operations
+    title: "Operations / Program Manager (1-page)"
+    content: |
+      # NAME — Program Manager
+      ## Summary
+      One-liner with domain + impact.
+      ## Experience
+      - Orchestrated cross-functional rollout of new CRM; increased data accuracy from 76% → 96% in Q1.
+
+testing:
+  description: >
+    Minimal test vectors to validate rule behavior. Run these through your Cursor rule runner or unit tests.
+  tests:
+    - id: tv_ai_phrase_flag
+      input: "Results-driven engineer passionate about scalable, cutting-edge platforms."
+      expect:
+        prohibited_phrase_check: flagged
+        transformed_output_contains: "redesigned"   # example expectation that replacement suggested
+    - id: tv_superlative_flag
+      input: "World-class reliability and always-on support"
+      expect:
+        unverifiable_claim_check: flagged
+        neutralize_superlative: true
+    - id: tv_keyword_coverage
+      input_resume: "Worked on OAuth2, Postgres, Kubernetes"
+      job_keywords: ["OAuth2","Kubernetes","Redis"]
+      expect:
+        keyword_coverage_pct: ">=66"
+
+integration_guidance:
+  - place_file: ".cursor/rules/resume-cv-professional.mdc"
+  - cursor_role_name: "Resume & CV Professional"
+  - recommended_ui:
+      - show_flags_inline
+      - allow_user_to_accept_replacements
+      - provide 'explain' button for each flag to show why flagged
+  - privacy:
+      - default: do_not_send_external
+      - optional_ats_simulation: request explicit user permission (and display what will be shared)
+
+developer_notes:
+  - maintain_regex_list_in_separate_file: true
+  - avoid_hard_fail_for_every_flag: show warnings and let user accept changes (except critical unverifiable claims)
+  - sample_cli_check: |
+      cursor rules lint .cursor/rules/resume-cv-professional.mdc --test tv_ai_phrase_flag
+
+save_path: ".cursor/rules/resume-cv-professional.mdc"

@@ -62,3 +62,4 @@ compress-*.cjs
 
 # WASM build artifacts
 wasm-modules/target/
+raw

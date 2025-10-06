@@ -1,9 +1,27 @@
+<!-- Language Switcher (No-JS) - HTML5 Native -->
+<nav aria-label="Language Switcher" style="text-align: right; margin-bottom: 1rem; padding: 0.5rem; border-bottom: 1px solid rgba(128, 128, 128, 0.2);">
+    <details style="display: inline-block;">
+        <summary style="cursor: pointer; color: var(--accent-color); font-weight: 500; list-style: none;">
+            🌐 {{#if (eq lang 'en')}}EN{{/if}}{{#if (eq lang 'de')}}DE{{/if}}{{#if (eq lang 'fr')}}FR{{/if}}{{#if (eq lang 'ar')}}AR{{/if}} ▼
+        </summary>
+        <menu style="position: absolute; background: var(--primary-bg); border: 1px solid rgba(128, 128, 128, 0.3); border-radius: 4px; padding: 0.5rem; margin: 0.25rem 0; list-style: none; box-shadow: 0 2px 8px rgba(0,0,0,0.2); z-index: 100;">
+            <li style="margin: 0.25rem 0;"><a href="index.html" style="color: var(--accent-color); text-decoration: none; {{#if (eq lang 'en')}}font-weight: bold;{{/if}}" hreflang="en">🇬🇧 English</a></li>
+            <li style="margin: 0.25rem 0;"><a href="index.de.html" style="color: var(--accent-color); text-decoration: none; {{#if (eq lang 'de')}}font-weight: bold;{{/if}}" hreflang="de">🇩🇪 Deutsch</a></li>
+            <li style="margin: 0.25rem 0;"><a href="index.fr.html" style="color: var(--accent-color); text-decoration: none; {{#if (eq lang 'fr')}}font-weight: bold;{{/if}}" hreflang="fr">🇫🇷 Français</a></li>
+            <li style="margin: 0.25rem 0;"><a href="index.ar.html" style="color: var(--accent-color); text-decoration: none; {{#if (eq lang 'ar')}}font-weight: bold;{{/if}}" hreflang="ar">🇸🇦 العربية</a></li>
+        </menu>
+    </details>
+</nav>
+
+<!-- Section Navigation - HTML5 Native -->
 <nav aria-label="Quick Navigation" style="margin-bottom: 2rem; padding: 1rem; background: rgba(128, 128, 128, 0.1); border-radius: 8px;">
     <strong>Jump to:</strong>
-    <a href="#about-section">{{t.nav.about}}</a> |
-    <a href="#skills-section">{{t.nav.skills}}</a> |
-    <a href="#experience-section">{{t.nav.experience}}</a> |
-    <a href="#education-section">{{t.nav.education}}</a> |
-    <a href="#projects-section">{{t.nav.projects}}</a> |
-    <a href="#contact-section">{{t.nav.contact}}</a>
+    <menu style="display: inline; list-style: none; padding: 0; margin: 0;">
+        <li style="display: inline;"><a href="#about-section">{{t.nav.about}}</a> |</li>
+        <li style="display: inline;"><a href="#skills-section">{{t.nav.skills}}</a> |</li>
+        <li style="display: inline;"><a href="#experience-section">{{t.nav.experience}}</a> |</li>
+        <li style="display: inline;"><a href="#education-section">{{t.nav.education}}</a> |</li>
+        <li style="display: inline;"><a href="#projects-section">{{t.nav.projects}}</a> |</li>
+        <li style="display: inline;"><a href="#contact-section">{{t.nav.contact}}</a></li>
+    </menu>
 </nav>

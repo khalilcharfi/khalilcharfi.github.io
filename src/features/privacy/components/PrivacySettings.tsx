@@ -2,10 +2,10 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { useConsent } from '../context/ConsentContext';
 import { useTranslation } from '../../i18n';
-import { Modal, Tabs, Tab, Toggle, Button, Alert } from '../../../shared/ui';
 
 export const PrivacySettings: React.FC = () => {
     const [isOpen, setIsOpen] = useState(false);
+    const [activeTab, setActiveTab] = useState<'consent' | 'data'>('consent');
     const [dataSize, setDataSize] = useState(0);
     const [showClearConfirm, setShowClearConfirm] = useState(false);
     const [showExportSuccess, setShowExportSuccess] = useState(false);
@@ -14,6 +14,9 @@ export const PrivacySettings: React.FC = () => {
     const [clearError, setClearError] = useState<string | null>(null);
     
     const triggerButtonRef = useRef<HTMLButtonElement>(null);
+    const modalRef = useRef<HTMLDivElement>(null);
+    const firstFocusableRef = useRef<HTMLButtonElement>(null);
+    const lastFocusableRef = useRef<HTMLButtonElement>(null);
     
     const { 
         consent, 

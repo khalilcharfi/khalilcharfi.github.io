@@ -5,35 +5,47 @@
         <h3 style="color: var(--accent-color); font-size: 1.1rem;">{{t.skills.categories.frontend.name}}</h3>
         <p><strong>Technologies:</strong> {{#each t.skills.categories.frontend.items}}{{this}}{{#unless @last}}, {{/unless}}{{/each}}</p>
         <p><strong>Expertise:</strong> Component-based architecture, state management, responsive design, progressive web apps (PWA), accessibility (WCAG 2.1)</p>
+        <label for="frontend-skill" style="display: block; margin-top: 0.5rem;">Proficiency Level:</label>
+        <progress id="frontend-skill" max="100" value="95" style="width: 100%; height: 20px; margin-top: 0.25rem;">95%</progress>
     </article>
     
     <article>
         <h3 style="color: var(--accent-color); font-size: 1.1rem;">{{t.skills.categories.backend.name}}</h3>
         <p><strong>Technologies:</strong> {{#each t.skills.categories.backend.items}}{{this}}{{#unless @last}}, {{/unless}}{{/each}}</p>
         <p><strong>Expertise:</strong> Microservices architecture, API design, authentication & authorization, database optimization</p>
+        <label for="backend-skill" style="display: block; margin-top: 0.5rem;">Proficiency Level:</label>
+        <progress id="backend-skill" max="100" value="90" style="width: 100%; height: 20px; margin-top: 0.25rem;">90%</progress>
     </article>
     
     <article>
         <h3 style="color: var(--accent-color); font-size: 1.1rem;">{{t.skills.categories.mobile.name}}</h3>
         <p><strong>Technologies:</strong> {{#each t.skills.categories.mobile.items}}{{this}}{{#unless @last}}, {{/unless}}{{/each}}</p>
         <p><strong>Expertise:</strong> Offline-first applications, cross-platform development, native integrations, Bluetooth/IoT</p>
+        <label for="mobile-skill" style="display: block; margin-top: 0.5rem;">Proficiency Level:</label>
+        <progress id="mobile-skill" max="100" value="85" style="width: 100%; height: 20px; margin-top: 0.25rem;">85%</progress>
     </article>
     
     <article>
         <h3 style="color: var(--accent-color); font-size: 1.1rem;">{{t.skills.categories.databases.name}}</h3>
         <p><strong>Technologies:</strong> {{#each t.skills.categories.databases.items}}{{this}}{{#unless @last}}, {{/unless}}{{/each}}</p>
         <p><strong>Expertise:</strong> Data synchronization, database design, query optimization, API integration</p>
+        <label for="databases-skill" style="display: block; margin-top: 0.5rem;">Proficiency Level:</label>
+        <progress id="databases-skill" max="100" value="88" style="width: 100%; height: 20px; margin-top: 0.25rem;">88%</progress>
     </article>
     
     <article>
         <h3 style="color: var(--accent-color); font-size: 1.1rem;">{{t.skills.categories.devops.name}}</h3>
         <p><strong>Technologies:</strong> {{#each t.skills.categories.devops.items}}{{this}}{{#unless @last}}, {{/unless}}{{/each}}</p>
         <p><strong>Expertise:</strong> Continuous integration/deployment, containerization, infrastructure as code, monitoring</p>
+        <label for="devops-skill" style="display: block; margin-top: 0.5rem;">Proficiency Level:</label>
+        <progress id="devops-skill" max="100" value="82" style="width: 100%; height: 20px; margin-top: 0.25rem;">82%</progress>
     </article>
     
     <article>
         <h3 style="color: var(--accent-color); font-size: 1.1rem;">{{t.skills.categories.tools.name}}</h3>
         <p><strong>Technologies:</strong> {{#each t.skills.categories.tools.items}}{{this}}{{#unless @last}}, {{/unless}}{{/each}}</p>
         <p><strong>Expertise:</strong> CMS development, authentication systems, real-time mapping, testing automation, monitoring</p>
+        <label for="tools-skill" style="display: block; margin-top: 0.5rem;">Proficiency Level:</label>
+        <progress id="tools-skill" max="100" value="90" style="width: 100%; height: 20px; margin-top: 0.25rem;">90%</progress>
     </article>
 </section>

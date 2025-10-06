@@ -90,7 +90,7 @@
     <meta name="theme-color" content="#f1f5f9" media="(prefers-color-scheme: light)">
     <meta name="color-scheme" content="dark light">
 
-    <!-- JS Detection & Theme Script - Must run before render -->
+    <!-- JS Detection & Theme Script - Only runs when JS is enabled -->
     <script>
         (function() {
             // Remove no-js class immediately if JS is working
@@ -125,42 +125,133 @@
         /* Critical above-the-fold styles */
         :root {
             --accent-color: #00A6FF;
+            --accent-glow: rgba(0, 166, 255, 0.4);
+            --accent-hover-color: #52C5FF;
             --primary-bg-raw: 13, 17, 23;
             --primary-bg: rgb(var(--primary-bg-raw));
+            --glass-bg: rgba(34, 41, 51, 0.6);
+            --glass-border-color: rgba(255, 255, 255, 0.1);
             --primary-text: #c9d1d9;
             --secondary-text: #8b949e;
             --nav-height: 90px;
             --fallback-bg: #fff3cd;
             --fallback-fg: #452700;
             --fallback-border: #ffecb5;
+            --border-radius-main: 16px;
+            --border-radius-small: 8px;
+            --shadow-soft: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-hover: 0 10px 20px rgba(0, 0, 0, 0.2);
         }
         html[data-theme="light"] {
             --accent-color: #4F46E5;
+            --accent-glow: rgba(79, 70, 229, 0.3);
+            --accent-hover-color: #7C3AED;
             --primary-bg-raw: 241, 245, 249;
             --primary-bg: rgb(var(--primary-bg-raw));
+            --glass-bg: rgba(255, 255, 255, 0.65);
+            --glass-border-color: rgba(79, 70, 229, 0.15);
             --primary-text: #1e293b;
             --secondary-text: #475569;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        /* Smooth scrolling optimization */
+        html {
+            scroll-behavior: smooth;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        @media (prefers-reduced-motion: reduce) {
+            html {
+                scroll-behavior: auto;
+            }
+        }
+        
         body {
-            font-family: 'Roboto', system-ui, -apple-system, sans-serif;
+            font-family: 'Roboto', 'SF Pro Text', system-ui, -apple-system, sans-serif;
             background: var(--primary-bg);
             color: var(--primary-text);
             min-height: 100vh;
             overflow-x: hidden;
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            /* Touch scrolling optimization */
+            -webkit-overflow-scrolling: touch;
+            overscroll-behavior-y: none;
+        }
+        
+        /* Global scrollbar optimization - Auto-hide by default */
+        * {
+            scrollbar-width: thin;
+            scrollbar-color: transparent transparent;
+            transition: scrollbar-color 0.3s ease;
+        }
+        
+        *:hover,
+        *:active {
+            scrollbar-color: rgba(0, 166, 255, 0.5) transparent;
+        }
+        
+        /* WebKit scrollbar styling */
+        *::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        
+        *::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        
+        *::-webkit-scrollbar-thumb {
+            background: transparent;
+            border-radius: 4px;
+            transition: background 0.3s ease;
+        }
+        
+        *:hover::-webkit-scrollbar-thumb,
+        *:active::-webkit-scrollbar-thumb {
+            background: rgba(0, 166, 255, 0.5);
+        }
+        
+        *::-webkit-scrollbar-thumb:hover {
+            background: rgba(0, 166, 255, 0.7);
+        }
+        
+        /* Light mode scrollbar */
+        html[data-theme="light"] *:hover,
+        html[data-theme="light"] *:active {
+            scrollbar-color: rgba(79, 70, 229, 0.4) transparent;
+        }
+        
+        html[data-theme="light"] *:hover::-webkit-scrollbar-thumb,
+        html[data-theme="light"] *:active::-webkit-scrollbar-thumb {
+            background: rgba(79, 70, 229, 0.4);
+        }
+        
+        html[data-theme="light"] *::-webkit-scrollbar-thumb:hover {
+            background: rgba(79, 70, 229, 0.6);
+        }
+        
+        /* Scroll performance optimization */
+        [data-scroll-container] {
+            will-change: scroll-position;
+            contain: layout style paint;
         }
         
         /* No-JS Fallback Banner */
         .no-js-banner {
             display: none;
-            padding: 0.75rem 1rem;
+            padding: 1rem 1.5rem;
             text-align: center;
             background: var(--fallback-bg);
             color: var(--fallback-fg);
             border-bottom: 2px solid var(--fallback-border);
-            font-size: clamp(0.85rem, 2vw, 1rem);
-            line-height: 1.4;
+            font-size: clamp(0.9rem, 2vw, 1rem);
+            line-height: 1.5;
             z-index: 10000;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
         .no-js .no-js-banner { display: block; }
         .js-load-error .no-js-banner { display: block; }
@@ -188,46 +279,337 @@
             border-radius: 50%;
             animation: spin 1s linear infinite;
         }
+        .loading-text {
+            margin-top: 1rem;
+            color: var(--secondary-text);
+            font-size: 1rem;
+        }
         @keyframes spin { to { transform: rotate(360deg); } }
         
         /* Static Fallback Content */
         .static-content {
             display: none;
+            flex: 1;
             max-width: 1100px;
             margin: 0 auto;
             padding: 2rem 1rem;
             line-height: 1.7;
+            width: 100%;
         }
-        .no-js .static-content, .js-load-error .static-content { display: block; }
-        .static-content h1 { font-size: clamp(2rem, 5vw, 3rem); margin-bottom: 1rem; }
-        .static-content h2 { font-size: clamp(1.5rem, 4vw, 2rem); margin-top: 2rem; margin-bottom: 1rem; }
-        .static-content h3 { font-size: clamp(1.1rem, 3vw, 1.3rem); margin-top: 1.5rem; margin-bottom: 0.75rem; }
-        .static-content p { margin-bottom: 1rem; color: var(--secondary-text); }
-        .static-content ul { margin-left: 2rem; margin-bottom: 1rem; }
-        .static-content li { margin-bottom: 0.5rem; color: var(--secondary-text); }
-        .static-content a { color: var(--accent-color); text-decoration: none; }
-        .static-content a:hover { text-decoration: underline; }
-        .contact-links { display: flex; gap: 1.5rem; flex-wrap: wrap; margin-top: 1.5rem; }
+        .no-js .static-content, .js-load-error .static-content { display: flex; flex-direction: column; }
+        
+        /* Typography */
+        .static-content h1 { 
+            font-family: 'Poppins', 'SF Pro Display', sans-serif;
+            font-size: clamp(2.5rem, 6vw, 3.5rem); 
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+            color: var(--primary-text);
+            line-height: 1.2;
+        }
+        .static-content h2 { 
+            font-family: 'Poppins', 'SF Pro Display', sans-serif;
+            font-size: clamp(1.75rem, 4vw, 2.25rem); 
+            margin-top: 3rem; 
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+            color: var(--primary-text);
+            border-bottom: 2px solid var(--accent-color);
+            padding-bottom: 0.5rem;
+        }
+        .static-content h3 { 
+            font-family: 'Poppins', 'SF Pro Display', sans-serif;
+            font-size: clamp(1.25rem, 3vw, 1.5rem); 
+            margin-top: 2rem; 
+            margin-bottom: 1rem;
+            font-weight: 600;
+            color: var(--accent-color);
+        }
+        .static-content p { 
+            margin-bottom: 1rem; 
+            color: var(--primary-text);
+            font-size: 1.05rem;
+        }
+        .static-content ul { 
+            margin-left: 1.5rem; 
+            margin-bottom: 1.5rem; 
+        }
+        .static-content li { 
+            margin-bottom: 0.75rem; 
+            color: var(--primary-text);
+            line-height: 1.8;
+        }
+        .static-content a { 
+            color: var(--accent-color); 
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        .static-content a:hover { 
+            color: var(--accent-hover-color);
+            text-decoration: underline;
+        }
+        
+        /* Contact Links */
+        .contact-links { 
+            display: flex; 
+            gap: 1rem; 
+            flex-wrap: wrap; 
+            margin-top: 1.5rem; 
+        }
         .contact-links a {
-            padding: 0.75rem 1.5rem;
+            padding: 0.875rem 2rem;
             background: var(--accent-color);
             color: white;
-            border-radius: 8px;
-            font-weight: 500;
+            border-radius: var(--border-radius-small);
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-soft);
+            border: none;
         }
+        .contact-links a:hover {
+            background: var(--accent-hover-color);
+            box-shadow: var(--shadow-hover);
+            transform: translateY(-2px);
+            text-decoration: none;
+        }
+        
+        /* Progress Bars */
+        progress {
+            width: 100%;
+            height: 24px;
+            border-radius: 12px;
+            border: 1px solid var(--glass-border-color);
+            margin: 0.5rem 0 1rem 0;
+            background: var(--glass-bg);
+        }
+        progress::-webkit-progress-bar {
+            background: rgba(128, 128, 128, 0.2);
+            border-radius: 12px;
+        }
+        progress::-webkit-progress-value {
+            background: linear-gradient(90deg, var(--accent-color), var(--accent-hover-color));
+            border-radius: 12px;
+            box-shadow: 0 0 10px var(--accent-glow);
+        }
+        progress::-moz-progress-bar {
+            background: linear-gradient(90deg, var(--accent-color), var(--accent-hover-color));
+            border-radius: 12px;
+            box-shadow: 0 0 10px var(--accent-glow);
+        }
+        
+        /* Details/Summary */
+        details {
+            position: relative;
+        }
+        summary {
+            cursor: pointer;
+            user-select: none;
+            transition: color 0.3s ease;
+        }
+        summary:hover {
+            color: var(--accent-hover-color);
+        }
+        summary::-webkit-details-marker { display: none; }
+        
+        /* Skip Link */
         .skip-link {
             position: absolute;
             top: -40px;
             left: 0;
             background: var(--accent-color);
             color: white;
-            padding: 8px 16px;
+            padding: 0.75rem 1.5rem;
             text-decoration: none;
             z-index: 100;
+            border-radius: 0 0 var(--border-radius-small) 0;
+            font-weight: 600;
         }
-        .skip-link:focus { top: 0; }
-        nav a { margin: 0 0.5rem; }
-        article { margin-bottom: 1.5rem; }
+        .skip-link:focus { 
+            top: 0;
+            outline: 3px solid var(--accent-glow);
+        }
+        
+        /* Sections */
+        section {
+            margin-bottom: 4rem;
+            scroll-margin-top: 2rem;
+        }
+        
+        /* Section Titles */
+        .static-content section > h2:first-child {
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+            padding-bottom: 1rem;
+        }
+        .static-content section > h2:first-child::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--accent-color), transparent);
+            border-radius: 2px;
+            box-shadow: 0 0 10px var(--accent-glow);
+        }
+        
+        /* Articles/Cards */
+        article { 
+            margin-bottom: 2rem;
+            padding: 2rem;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border-color);
+            border-radius: var(--border-radius-main);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 15px var(--shadow-soft-color), inset 0 1px 1px rgba(255, 255, 255, 0.05);
+        }
+        article::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent-color), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        article:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 30px var(--shadow-hover-color), 0 0 20px -5px var(--accent-glow);
+            border-color: rgba(0, 166, 255, 0.3);
+        }
+        article:hover::before {
+            opacity: 1;
+        }
+        
+        /* Figure (Profile) */
+        figure {
+            position: relative;
+        }
+        figure img {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        figure:hover img {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px var(--accent-glow);
+        }
+        
+        /* Navigation Enhancements */
+        nav[aria-label="Quick Navigation"] {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border-color);
+            backdrop-filter: blur(16px);
+            box-shadow: 0 4px 15px var(--shadow-soft-color);
+        }
+        nav[aria-label="Quick Navigation"] a {
+            transition: color 0.3s ease, transform 0.2s ease;
+            display: inline-block;
+        }
+        nav[aria-label="Quick Navigation"] a:hover {
+            color: var(--accent-hover-color);
+            transform: translateY(-1px);
+        }
+        
+        /* Language Switcher Menu */
+        menu {
+            animation: slideDown 0.3s ease;
+        }
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Definition List Styling */
+        dl {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border-color);
+            backdrop-filter: blur(16px);
+            box-shadow: 0 4px 15px var(--shadow-soft-color);
+        }
+        
+        /* Time Elements */
+        time {
+            display: inline-block;
+            transition: color 0.3s ease;
+        }
+        time:hover {
+            color: var(--accent-color);
+        }
+        
+        /* Enhanced Footer */
+        footer {
+            margin-top: auto;
+            padding: 3rem 0 0 0;
+            border-top: 1px solid var(--glass-border-color);
+            background: linear-gradient(180deg, transparent, var(--glass-bg));
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .static-content {
+                padding: 1.5rem 1rem;
+            }
+            article {
+                padding: 1.5rem;
+            }
+            .static-content h1 {
+                font-size: clamp(2rem, 8vw, 2.5rem);
+            }
+            .static-content h2 {
+                font-size: clamp(1.5rem, 6vw, 1.75rem);
+            }
+            .contact-links {
+                flex-direction: column;
+            }
+            .contact-links a {
+                width: 100%;
+                text-align: center;
+            }
+        }
+        
+        /* Screen Reader Only */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+        
+        /* Smooth Animations */
+        @media (prefers-reduced-motion: no-preference) {
+            .static-content {
+                animation: fadeIn 0.6s ease;
+            }
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                    transform: translateY(20px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+        }
     </style>
 
     <!-- Preload critical fonts with font-display swap -->
@@ -265,221 +647,310 @@
     </div>
     
     <!-- Static Fallback Content (Shown only when JS disabled/failed) - SEO Optimized -->
-    <div class="static-content" itemscope itemtype="https://schema.org/Person">
+    <main id="main-content" class="static-content" itemscope itemtype="https://schema.org/Person">
         <header>
-            <h1 itemprop="name">Khalil Charfi</h1>
-            <p itemprop="jobTitle" style="font-size: 1.25rem; margin-bottom: 1rem; font-weight: 500;">
-                Full-Stack Engineer | Software Developer | Digital Solutions Architect
-            </p>
-            <p style="color: var(--secondary-text); margin-bottom: 2rem;">
-                Frankfurt, Germany • Available for Remote &amp; On-site Opportunities
-            </p>
+            <figure style="margin: 0 0 1.5rem 0; text-align: center;">
+                <img src="https://khalilcharfi.github.io/asset/profile-photo.jpg" 
+                     alt="Khalil Charfi" 
+                     itemprop="image"
+                     width="150" 
+                     height="150"
+                     style="border-radius: 50%; border: 3px solid var(--accent-color); object-fit: cover;">
+                <figcaption style="margin-top: 1rem;">
+                    <h1 itemprop="name" style="margin: 0;">Khalil Charfi</h1>
+                    <p itemprop="jobTitle" style="font-size: 1.25rem; margin: 0.5rem 0; font-weight: 500;">
+                        Full-Stack Engineer | Software Developer | Digital Solutions Architect
+                    </p>
+                    <p style="color: var(--secondary-text); margin: 0;">
+                        <data value="Frankfurt, Germany">Frankfurt, Germany</data> • <mark style="background: transparent; color: var(--accent-color); font-weight: 500;">Available for Remote &amp; On-site Opportunities</mark>
+                    </p>
+                </figcaption>
+            </figure>
         </header>
+        <!-- Language Switcher (No-JS) - HTML5 Native -->
+        <nav aria-label="Language Switcher" style="text-align: right; margin-bottom: 1rem; padding: 0.5rem; border-bottom: 1px solid rgba(128, 128, 128, 0.2);">
+            <details style="display: inline-block;">
+                <summary style="cursor: pointer; color: var(--accent-color); font-weight: 500; list-style: none;">
+                    🌐 EN ▼
+                </summary>
+                <menu style="position: absolute; background: var(--primary-bg); border: 1px solid rgba(128, 128, 128, 0.3); border-radius: 4px; padding: 0.5rem; margin: 0.25rem 0; list-style: none; box-shadow: 0 2px 8px rgba(0,0,0,0.2); z-index: 100;">
+                    <li style="margin: 0.25rem 0;"><a href="index.html" style="color: var(--accent-color); text-decoration: none; font-weight: bold;" hreflang="en">🇬🇧 English</a></li>
+                    <li style="margin: 0.25rem 0;"><a href="index.de.html" style="color: var(--accent-color); text-decoration: none; " hreflang="de">🇩🇪 Deutsch</a></li>
+                    <li style="margin: 0.25rem 0;"><a href="index.fr.html" style="color: var(--accent-color); text-decoration: none; " hreflang="fr">🇫🇷 Français</a></li>
+                    <li style="margin: 0.25rem 0;"><a href="index.ar.html" style="color: var(--accent-color); text-decoration: none; " hreflang="ar">🇸🇦 العربية</a></li>
+                </menu>
+            </details>
+        </nav>
+        
+        <!-- Section Navigation - HTML5 Native -->
         <nav aria-label="Quick Navigation" style="margin-bottom: 2rem; padding: 1rem; background: rgba(128, 128, 128, 0.1); border-radius: 8px;">
             <strong>Jump to:</strong>
-            <a href="#about-section">About</a> |
-            <a href="#skills-section">Skills</a> |
-            <a href="#experience-section">Experience</a> |
-            <a href="#education-section">Education</a> |
-            <a href="#projects-section">Projects</a> |
-            <a href="#contact-section">Contact</a>
+            <menu style="display: inline; list-style: none; padding: 0; margin: 0;">
+                <li style="display: inline;"><a href="#about-section">About</a> |</li>
+                <li style="display: inline;"><a href="#skills-section">Skills</a> |</li>
+                <li style="display: inline;"><a href="#experience-section">Experience</a> |</li>
+                <li style="display: inline;"><a href="#education-section">Education</a> |</li>
+                <li style="display: inline;"><a href="#projects-section">Projects</a> |</li>
+                <li style="display: inline;"><a href="#contact-section">Contact</a></li>
+            </menu>
         </nav>
-        <section id="about-section">
-            <h2>About Me</h2>
-            <p itemprop="description" style="font-size: 1.05rem; line-height: 1.8;">
-                Full-stack engineer with extensive experience delivering scalable web and mobile applications. Skilled in front-end development with Vue.js and Angular, back-end with Laravel and Laminas, and mobile apps using Flutter and Ionic. Passionate about clean architecture, offline-first capabilities, and DevOps-driven deployment. Experienced in cross-functional teams across Tunisia and Germany.
-            </p>
-            
-            <h3 style="margin-top: 1.5rem; font-size: 1.2rem;">Professional Summary</h3>
-            <p>I design and build exceptional digital products. As a Full-Stack Engineer, I specialize in creating intuitive, high-performance web and mobile applications that are both scalable and user-centric.</p>
-            <p>My journey into tech started with a fascination for solving complex problems with elegant code. I thrive on turning ideas into reality, from conceptualization to deployment, and I&#x27;m passionate about creating seamless user interfaces that are both beautiful and highly functional.</p>
-            
-            <h3 style="margin-top: 1.5rem; font-size: 1.2rem;">Languages</h3>
-            <ul style="list-style: none; margin-left: 0;">
-                <li>🌐 <strong>Arabic:</strong> Native</li>
-                <li>🌐 <strong>English:</strong> Fluent</li>
-                <li>🌐 <strong>French:</strong> Fluent</li>
-            </ul>
-        </section>
-        <section id="skills-section" style="margin-top: 2.5rem;">
-            <h2>Core Technical Skills</h2>
-            
-            <article>
-                <h3 style="color: var(--accent-color); font-size: 1.1rem;">Front-End Development</h3>
-                <p><strong>Technologies:</strong> Vue.js, Angular, JavaScript/TypeScript, HTML5, CSS3 (Sass/LESS), Bootstrap, jQuery, JSP</p>
-                <p><strong>Expertise:</strong> Component-based architecture, state management, responsive design, progressive web apps (PWA), accessibility (WCAG 2.1)</p>
-            </article>
-            
-            <article>
-                <h3 style="color: var(--accent-color); font-size: 1.1rem;">Back-End Development</h3>
-                <p><strong>Technologies:</strong> PHP (Laravel, Laminas), Java (Spring Boot, Spring Framework), RESTful APIs, Node.js</p>
-                <p><strong>Expertise:</strong> Microservices architecture, API design, authentication & authorization, database optimization</p>
-            </article>
-            
-            <article>
-                <h3 style="color: var(--accent-color); font-size: 1.1rem;">Mobile Development</h3>
-                <p><strong>Technologies:</strong> Flutter, Ionic, Capacitor, Android (Java), Hybrid Apps, Offline-First Apps</p>
-                <p><strong>Expertise:</strong> Offline-first applications, cross-platform development, native integrations, Bluetooth/IoT</p>
-            </article>
-            
-            <article>
-                <h3 style="color: var(--accent-color); font-size: 1.1rem;">Databases &amp; APIs</h3>
-                <p><strong>Technologies:</strong> MySQL, MongoDB, SQLite, CouchDB/PouchDB, GraphQL (Apollo Client), REST APIs, Data Synchronization</p>
-                <p><strong>Expertise:</strong> Data synchronization, database design, query optimization, API integration</p>
-            </article>
-            
-            <article>
-                <h3 style="color: var(--accent-color); font-size: 1.1rem;">DevOps &amp; CI/CD</h3>
-                <p><strong>Technologies:</strong> Git, Docker, Jenkins, GitLab CI/CD, Bitrise, Puppet, Rancher, SonarQube</p>
-                <p><strong>Expertise:</strong> Continuous integration/deployment, containerization, infrastructure as code, monitoring</p>
-            </article>
-            
-            <article>
-                <h3 style="color: var(--accent-color); font-size: 1.1rem;">Tools &amp; Technologies</h3>
-                <p><strong>Technologies:</strong> Drupal, Keycloak, Firebase, Mapbox GL JS, WSO2 CEP, JHipster, TestCafe, Cucumber, Grafana, Kibana, Bluetooth Integration, IoT Systems</p>
-                <p><strong>Expertise:</strong> CMS development, authentication systems, real-time mapping, testing automation, monitoring</p>
-            </article>
-        </section>
-        <section id="experience-section" style="margin-top: 2.5rem;">
-            <h2>Experience</h2>
-            
-            <article style="margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 1px solid rgba(128, 128, 128, 0.2);">
-                <h3 style="font-size: 1.15rem; margin-bottom: 0.5rem;">Software Engineer – Fullstack Developer</h3>
-                <p style="color: var(--accent-color); font-weight: 500; margin-bottom: 0.5rem;">
-                    CHECK24 Vergleichsportal GmbH | Frankfurt, Germany
+        
+        <article id="about-article">
+            <section id="about-section">
+                <h2>About Me</h2>
+                <p itemprop="description" style="font-size: 1.05rem; line-height: 1.8;">
+                    Full-stack engineer with extensive experience delivering scalable web and mobile applications. Skilled in front-end development with Vue.js and Angular, back-end with Laravel and Laminas, and mobile apps using Flutter and Ionic. Passionate about clean architecture, offline-first capabilities, and DevOps-driven deployment. Experienced in cross-functional teams across Tunisia and Germany.
                 </p>
-                <p style="color: var(--secondary-text); margin-bottom: 1rem;"><em>Aug 2022 – Present</em></p>
-                <ul>
-                    <li>Improved front-end performance and user interaction on Germany&#x27;s top comparison platform using Vue.js and Laminas.</li>
-                    <li>Enhanced the bicycle insurance (Fahrradversicherung) product with advanced features and REST API integration.</li>
-                    <li>Contributed to the redesign of Drupal components and embedded analytics tracking.</li>
-                    <li>Applied caching and optimized database queries for faster loading and smoother user flow.</li>
-                </ul>
-            </article>
-            <article style="margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 1px solid rgba(128, 128, 128, 0.2);">
-                <h3 style="font-size: 1.15rem; margin-bottom: 0.5rem;">Software Engineer – Full-Stack Developer</h3>
-                <p style="color: var(--accent-color); font-weight: 500; margin-bottom: 0.5rem;">
-                    ASM - All Soft Multimedia | Sfax, Tunisia
-                </p>
-                <p style="color: var(--secondary-text); margin-bottom: 1rem;"><em>Jan 2019 – Aug 2022</em></p>
-                <ul>
-                    <li>Led development of web and mobile apps across sectors including retail, restaurants, and inventory management.</li>
-                    <li>Built hybrid mobile apps with Flutter and Ionic, featuring offline sync via CouchDB/PouchDB.</li>
-                    <li>Delivered projects such as: Cover 3D Mobile (field sales tool), 3andi &amp; 3andi Partner (loyalty apps), ProInventory &amp; ProCaisse Mobility (inventory/sales tracking).</li>
-                    <li>Ensured secure access and authentication with Keycloak.</li>
-                </ul>
-            </article>
-            <article style="margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 1px solid rgba(128, 128, 128, 0.2);">
-                <h3 style="font-size: 1.15rem; margin-bottom: 0.5rem;">Software Engineer – Mobile Developer</h3>
-                <p style="color: var(--accent-color); font-weight: 500; margin-bottom: 0.5rem;">
-                    MyBus – Monkey Factory | Sfax, Tunisia
-                </p>
-                <p style="color: var(--secondary-text); margin-bottom: 1rem;"><em>Mar 2020 – Nov 2020</em></p>
-                <ul>
-                    <li>Built a real-time public transportation app using Ionic, Angular, and Mapbox GL.</li>
-                    <li>Integrated GraphQL with Apollo Client for efficient data updates.</li>
-                    <li>Enabled CI/CD with Docker and GitLab for faster iterations.</li>
-                </ul>
-            </article>
-            <article style="margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 1px solid rgba(128, 128, 128, 0.2);">
-                <h3 style="font-size: 1.15rem; margin-bottom: 0.5rem;">Front-End Developer</h3>
-                <p style="color: var(--accent-color); font-weight: 500; margin-bottom: 0.5rem;">
-                    Softtodo IT Solutions | Sfax, Tunisia
-                </p>
-                <p style="color: var(--secondary-text); margin-bottom: 1rem;"><em>May 2018 – Dec 2018</em></p>
-                <ul>
-                    <li>Modernized IRIDION&#x27;s e-commerce UI using Bootstrap and responsive design.</li>
-                    <li>Implemented dynamic JSP components and A/B testing tools.</li>
-                </ul>
-            </article>
-            <article style="margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 1px solid rgba(128, 128, 128, 0.2);">
-                <h3 style="font-size: 1.15rem; margin-bottom: 0.5rem;">Android Developer</h3>
-                <p style="color: var(--accent-color); font-weight: 500; margin-bottom: 0.5rem;">
-                    ASM - All Soft Multimedia | Sfax, Tunisia
-                </p>
-                <p style="color: var(--secondary-text); margin-bottom: 1rem;"><em>Mar 2017 – May 2018</em></p>
-                <ul>
-                    <li>Delivered business-critical Android apps with offline capabilities and secure sync via SQLite and Laravel.</li>
-                    <li>Built custom tools like DUX Mobile (ERP companion), FastQueue (queue system via Bluetooth), and ProCaisse Mobile.</li>
-                </ul>
-            </article>
-            <article style="margin-bottom: 2rem; padding-bottom: 1.5rem; ">
-                <h3 style="font-size: 1.15rem; margin-bottom: 0.5rem;">Researcher – THERALYTICS Project</h3>
-                <p style="color: var(--accent-color); font-weight: 500; margin-bottom: 0.5rem;">
-                    University of Marburg / Digital Research Centre of Sfax | Germany &amp; Tunisia
-                </p>
-                <p style="color: var(--secondary-text); margin-bottom: 1rem;"><em>Oct 2016 – Feb 2017</em></p>
-                <ul>
-                    <li>Developed a cardiac monitoring prototype using IoT sensors and Complex Event Processing (WSO2 CEP).</li>
-                    <li>Designed real-time alert systems and data pipelines with Spring Boot, MongoDB, and JHipster.</li>
-                    <li>Collaborated in international research for early detection of cardiac anomalies.</li>
-                </ul>
-            </article>
-        </section>
-        <section id="education-section" style="margin-top: 2.5rem;">
-            <h2>Education</h2>
-            
-            <article>
-                <h3 style="font-size: 1.15rem; margin-bottom: 0.5rem;">Master of Science, Enterprise Systems Engineering</h3>
-                <p style="color: var(--accent-color); font-weight: 500;">
-                    Higher Institute of Informatics and Multimedia of Sfax | 
-                </p>
-                <p style="color: var(--secondary-text);"><em>Sep 2014 – Feb 2017</em></p>
-                <p></p>
-            </article>
-            <article>
-                <h3 style="font-size: 1.15rem; margin-bottom: 0.5rem;">Bachelor&#x27;s Degree, Computer Science</h3>
-                <p style="color: var(--accent-color); font-weight: 500;">
-                    Higher Institute of Informatics and Multimedia of Sfax | 
-                </p>
-                <p style="color: var(--secondary-text);"><em>Sep 2011 – Jun 2014</em></p>
-                <p></p>
-            </article>
-        </section>
-        <section id="projects-section" style="margin-top: 2.5rem;">
-            <h2>My Projects</h2>
-            
-            
-            <article>
-                <h3 style="font-size: 1.1rem; color: var(--accent-color);">Cover 3D Mobile (ASM)</h3>
-                <p><strong>Technologies:</strong> Ionic, Angular, CouchDB, PouchDB, Keycloak</p>
-                <p>A field sales tool for sales representatives with dynamic forms generation, complex pricing logic, multimedia support for product presentations, and offline capabilities with CouchDB/PouchDB sync.</p>
-            </article>
-            true
-            true
-            false
-        </section>
-        <section id="contact-section" style="margin-top: 2.5rem;">
-            <h2>Let&#x27;s Build Something Great</h2>
-            <p style="margin-bottom: 1.5rem;">
                 
-            </p>
-            
-            <div class="contact-links">
-                <a href="https://www.linkedin.com/in/khalil-charfi/" 
-                   target="_blank" 
-                   rel="noopener noreferrer"
-                   itemprop="sameAs"
-                   aria-label="Connect with Khalil Charfi on LinkedIn">
+                <h3 style="margin-top: 1.5rem; font-size: 1.2rem;">Professional Summary</h3>
+                <p>I design and build exceptional digital products. As a Full-Stack Engineer, I specialize in creating intuitive, high-performance web and mobile applications that are both scalable and user-centric.</p>
+                <p>My journey into tech started with a fascination for solving complex problems with elegant code. I thrive on turning ideas into reality, from conceptualization to deployment, and I&#x27;m passionate about creating seamless user interfaces that are both beautiful and highly functional.</p>
+                
+                <h3 style="margin-top: 1.5rem; font-size: 1.2rem;">Languages</h3>
+                <ul style="list-style: none; margin-left: 0;">
+                    <li>🌐 <strong>Arabic:</strong> Native</li>
+                    <li>🌐 <strong>English:</strong> Fluent</li>
+                    <li>🌐 <strong>French:</strong> Fluent</li>
+                </ul>
+            </section>
+        </article>
+        
+        <article id="skills-article">
+            <section id="skills-section" style="margin-top: 2.5rem;">
+                <h2>Core Technical Skills</h2>
+                
+                <article>
+                    <h3 style="color: var(--accent-color); font-size: 1.1rem;">Front-End Development</h3>
+                    <p><strong>Technologies:</strong> Vue.js, Angular, JavaScript/TypeScript, HTML5, CSS3 (Sass/LESS), Bootstrap, jQuery, JSP</p>
+                    <p><strong>Expertise:</strong> Component-based architecture, state management, responsive design, progressive web apps (PWA), accessibility (WCAG 2.1)</p>
+                    <label for="frontend-skill" style="display: block; margin-top: 0.5rem;">Proficiency Level:</label>
+                    <progress id="frontend-skill" max="100" value="95" style="width: 100%; height: 20px; margin-top: 0.25rem;">95%</progress>
+                </article>
+                
+                <article>
+                    <h3 style="color: var(--accent-color); font-size: 1.1rem;">Back-End Development</h3>
+                    <p><strong>Technologies:</strong> PHP (Laravel, Laminas), Java (Spring Boot, Spring Framework), RESTful APIs, Node.js</p>
+                    <p><strong>Expertise:</strong> Microservices architecture, API design, authentication & authorization, database optimization</p>
+                    <label for="backend-skill" style="display: block; margin-top: 0.5rem;">Proficiency Level:</label>
+                    <progress id="backend-skill" max="100" value="90" style="width: 100%; height: 20px; margin-top: 0.25rem;">90%</progress>
+                </article>
+                
+                <article>
+                    <h3 style="color: var(--accent-color); font-size: 1.1rem;">Mobile Development</h3>
+                    <p><strong>Technologies:</strong> Flutter, Ionic, Capacitor, Android (Java), Hybrid Apps, Offline-First Apps</p>
+                    <p><strong>Expertise:</strong> Offline-first applications, cross-platform development, native integrations, Bluetooth/IoT</p>
+                    <label for="mobile-skill" style="display: block; margin-top: 0.5rem;">Proficiency Level:</label>
+                    <progress id="mobile-skill" max="100" value="85" style="width: 100%; height: 20px; margin-top: 0.25rem;">85%</progress>
+                </article>
+                
+                <article>
+                    <h3 style="color: var(--accent-color); font-size: 1.1rem;">Databases &amp; APIs</h3>
+                    <p><strong>Technologies:</strong> MySQL, MongoDB, SQLite, CouchDB/PouchDB, GraphQL (Apollo Client), REST APIs, Data Synchronization</p>
+                    <p><strong>Expertise:</strong> Data synchronization, database design, query optimization, API integration</p>
+                    <label for="databases-skill" style="display: block; margin-top: 0.5rem;">Proficiency Level:</label>
+                    <progress id="databases-skill" max="100" value="88" style="width: 100%; height: 20px; margin-top: 0.25rem;">88%</progress>
+                </article>
+                
+                <article>
+                    <h3 style="color: var(--accent-color); font-size: 1.1rem;">DevOps &amp; CI/CD</h3>
+                    <p><strong>Technologies:</strong> Git, Docker, Jenkins, GitLab CI/CD, Bitrise, Puppet, Rancher, SonarQube</p>
+                    <p><strong>Expertise:</strong> Continuous integration/deployment, containerization, infrastructure as code, monitoring</p>
+                    <label for="devops-skill" style="display: block; margin-top: 0.5rem;">Proficiency Level:</label>
+                    <progress id="devops-skill" max="100" value="82" style="width: 100%; height: 20px; margin-top: 0.25rem;">82%</progress>
+                </article>
+                
+                <article>
+                    <h3 style="color: var(--accent-color); font-size: 1.1rem;">Tools &amp; Technologies</h3>
+                    <p><strong>Technologies:</strong> Drupal, Keycloak, Firebase, Mapbox GL JS, WSO2 CEP, JHipster, TestCafe, Cucumber, Grafana, Kibana, Bluetooth Integration, IoT Systems</p>
+                    <p><strong>Expertise:</strong> CMS development, authentication systems, real-time mapping, testing automation, monitoring</p>
+                    <label for="tools-skill" style="display: block; margin-top: 0.5rem;">Proficiency Level:</label>
+                    <progress id="tools-skill" max="100" value="90" style="width: 100%; height: 20px; margin-top: 0.25rem;">90%</progress>
+                </article>
+            </section>
+        </article>
+        
+        <article id="experience-article">
+            <section id="experience-section" style="margin-top: 2.5rem;">
+                <h2>Experience</h2>
+                
+                <article style="margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 1px solid rgba(128, 128, 128, 0.2);" itemscope itemtype="https://schema.org/WorkExperience">
+                    <header>
+                        <h3 style="font-size: 1.15rem; margin-bottom: 0.5rem;" itemprop="jobTitle">Software Engineer – Fullstack Developer</h3>
+                        <p style="color: var(--accent-color); font-weight: 500; margin-bottom: 0.5rem;">
+                            <span itemprop="hiringOrganization">CHECK24 Vergleichsportal GmbH</span> | <span itemprop="jobLocation">Frankfurt, Germany</span>
+                        </p>
+                        <p style="color: var(--secondary-text); margin-bottom: 1rem;">
+                            <time datetime="Aug 2022 – Present" itemprop="datePublished"><em>Aug 2022 – Present</em></time>
+                        </p>
+                    </header>
+                    <ul itemprop="description">
+                        <li>Improved front-end performance and user interaction on Germany&#x27;s top comparison platform using Vue.js and Laminas.</li>
+                        <li>Enhanced the bicycle insurance (Fahrradversicherung) product with advanced features and REST API integration.</li>
+                        <li>Contributed to the redesign of Drupal components and embedded analytics tracking.</li>
+                        <li>Applied caching and optimized database queries for faster loading and smoother user flow.</li>
+                    </ul>
+                </article>
+                <article style="margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 1px solid rgba(128, 128, 128, 0.2);" itemscope itemtype="https://schema.org/WorkExperience">
+                    <header>
+                        <h3 style="font-size: 1.15rem; margin-bottom: 0.5rem;" itemprop="jobTitle">Software Engineer – Full-Stack Developer</h3>
+                        <p style="color: var(--accent-color); font-weight: 500; margin-bottom: 0.5rem;">
+                            <span itemprop="hiringOrganization">ASM - All Soft Multimedia</span> | <span itemprop="jobLocation">Sfax, Tunisia</span>
+                        </p>
+                        <p style="color: var(--secondary-text); margin-bottom: 1rem;">
+                            <time datetime="Jan 2019 – Aug 2022" itemprop="datePublished"><em>Jan 2019 – Aug 2022</em></time>
+                        </p>
+                    </header>
+                    <ul itemprop="description">
+                        <li>Led development of web and mobile apps across sectors including retail, restaurants, and inventory management.</li>
+                        <li>Built hybrid mobile apps with Flutter and Ionic, featuring offline sync via CouchDB/PouchDB.</li>
+                        <li>Delivered projects such as: Cover 3D Mobile (field sales tool), 3andi &amp; 3andi Partner (loyalty apps), ProInventory &amp; ProCaisse Mobility (inventory/sales tracking).</li>
+                        <li>Ensured secure access and authentication with Keycloak.</li>
+                    </ul>
+                </article>
+                <article style="margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 1px solid rgba(128, 128, 128, 0.2);" itemscope itemtype="https://schema.org/WorkExperience">
+                    <header>
+                        <h3 style="font-size: 1.15rem; margin-bottom: 0.5rem;" itemprop="jobTitle">Software Engineer – Mobile Developer</h3>
+                        <p style="color: var(--accent-color); font-weight: 500; margin-bottom: 0.5rem;">
+                            <span itemprop="hiringOrganization">MyBus – Monkey Factory</span> | <span itemprop="jobLocation">Sfax, Tunisia</span>
+                        </p>
+                        <p style="color: var(--secondary-text); margin-bottom: 1rem;">
+                            <time datetime="Mar 2020 – Nov 2020" itemprop="datePublished"><em>Mar 2020 – Nov 2020</em></time>
+                        </p>
+                    </header>
+                    <ul itemprop="description">
+                        <li>Built a real-time public transportation app using Ionic, Angular, and Mapbox GL.</li>
+                        <li>Integrated GraphQL with Apollo Client for efficient data updates.</li>
+                        <li>Enabled CI/CD with Docker and GitLab for faster iterations.</li>
+                    </ul>
+                </article>
+                <article style="margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 1px solid rgba(128, 128, 128, 0.2);" itemscope itemtype="https://schema.org/WorkExperience">
+                    <header>
+                        <h3 style="font-size: 1.15rem; margin-bottom: 0.5rem;" itemprop="jobTitle">Front-End Developer</h3>
+                        <p style="color: var(--accent-color); font-weight: 500; margin-bottom: 0.5rem;">
+                            <span itemprop="hiringOrganization">Softtodo IT Solutions</span> | <span itemprop="jobLocation">Sfax, Tunisia</span>
+                        </p>
+                        <p style="color: var(--secondary-text); margin-bottom: 1rem;">
+                            <time datetime="May 2018 – Dec 2018" itemprop="datePublished"><em>May 2018 – Dec 2018</em></time>
+                        </p>
+                    </header>
+                    <ul itemprop="description">
+                        <li>Modernized IRIDION&#x27;s e-commerce UI using Bootstrap and responsive design.</li>
+                        <li>Implemented dynamic JSP components and A/B testing tools.</li>
+                    </ul>
+                </article>
+                <article style="margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 1px solid rgba(128, 128, 128, 0.2);" itemscope itemtype="https://schema.org/WorkExperience">
+                    <header>
+                        <h3 style="font-size: 1.15rem; margin-bottom: 0.5rem;" itemprop="jobTitle">Android Developer</h3>
+                        <p style="color: var(--accent-color); font-weight: 500; margin-bottom: 0.5rem;">
+                            <span itemprop="hiringOrganization">ASM - All Soft Multimedia</span> | <span itemprop="jobLocation">Sfax, Tunisia</span>
+                        </p>
+                        <p style="color: var(--secondary-text); margin-bottom: 1rem;">
+                            <time datetime="Mar 2017 – May 2018" itemprop="datePublished"><em>Mar 2017 – May 2018</em></time>
+                        </p>
+                    </header>
+                    <ul itemprop="description">
+                        <li>Delivered business-critical Android apps with offline capabilities and secure sync via SQLite and Laravel.</li>
+                        <li>Built custom tools like DUX Mobile (ERP companion), FastQueue (queue system via Bluetooth), and ProCaisse Mobile.</li>
+                    </ul>
+                </article>
+                <article style="margin-bottom: 2rem; padding-bottom: 1.5rem; " itemscope itemtype="https://schema.org/WorkExperience">
+                    <header>
+                        <h3 style="font-size: 1.15rem; margin-bottom: 0.5rem;" itemprop="jobTitle">Researcher – THERALYTICS Project</h3>
+                        <p style="color: var(--accent-color); font-weight: 500; margin-bottom: 0.5rem;">
+                            <span itemprop="hiringOrganization">University of Marburg / Digital Research Centre of Sfax</span> | <span itemprop="jobLocation">Germany &amp; Tunisia</span>
+                        </p>
+                        <p style="color: var(--secondary-text); margin-bottom: 1rem;">
+                            <time datetime="Oct 2016 – Feb 2017" itemprop="datePublished"><em>Oct 2016 – Feb 2017</em></time>
+                        </p>
+                    </header>
+                    <ul itemprop="description">
+                        <li>Developed a cardiac monitoring prototype using IoT sensors and Complex Event Processing (WSO2 CEP).</li>
+                        <li>Designed real-time alert systems and data pipelines with Spring Boot, MongoDB, and JHipster.</li>
+                        <li>Collaborated in international research for early detection of cardiac anomalies.</li>
+                    </ul>
+                </article>
+            </section>
+        </article>
+        
+        <article id="education-article">
+            <section id="education-section" style="margin-top: 2.5rem;">
+                <h2>Education</h2>
+                
+                <article style="margin-bottom: 1.5rem;" itemscope itemtype="https://schema.org/EducationalOccupationalCredential">
+                    <header>
+                        <h3 style="font-size: 1.15rem; margin-bottom: 0.5rem;" itemprop="credentialCategory">Master of Science, Enterprise Systems Engineering</h3>
+                        <p style="color: var(--accent-color); font-weight: 500;">
+                            <span itemprop="educationalLevel">Higher Institute of Informatics and Multimedia of Sfax</span>
+                        </p>
+                        <p style="color: var(--secondary-text);">
+                            <time datetime="Sep 2014 – Feb 2017" itemprop="validFrom"><em>Sep 2014 – Feb 2017</em></time>
+                        </p>
+                    </header>
+                </article>
+                <article style="margin-bottom: 1.5rem;" itemscope itemtype="https://schema.org/EducationalOccupationalCredential">
+                    <header>
+                        <h3 style="font-size: 1.15rem; margin-bottom: 0.5rem;" itemprop="credentialCategory">Bachelor&#x27;s Degree, Computer Science</h3>
+                        <p style="color: var(--accent-color); font-weight: 500;">
+                            <span itemprop="educationalLevel">Higher Institute of Informatics and Multimedia of Sfax</span>
+                        </p>
+                        <p style="color: var(--secondary-text);">
+                            <time datetime="Sep 2011 – Jun 2014" itemprop="validFrom"><em>Sep 2011 – Jun 2014</em></time>
+                        </p>
+                    </header>
+                </article>
+            </section>
+        </article>
+        
+        <article id="projects-article">
+            <section id="projects-section" style="margin-top: 2.5rem;">
+                <h2>My Projects</h2>
+                
+            truetruetruefalse</section>
+        </article>
+        
+        <aside id="contact-aside">
+            <section id="contact-section" style="margin-top: 2.5rem;">
+                <h2>Let&#x27;s Build Something Great</h2>
+                <p style="margin-bottom: 1.5rem;">
                     
-                </a>
-                <a href="https://github.com/khalil-charfi" 
-                   target="_blank" 
-                   rel="noopener noreferrer"
-                   itemprop="sameAs"
-                   aria-label="View Khalil Charfi's projects on GitHub">
+                </p>
+                
+                <!-- HTML5 Native Contact Links -->
+                <nav class="contact-links" aria-label="Social Media Links">
+                    <a href="https://www.linkedin.com/in/khalil-charfi/" 
+                       target="_blank" 
+                       rel="noopener noreferrer"
+                       itemprop="sameAs"
+                       aria-label="Connect with Khalil Charfi on LinkedIn">
+                        
+                    </a>
+                    <a href="https://github.com/khalil-charfi" 
+                       target="_blank" 
+                       rel="noopener noreferrer"
+                       itemprop="sameAs"
+                       aria-label="View Khalil Charfi's projects on GitHub">
+                        
+                    </a>
+                </nav>
+                
+                <!-- HTML5 Definition List for Contact Info -->
+                <dl style="margin-top: 1.5rem; padding: 1rem; background: rgba(128, 128, 128, 0.1); border-radius: 8px;">
+                    <dt style="display: inline; font-weight: bold;">📧 Email:</dt>
+                    <dd style="display: inline; margin: 0;">Available on LinkedIn</dd><br>
                     
-                </a>
-            </div>
-            
-            <p style="margin-top: 1.5rem; padding: 1rem; background: rgba(128, 128, 128, 0.1); border-radius: 8px;">
-                <strong>📧 Email:</strong> Available on LinkedIn<br>
-                <strong>📍 Location:</strong> Frankfurt, Germany<br>
-                <strong>💼 Status:</strong> Open to opportunities<br>
-                <strong>🌐 Work Authorization:</strong> EU Work Permit
-            </p>
-        </section>
-        <footer style="margin-top: 3rem; padding-top: 2rem; border-top: 2px solid rgba(128, 128, 128, 0.3);">
+                    <dt style="display: inline; font-weight: bold;">📍 Location:</dt>
+                    <dd style="display: inline; margin: 0;">Frankfurt, Germany</dd><br>
+                    
+                    <dt style="display: inline; font-weight: bold;">💼 Status:</dt>
+                    <dd style="display: inline; margin: 0;">Open to opportunities</dd><br>
+                    
+                    <dt style="display: inline; font-weight: bold;">🌐 Work Authorization:</dt>
+                    <dd style="display: inline; margin: 0;">EU Work Permit</dd>
+                </dl>
+            </section>
+        </aside>
+        
+        <footer style="padding-top: 2rem; border-top: 2px solid rgba(128, 128, 128, 0.3);">
             <p style="font-size: 0.95rem; color: var(--secondary-text); margin-bottom: 1rem;">
                 <strong>Keywords:</strong> Full-Stack Developer, Software Engineer, Vue.js Developer, 
                 Angular Developer, Laravel Developer, Mobile App Developer, Flutter Developer, 
@@ -487,16 +958,14 @@
             </p>
             
             <p style="font-size: 0.9rem; padding: 1rem; background: var(--fallback-bg); color: var(--fallback-fg); border-radius: 8px;">
-                <strong>⚡ Enhanced Experience Available:</strong> Enable JavaScript for the full interactive 
-                portfolio with 3D animations, live project demos, AI-powered chatbot, multilingual support 
-                (English, German, French, Arabic), and dynamic content personalization.
+                <strong>⚡ Enhanced Experience Available: Enable JavaScript for the full interactive portfolio with 3D animations, live project demos, AI-powered chatbot, multilingual support (English, German, French, Arabic), and dynamic content personalization.</strong>
             </p>
             
             <p style="margin-top: 1.5rem; text-align: center; color: var(--secondary-text); font-size: 0.85rem;">
                 © 2025 Khalil Charfi. Built with React, TypeScript, and Three.js.
             </p>
         </footer>
-    </div>
+    </main>
     
     <!-- ARIA Live Region for Screen Reader Announcements -->
     <div id="a11y-live-region" role="status" aria-live="polite" aria-atomic="true" class="sr-only"></div>

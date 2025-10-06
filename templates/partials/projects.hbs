@@ -2,25 +2,15 @@
     <h2>{{t.projects.title}}</h2>
     
     {{#each t.projects.items}}
-    {{#if @first}}{{else}}{{#if @index}}{{#lt @index 3}}
-    <article>
+    {{#lt @index 3}}
+    <article style="margin-bottom: 1.5rem; padding-bottom: 1.5rem; {{#unless @last}}border-bottom: 1px solid rgba(128, 128, 128, 0.2);{{/unless}}">
         <h3 style="font-size: 1.1rem; color: var(--accent-color);">{{this.title}}</h3>
         <p><strong>Technologies:</strong> {{#each this.tech}}{{this}}{{#unless @last}}, {{/unless}}{{/each}}</p>
         <p>{{this.description}}</p>
         {{#if this.link}}
-        <p><a href="{{this.link}}" target="_blank" rel="noopener noreferrer">View Project →</a></p>
+        <p><a href="{{this.link}}" target="_blank" rel="noopener noreferrer" style="color: var(--accent-color);">View Project →</a></p>
         {{/if}}
     </article>
-    {{/lt}}{{/if}}{{/if}}
-    {{#if @first}}
-    <article>
-        <h3 style="font-size: 1.1rem; color: var(--accent-color);">{{this.title}}</h3>
-        <p><strong>Technologies:</strong> {{#each this.tech}}{{this}}{{#unless @last}}, {{/unless}}{{/each}}</p>
-        <p>{{this.description}}</p>
-        {{#if this.link}}
-        <p><a href="{{this.link}}" target="_blank" rel="noopener noreferrer">View Project →</a></p>
-        {{/if}}
-    </article>
-    {{/if}}
+    {{/lt}}
     {{/each}}
 </section>

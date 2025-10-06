@@ -5,9 +5,12 @@ import { visualizer } from 'rollup-plugin-visualizer';
 export default defineConfig(({ mode }) => {
     const env = loadEnv(mode, '.', '');
     
+    // Support both GEMINI_API_KEY and VITE_GEMINI_API_KEY
+    const geminiApiKey = env.VITE_GEMINI_API_KEY || env.GEMINI_API_KEY;
+    
     const clientEnv = {
-        'process.env.API_KEY': JSON.stringify(env.GEMINI_API_KEY),
-        'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY),
+        'process.env.API_KEY': JSON.stringify(geminiApiKey),
+        'process.env.GEMINI_API_KEY': JSON.stringify(geminiApiKey),
         'process.env.VITE_ENABLE_CHATBOT': JSON.stringify(env.VITE_ENABLE_CHATBOT),
         'process.env.VITE_ENABLE_DYNAMIC_CONTENT': JSON.stringify(env.VITE_ENABLE_DYNAMIC_CONTENT),
         'process.env.VITE_ENABLE_PERSONAS': JSON.stringify(env.VITE_ENABLE_PERSONAS),
@@ -52,8 +55,8 @@ export default defineConfig(({ mode }) => {
         }
       },
       preview: {
-        port: 5177,
-        strictPort: true,
+        port: 4173,
+        strictPort: false,
         cors: true
       },
       

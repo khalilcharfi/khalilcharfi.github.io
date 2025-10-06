@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html class="no-js" lang="{{lang}}">
+<html class="no-js" lang="{{lang}}"{{#if (eq lang 'ar')}} dir="rtl"{{/if}}>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -85,17 +85,36 @@
     </div>
     
     <!-- Static Fallback Content (Shown only when JS disabled/failed) - SEO Optimized -->
-    <div class="static-content" itemscope itemtype="https://schema.org/Person">
+    <main id="main-content" class="static-content" itemscope itemtype="https://schema.org/Person">
         {{> header}}
         {{> navigation}}
-        {{> about}}
-        {{> skills}}
-        {{> experience}}
-        {{> education}}
-        {{> projects}}
-        {{> contact}}
+        
+        <article id="about-article">
+            {{> about}}
+        </article>
+        
+        <article id="skills-article">
+            {{> skills}}
+        </article>
+        
+        <article id="experience-article">
+            {{> experience}}
+        </article>
+        
+        <article id="education-article">
+            {{> education}}
+        </article>
+        
+        <article id="projects-article">
+            {{> projects}}
+        </article>
+        
+        <aside id="contact-aside">
+            {{> contact}}
+        </aside>
+        
         {{> footer}}
-    </div>
+    </main>
     
     <!-- ARIA Live Region for Screen Reader Announcements -->
     <div id="a11y-live-region" role="status" aria-live="polite" aria-atomic="true" class="sr-only"></div>

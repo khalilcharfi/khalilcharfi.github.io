@@ -1,0 +1,858 @@
+/* Performance Drawer Styles */
+
+.perf-drawer-toggle {
+    position: fixed;
+    bottom: 25px;
+    left: 25px; /* Moved to left side */
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+    color: white;
+}
+
+.perf-drawer-toggle:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+}
+
+.perf-drawer-toggle:active {
+    transform: scale(0.95);
+}
+
+.perf-drawer-fps-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: rgba(0, 0, 0, 0.8);
+    color: #00ff88;
+    font-size: 10px;
+    font-weight: bold;
+    padding: 2px 6px;
+    border-radius: 10px;
+    border: 2px solid currentColor;
+    min-width: 24px;
+    text-align: center;
+}
+
+.perf-drawer {
+    position: fixed;
+    top: 0;
+    right: -400px;
+    width: 400px;
+    height: 100vh;
+    background: rgba(20, 20, 30, 0.98);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow: -4px 0 20px rgba(0, 0, 0, 0.5);
+    z-index: 10001;
+    transition: right 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border-left: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.perf-drawer.open {
+    right: 0;
+}
+
+.perf-drawer-header {
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(102, 126, 234, 0.1);
+}
+
+.perf-drawer-header h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 700;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    letter-spacing: 0.3px;
+}
+
+.perf-drawer-header h3::before {
+    content: '⚡';
+    font-size: 20px;
+    animation: headerPulse 2s ease-in-out infinite;
+}
+
+@keyframes headerPulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.1); opacity: 0.8; }
+}
+
+.perf-drawer-close {
+    background: transparent;
+    border: none;
+    color: #ffffff;
+    font-size: 32px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    transition: background 0.2s;
+}
+
+.perf-drawer-close:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.perf-drawer-tabs {
+    display: flex;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.2);
+    overflow-x: auto;
+}
+
+.perf-drawer-tab {
+    flex: 1;
+    padding: 12px 12px;
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+    min-width: fit-content;
+    position: relative;
+}
+
+.perf-drawer-tab:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.perf-drawer-tab.active {
+    color: #667eea;
+    border-bottom-color: #667eea;
+    background: rgba(102, 126, 234, 0.15);
+    font-weight: 600;
+}
+
+.perf-drawer-tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+    animation: tabSlide 0.3s ease-out;
+}
+
+@keyframes tabSlide {
+    from { transform: scaleX(0); }
+    to { transform: scaleX(1); }
+}
+
+.perf-drawer-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+    /* Scroll performance optimization */
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+    will-change: scroll-position;
+    contain: layout style paint;
+}
+
+/* Metrics */
+.perf-metrics {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.perf-metric-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: 20px;
+    transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+    position: relative;
+    overflow: visible;
+    animation: slideInUp 0.4s ease-out backwards;
+}
+
+.perf-metric-card:nth-child(1) { animation-delay: 0.05s; }
+.perf-metric-card:nth-child(2) { animation-delay: 0.1s; }
+.perf-metric-card:nth-child(3) { animation-delay: 0.15s; }
+.perf-metric-card:nth-child(4) { animation-delay: 0.2s; }
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.perf-metric-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.perf-metric-card:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+.perf-metric-card:hover::before {
+    opacity: 1;
+}
+
+.perf-metric-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    gap: 12px;
+    flex-wrap: wrap;
+    position: relative;
+    z-index: 5;
+}
+
+.perf-metric-label {
+    font-size: 12px;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.6);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.perf-metric-label::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: currentColor;
+    display: inline-block;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+.perf-metric-value {
+    font-size: 32px;
+    font-weight: 800;
+    font-family: 'SF Mono', 'Monaco', 'Courier New', monospace;
+    line-height: 1;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.perf-metric-value:hover {
+    transform: scale(1.05);
+    filter: brightness(1.1);
+}
+
+.perf-metric-chart {
+    display: flex;
+    align-items: flex-end;
+    gap: 3px;
+    height: 80px;
+    min-height: 80px;
+    margin-top: 16px;
+    margin-bottom: 4px;
+    padding: 8px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    position: relative;
+    overflow: hidden;
+}
+
+.perf-metric-chart::before {
+    content: '';
+    position: absolute;
+    bottom: 8px;
+    left: 8px;
+    right: 8px;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.1);
+    z-index: 1;
+}
+
+.perf-metric-bar {
+    flex: 1;
+    min-width: 3px;
+    max-height: 100%;
+    border-radius: 4px 4px 0 0;
+    transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+    position: relative;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    z-index: 2;
+}
+
+.perf-metric-bar:hover {
+    filter: brightness(1.2);
+    z-index: 3;
+}
+
+.perf-metric-bar-container {
+    height: 24px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-top: 12px;
+    position: relative;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.perf-metric-bar-fill {
+    height: 100%;
+    transition: width 0.6s cubic-bezier(0.4, 0.0, 0.2, 1);
+    border-radius: 12px;
+    position: relative;
+    overflow: hidden;
+}
+
+.perf-metric-bar-fill::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, 
+        transparent 0%, 
+        rgba(255, 255, 255, 0.2) 50%, 
+        transparent 100%);
+    animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+.perf-metric-detail {
+    font-size: 11px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.5);
+    margin-top: 12px;
+    text-align: right;
+    letter-spacing: 0.3px;
+    clear: both;
+    position: relative;
+    z-index: 10;
+}
+
+.perf-metric-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 16px;
+}
+
+.perf-metric-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    font-size: 13px;
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+    position: relative;
+    overflow: hidden;
+}
+
+.perf-metric-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.perf-metric-item:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.1);
+    transform: translateX(4px);
+}
+
+.perf-metric-item:hover::before {
+    opacity: 1;
+}
+
+.perf-metric-item span:first-child {
+    color: rgba(255, 255, 255, 0.7);
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.perf-metric-item span:last-child {
+    color: #ffffff;
+    font-weight: 700;
+    font-family: 'SF Mono', 'Monaco', 'Courier New', monospace;
+    font-size: 14px;
+    padding: 4px 10px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 6px;
+}
+
+/* Resources */
+.perf-resources {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* User */
+.perf-user {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Status indicators */
+.perf-status-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 4px 10px;
+    border-radius: 12px;
+    background: rgba(0, 0, 0, 0.2);
+    margin-top: 8px;
+}
+
+/* Performance score badges */
+.perf-score-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    font-size: 14px;
+    font-weight: 800;
+    border: 3px solid currentColor;
+    background: rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Console */
+.perf-console {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.perf-console-header {
+    margin-bottom: 12px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.perf-console-clear {
+    background: rgba(255, 68, 68, 0.2);
+    border: 1px solid rgba(255, 68, 68, 0.4);
+    color: #ff4444;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.perf-console-clear:hover {
+    background: rgba(255, 68, 68, 0.3);
+    border-color: #ff4444;
+}
+
+.perf-console-logs {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    /* Scroll performance optimization */
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+    will-change: scroll-position;
+    contain: layout style paint;
+}
+
+.perf-console-empty {
+    text-align: center;
+    color: rgba(255, 255, 255, 0.4);
+    padding: 40px 20px;
+    font-size: 14px;
+}
+
+.perf-console-log {
+    display: flex;
+    gap: 8px;
+    padding: 8px 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 6px;
+    font-size: 12px;
+    font-family: 'SF Mono', 'Monaco', 'Courier New', monospace;
+    border-left: 3px solid transparent;
+    word-break: break-word;
+}
+
+.perf-console-log.perf-console-log {
+    border-left-color: #00aaff;
+}
+
+.perf-console-log.perf-console-warn {
+    border-left-color: #ffaa00;
+    background: rgba(255, 170, 0, 0.1);
+}
+
+.perf-console-log.perf-console-error {
+    border-left-color: #ff4444;
+    background: rgba(255, 68, 68, 0.1);
+}
+
+.perf-console-log.perf-console-info {
+    border-left-color: #00ff88;
+}
+
+.perf-console-time {
+    color: rgba(255, 255, 255, 0.4);
+    flex-shrink: 0;
+}
+
+.perf-console-type {
+    color: rgba(255, 255, 255, 0.6);
+    text-transform: uppercase;
+    font-weight: 600;
+    flex-shrink: 0;
+}
+
+.perf-console-message {
+    color: rgba(255, 255, 255, 0.9);
+    flex: 1;
+}
+
+/* Backdrop */
+.perf-drawer-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 10000;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
+/* Scrollbar styling - Auto-hide scrollbar that appears on hover/scroll */
+.perf-drawer-content,
+.perf-console-logs {
+    scrollbar-width: thin;
+    scrollbar-color: transparent transparent;
+    transition: scrollbar-color 0.3s ease;
+}
+
+.perf-drawer-content:hover,
+.perf-console-logs:hover,
+.perf-drawer-content:active,
+.perf-console-logs:active {
+    scrollbar-color: rgba(102, 126, 234, 0.5) transparent;
+}
+
+.perf-drawer-content::-webkit-scrollbar,
+.perf-console-logs::-webkit-scrollbar {
+    width: 8px;
+}
+
+.perf-drawer-content::-webkit-scrollbar-track,
+.perf-console-logs::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.perf-drawer-content::-webkit-scrollbar-thumb,
+.perf-console-logs::-webkit-scrollbar-thumb {
+    background: transparent;
+    border-radius: 4px;
+    transition: background 0.3s ease;
+}
+
+.perf-drawer-content:hover::-webkit-scrollbar-thumb,
+.perf-console-logs:hover::-webkit-scrollbar-thumb,
+.perf-drawer-content:active::-webkit-scrollbar-thumb,
+.perf-console-logs:active::-webkit-scrollbar-thumb {
+    background: rgba(102, 126, 234, 0.5);
+}
+
+.perf-drawer-content::-webkit-scrollbar-thumb:hover,
+.perf-console-logs::-webkit-scrollbar-thumb:hover {
+    background: rgba(102, 126, 234, 0.7);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .perf-drawer {
+        width: 100%;
+        right: -100%;
+    }
+    
+    .perf-drawer-toggle {
+        bottom: 15px;
+        left: 15px;
+    }
+}
+
+/* Light mode adjustments */
+html[data-theme="light"] .perf-drawer {
+    background: rgba(255, 255, 255, 0.98);
+    border-left: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: -4px 0 32px rgba(0, 0, 0, 0.08);
+}
+
+html[data-theme="light"] .perf-drawer-header,
+html[data-theme="light"] .perf-drawer-tabs,
+html[data-theme="light"] .perf-metric-card {
+    border-color: rgba(0, 0, 0, 0.1);
+}
+
+html[data-theme="light"] .perf-drawer-header {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.08) 0%, rgba(118, 75, 162, 0.08) 100%);
+}
+
+html[data-theme="light"] .perf-drawer-header h3,
+html[data-theme="light"] .perf-drawer-close,
+html[data-theme="light"] .perf-metric-label {
+    color: rgba(0, 0, 0, 0.7);
+}
+
+html[data-theme="light"] .perf-metric-value {
+    color: rgba(0, 0, 0, 0.9);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+html[data-theme="light"] .perf-metric-item span:first-child {
+    color: rgba(0, 0, 0, 0.65);
+}
+
+html[data-theme="light"] .perf-metric-item span:last-child {
+    color: rgba(0, 0, 0, 0.9);
+    background: rgba(0, 0, 0, 0.06);
+}
+
+html[data-theme="light"] .perf-console-message {
+    color: rgba(0, 0, 0, 0.9);
+}
+
+html[data-theme="light"] .perf-drawer-tab {
+    color: rgba(0, 0, 0, 0.6);
+}
+
+html[data-theme="light"] .perf-drawer-tab:hover {
+    color: rgba(0, 0, 0, 0.9);
+    background: rgba(0, 0, 0, 0.05);
+}
+
+html[data-theme="light"] .perf-metric-card {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.8) 0%, rgba(248, 248, 252, 0.8) 100%);
+    border: 1px solid rgba(102, 126, 234, 0.15);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+html[data-theme="light"] .perf-metric-card:hover {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 1) 0%, rgba(248, 248, 252, 1) 100%);
+    border-color: rgba(102, 126, 234, 0.3);
+    box-shadow: 0 8px 24px rgba(102, 126, 234, 0.15);
+}
+
+html[data-theme="light"] .perf-metric-card::before {
+    background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+}
+
+html[data-theme="light"] .perf-console-log,
+html[data-theme="light"] .perf-metric-item {
+    background: rgba(0, 0, 0, 0.04);
+}
+
+html[data-theme="light"] .perf-metric-item:hover {
+    background: rgba(0, 0, 0, 0.06);
+    border-color: rgba(102, 126, 234, 0.2);
+}
+
+html[data-theme="light"] .perf-metric-chart {
+    background: rgba(0, 0, 0, 0.03);
+}
+
+html[data-theme="light"] .perf-metric-chart::before {
+    background: rgba(0, 0, 0, 0.1);
+}
+
+html[data-theme="light"] .perf-metric-bar-container {
+    background: rgba(0, 0, 0, 0.08);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.06);
+}
+
+html[data-theme="light"] .perf-metric-detail {
+    color: rgba(0, 0, 0, 0.5);
+}
+
+html[data-theme="light"] .perf-console-time {
+    color: rgba(0, 0, 0, 0.4);
+}
+
+html[data-theme="light"] .perf-console-type {
+    color: rgba(0, 0, 0, 0.6);
+}
+
+html[data-theme="light"] .perf-console-empty {
+    color: rgba(0, 0, 0, 0.4);
+}
+
+html[data-theme="light"] .perf-drawer-close:hover {
+    background: rgba(0, 0, 0, 0.1);
+}
+
+html[data-theme="light"] .perf-drawer-tabs {
+    background: rgba(0, 0, 0, 0.03);
+}
+
+/* Light mode: FPS badge with better contrast */
+html[data-theme="light"] .perf-drawer-fps-badge {
+    background: rgba(255, 255, 255, 0.95);
+    border-width: 2px;
+}
+
+/* Light mode: Console log types with better contrast */
+html[data-theme="light"] .perf-console-log.perf-console-log {
+    border-left-color: #0077cc;
+}
+
+html[data-theme="light"] .perf-console-log.perf-console-warn {
+    border-left-color: #cc7700;
+    background: rgba(255, 170, 0, 0.15);
+}
+
+html[data-theme="light"] .perf-console-log.perf-console-error {
+    border-left-color: #cc0000;
+    background: rgba(255, 68, 68, 0.15);
+}
+
+html[data-theme="light"] .perf-console-log.perf-console-info {
+    border-left-color: #00aa55;
+}
+
+/* Light mode: Console clear button */
+html[data-theme="light"] .perf-console-clear {
+    background: rgba(255, 68, 68, 0.15);
+    border: 1px solid rgba(255, 68, 68, 0.3);
+    color: #cc0000;
+}
+
+html[data-theme="light"] .perf-console-clear:hover {
+    background: rgba(255, 68, 68, 0.25);
+    border-color: #cc0000;
+}
+
+/* Light mode: Additional element styles */
+html[data-theme="light"] .perf-status-indicator {
+    background: rgba(0, 0, 0, 0.06);
+}
+
+html[data-theme="light"] .perf-score-badge {
+    background: rgba(0, 0, 0, 0.06);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+html[data-theme="light"] .perf-drawer-tab.active {
+    background: rgba(102, 126, 234, 0.12);
+}
+
+/* Light mode: Scrollbar - Auto-hide behavior */
+html[data-theme="light"] .perf-drawer-content,
+html[data-theme="light"] .perf-console-logs {
+    scrollbar-color: transparent transparent;
+}
+
+html[data-theme="light"] .perf-drawer-content:hover,
+html[data-theme="light"] .perf-console-logs:hover,
+html[data-theme="light"] .perf-drawer-content:active,
+html[data-theme="light"] .perf-console-logs:active {
+    scrollbar-color: rgba(102, 126, 234, 0.4) transparent;
+}
+
+html[data-theme="light"] .perf-drawer-content::-webkit-scrollbar-track,
+html[data-theme="light"] .perf-console-logs::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+html[data-theme="light"] .perf-drawer-content::-webkit-scrollbar-thumb,
+html[data-theme="light"] .perf-console-logs::-webkit-scrollbar-thumb {
+    background: transparent;
+}
+
+html[data-theme="light"] .perf-drawer-content:hover::-webkit-scrollbar-thumb,
+html[data-theme="light"] .perf-console-logs:hover::-webkit-scrollbar-thumb,
+html[data-theme="light"] .perf-drawer-content:active::-webkit-scrollbar-thumb,
+html[data-theme="light"] .perf-console-logs:active::-webkit-scrollbar-thumb {
+    background: rgba(102, 126, 234, 0.4);
+}
+
+html[data-theme="light"] .perf-drawer-content::-webkit-scrollbar-thumb:hover,
+html[data-theme="light"] .perf-console-logs::-webkit-scrollbar-thumb:hover {
+    background: rgba(102, 126, 234, 0.6);
+}

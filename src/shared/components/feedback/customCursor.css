@@ -1,11 +1,68 @@
 /* Custom Cursor Styles */
 
-/* Hide default cursor on desktop */
-@media (hover: hover) and (pointer: fine) {
+/* CUSTOM CURSOR DISABLED - Default browser cursors enabled */
+
+/* Ensure default cursors show properly for interactive elements */
+button,
+a,
+input,
+textarea,
+select,
+[role="button"],
+[role="link"],
+.btn,
+.nav-link,
+.nav-toggle,
+.theme-toggle-btn,
+.language-switcher-toggle,
+.scroll-to-top,
+.chatbot-fab,
+.certificate-card,
+.skill-item,
+.language-option {
+    cursor: pointer !important;
+}
+
+/* Default cursor for non-interactive elements */
+body,
+* {
+    cursor: default;
+}
+
+/* Text cursor for text inputs */
+input[type="text"],
+input[type="email"],
+input[type="search"],
+input[type="tel"],
+input[type="url"],
+textarea {
+    cursor: text !important;
+}
+
+/* Move cursor for draggable elements */
+[draggable="true"] {
+    cursor: move !important;
+}
+
+/* Not-allowed cursor for disabled elements */
+button:disabled,
+input:disabled,
+select:disabled,
+textarea:disabled {
+    cursor: not-allowed !important;
+}
+
+/* Help cursor for elements with title/tooltip */
+[title]:not(input):not(textarea):not(select) {
+    cursor: help;
+}
+
+/* Hide default cursor on desktop - DISABLED */
+/* @media (hover: hover) and (pointer: fine) {
     * {
         cursor: none !important;
     }
-}
+} */
 
 /* Cursor Trail Canvas */
 .cursor-trail {
@@ -134,18 +191,21 @@ html[data-theme="dark"] .cursor-dot-inner {
     background: linear-gradient(135deg, #00A6FF, #52C5FF);
 }
 
-/* Hide cursor during text selection */
-::selection {
+/* Hide cursor during text selection - DISABLED */
+/* ::selection {
     cursor: none !important;
 }
 
 ::-moz-selection {
     cursor: none !important;
-}
+} */
 
-/* Accessibility - Show default cursor for keyboard navigation */
-body.keyboard-nav * {
-    cursor: auto !important;
+/* Accessibility - Ensure proper cursors for keyboard navigation */
+body.keyboard-nav button,
+body.keyboard-nav a,
+body.keyboard-nav [role="button"],
+body.keyboard-nav [role="link"] {
+    cursor: pointer !important;
 }
 
 /* Hide custom cursor on touch devices */
@@ -156,9 +216,12 @@ body.keyboard-nav * {
         display: none !important;
     }
     
-    /* Restore default cursor on touch devices */
-    * {
-        cursor: auto !important;
+    /* Restore proper cursors on touch devices */
+    button,
+    a,
+    [role="button"],
+    [role="link"] {
+        cursor: pointer !important;
     }
 }
 
@@ -170,9 +233,12 @@ body.keyboard-nav * {
         display: none !important;
     }
     
-    /* Restore default cursor */
-    * {
-        cursor: auto !important;
+    /* Restore proper cursors */
+    button,
+    a,
+    [role="button"],
+    [role="link"] {
+        cursor: pointer !important;
     }
 }
 

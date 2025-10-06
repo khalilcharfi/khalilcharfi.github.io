@@ -68,3 +68,25 @@ try {
   process.exit(1);
 }
 
+// Copy language-specific HTML files to dist
+console.log('\n🌐 Copying language-specific HTML files to dist...');
+const langFiles = ['index.de.html', 'index.fr.html', 'index.ar.html'];
+
+try {
+  for (const file of langFiles) {
+    const sourcePath = file;
+    const destPath = join(distRoot, file);
+    
+    if (existsSync(sourcePath)) {
+      copyFileSync(sourcePath, destPath);
+      console.log(`✓ Copied: ${file}`);
+    } else {
+      console.log(`⚠ Skipped: ${file} (not found in root)`);
+    }
+  }
+  console.log('✅ Language files copied successfully!');
+} catch (error) {
+  console.error('❌ Error copying language files:', error);
+  process.exit(1);
+}
+

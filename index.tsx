@@ -18,7 +18,7 @@ import {
 import { analytics } from '@/features/analytics';
 import { PERSONAS_FEATURE_ENABLED, getSectionIds } from '@/shared/config';
 import { AnimationPauseProvider, SimpleConsentProvider } from '@/context';
-import { Navbar, SkipLinks, SEOHead } from '@/shared/components';
+import { Navbar, SkipLinks, SEOHead, PerformanceDrawer } from '@/shared/components';
 import { performanceLogger, LazyTranslationTest, LazyThreeBackground } from '@/shared/utils';
 import { ANIMATION_DURATION, SCROLL, OBSERVER_CONFIG } from '@/shared/constants';
 import { 
@@ -27,6 +27,7 @@ import {
   SkillsSection,
   ExperienceSection,
   EducationSection,
+  ContactSection,
   ScrollToTop,
   Footer
 } from '@/features/portfolio';
@@ -169,9 +170,9 @@ const App: React.FC = () => {
             setTheme(newTheme);
             
             // Announce theme change to screen readers
-            const message = newTheme === 'light' 
+            const message = String(newTheme === 'light' 
                 ? t('theme.changedToLight') 
-                : t('theme.changedToDark');
+                : t('theme.changedToDark'));
             announce(message, 'polite');
         });
     };
@@ -328,57 +329,22 @@ const App: React.FC = () => {
                     </Suspense>
                 )}
                 
-                {/* Gemini API Connection Status Indicator - Only show in development */}
-                {IS_DEVELOPMENT && (
-                    <div className="gemini-connection-status" style={{
-                        position: 'fixed',
-                        bottom: '10px',
-                        left: '10px',
-                        background: connectionStatus === 'connected' ? '#2d5a2d' : 
-                                   connectionStatus === 'failed' ? '#5a2d2d' : 
-                                   connectionStatus === 'checking' ? '#2d4a5a' : '#5a5a5a',
-                        color: 'white',
-                        padding: '8px 12px',
-                        borderRadius: '6px',
-                        fontSize: '12px',
-                        zIndex: 1000,
-                        maxWidth: '300px',
-                        boxShadow: '0 2px 8px rgba(0,0,0,0.3)'
-                    }}>
-                        <div style={{ fontWeight: 'bold', marginBottom: '4px' }}>
-                            Gemini API: {connectionStatus.toUpperCase()}
-                        </div>
-                        {errorMessage && (
-                            <div style={{ fontSize: '11px', opacity: 0.9, marginBottom: '4px' }}>
-                                {errorMessage}
-                            </div>
-                        )}
-                        {retryCount > 0 && (
-                            <div style={{ fontSize: '11px', opacity: 0.8, marginBottom: '4px' }}>
-                                Retries: {retryCount}
-                            </div>
-                        )}
-                        {connectionStatus === 'failed' && (
-                            <button 
-                                onClick={retryConnection}
-                                style={{
-                                    background: 'rgba(255,255,255,0.2)',
-                                    border: 'none',
-                                    color: 'white',
-                                    padding: '4px 8px',
-                                    borderRadius: '4px',
-                                    fontSize: '11px',
-                                    cursor: 'pointer'
-                                }}
-                            >
-                                Retry
-                            </button>
-                        )}
-                    </div>
-                )}
                 <Suspense fallback={null}>
                     <CertificateModal cert={selectedCert} onClose={() => setSelectedCert(null)} />
                 </Suspense>
+                
+                {/* Performance Drawer - Only in development */}
+                {IS_DEVELOPMENT && (
+                    <PerformanceDrawer 
+                        geminiStatus={{
+                            connectionStatus,
+                            errorMessage,
+                            retryCount,
+                            retryConnection
+                        }}
+                    />
+                )}
+                
                 {PERSONAS_FEATURE_ENABLED && isPersonalized && (
                   <div className="personalization-indicator">
                     <span>🎯 Personalized for you</span>

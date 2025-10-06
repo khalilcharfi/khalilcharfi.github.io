@@ -1065,6 +1065,9 @@ html[dir="rtl"] .publication-card .btn { align-self: flex-end}
     overflow-y: auto;
     opacity: 0;
     transition: opacity 0.25s ease, backdrop-filter 0.25s ease;
+    /* Scroll optimization */
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
 }
 
 .modal-overlay.modal-visible {
@@ -1665,7 +1668,11 @@ html[dir="rtl"] .section-chip {
     transform: translateY(20px);
     pointer-events: none;
     max-height: 70vh;
-    overflow-y: auto}
+    overflow-y: auto;
+    /* Scroll optimization */
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
+}
 
 .profile-insights.visible {
     opacity: 1;
@@ -1758,7 +1765,7 @@ html[dir="rtl"] .profile-insights-toggle {
     color: var(--secondary-text);
     font-size: 0.9rem;
     border-top: 1px solid var(--glass-border-color);
-    margin-top: 1.5rem}
+    margin-top: auto}
 .footer .container {
     display: flex;
     flex-wrap: wrap;
@@ -1770,7 +1777,7 @@ html[dir="rtl"] .profile-insights-toggle {
 
 .scroll-to-top {
     position: fixed;
-    bottom: 95px; /* Position above chatbot FAB */
+    bottom: 25px; /* Bottom right corner */
     right: 25px;
     width: 50px;
     height: 50px;
@@ -1803,16 +1810,17 @@ html[dir="rtl"] .profile-insights-toggle {
     height: 28px}
 html[dir="rtl"] .scroll-to-top {
     right: auto;
-    left: 25px}
+    left: 25px; /* Mirror positioning for RTL */
+}
 
 .chatbot-fab {
     position: fixed;
-    bottom: 25px;
+    bottom: 95px; /* Moved up to avoid overlap with scroll button */
     right: 25px;
     width: 60px;
     height: 60px;
     border-radius: 50%;
-    background-color: var(--accent-color);
+    background: linear-gradient(135deg, var(--accent-color) 0%, rgba(var(--accent-color-raw, 0, 123, 255), 0.85) 100%);
     color: white;
     border: none;
     cursor: pointer;
@@ -1821,40 +1829,87 @@ html[dir="rtl"] .scroll-to-top {
     justify-content: center;
     box-shadow: 0 8px 25px var(--shadow-hover-color), 0 0 20px var(--accent-glow);
     z-index: 999;
-    transition: transform var(--transition-speed), box-shadow var(--transition-speed)}
+    transition: transform var(--transition-speed), box-shadow var(--transition-speed), background var(--transition-speed);
+    animation: chatbotPulse 3s ease-in-out infinite;
+    overflow: visible}
+.chatbot-fab svg {
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
+    transition: transform var(--transition-speed)}
+
+@keyframes chatbotPulse {
+    0%, 100% { 
+        transform: scale(1);
+        box-shadow: 0 8px 25px var(--shadow-hover-color), 0 0 20px var(--accent-glow);
+    }
+    50% { 
+        transform: scale(1.05);
+        box-shadow: 0 12px 30px var(--shadow-hover-color), 0 0 30px var(--accent-glow);
+    }
+}
 .chatbot-fab:hover {
-    transform: scale(1.1);
-    box-shadow: 0 12px 30px var(--shadow-hover-color), 0 0 30px var(--accent-glow)}
+    transform: scale(1.15);
+    box-shadow: 0 12px 35px var(--shadow-hover-color), 0 0 35px var(--accent-glow);
+    animation: none; /* Pause pulse on hover */
+    background: linear-gradient(135deg, rgba(var(--accent-color-raw, 0, 123, 255), 0.95) 0%, var(--accent-color) 100%)}
+.chatbot-fab:hover svg {
+    transform: scale(1.1) rotate(-5deg)}
+.chatbot-fab:active {
+    transform: scale(1.05)}
+.chatbot-fab:active svg {
+    transform: scale(0.95)}
 html[dir="rtl"] .chatbot-fab {
     right: auto;
     left: 25px}
 
 .chat-window {
     position: fixed;
-    bottom: 100px;
+    bottom: 170px; /* Positioned above the chat FAB with proper spacing */
     right: 25px;
-    width: 370px;
-    height: 500px;
-    max-height: calc(100vh - 120px);
+    width: 380px;
+    height: 550px;
+    max-height: calc(100vh - 190px);
     background-color: var(--glass-bg);
     backdrop-filter: blur(var(--blur-strength));
     border: 1px solid var(--glass-border-color);
     border-radius: var(--border-radius-main);
-    box-shadow: 0 16px 40px var(--shadow-hover-color);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3), 0 0 1px rgba(0, 0, 0, 0.1);
     z-index: 1000;
     display: flex;
     flex-direction: column;
     opacity: 0;
     transform: translateY(20px) scale(0.95);
-    transition: opacity var(--transition-fast), transform var(--transition-fast);
+    transform-origin: bottom right; /* Animate from button position */
+    transition: opacity 0.3s cubic-bezier(0.4, 0.0, 0.2, 1), 
+                transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
     pointer-events: none}
+
+/* Chat window pointer arrow */
+.chat-window::after {
+    content: '';
+    position: absolute;
+    bottom: -12px;
+    right: 30px;
+    width: 0;
+    height: 0;
+    border-left: 12px solid transparent;
+    border-right: 12px solid transparent;
+    border-top: 12px solid var(--glass-border-color);
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
+}
 .chat-window.open {
     opacity: 1;
     transform: translateY(0) scale(1);
     pointer-events: all}
 html[dir="rtl"] .chat-window {
     right: auto;
-    left: 25px}
+    left: 25px;
+    transform-origin: bottom left; /* Animate from button position in RTL */
+}
+
+html[dir="rtl"] .chat-window::after {
+    right: auto;
+    left: 30px; /* Mirror arrow position for RTL */
+}
 .chat-header {
     display: flex;
     justify-content: space-between;
@@ -1876,30 +1931,67 @@ html[dir="rtl"] .chat-window {
 .chat-header button:hover {
     color: var(--primary-text)}
 
+.chat-close-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.chat-close-btn:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    transform: scale(1.1);
+}
+
+.chat-close-btn:active {
+    transform: scale(0.95);
+}
+
+.chat-close-btn svg {
+    pointer-events: none;
+}
+
 .chat-messages {
     flex-grow: 1;
     overflow-y: auto;
     padding: 1.5rem;
     display: flex;
     flex-direction: column;
-    gap: 1rem}
+    gap: 1rem;
+    /* Scroll optimization */
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
+}
 .chat-messages::-webkit-scrollbar { width: 6px}
 .chat-messages::-webkit-scrollbar-thumb { background-color: var(--secondary-text); border-radius: 10px}
 .chat-messages .message-bubble {
-    padding: 0.75rem 1rem;
+    padding: 0.875rem 1.125rem;
     border-radius: var(--border-radius-medium);
     max-width: 85%;
-    line-height: 1.5}
+    line-height: 1.6;
+    font-size: 0.95rem;
+    font-weight: 400;
+    letter-spacing: 0.01em;
+    word-wrap: break-word;
+    overflow-wrap: break-word}
 .chat-messages .message-bubble.ai {
-    background-color: rgba(var(--primary-bg-raw), 0.7);
+    background-color: rgba(var(--primary-bg-raw), 0.85);
+    color: var(--primary-text);
     align-self: flex-start;
-    border-top-left-radius: var(--border-radius-small)}
+    border: 1px solid var(--glass-border-color);
+    border-top-left-radius: var(--border-radius-small);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1)}
 html[dir="rtl"] .chat-messages .message-bubble.ai {
     align-self: flex-end;
     border-top-left-radius: var(--border-radius-medium);
     border-top-right-radius: var(--border-radius-small)}
 .chat-messages .message-bubble.user {
     background-color: var(--accent-color);
+    color: white;
     align-self: flex-end;
     border-top-right-radius: var(--border-radius-small)}
 html[dir="rtl"] .chat-messages .message-bubble.user {
@@ -1951,10 +2043,13 @@ html[dir="rtl"] .chat-messages .message-bubble.user {
   40% { transform: scale(1.0)}
 }
 
+.markdown-content {
+    line-height: 1.6}
 .markdown-content p {
     font-size: 0.95rem;
     margin: 0 0 0.5rem 0;
-    color: var(--primary-text)}
+    color: inherit;
+    line-height: 1.6}
 .markdown-content p:last-child {
     margin-bottom: 0}
 .markdown-content ul, .markdown-content ol {
@@ -1964,14 +2059,23 @@ html[dir="rtl"] .markdown-content ul, html[dir="rtl"] .markdown-content ol {
     padding-left: 0;
     padding-right: 20px}
 .markdown-content li {
-    margin-bottom: 0.25rem}
+    margin-bottom: 0.25rem;
+    line-height: 1.6}
 .markdown-content strong, .markdown-content b {
     font-weight: 600;
-    color: var(--primary-text)}
+    color: inherit}
 .markdown-content a {
-    color: var(--accent-color)}
+    color: inherit;
+    text-decoration: underline;
+    opacity: 0.9}
 .markdown-content a:hover {
-    text-decoration: underline}
+    opacity: 1}
+.message-bubble.user .markdown-content a {
+    color: white;
+    text-decoration: underline;
+    text-decoration-color: rgba(255, 255, 255, 0.6)}
+.message-bubble.user .markdown-content a:hover {
+    text-decoration-color: white}
 
 @media (prefers-reduced-motion: reduce) {
   html {
@@ -2394,15 +2498,16 @@ html[dir="rtl"] .markdown-content ul, html[dir="rtl"] .markdown-content ol {
         max-width: calc(100vw - 120px)}
 
     .scroll-to-top {
-        bottom: 80px;
-        right: 15px;
+        bottom: 15px;
+        right: 15px; /* Bottom right on mobile */
         width: 45px;
         height: 45px}
     html[dir="rtl"] .scroll-to-top {
         right: auto;
-        left: 15px}
+        left: 15px; /* Mirror positioning for RTL */
+    }
 
-    .chatbot-fab { bottom: 15px; right: 15px; width: 50px; height: 50px}
+    .chatbot-fab { bottom: 75px; right: 15px; width: 50px; height: 50px}
     html[dir="rtl"] .chatbot-fab { right: auto; left: 15px}
     .chat-window {
         bottom: 0;
@@ -2413,7 +2518,13 @@ html[dir="rtl"] .markdown-content ul, html[dir="rtl"] .markdown-content ol {
         height: 100vh;
         max-height: 100vh;
         border-radius: 0;
-        border: none}
+        border: none;
+        transform-origin: center; /* Center animation on mobile */
+    }
+    
+    .chat-window::after {
+        display: none; /* Hide arrow on mobile fullscreen */
+    }
     html[dir="rtl"] .chat-window {
         left: 0;
         right: 0}
@@ -3321,6 +3432,7 @@ html[data-theme="light"] .privacy-settings-footer {
     color: var(--secondary-text);
     line-height: 1.3;
     opacity: 0.7;
+    width: 100%;
 }
 
 .privacy-toggle.disabled .privacy-toggle-slider {
@@ -3473,6 +3585,8 @@ html[data-theme="light"] .privacy-action-card {
     color: var(--secondary-text);
     text-align: center;
     opacity: 0.65;
+    width: 100%;
+    text-align: center;
 }
 
 html[data-theme="light"] .privacy-consent-panel .privacy-footer-text {

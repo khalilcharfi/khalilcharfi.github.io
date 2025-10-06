@@ -10,7 +10,7 @@ export const AboutSection: React.FC = () => {
     const { personalizedContent } = useDynamicContent();
     const sectionTracking = useSectionTracking('about');
     const languages = t('about.languages', { returnObjects: true }) as { lang: string; proficiency: string }[];
-    const [profilePhotoUrl, setProfilePhotoUrl] = useState('/asset/profile-photo.jpg');
+    const [profilePhotoUrl, setProfilePhotoUrl] = useState('/asset/profile/profile-photo.jpg');
     const [photoRetryCount, setPhotoRetryCount] = useState(0);
     
     useEffect(() => {
@@ -23,8 +23,8 @@ export const AboutSection: React.FC = () => {
             // Note: Direct LinkedIn CDN URLs cause CORS errors and cannot be used
             // LinkedIn blocks cross-origin image requests
             // Fallback to local asset
-            '/asset/profile-photo.jpg',
-            '/asset/profile-photo.jpeg'
+            '/asset/profile/profile-photo.jpg',
+            '/asset/profile/profile-photo.jpeg'
         ];
 
         let currentIndex = 0;
@@ -44,7 +44,7 @@ export const AboutSection: React.FC = () => {
             if (!isMounted || currentIndex >= profilePhotoUrls.length) {
                 // All attempts failed, use final fallback
                 if (isMounted) {
-                    setProfilePhotoUrl('/asset/profile-photo.jpg');
+                    setProfilePhotoUrl('/asset/profile/profile-photo.jpg');
                 }
                 return;
             }
@@ -139,11 +139,11 @@ export const AboutSection: React.FC = () => {
                             if (photoRetryCount < 2) {
                                 // Try fallback to asset
                                 setPhotoRetryCount(prev => prev + 1);
-                                target.src = '/asset/profile-photo.jpg';
+                                target.src = '/asset/profile/profile-photo.jpg';
                             } else if (photoRetryCount < 3) {
                                 // Try another fallback
                                 setPhotoRetryCount(prev => prev + 1);
-                                target.src = './asset/profile-photo.jpg';
+                                target.src = './asset/profile/profile-photo.jpg';
                             } else {
                                 // Final fallback to icon
                                 target.style.display = 'none';
