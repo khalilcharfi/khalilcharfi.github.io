@@ -344,41 +344,240 @@
         <div class="loading-text">Loading Portfolio...</div>
     </div>
     
-    <!-- Static Fallback Content (Shown only when JS disabled/failed) -->
-    <div class="static-content">
-        <h1>Khalil Charfi</h1>
-        <p style="font-size: 1.25rem; margin-bottom: 2rem;">Full-Stack Engineer | Digital Experience Architect</p>
+    <!-- Static Fallback Content (Shown only when JS disabled/failed) - SEO Optimized -->
+    <div class="static-content" itemscope itemtype="https://schema.org/Person">
+        <header>
+            <h1 itemprop="name">Khalil Charfi</h1>
+            <p itemprop="jobTitle" style="font-size: 1.25rem; margin-bottom: 1rem; font-weight: 500;">
+                Full-Stack Engineer | Software Developer | Digital Solutions Architect
+            </p>
+            <p style="color: var(--secondary-text); margin-bottom: 2rem;">
+                Frankfurt, Germany • Available for Remote & On-site Opportunities
+            </p>
+        </header>
         
-        <h2>About</h2>
-        <p>
-            Full-Stack Engineer with expertise in building scalable web and mobile applications. 
-            Specialized in modern JavaScript frameworks, cloud architecture, and user-centric design.
-        </p>
+        <nav aria-label="Quick Navigation" style="margin-bottom: 2rem; padding: 1rem; background: rgba(128, 128, 128, 0.1); border-radius: 8px;">
+            <strong>Jump to:</strong>
+            <a href="#about-section" style="margin: 0 0.5rem;">About</a> |
+            <a href="#skills-section" style="margin: 0 0.5rem;">Skills</a> |
+            <a href="#experience-section" style="margin: 0 0.5rem;">Experience</a> |
+            <a href="#education-section" style="margin: 0 0.5rem;">Education</a> |
+            <a href="#projects-section" style="margin: 0 0.5rem;">Projects</a> |
+            <a href="#contact-section" style="margin: 0 0.5rem;">Contact</a>
+        </nav>
         
-        <h2>Core Skills</h2>
-        <ul>
-            <li><strong>Frontend:</strong> React, TypeScript, Vue.js, Next.js, Modern CSS</li>
-            <li><strong>Backend:</strong> Node.js, Python, Java, REST APIs, GraphQL</li>
-            <li><strong>Cloud & DevOps:</strong> AWS, Docker, Kubernetes, CI/CD</li>
-            <li><strong>Database:</strong> PostgreSQL, MongoDB, Redis</li>
-        </ul>
+        <section id="about-section">
+            <h2>About Me</h2>
+            <p itemprop="description" style="font-size: 1.05rem; line-height: 1.8;">
+                Full-stack engineer with extensive experience delivering scalable web and mobile applications. 
+                Skilled in front-end development with <strong>Vue.js</strong> and <strong>Angular</strong>, 
+                back-end with <strong>Laravel</strong> and <strong>Laminas</strong>, and mobile apps using 
+                <strong>Flutter</strong> and <strong>Ionic</strong>. Passionate about clean architecture, 
+                offline-first capabilities, and DevOps-driven deployment. Experienced in cross-functional 
+                teams across Tunisia and Germany.
+            </p>
+            
+            <h3 style="margin-top: 1.5rem; font-size: 1.2rem;">Professional Summary</h3>
+            <p>
+                I design and build exceptional digital products. As a Full-Stack Engineer, I specialize in 
+                creating intuitive, high-performance web and mobile applications that are both scalable and 
+                user-centric. My journey into tech started with a fascination for solving complex problems 
+                with elegant code. I thrive on turning ideas into reality, from conceptualization to deployment.
+            </p>
+            
+            <h3 style="margin-top: 1.5rem; font-size: 1.2rem;">Languages</h3>
+            <ul style="list-style: none; margin-left: 0;">
+                <li>🇹🇳 <strong>Arabic:</strong> Native</li>
+                <li>🇬🇧 <strong>English:</strong> Fluent (Professional Working Proficiency)</li>
+                <li>🇫🇷 <strong>French:</strong> Fluent (Professional Working Proficiency)</li>
+                <li>🇩🇪 <strong>German:</strong> Intermediate (Working in German environment)</li>
+            </ul>
+        </section>
         
-        <h2>Professional Experience</h2>
-        <p>
-            Extensive experience in developing enterprise-grade applications, leading technical teams, 
-            and implementing best practices for code quality, performance, and accessibility.
-        </p>
+        <section id="skills-section" style="margin-top: 2.5rem;">
+            <h2>Core Technical Skills</h2>
+            
+            <article style="margin-bottom: 1.5rem;">
+                <h3 style="color: var(--accent-color); font-size: 1.1rem;">Front-End Development</h3>
+                <p><strong>Technologies:</strong> Vue.js, Angular, JavaScript/TypeScript, React, HTML5, CSS3 (Sass/LESS), Bootstrap, jQuery, JSP</p>
+                <p><strong>Expertise:</strong> Component-based architecture, state management, responsive design, progressive web apps (PWA), accessibility (WCAG 2.1)</p>
+            </article>
+            
+            <article style="margin-bottom: 1.5rem;">
+                <h3 style="color: var(--accent-color); font-size: 1.1rem;">Back-End Development</h3>
+                <p><strong>Technologies:</strong> PHP (Laravel, Laminas), Java (Spring Boot, Spring Framework), Node.js, RESTful APIs</p>
+                <p><strong>Expertise:</strong> Microservices architecture, API design, authentication & authorization, database optimization</p>
+            </article>
+            
+            <article style="margin-bottom: 1.5rem;">
+                <h3 style="color: var(--accent-color); font-size: 1.1rem;">Mobile Development</h3>
+                <p><strong>Technologies:</strong> Flutter, Ionic, Capacitor, Android (Java), Hybrid Apps</p>
+                <p><strong>Expertise:</strong> Offline-first applications, cross-platform development, native integrations, Bluetooth/IoT</p>
+            </article>
+            
+            <article style="margin-bottom: 1.5rem;">
+                <h3 style="color: var(--accent-color); font-size: 1.1rem;">Databases & APIs</h3>
+                <p><strong>Technologies:</strong> MySQL, MongoDB, SQLite, CouchDB/PouchDB, GraphQL (Apollo Client), REST APIs</p>
+                <p><strong>Expertise:</strong> Data synchronization, database design, query optimization, API integration</p>
+            </article>
+            
+            <article style="margin-bottom: 1.5rem;">
+                <h3 style="color: var(--accent-color); font-size: 1.1rem;">DevOps & CI/CD</h3>
+                <p><strong>Technologies:</strong> Git, Docker, Jenkins, GitLab CI/CD, Bitrise, Puppet, Rancher, SonarQube</p>
+                <p><strong>Expertise:</strong> Continuous integration/deployment, containerization, infrastructure as code, monitoring</p>
+            </article>
+            
+            <article style="margin-bottom: 1.5rem;">
+                <h3 style="color: var(--accent-color); font-size: 1.1rem;">Tools & Technologies</h3>
+                <p><strong>Technologies:</strong> Drupal, Keycloak, Firebase, Mapbox GL JS, WSO2 CEP, JHipster, TestCafe, Cucumber, Grafana, Kibana</p>
+                <p><strong>Expertise:</strong> CMS development, authentication systems, real-time mapping, testing automation, monitoring</p>
+            </article>
+        </section>
         
-        <h2>Get In Touch</h2>
-        <div class="contact-links">
-            <a href="https://www.linkedin.com/in/khalil-charfi/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
-            <a href="https://github.com/khalil-charfi" target="_blank" rel="noopener noreferrer">GitHub</a>
-        </div>
+        <section id="experience-section" style="margin-top: 2.5rem;">
+            <h2>Professional Experience</h2>
+            
+            <article style="margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 1px solid rgba(128, 128, 128, 0.2);">
+                <h3 style="font-size: 1.15rem; margin-bottom: 0.5rem;">Software Engineer – Fullstack Developer</h3>
+                <p style="color: var(--accent-color); font-weight: 500; margin-bottom: 0.5rem;">
+                    CHECK24 Vergleichsportal GmbH | Frankfurt, Germany
+                </p>
+                <p style="color: var(--secondary-text); margin-bottom: 1rem;"><em>August 2022 – Present</em></p>
+                <ul>
+                    <li>Developed and maintained partner interfaces for CHECK24 Vergleichsportal using Vue.js, Laravel, and MySQL</li>
+                    <li>Implemented automated testing with TestCafe and Cucumber, improving code quality and reducing bugs</li>
+                    <li>Collaborated with cross-functional teams using Agile methodologies (Scrum)</li>
+                    <li>Optimized application performance and implemented best practices for scalability</li>
+                </ul>
+            </article>
+            
+            <article style="margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 1px solid rgba(128, 128, 128, 0.2);">
+                <h3 style="font-size: 1.15rem; margin-bottom: 0.5rem;">Fullstack Developer</h3>
+                <p style="color: var(--accent-color); font-weight: 500; margin-bottom: 0.5rem;">
+                    Vodafone Kabel Deutschland | Unterföhring, Germany
+                </p>
+                <p style="color: var(--secondary-text); margin-bottom: 1rem;"><em>May 2021 – July 2022</em></p>
+                <ul>
+                    <li>Developed Drupal 9 CMS modules and custom themes for Vodafone's digital platforms</li>
+                    <li>Integrated Keycloak for secure authentication and authorization</li>
+                    <li>Implemented CI/CD pipelines using Jenkins and GitLab</li>
+                    <li>Worked with Docker, Puppet, and Rancher for deployment automation</li>
+                </ul>
+            </article>
+            
+            <article style="margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 1px solid rgba(128, 128, 128, 0.2);">
+                <h3 style="font-size: 1.15rem; margin-bottom: 0.5rem;">Full Stack Developer</h3>
+                <p style="color: var(--accent-color); font-weight: 500; margin-bottom: 0.5rem;">
+                    VERMEG | Tunis, Tunisia
+                </p>
+                <p style="color: var(--secondary-text); margin-bottom: 1rem;"><em>September 2019 – April 2021</em></p>
+                <ul>
+                    <li>Built enterprise applications using Angular, Spring Boot, and MongoDB</li>
+                    <li>Developed RESTful APIs and integrated with third-party services</li>
+                    <li>Implemented responsive UI/UX designs with modern CSS frameworks</li>
+                    <li>Participated in code reviews and mentored junior developers</li>
+                </ul>
+            </article>
+            
+            <article style="margin-bottom: 2rem;">
+                <h3 style="font-size: 1.15rem; margin-bottom: 0.5rem;">Mobile & Web Developer</h3>
+                <p style="color: var(--accent-color); font-weight: 500; margin-bottom: 0.5rem;">
+                    ENIS - National Engineering School of Sfax | Sfax, Tunisia
+                </p>
+                <p style="color: var(--secondary-text); margin-bottom: 1rem;"><em>February 2017 – August 2019</em></p>
+                <ul>
+                    <li>Developed hybrid mobile applications using Ionic and Capacitor</li>
+                    <li>Created offline-first apps with PouchDB/CouchDB synchronization</li>
+                    <li>Implemented Bluetooth integration for IoT medical devices</li>
+                    <li>Built real-time monitoring systems using WSO2 CEP</li>
+                </ul>
+            </article>
+        </section>
         
-        <p style="margin-top: 3rem; padding-top: 2rem; border-top: 1px solid rgba(128, 128, 128, 0.3); font-size: 0.9rem;">
-            <strong>Note:</strong> For the full interactive experience with animations, live demos, and AI-powered features, 
-            please enable JavaScript in your browser.
-        </p>
+        <section id="education-section" style="margin-top: 2.5rem;">
+            <h2>Education</h2>
+            
+            <article style="margin-bottom: 1.5rem;">
+                <h3 style="font-size: 1.15rem; margin-bottom: 0.5rem;">Software Engineering Degree</h3>
+                <p style="color: var(--accent-color); font-weight: 500;">
+                    National Engineering School of Sfax (ENIS) | Sfax, Tunisia
+                </p>
+                <p style="color: var(--secondary-text);"><em>2014 – 2019</em></p>
+                <p>Specialized in software development, web technologies, and mobile applications</p>
+            </article>
+        </section>
+        
+        <section id="projects-section" style="margin-top: 2.5rem;">
+            <h2>Featured Projects</h2>
+            
+            <article style="margin-bottom: 1.5rem;">
+                <h3 style="font-size: 1.1rem; color: var(--accent-color);">E-Health Monitoring System</h3>
+                <p><strong>Technologies:</strong> Ionic, Angular, PouchDB, Bluetooth, WSO2 CEP</p>
+                <p>Developed an offline-first mobile application for cardiac patient monitoring with real-time data synchronization and IoT device integration.</p>
+            </article>
+            
+            <article style="margin-bottom: 1.5rem;">
+                <h3 style="font-size: 1.1rem; color: var(--accent-color);">Partner Interface Platform</h3>
+                <p><strong>Technologies:</strong> Vue.js, Laravel, MySQL, TestCafe</p>
+                <p>Built scalable partner management system for CHECK24 with automated testing and CI/CD integration.</p>
+            </article>
+            
+            <article style="margin-bottom: 1.5rem;">
+                <h3 style="font-size: 1.1rem; color: var(--accent-color);">Enterprise CMS Solution</h3>
+                <p><strong>Technologies:</strong> Drupal 9, Keycloak, Docker, Jenkins</p>
+                <p>Developed custom Drupal modules and themes for Vodafone with secure authentication and automated deployment.</p>
+            </article>
+        </section>
+        
+        <section id="contact-section" style="margin-top: 2.5rem;">
+            <h2>Get In Touch</h2>
+            <p style="margin-bottom: 1.5rem;">
+                I'm always interested in hearing about new opportunities, collaborations, or just connecting 
+                with fellow developers. Feel free to reach out!
+            </p>
+            
+            <div class="contact-links">
+                <a href="https://www.linkedin.com/in/khalil-charfi/" 
+                   target="_blank" 
+                   rel="noopener noreferrer"
+                   itemprop="sameAs"
+                   aria-label="Connect with Khalil Charfi on LinkedIn">
+                    LinkedIn Profile
+                </a>
+                <a href="https://github.com/khalil-charfi" 
+                   target="_blank" 
+                   rel="noopener noreferrer"
+                   itemprop="sameAs"
+                   aria-label="View Khalil Charfi's projects on GitHub">
+                    GitHub Portfolio
+                </a>
+            </div>
+            
+            <p style="margin-top: 1.5rem; padding: 1rem; background: rgba(128, 128, 128, 0.1); border-radius: 8px;">
+                <strong>📧 Email:</strong> Available on LinkedIn<br>
+                <strong>📍 Location:</strong> Frankfurt, Germany<br>
+                <strong>💼 Status:</strong> Open to opportunities<br>
+                <strong>🌐 Work Authorization:</strong> EU Work Permit
+            </p>
+        </section>
+        
+        <footer style="margin-top: 3rem; padding-top: 2rem; border-top: 2px solid rgba(128, 128, 128, 0.3);">
+            <p style="font-size: 0.95rem; color: var(--secondary-text); margin-bottom: 1rem;">
+                <strong>Keywords:</strong> Full-Stack Developer, Software Engineer, Vue.js Developer, 
+                Angular Developer, Laravel Developer, Mobile App Developer, Flutter Developer, 
+                DevOps Engineer, Web Developer, Frankfurt, Germany, Remote Work
+            </p>
+            
+            <p style="font-size: 0.9rem; padding: 1rem; background: var(--fallback-bg); color: var(--fallback-fg); border-radius: 8px;">
+                <strong>⚡ Enhanced Experience Available:</strong> Enable JavaScript for the full interactive 
+                portfolio with 3D animations, live project demos, AI-powered chatbot, multilingual support 
+                (English, German, French, Arabic), and dynamic content personalization.
+            </p>
+            
+            <p style="margin-top: 1.5rem; text-align: center; color: var(--secondary-text); font-size: 0.85rem;">
+                © 2025 Khalil Charfi. Built with React, TypeScript, and Three.js.
+            </p>
+        </footer>
     </div>
     
     <!-- ARIA Live Region for Screen Reader Announcements -->

@@ -91,7 +91,10 @@ echo ""
 check_content "no-js-banner.*role=\"status\"" "ARIA live region for banner" && ((PASS++)) || ((FAIL++))
 check_content "static-content" "Static content section" && ((PASS++)) || ((FAIL++))
 check_content "Get In Touch" "Contact section" && ((PASS++)) || ((FAIL++))
-check_content "Core Skills" "Skills section" && ((PASS++)) || ((FAIL++))
+check_content "Core Technical Skills\|Core Skills" "Skills section" && ((PASS++)) || ((FAIL++))
+check_content "Professional Experience" "Experience section" && ((PASS++)) || ((FAIL++))
+check_content "Education" "Education section" && ((PASS++)) || ((FAIL++))
+check_content "itemscope.*itemtype.*schema.org/Person" "Schema.org markup" && ((PASS++)) || ((FAIL++))
 
 echo ""
 
