@@ -1,0 +1,118 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+
+<Meta title="Introduction/Welcome" />
+
+# UI Components Library
+
+Welcome to the **UI Components Library** documentation!
+
+This is a comprehensive collection of **39 reusable, accessible, and customizable React components** extracted from the application.
+
+## 🎯 Features
+
+- ✅ **39 Production-Ready Components**
+- ✅ **Full TypeScript Support**
+- ✅ **WCAG 2.1 Level AA Accessible**
+- ✅ **Mobile Responsive**
+- ✅ **Theme Support** (CSS Variables)
+- ✅ **Tree-Shakeable** (Import only what you need)
+- ✅ **Zero External Dependencies** (UI layer)
+
+## 📦 Component Categories
+
+### **Form Components**
+- Button, IconButton
+- Input, Textarea, Checkbox
+- Toggle, Dropdown
+- Form layouts (Form, FormGroup, FormRow, FormSection, FormActions)
+
+### **Layout & Containers**
+- Card (with Header, Body, Footer)
+- Modal, Tabs, Accordion
+- Section, NavLink
+
+### **Navigation**
+- Menu, MenuItem, MenuGroup, MenuDivider
+- ThemeToggle, LanguageSwitcher
+
+### **Feedback**
+- Alert
+- Spinner, LoadingOverlay
+- Progress, CircularProgress
+- Tooltip
+
+### **Data Display**
+- Badge, DotBadge
+- Avatar, AvatarGroup
+- Divider
+
+## 🚀 Quick Start
+
+### 1. Import the CSS
+
+```tsx
+import './components/ui/ui-components.css';
+```
+
+### 2. Import Components
+
+```tsx
+import { Button, Card, Alert } from './components/ui';
+```
+
+### 3. Use Them!
+
+```tsx
+<Card variant="glass">
+  <Alert variant="success">Setup complete!</Alert>
+  <Button variant="primary">Get Started</Button>
+</Card>
+```
+
+## 📚 Documentation Structure
+
+Each component story includes:
+
+- **Interactive Examples** - Try different props and see live updates
+- **Controls** - Modify component props in real-time
+- **Code Snippets** - Copy-paste ready examples
+- **Accessibility Notes** - ARIA attributes and keyboard navigation
+
+## 🎨 Theming
+
+All components use CSS custom properties for easy theming:
+
+```css
+:root {
+  --primary-color: #667eea;
+  --text-primary: #1f2937;
+  --bg-primary: #ffffff;
+  --border-color: #e5e7eb;
+}
+
+[data-theme="dark"] {
+  --text-primary: #f9fafb;
+  --bg-primary: #1f2937;
+}
+```
+
+## 🔗 Resources
+
+- 📖 [Full Documentation](../README.md)
+- 🚀 [Quick Start Guide](../QUICK_START.md)
+- 📋 [Component Summary](../COMPONENT_SUMMARY.md)
+- 💡 [Example Components](../../examples/)
+
+## 🎯 Browse Components
+
+Use the sidebar to explore all available components →
+
+Each component includes:
+- Live interactive demos
+- Full API documentation
+- Real-world examples
+- Accessibility features
+
+---
+
+**Happy Building! 🎉**

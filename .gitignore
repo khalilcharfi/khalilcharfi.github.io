@@ -50,3 +50,15 @@ lerna-debug.log*
 
 # OS
 Thumbs.db
+
+# Storybook
+*storybook.log
+storybook-static
+
+# Temporary files
+depcheck-results.json
+compress-*.js
+compress-*.cjs
+
+# WASM build artifacts
+wasm-modules/target/

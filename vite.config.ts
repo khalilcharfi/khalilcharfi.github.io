@@ -27,7 +27,9 @@ export default defineConfig(({ mode }) => {
       define: clientEnv,
       resolve: {
         alias: {
-          '@': path.resolve(__dirname, '.'),
+          '@': path.resolve(__dirname, './src'),
+          '@/features': path.resolve(__dirname, './src/features'),
+          '@/shared': path.resolve(__dirname, './src/shared'),
         },
         dedupe: ['react', 'react-dom', 'react/jsx-runtime']
       },

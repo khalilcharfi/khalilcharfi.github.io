@@ -1,16 +1,12 @@
 
-const CACHE_NAME = 'khalil-portfolio-cache-v4.1'; // Updated for CORS fix
+const CACHE_NAME = 'khalil-portfolio-cache-v4.2';
 const ASSETS_TO_CACHE = [
   '/',
   './index.html',
   './manifest.json',
-  // Note: CSS and JS files have hashed names that change with each build
-  // They will be cached dynamically on first fetch via cache-first strategy
-  // Only cache static assets here that don't change names
   './asset/profile-photo.jpg',
   './asset/profile-photo.jpeg',
   './asset/profile-photo-placeholder.svg',
-  // Certificates are important visual assets
   './asset/Certificate Recognizing an E-Health Talk Presentation on Cardiac Monitoring.jpeg',
   './asset/Certificate Template from Second DAAD Theralytics Workshop in Darmstadt 2016.jpeg',
   './asset/Certificate of Participation in an E-Health Workshop on Heart Failure.jpeg',
@@ -18,7 +14,6 @@ const ASSETS_TO_CACHE = [
   './asset/Certificate of Participation in E-Health Workshop on Cardiac Patient Monitoring.jpeg'
 ];
 
-// Install event: open cache and add core assets
 self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME)
@@ -26,14 +21,13 @@ self.addEventListener('install', event => {
         console.log('ServiceWorker: Caching core assets');
         return cache.addAll(ASSETS_TO_CACHE);
       })
-      .then(() => self.skipWaiting()) // Force activation of new service worker
+      .then(() => self.skipWaiting())
       .catch(error => {
         console.error('ServiceWorker: Failed to cache assets during install:', error);
       })
   );
 });
 
-// Activate event: clean up old caches
 self.addEventListener('activate', event => {
   event.waitUntil(
     caches.keys().then(cacheNames => {
@@ -45,19 +39,15 @@ self.addEventListener('activate', event => {
           }
         })
       );
-    }).then(() => self.clients.claim()) // Take control of all clients
+    }).then(() => self.clients.claim())
   );
 });
 
-// Fetch event: Cache-first, then network strategy
 self.addEventListener('fetch', event => {
-  // We only want to handle GET requests
   if (event.request.method !== 'GET') {
     return;
   }
   
-  // Skip external resources and CORS-restricted domains
-  // These should be handled by the browser's native cache
   if (event.request.url.startsWith('https://fonts.googleapis.com') ||
       event.request.url.startsWith('https://fonts.gstatic.com') ||
       event.request.url.startsWith('https://esm.sh') ||
@@ -70,17 +60,11 @@ self.addEventListener('fetch', event => {
   event.respondWith(
     caches.open(CACHE_NAME).then(cache => {
       return cache.match(event.request).then(cachedResponse => {
-        // Return cached response if found, this is the "cache first" part.
         if (cachedResponse) {
           return cachedResponse;
         }
 
-        // If not in cache, fetch from network.
         return fetch(event.request).then(networkResponse => {
-          // IMPORTANT: You should NOT cache opaque responses (from no-cors requests)
-          // as you cannot check their status. Here we assume all local asset requests are fine.
-          
-          // Clone the response because a response is a stream and can only be consumed once.
           const responseToCache = networkResponse.clone();
           cache.put(event.request, responseToCache);
           
@@ -89,7 +73,6 @@ self.addEventListener('fetch', event => {
       });
     }).catch(error => {
       console.error('ServiceWorker: Error fetching data:', error);
-      // Fallback for navigation requests (SPA support)
       if (event.request.mode === 'navigate') {
         return caches.match('./index.html');
       }
@@ -101,7 +84,6 @@ self.addEventListener('fetch', event => {
   );
 });
 
-// Optional: listen for messages from the client
 self.addEventListener('message', event => {
   if (event.data && event.data.type === 'SKIP_WAITING') {
     self.skipWaiting();
