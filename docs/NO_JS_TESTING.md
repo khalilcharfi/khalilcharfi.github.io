@@ -11,17 +11,35 @@ This guide explains how to test your portfolio when JavaScript is disabled to en
 
 ## 🧪 Testing Methods
 
+### Important: Test Against Production Build
+
+**Always test the no-JS version using the production build, not the dev server:**
+
+```bash
+# Build the production version
+npm run build
+
+# Start preview server (serves the built dist/ folder)
+npm run preview
+
+# Now test at http://localhost:4173
+```
+
+The dev server (port 5177) serves source TypeScript files which won't work without JavaScript. The preview server (port 4173) serves the compiled production build with proper static assets.
+
 ### Method 1: Browser DevTools (Recommended)
 
 #### Chrome/Edge
-1. Open DevTools (`F12` or `Cmd+Option+I` on Mac)
-2. Open Command Palette:
+1. Build and start preview server: `npm run build && npm run preview`
+2. Open http://localhost:4173 in browser
+3. Open DevTools (`F12` or `Cmd+Option+I` on Mac)
+4. Open Command Palette:
    - Windows/Linux: `Ctrl+Shift+P`
    - Mac: `Cmd+Shift+P`
-3. Type "JavaScript" and select **"Disable JavaScript"**
-4. Refresh the page (`F5` or `Cmd+R`)
-5. Test the site
-6. Re-enable: Same steps, select **"Enable JavaScript"**
+5. Type "JavaScript" and select **"Disable JavaScript"**
+6. Refresh the page (`F5` or `Cmd+R`)
+7. Test the site
+8. Re-enable: Same steps, select **"Enable JavaScript"**
 
 **Quick Toggle:**
 ```
@@ -59,17 +77,20 @@ Settings (⚙️) → Preferences → Debugger → Disable JavaScript
 Test what search engines and no-JS users see:
 
 ```bash
-# View the raw HTML
-curl http://localhost:5177 | less
+# Build and start preview server first
+npm run build && npm run preview
+
+# View the raw HTML (use preview server port 4173)
+curl http://localhost:4173 | less
 
 # Save to file for inspection
-curl http://localhost:5177 > no-js-output.html
+curl http://localhost:4173 > no-js-output.html
 
 # View with lynx (text browser)
-lynx http://localhost:5177
+lynx http://localhost:4173
 
 # View with w3m (text browser)
-w3m http://localhost:5177
+w3m http://localhost:4173
 ```
 
 ### Method 4: Playwright/Puppeteer (Automated Testing)
@@ -80,29 +101,42 @@ Create a test script:
 // tests/no-js.spec.ts
 import { test, expect } from '@playwright/test';
 
-test('should display content without JavaScript', async ({ page, context }) => {
-  // Disable JavaScript
-  await context.addInitScript(() => {
-    delete (window as any).navigator;
+test('should display content without JavaScript', async ({ browser }) => {
+  // Create context with JavaScript disabled
+  const context = await browser.newContext({
+    javaScriptEnabled: false
   });
   
-  await page.goto('http://localhost:5177', {
+  const page = await context.newPage();
+  
+  // Test against production build (preview server)
+  await page.goto('http://localhost:4173', {
     waitUntil: 'domcontentloaded'
   });
   
-  // Test that basic content is visible
-  await expect(page.locator('h1')).toBeVisible();
-  await expect(page.locator('main')).toBeVisible();
+  // Test that static content is visible
+  await expect(page.locator('.static-content h1')).toBeVisible();
+  await expect(page.locator('.no-js-banner')).toBeVisible();
   
-  // Test noscript tag content
-  const noscript = await page.locator('noscript').textContent();
-  expect(noscript).toBeTruthy();
+  // Test contact links
+  await expect(page.locator('a[href*="linkedin"]')).toBeVisible();
+  await expect(page.locator('a[href*="github"]')).toBeVisible();
+  
+  await context.close();
 });
 ```
 
 Run with:
 ```bash
+# Build first, then start preview server in background
+npm run build
+npm run preview &
+
+# Run test
 npx playwright test tests/no-js.spec.ts
+
+# Kill preview server when done
+pkill -f "vite preview"
 ```
 
 ## 📋 What to Test
@@ -281,26 +315,33 @@ lynx -dump http://localhost:5177 | less
 echo "🧪 Testing No-JS Mode..."
 echo ""
 
-# Start dev server in background
-npm run dev &
+# Build if needed
+if [ ! -d "dist" ]; then
+  echo "Building production version..."
+  npm run build
+fi
+
+# Start preview server in background
+npm run preview &
 SERVER_PID=$!
-sleep 3
+sleep 5
 
 # Test with curl
-echo "📄 Fetching HTML..."
-curl -s http://localhost:5177 > /tmp/no-js-test.html
+echo "📄 Fetching HTML from production build..."
+curl -s http://localhost:4173 > /tmp/no-js-test.html
 
 # Check for content
 echo ""
 echo "✅ Checking for key content..."
-grep -q "<h1" /tmp/no-js-test.html && echo "  ✓ H1 found" || echo "  ✗ H1 missing"
-grep -q "<main" /tmp/no-js-test.html && echo "  ✓ Main element found" || echo "  ✗ Main missing"
-grep -q "id=\"root\"" /tmp/no-js-test.html && echo "  ✓ Root div found" || echo "  ✗ Root missing"
+grep -q "static-content" /tmp/no-js-test.html && echo "  ✓ Static content found" || echo "  ✗ Static content missing"
+grep -q "no-js-banner" /tmp/no-js-test.html && echo "  ✓ No-JS banner found" || echo "  ✗ No-JS banner missing"
+grep -q "Khalil Charfi" /tmp/no-js-test.html && echo "  ✓ Name found" || echo "  ✗ Name missing"
+grep -q "linkedin.com" /tmp/no-js-test.html && echo "  ✓ LinkedIn link found" || echo "  ✗ LinkedIn link missing"
 
 # Check for noscript
 echo ""
 echo "⚠️  Checking for noscript tag..."
-grep -q "<noscript" /tmp/no-js-test.html && echo "  ✓ Noscript found" || echo "  ✗ Noscript missing (consider adding)"
+grep -q "<noscript" /tmp/no-js-test.html && echo "  ✓ Noscript found" || echo "  ✗ Noscript missing"
 
 # Kill server
 kill $SERVER_PID
@@ -308,10 +349,17 @@ kill $SERVER_PID
 echo ""
 echo "📁 Full HTML saved to: /tmp/no-js-test.html"
 echo "   View with: cat /tmp/no-js-test.html | less"
+echo ""
+echo "💡 Use 'npm run test:no-js' for comprehensive testing"
 ```
 
 Save as `scripts/test-no-js.sh` and run:
 ```bash
 chmod +x scripts/test-no-js.sh
 ./scripts/test-no-js.sh
+```
+
+Or use the npm script:
+```bash
+npm run test:no-js
 ```

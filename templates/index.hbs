@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html class="no-js" lang="{{lang}}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- SEO Meta Tags -->
+    <title>{{profile.name}} | Full-Stack Engineer Portfolio</title>
+    <meta name="description" content="{{t.seo.description}}">
+    <meta name="keywords" content="Khalil Charfi, Full-Stack Engineer, React Developer, TypeScript, Node.js, Web Development, Software Engineer, Cloud Architecture, Portfolio">
+    <meta name="author" content="{{profile.name}}">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="{{profile.website}}">
+    
+    <!-- Hreflang Tags for Multilingual SEO -->
+    <link rel="alternate" hreflang="en" href="{{profile.website}}?lang=en">
+    <link rel="alternate" hreflang="de" href="{{profile.website}}?lang=de">
+    <link rel="alternate" hreflang="fr" href="{{profile.website}}?lang=fr">
+    <link rel="alternate" hreflang="ar" href="{{profile.website}}?lang=ar">
+    <link rel="alternate" hreflang="x-default" href="{{profile.website}}">
+    
+    <link rel="icon" type="image/svg+xml" href="/icons/icon-192x192.svg" />
+    
+    <!-- Structured Data (Schema.org JSON-LD) -->
+    <script type="application/ld+json">
+    {{{jsonLd}}}
+    </script>
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{profile.website}}">
+    <meta property="og:title" content="{{profile.name}} | Full-Stack Engineer Portfolio">
+    <meta property="og:description" content="{{t.seo.description}}">
+    <meta property="og:image" content="{{profile.photo}}">
+    <meta property="og:image:alt" content="{{profile.name}} - Full-Stack Engineer">
+    <meta property="og:site_name" content="{{profile.name}} Portfolio">
+    <meta property="og:locale" content="en_US">
+    <meta property="og:locale:alternate" content="de_DE">
+    <meta property="og:locale:alternate" content="fr_FR">
+    <meta property="og:locale:alternate" content="ar_SA">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="{{profile.website}}">
+    <meta property="twitter:title" content="{{profile.name}} | Full-Stack Engineer Portfolio">
+    <meta property="twitter:description" content="{{t.seo.description}}">
+    <meta property="twitter:image" content="{{profile.photo}}">
+    <meta property="twitter:image:alt" content="{{profile.name}} - Full-Stack Engineer">
+
+    <!-- PWA Manifest and Theme Color -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0d1117" media="(prefers-color-scheme: dark)">
+    <meta name="theme-color" content="#f1f5f9" media="(prefers-color-scheme: light)">
+    <meta name="color-scheme" content="dark light">
+
+    {{> head-scripts}}
+    {{> critical-css}}
+
+    <!-- Preload critical fonts with font-display swap -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Roboto:wght@300;400;500&family=Tajawal:wght@400;500;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Roboto:wght@300;400;500&family=Tajawal:wght@400;500;700&display=swap"></noscript>
+    
+    <!-- Defer non-critical CSS -->
+    <link rel="preload" href="index.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="index.css"></noscript>
+    
+    <!-- Accessibility Styles -->
+    <link rel="preload" href="src/styles/accessibility.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="src/styles/accessibility.css"></noscript>
+    
+    <script type="module" src="index.tsx" defer onerror="document.documentElement.classList.add('js-load-error')"></script>
+</head>
+<body>
+    <!-- Skip to Content Link -->
+    <a class="skip-link" href="#main-content">{{t.general.skipToMain}}</a>
+    
+    <!-- No-JS / JS-Error Fallback Banner -->
+    {{> no-js-banner}}
+    
+    <!-- Initial Loading Screen (Hidden when JS disabled/failed) -->
+    <div id="initial-loading">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">{{t.general.loading}}</div>
+    </div>
+    
+    <!-- Static Fallback Content (Shown only when JS disabled/failed) - SEO Optimized -->
+    <div class="static-content" itemscope itemtype="https://schema.org/Person">
+        {{> header}}
+        {{> navigation}}
+        {{> about}}
+        {{> skills}}
+        {{> experience}}
+        {{> education}}
+        {{> projects}}
+        {{> contact}}
+        {{> footer}}
+    </div>
+    
+    <!-- ARIA Live Region for Screen Reader Announcements -->
+    <div id="a11y-live-region" role="status" aria-live="polite" aria-atomic="true" class="sr-only"></div>
+    
+    <!-- React Root (Hidden when JS disabled/failed) -->
+    <div id="root"></div>
+    
+    <noscript>
+        <style>
+            #root { display: none !important; }
+            .static-content { display: block !important; }
+        </style>
+    </noscript>
+</body>
+</html>

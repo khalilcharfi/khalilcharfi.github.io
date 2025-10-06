@@ -1,0 +1,17 @@
+<section id="about-section">
+    <h2>{{t.about.title}}</h2>
+    <p itemprop="description" style="font-size: 1.05rem; line-height: 1.8;">
+        {{t.about.professionalSummary}}
+    </p>
+    
+    <h3 style="margin-top: 1.5rem; font-size: 1.2rem;">{{t.about.professionalSummaryTitle}}</h3>
+    <p>{{t.home.intro}}</p>
+    <p>{{t.about.sectionContent.p1}}</p>
+    
+    <h3 style="margin-top: 1.5rem; font-size: 1.2rem;">{{t.about.languagesTitle}}</h3>
+    <ul style="list-style: none; margin-left: 0;">
+        {{#each t.about.languages}}
+        <li>🌐 <strong>{{this.lang}}:</strong> {{this.proficiency}}</li>
+        {{/each}}
+    </ul>
+</section>

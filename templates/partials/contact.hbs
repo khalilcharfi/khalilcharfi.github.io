@@ -1,0 +1,30 @@
+<section id="contact-section" style="margin-top: 2.5rem;">
+    <h2>{{t.contact.title}}</h2>
+    <p style="margin-bottom: 1.5rem;">
+        {{t.contact.description}}
+    </p>
+    
+    <div class="contact-links">
+        <a href="{{profile.linkedin}}" 
+           target="_blank" 
+           rel="noopener noreferrer"
+           itemprop="sameAs"
+           aria-label="Connect with {{profile.name}} on LinkedIn">
+            {{t.contact.linkedin}}
+        </a>
+        <a href="{{profile.github}}" 
+           target="_blank" 
+           rel="noopener noreferrer"
+           itemprop="sameAs"
+           aria-label="View {{profile.name}}'s projects on GitHub">
+            {{t.contact.github}}
+        </a>
+    </div>
+    
+    <p style="margin-top: 1.5rem; padding: 1rem; background: rgba(128, 128, 128, 0.1); border-radius: 8px;">
+        <strong>📧 Email:</strong> {{profile.email}}<br>
+        <strong>📍 Location:</strong> {{profile.location}}<br>
+        <strong>💼 Status:</strong> Open to opportunities<br>
+        <strong>🌐 Work Authorization:</strong> EU Work Permit
+    </p>
+</section>

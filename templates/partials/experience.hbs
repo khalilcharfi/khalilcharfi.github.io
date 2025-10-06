@@ -1,0 +1,18 @@
+<section id="experience-section" style="margin-top: 2.5rem;">
+    <h2>{{t.experience.title}}</h2>
+    
+    {{#each t.experience.items}}
+    <article style="margin-bottom: 2rem; padding-bottom: 1.5rem; {{#unless @last}}border-bottom: 1px solid rgba(128, 128, 128, 0.2);{{/unless}}">
+        <h3 style="font-size: 1.15rem; margin-bottom: 0.5rem;">{{this.title}}</h3>
+        <p style="color: var(--accent-color); font-weight: 500; margin-bottom: 0.5rem;">
+            {{this.company}} | {{this.location}}
+        </p>
+        <p style="color: var(--secondary-text); margin-bottom: 1rem;"><em>{{this.date}}</em></p>
+        <ul>
+            {{#each this.description}}
+            <li>{{this}}</li>
+            {{/each}}
+        </ul>
+    </article>
+    {{/each}}
+</section>

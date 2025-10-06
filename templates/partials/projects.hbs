@@ -1,0 +1,26 @@
+<section id="projects-section" style="margin-top: 2.5rem;">
+    <h2>{{t.projects.title}}</h2>
+    
+    {{#each t.projects.items}}
+    {{#if @first}}{{else}}{{#if @index}}{{#lt @index 3}}
+    <article>
+        <h3 style="font-size: 1.1rem; color: var(--accent-color);">{{this.title}}</h3>
+        <p><strong>Technologies:</strong> {{#each this.tech}}{{this}}{{#unless @last}}, {{/unless}}{{/each}}</p>
+        <p>{{this.description}}</p>
+        {{#if this.link}}
+        <p><a href="{{this.link}}" target="_blank" rel="noopener noreferrer">View Project →</a></p>
+        {{/if}}
+    </article>
+    {{/lt}}{{/if}}{{/if}}
+    {{#if @first}}
+    <article>
+        <h3 style="font-size: 1.1rem; color: var(--accent-color);">{{this.title}}</h3>
+        <p><strong>Technologies:</strong> {{#each this.tech}}{{this}}{{#unless @last}}, {{/unless}}{{/each}}</p>
+        <p>{{this.description}}</p>
+        {{#if this.link}}
+        <p><a href="{{this.link}}" target="_blank" rel="noopener noreferrer">View Project →</a></p>
+        {{/if}}
+    </article>
+    {{/if}}
+    {{/each}}
+</section>

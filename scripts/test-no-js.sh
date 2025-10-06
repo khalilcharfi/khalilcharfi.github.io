@@ -13,15 +13,26 @@ RED='\033[0;31m'
 YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
-# Check if server is running
-if ! curl -s http://localhost:5177 > /dev/null 2>&1; then
-    echo -e "${YELLOW}⚠️  Dev server not running. Starting it...${NC}"
-    npm run dev &
+# Check if dist folder exists
+if [ ! -d "dist" ]; then
+    echo -e "${YELLOW}⚠️  dist folder not found. Building production version...${NC}"
+    npm run build
+    if [ $? -ne 0 ]; then
+        echo -e "${RED}✗ Build failed${NC}"
+        exit 1
+    fi
+    echo -e "${GREEN}✓${NC} Build completed"
+fi
+
+# Check if preview server is running
+if ! curl -s http://localhost:4173 > /dev/null 2>&1; then
+    echo -e "${YELLOW}⚠️  Preview server not running. Starting it...${NC}"
+    npm run preview &
     SERVER_PID=$!
     echo "   Waiting for server to start..."
     sleep 5
 else
-    echo -e "${GREEN}✓${NC} Dev server is running"
+    echo -e "${GREEN}✓${NC} Preview server is running"
     SERVER_PID=""
 fi
 
@@ -29,7 +40,7 @@ echo ""
 
 # Fetch HTML
 echo "📄 Fetching HTML (simulating no-JS browser)..."
-curl -s http://localhost:5177 > /tmp/no-js-test.html
+curl -s http://localhost:4173 > /tmp/no-js-test.html
 
 if [ $? -ne 0 ]; then
     echo -e "${RED}✗ Failed to fetch HTML${NC}"
@@ -131,14 +142,14 @@ if command -v lynx &> /dev/null; then
     echo "📱 Testing with Lynx (text browser)..."
     echo "   (First 20 lines of text-only view)"
     echo ""
-    lynx -dump http://localhost:5177 2>/dev/null | head -20
+    lynx -dump http://localhost:4173 2>/dev/null | head -20
     echo "   ..."
     echo ""
 elif command -v w3m &> /dev/null; then
     echo "📱 Testing with w3m (text browser)..."
     echo "   (First 20 lines of text-only view)"
     echo ""
-    w3m -dump http://localhost:5177 2>/dev/null | head -20
+    w3m -dump http://localhost:4173 2>/dev/null | head -20
     echo "   ..."
     echo ""
 else
@@ -157,11 +168,13 @@ echo "   cat /tmp/no-js-test.html | less"
 echo "   open /tmp/no-js-test.html  # macOS"
 echo ""
 echo "🧪 To test in browser:"
-echo "   1. Open http://localhost:5177"
+echo "   1. Open http://localhost:4173 (preview server)"
 echo "   2. Open DevTools (F12)"
 echo "   3. Cmd+Shift+P (Mac) or Ctrl+Shift+P (Win/Linux)"
 echo "   4. Type 'Disable JavaScript' and select it"
 echo "   5. Refresh the page"
+echo ""
+echo "📝 Note: Testing against production build (dist/) not dev server"
 echo ""
 
 # Cleanup

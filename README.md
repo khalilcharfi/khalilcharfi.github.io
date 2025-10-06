@@ -7,6 +7,9 @@ Modern, interactive portfolio website with React, TypeScript, and Three.js.
 - **[Architecture Guide](./docs/ARCHITECTURE.md)** - Comprehensive architecture documentation
 - **[Error Handling Guide](./docs/ERROR_HANDLING.md)** - Error handling patterns and best practices
 - **[CI/CD & Git Hooks](./docs/CI_HOOKS.md)** - CI/CD workflows and Git hooks setup
+- **[HTML Templating](./docs/HTML_TEMPLATING_GUIDE.md)** - Handlebars templating system for static HTML generation
+- **[Templating Options](./docs/TEMPLATING_OPTIONS.md)** - Comparison of templating approaches
+- **[No-JS Testing Guide](./docs/NO_JS_TESTING.md)** - Testing progressive enhancement and no-JS fallback
 - **[Improvements Summary](./docs/IMPROVEMENTS_SUMMARY.md)** - Detailed changelog of recent improvements
 
 ## ✨ Features
@@ -48,9 +51,12 @@ npm run preview
 | Command | Description |
 |---------|-------------|
 | `npm run test:playwright` | Run Playwright tests |
+| `npm run test:no-js` | Test no-JS fallback (production build) |
 | `npm run ci:test` | Run all CI tests locally |
 | `npm run ci:validate-translations` | Validate translations |
 | `npm run ci:bundle-size` | Check bundle size |
+
+**Note:** For no-JS testing, always use the production build (`npm run preview` on port 4173), not the dev server (port 5177). See [No-JS Testing Guide](./docs/NO_JS_TESTING.md) for details.
 
 ### Git Hooks
 | Command | Description |
@@ -78,6 +84,17 @@ Create `.env` file:
 GEMINI_API_KEY=your_api_key_here
 VITE_ENABLE_CHATBOT=false
 ```
+
+## HTML Templating
+
+This project uses **Handlebars** to generate `index.html` from translation data:
+
+- Templates: `templates/*.hbs`
+- Generator: `scripts/generate-html.mjs`
+- Command: `npm run generate:html`
+- Auto-runs: Before every build (`prebuild` hook)
+
+See [HTML Templating Guide](./docs/HTML_TEMPLATING_GUIDE.md) for details.
 
 ## Contact
 
