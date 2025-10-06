@@ -35,6 +35,7 @@
     "test:playwright:mobile": "playwright test --project='Mobile Chrome' --project='Mobile Safari'",
     "test:playwright:report": "playwright show-report test-results/playwright-report",
     "test:all": "npm run test:a11y && npm run test:playwright",
+    "test:no-js": "bash scripts/test-no-js.sh",
     "ci:validate-translations": "npm run i18n:validate",
     "ci:bundle-size": "npm run build && node scripts/check-bundle-size.js",
     "ci:build": "npm run build:prod && node scripts/verify-build.js",
