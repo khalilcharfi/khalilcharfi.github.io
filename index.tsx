@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useLayoutEffect, Suspense } from 'react';
+import React, { useState, useEffect, useMemo, useLayoutEffect, Suspense, lazy } from 'react';
 import { createRoot } from 'react-dom/client';
 
 import '@/i18n';
@@ -18,7 +18,7 @@ import {
 import { analytics } from '@/features/analytics';
 import { PERSONAS_FEATURE_ENABLED, getSectionIds } from '@/shared/config';
 import { AnimationPauseProvider, SimpleConsentProvider } from '@/context';
-import { Navbar, Chatbot, SkipLinks, SEOHead } from '@/shared/components';
+import { Navbar, SkipLinks, SEOHead } from '@/shared/components';
 import { performanceLogger, LazyTranslationTest, LazyThreeBackground } from '@/shared/utils';
 import { ANIMATION_DURATION, SCROLL, OBSERVER_CONFIG } from '@/shared/constants';
 import { 
@@ -27,14 +27,16 @@ import {
   SkillsSection,
   ExperienceSection,
   EducationSection,
-  ProjectsSection,
-  PublicationsSection,
-  CertificatesSection,
-  ContactSection,
-  CertificateModal,
   ScrollToTop,
   Footer
 } from '@/features/portfolio';
+
+// Lazy load heavy components
+const Chatbot = lazy(() => import('@/shared/components').then(m => ({ default: m.Chatbot })));
+const CertificateModal = lazy(() => import('@/features/portfolio').then(m => ({ default: m.CertificateModal })));
+const ProjectsSection = lazy(() => import('@/features/portfolio').then(m => ({ default: m.ProjectsSection })));
+const PublicationsSection = lazy(() => import('@/features/portfolio').then(m => ({ default: m.PublicationsSection })));
+const CertificatesSection = lazy(() => import('@/features/portfolio').then(m => ({ default: m.CertificatesSection })));
 
 // Helper function to get base language
 const getBaseLang = (lang: string) => lang?.split('-')[0] || 'en';
@@ -190,13 +192,25 @@ const App: React.FC = () => {
         'home': <HomeSection key="home" />,
         'about': <AboutSection key="about" />,
         'skills': <SkillsSection key="skills" />,
-        'projects': <ProjectsSection key="projects" />,
+        'projects': (
+            <Suspense key="projects" fallback={<div className="section-loading">{String(t('general.loading'))}</div>}>
+                <ProjectsSection />
+            </Suspense>
+        ),
         'experience': <ExperienceSection key="experience" />,
         'education': <EducationSection key="education" />,
-        'publications': <PublicationsSection key="publications" />,
-        'certificates': <CertificatesSection key="certificates" onCertClick={setSelectedCert} />,
+        'publications': (
+            <Suspense key="publications" fallback={<div className="section-loading">{String(t('general.loading'))}</div>}>
+                <PublicationsSection />
+            </Suspense>
+        ),
+        'certificates': (
+            <Suspense key="certificates" fallback={<div className="section-loading">{String(t('general.loading'))}</div>}>
+                <CertificatesSection onCertClick={setSelectedCert} />
+            </Suspense>
+        ),
         'contact': <ContactSection key="contact" />
-    }), [setSelectedCert]);
+    }), [setSelectedCert, t]);
 
     useEffect(() => {
         const observer = new IntersectionObserver(
@@ -308,7 +322,11 @@ const App: React.FC = () => {
                 )}
                 <Footer />
                 <ScrollToTop chatbotVisible={isChatbotAvailable && !isChatbotChecking} isVisible={isScrollToTopVisible} />
-                {isChatbotAvailable && !isChatbotChecking && <Chatbot />}
+                {isChatbotAvailable && !isChatbotChecking && (
+                    <Suspense fallback={null}>
+                        <Chatbot />
+                    </Suspense>
+                )}
                 
                 {/* Gemini API Connection Status Indicator - Only show in development */}
                 {IS_DEVELOPMENT && (
@@ -358,7 +376,9 @@ const App: React.FC = () => {
                         )}
                     </div>
                 )}
-                <CertificateModal cert={selectedCert} onClose={() => setSelectedCert(null)} />
+                <Suspense fallback={null}>
+                    <CertificateModal cert={selectedCert} onClose={() => setSelectedCert(null)} />
+                </Suspense>
                 {PERSONAS_FEATURE_ENABLED && isPersonalized && (
                   <div className="personalization-indicator">
                     <span>🎯 Personalized for you</span>
