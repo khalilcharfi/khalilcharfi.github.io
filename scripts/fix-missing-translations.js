@@ -12,28 +12,43 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Load the translations file
-const translationsPath = path.join(__dirname, '../src/features/i18n/data/translations.ts');
-let translationsContent = fs.readFileSync(translationsPath, 'utf8');
+// Load the translations file - try multiple locations
+let translationsPath = path.join(__dirname, '../src/features/i18n/data/translations.ts');
+if (!fs.existsSync(translationsPath)) {
+  translationsPath = path.join(__dirname, '../src/data/translations.ts');
+}
+if (!fs.existsSync(translationsPath)) {
+  translationsPath = path.join(__dirname, '../translations.ts');
+}
 
-// Extract the translations object by finding the content between the export and the closing brace
-const exportMatch = translationsContent.match(/export const translations: Translations = \{([\s\S]*)\};/);
-if (!exportMatch) {
-  console.error('❌ Could not parse translations.ts file');
+if (!fs.existsSync(translationsPath)) {
+  console.error('❌ Could not find translations.ts file');
   process.exit(1);
 }
 
-// Parse the JSON content
+let translationsContent = fs.readFileSync(translationsPath, 'utf8');
+
+// Parse the translations using the same method as validate-translations.js
 let translations;
 try {
-  const jsonContent = exportMatch[1];
-  // Clean up the content to make it valid JSON
-  const cleanedContent = jsonContent
-    .replace(/(\w+):/g, '"$1":') // Add quotes around keys
-    .replace(/'/g, '"') // Replace single quotes with double quotes
-    .replace(/,(\s*[}\]])/g, '$1'); // Remove trailing commas
+  // Extract just the translations object value
+  const exportMatch = translationsContent.match(/export const translations(?:: Translations)? = (\{[\s\S]*?\n\});?\s*$/m);
+  if (!exportMatch) {
+    console.error('❌ Could not parse translations.ts file structure');
+    process.exit(1);
+  }
   
-  translations = JSON.parse(`{${cleanedContent}}`);
+  // Create a temporary file that exports the translations as a module
+  const tempFile = path.join(__dirname, '../temp-translations-fix.mjs');
+  const jsContent = `export const translations = ${exportMatch[1]};`;
+  fs.writeFileSync(tempFile, jsContent, 'utf8');
+  
+  // Import the temporary file
+  const module = await import(`file://${tempFile}`);
+  translations = module.translations;
+  
+  // Clean up temp file
+  fs.unlinkSync(tempFile);
 } catch (error) {
   console.error('❌ Error parsing translations:', error.message);
   process.exit(1);

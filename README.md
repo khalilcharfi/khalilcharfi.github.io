@@ -6,6 +6,7 @@ Modern, interactive portfolio website with React, TypeScript, and Three.js.
 
 - **[Architecture Guide](./docs/ARCHITECTURE.md)** - Comprehensive architecture documentation
 - **[Error Handling Guide](./docs/ERROR_HANDLING.md)** - Error handling patterns and best practices
+- **[CI/CD & Git Hooks](./docs/CI_HOOKS.md)** - CI/CD workflows and Git hooks setup
 - **[Improvements Summary](./docs/IMPROVEMENTS_SUMMARY.md)** - Detailed changelog of recent improvements
 
 ## ✨ Features
@@ -36,12 +37,28 @@ npm run preview
 
 ## Scripts
 
+### Development
 | Command | Description |
 |---------|-------------|
 | `npm run dev` | Start development server |
 | `npm run build` | Build for production |
 | `npm run preview` | Preview production build |
-| `npm run test:playwright` | Run tests |
+
+### Testing & CI
+| Command | Description |
+|---------|-------------|
+| `npm run test:playwright` | Run Playwright tests |
+| `npm run ci:test` | Run all CI tests locally |
+| `npm run ci:validate-translations` | Validate translations |
+| `npm run ci:bundle-size` | Check bundle size |
+
+### Git Hooks
+| Command | Description |
+|---------|-------------|
+| `npm run hooks:setup` | Install Git hooks |
+| `npm run hooks:remove` | Remove Git hooks |
+
+See [CI/CD & Git Hooks Guide](./docs/CI_HOOKS.md) for more details.
 
 ## Structure
 
