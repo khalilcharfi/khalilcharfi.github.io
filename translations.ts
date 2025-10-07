@@ -1627,6 +1627,51 @@ export const translations: Translations = {
         greeting: "Bienvenue Chef de Projet !",
         tagline: "Développeur Fiable avec Historique de Livraison Prouvé",
         cta: "Planifier Votre Prochain Projet"
+      },
+      business_owner: {
+        greeting: "Bonjour Propriétaire d'Entreprise !",
+        tagline: "Partenaire Solutions Technologiques pour Croissance Business",
+        cta: "Explorer Solutions Business"
+      },
+      enterprise_client: {
+        greeting: "Bienvenue Partenaire Entreprise !",
+        tagline: "Solutions Niveau Entreprise avec Sécurité & Évolutivité",
+        cta: "Discuter Besoins Entreprise"
+      },
+      local_business: {
+        greeting: "Bonjour Entreprise Locale !",
+        tagline: "Votre Partenaire Tech de Quartier pour Croissance Numérique",
+        cta: "Soutenir Innovation Locale"
+      },
+      remote_work_advocate: {
+        greeting: "Salutations Champion Télétravail !",
+        tagline: "Développeur Remote Expérimenté avec Compétences Collaboration Globale",
+        cta: "Explorer Opportunités Remote"
+      },
+      international_client: {
+        greeting: "Bienvenue Partenaire International !",
+        tagline: "Développeur Global avec Expérience Projets Interculturels",
+        cta: "Se Connecter au-delà des Frontières"
+      },
+      local_tech_community: {
+        greeting: "Salut Communauté Tech !",
+        tagline: "Membre Communauté Actif & Passionné Partage Savoir",
+        cta: "Rejoindre la Conversation"
+      },
+      general_visitor: {
+        greeting: "Bienvenue sur Mon Portfolio !",
+        tagline: "Développeur Full-Stack Créant Solutions Numériques Innovantes",
+        cta: "Explorer Mon Travail"
+      },
+      returning_visitor: {
+        greeting: "Bon Retour !",
+        tagline: "Découvrez ce qui est Nouveau dans Mon Parcours Développement",
+        cta: "Voir Mises à Jour Récentes"
+      },
+      potential_collaborator: {
+        greeting: "Bonjour Futur Collaborateur !",
+        tagline: "Contributeur Open Source Prêt pour Partenariat",
+        cta: "Commencer Collaboration"
       }
     }
   },
