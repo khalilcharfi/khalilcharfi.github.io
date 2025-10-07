@@ -1,0 +1,105 @@
+name: Build and Deploy Portfolio
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # Fetch full history for proper versioning
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+    
+    - name: Install dependencies
+      run: npm ci
+    
+    - name: Generate build version
+      id: version
+      run: |
+        # Generate version based on git info
+        if [ "${{ github.event_name }}" = "pull_request" ]; then
+          # For PRs, use PR number and short commit hash
+          VERSION="pr-${{ github.event.number }}-$(git rev-parse --short HEAD)"
+        else
+          # For main branch, use commit count and short hash
+          COMMIT_COUNT=$(git rev-list --count HEAD)
+          SHORT_HASH=$(git rev-parse --short HEAD)
+          VERSION="$COMMIT_COUNT-$SHORT_HASH"
+        fi
+        echo "version=$VERSION" >> $GITHUB_OUTPUT
+        echo "Generated version: $VERSION"
+    
+    - name: Inject build version into service worker
+      run: |
+        # Replace the placeholder with the actual build version
+        sed -i "s/BUILD_VERSION_PLACEHOLDER/${{ steps.version.outputs.version }}/g" public/sw.js
+        
+        # Verify the replacement worked
+        if grep -q "BUILD_VERSION_PLACEHOLDER" public/sw.js; then
+          echo "Warning: Build version replacement may have failed"
+          exit 1
+        fi
+        
+        echo "Service worker version updated to: ${{ steps.version.outputs.version }}"
+    
+    - name: Run pre-build tasks
+      run: npm run generate:html
+    
+    - name: Build project
+      run: npm run build:prod
+      env:
+        VITE_GEMINI_API_KEY: ${{ secrets.VITE_GEMINI_API_KEY }}
+        VITE_ENABLE_CHATBOT: ${{ secrets.VITE_ENABLE_CHATBOT }}
+        VITE_ENABLE_DYNAMIC_CONTENT: ${{ secrets.VITE_ENABLE_DYNAMIC_CONTENT }}
+        VITE_ENABLE_PERSONAS: ${{ secrets.VITE_ENABLE_PERSONAS }}
+        VITE_FORCE_DEFAULT_CONTENT: ${{ secrets.VITE_FORCE_DEFAULT_CONTENT }}
+        VITE_SHOW_RECOMMENDED_SECTIONS: ${{ secrets.VITE_SHOW_RECOMMENDED_SECTIONS }}
+        VITE_SHOW_DEV_ELEMENTS: ${{ secrets.VITE_SHOW_DEV_ELEMENTS }}
+        VITE_SHOW_VISITOR_CONTROLS: ${{ secrets.VITE_SHOW_VISITOR_CONTROLS }}
+        VITE_SHOW_PROFILE_INSIGHTS: ${{ secrets.VITE_SHOW_PROFILE_INSIGHTS }}
+        VITE_SHOW_TRANSLATION_DEBUG: ${{ secrets.VITE_SHOW_TRANSLATION_DEBUG }}
+        VITE_SHOW_DEBUG_INFO: ${{ secrets.VITE_SHOW_DEBUG_INFO }}
+        VITE_ENABLE_DCE: ${{ secrets.VITE_ENABLE_DCE }}
+    
+    - name: Verify service worker version injection
+      run: |
+        # Check if the service worker has the correct version
+        if grep -q "BUILD_VERSION_PLACEHOLDER" dist/sw.js; then
+          echo "Error: Service worker still contains placeholder version"
+          exit 1
+        fi
+        
+        # Extract and display the actual version
+        VERSION=$(grep -o 'const BUILD_VERSION = '\''[^'\'']*'\'';' dist/sw.js | sed "s/const BUILD_VERSION = '\\(.*\\)';/\\1/")
+        echo "Service worker version in build: $VERSION"
+    
+    - name: Run tests
+      run: |
+        npm run ci:test
+        npm run test:a11y:ci
+    
+    - name: Deploy to GitHub Pages
+      if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./dist
+        cname: khalilcharfi.github.io
+    
+    - name: Verify deployment
+      if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+      run: |
+        echo "Deployment completed. Service worker version: ${{ steps.version.outputs.version }}"
+        echo "Portfolio available at: https://khalilcharfi.github.io"
