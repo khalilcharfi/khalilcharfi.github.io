@@ -1,4 +1,4 @@
-name: 🏗️ Build and Prepare for Deployment
+name: 🏗️ Build and Deploy to GitHub Pages
 
 on:
   workflow_run:
@@ -9,6 +9,8 @@ on:
 
 permissions:
   contents: write
+  pages: write
+  id-token: write
 
 concurrency:
   group: "build-${{ github.event.workflow_run.head_branch }}-${{ github.event.workflow_run.head_sha }}"
@@ -18,12 +20,15 @@ env:
   NODE_VERSION: '22'
 
 jobs:
-  # Build and push to gh-pages
-  build-and-push:
-    name: 🏗️ Build & Push to gh-pages
+  # Build and deploy to GitHub Pages
+  build-and-deploy:
+    name: 🏗️ Build & Deploy to GitHub Pages
     runs-on: ubuntu-latest
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     timeout-minutes: 15
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     
     steps:
       - name: ⚡ Checkout
@@ -113,3 +118,22 @@ jobs:
           git push origin gh-pages --force
           
           echo "✅ Successfully force pushed to gh-pages branch"
+      
+      - name: ⚡ Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+      
+      - name: ⚡ Verify deployment
+        run: |
+          echo "🚀 Deployment completed!"
+          echo "URL: ${{ steps.deployment.outputs.page_url }}"
+          
+          # Wait a moment for propagation
+          sleep 10
+          
+          # Quick health check
+          if curl -f -s --max-time 15 "${{ steps.deployment.outputs.page_url }}" > /dev/null; then
+            echo "✅ Site is accessible"
+          else
+            echo "⚠️  Site may not be fully propagated yet (this is normal)"
+          fi
