@@ -118,22 +118,3 @@ jobs:
           git push origin gh-pages --force
           
           echo "✅ Successfully force pushed to gh-pages branch"
-      
-      - name: ⚡ Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
-      
-      - name: ⚡ Verify deployment
-        run: |
-          echo "🚀 Deployment completed!"
-          echo "URL: ${{ steps.deployment.outputs.page_url }}"
-          
-          # Wait a moment for propagation
-          sleep 10
-          
-          # Quick health check
-          if curl -f -s --max-time 15 "${{ steps.deployment.outputs.page_url }}" > /dev/null; then
-            echo "✅ Site is accessible"
-          else
-            echo "⚠️  Site may not be fully propagated yet (this is normal)"
-          fi
