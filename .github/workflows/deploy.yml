@@ -12,6 +12,15 @@ on:
         type: choice
         options: [production, staging]
 
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages-${{ github.ref_name }}"
+  cancel-in-progress: false
+
 env:
   NODE_VERSION: '22'
   ULTRA_LIGHT: true
