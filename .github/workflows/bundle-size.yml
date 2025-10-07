@@ -19,11 +19,22 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '20'  # Updated to LTS
           cache: 'npm'
       
+      - name: Cache build artifacts
+        uses: actions/cache@v4
+        with:
+          path: |
+            dist/
+            node_modules/.cache
+          key: ${{ runner.os }}-build-${{ hashFiles('package-lock.json', 'src/**/*') }}
+          restore-keys: |
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-node-
+      
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --prefer-offline
       
       - name: Build current version
         run: npm run build
@@ -31,22 +42,23 @@ jobs:
       - name: Get current bundle size
         id: current-size
         run: |
-          # Get total gzipped size
+          # Get total gzipped size more efficiently
           TOTAL_SIZE=$(find dist -name '*.js' -o -name '*.css' | xargs gzip -c | wc -c)
           TOTAL_SIZE_KB=$((TOTAL_SIZE / 1024))
           
-          # Get individual chunk sizes
+          # Get individual chunk sizes with better formatting
           echo "📦 Current Bundle Sizes:"
           echo ""
           echo "| File | Size (gzipped) |"
           echo "|------|----------------|"
           
-          find dist/assets -name '*.js' -type f | while read file; do
+          # Sort by size for better readability
+          find dist/assets -name '*.js' -o -name '*.css' | while read file; do
             FILENAME=$(basename "$file")
             GZIP_SIZE=$(gzip -c "$file" | wc -c)
             GZIP_SIZE_KB=$((GZIP_SIZE / 1024))
             echo "| $FILENAME | ${GZIP_SIZE_KB} KB |"
-          done
+          done | sort -k3 -nr
           
           echo ""
           echo "**Total Bundle Size: ${TOTAL_SIZE_KB} KB (gzipped)**"
@@ -61,29 +73,32 @@ jobs:
           CURRENT_SIZE=${{ steps.current-size.outputs.size }}
           TARGET_SIZE=350
           STRETCH_TARGET=300
+          CRITICAL_SIZE=450
           
           echo "### 🎯 Bundle Size Report"
           echo ""
           echo "- **Current:** ${CURRENT_SIZE} KB"
           echo "- **Target:** ${TARGET_SIZE} KB"
           echo "- **Stretch Goal:** ${STRETCH_TARGET} KB"
+          echo "- **Critical Limit:** ${CRITICAL_SIZE} KB"
           echo ""
           
           if [ $CURRENT_SIZE -le $STRETCH_TARGET ]; then
             echo "✅ **Excellent!** Bundle is under stretch goal!"
             echo "🏆 Savings: $((TARGET_SIZE - CURRENT_SIZE)) KB under target"
+            echo "bundle_status=excellent" >> $GITHUB_OUTPUT
           elif [ $CURRENT_SIZE -le $TARGET_SIZE ]; then
             echo "✅ **Good!** Bundle meets target size!"
             echo "📊 Savings: $((TARGET_SIZE - CURRENT_SIZE)) KB under target"
-          else
+            echo "bundle_status=good" >> $GITHUB_OUTPUT
+          elif [ $CURRENT_SIZE -le $CRITICAL_SIZE ]; then
             echo "⚠️  **Warning:** Bundle exceeds target!"
             echo "📈 Over by: $((CURRENT_SIZE - TARGET_SIZE)) KB"
-            
-            # Don't fail the build, just warn
-            if [ $CURRENT_SIZE -gt 450 ]; then
-              echo "❌ **Error:** Bundle is critically large (>450 KB)!"
-              exit 1
-            fi
+            echo "bundle_status=warning" >> $GITHUB_OUTPUT
+          else
+            echo "❌ **Error:** Bundle is critically large (>${CRITICAL_SIZE} KB)!"
+            echo "bundle_status=error" >> $GITHUB_OUTPUT
+            exit 1
           fi
       
       - name: Compare with base branch (PR only)
@@ -93,8 +108,14 @@ jobs:
           git fetch origin ${{ github.base_ref }}
           git checkout origin/${{ github.base_ref }}
           
-          # Install and build base
-          npm ci --prefer-offline
+          # Use cached dependencies if available
+          if [ -d "node_modules" ]; then
+            echo "Using cached dependencies"
+          else
+            npm ci --prefer-offline
+          fi
+          
+          # Build base version
           npm run build
           
           # Get base size
@@ -107,6 +128,7 @@ jobs:
           # Compare
           CURRENT_SIZE=${{ steps.current-size.outputs.size }}
           DIFF=$((CURRENT_SIZE - BASE_SIZE_KB))
+          PERCENT=$(echo "scale=1; $DIFF * 100 / $BASE_SIZE_KB" | bc -l 2>/dev/null || echo "0")
           
           echo "### 📊 Bundle Size Comparison"
           echo ""
@@ -115,26 +137,37 @@ jobs:
           echo "| Base (${{ github.base_ref }}) | ${BASE_SIZE_KB} KB |"
           echo "| Current (PR) | ${CURRENT_SIZE} KB |"
           echo "| **Difference** | **${DIFF} KB** |"
+          echo "| **Change** | **${PERCENT}%** |"
           echo ""
           
           if [ $DIFF -lt 0 ]; then
             echo "✅ **Bundle size decreased by $((-DIFF)) KB!** 🎉"
+            echo "comparison_status=improvement" >> $GITHUB_OUTPUT
           elif [ $DIFF -eq 0 ]; then
             echo "✅ **No change in bundle size**"
+            echo "comparison_status=unchanged" >> $GITHUB_OUTPUT
           else
-            PERCENT=$(echo "scale=1; $DIFF * 100 / $BASE_SIZE_KB" | bc)
             echo "⚠️  **Bundle size increased by ${DIFF} KB (+${PERCENT}%)**"
+            echo "comparison_status=increase" >> $GITHUB_OUTPUT
             
+            # Fail if increase is too large
             if (( $(echo "$PERCENT > 5" | bc -l) )); then
               echo "❌ **Error:** Bundle size increased by more than 5%!"
               exit 1
             fi
           fi
       
+      - name: Generate bundle analysis
+        run: |
+          # Generate detailed bundle analysis if script exists
+          if [ -f "scripts/analyze-bundle.js" ]; then
+            npm run analyze:bundle || echo "Bundle analysis script not available"
+          fi
+      
       - name: Upload bundle analysis
         uses: actions/upload-artifact@v4
         with:
-          name: bundle-analysis
+          name: bundle-analysis-${{ github.run_id }}
           path: |
             dist/bundle-analysis.html
             current-size.txt
@@ -148,11 +181,24 @@ jobs:
             const fs = require('fs');
             const size = fs.readFileSync('current-size.txt', 'utf8').trim();
             
-            const comment = `### 📦 Bundle Size Report
+            // Get bundle status from previous step
+            const bundleStatus = process.env.BUNDLE_STATUS || 'unknown';
+            const comparisonStatus = process.env.COMPARISON_STATUS || 'unknown';
+            
+            let statusEmoji = '📦';
+            if (bundleStatus === 'excellent') statusEmoji = '🏆';
+            else if (bundleStatus === 'good') statusEmoji = '✅';
+            else if (bundleStatus === 'warning') statusEmoji = '⚠️';
+            else if (bundleStatus === 'error') statusEmoji = '❌';
+            
+            const comment = `### ${statusEmoji} Bundle Size Report
             
             **Current Size:** ${size} KB (gzipped)
             **Target:** 350 KB
             **Stretch Goal:** 300 KB
+            
+            **Status:** ${bundleStatus.toUpperCase()}
+            **Comparison:** ${comparisonStatus.toUpperCase()}
             
             [View detailed bundle analysis](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
             `;
@@ -163,4 +209,3 @@ jobs:
               repo: context.repo.repo,
               body: comment
             });
-
