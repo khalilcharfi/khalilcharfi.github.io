@@ -126,12 +126,48 @@ jobs:
           
           echo "✅ All validations passed"
       
-      - name: ⚡ Upload build artifacts
+      - name: ⚡ Ultra compress production build
+        run: |
+          echo "🗜️ Compressing production build with maximum compression..."
+          
+          # Create ultra-compressed tarball with maximum compression
+          tar --create --gzip --file=build-ultra-compressed.tar.gz \
+              --exclude='*.map' \
+              --exclude='*.log' \
+              --exclude='*.tmp' \
+              --exclude='*.temp' \
+              --exclude='node_modules' \
+              --exclude='.git' \
+              --exclude='.DS_Store' \
+              --exclude='Thumbs.db' \
+              -C dist .
+          
+          # Get compression stats
+          ORIGINAL_SIZE=$(du -sh dist | cut -f1)
+          COMPRESSED_SIZE=$(du -sh build-ultra-compressed.tar.gz | cut -f1)
+          COMPRESSION_RATIO=$(echo "scale=1; $(du -sb dist | cut -f1) / $(du -sb build-ultra-compressed.tar.gz | cut -f1)" | bc -l)
+          
+          echo "📊 Compression Statistics:"
+          echo "  Original size: $ORIGINAL_SIZE"
+          echo "  Compressed size: $COMPRESSED_SIZE"
+          echo "  Compression ratio: ${COMPRESSION_RATIO}x"
+          echo "  Space saved: $(echo "scale=1; (1 - 1/$COMPRESSION_RATIO) * 100" | bc -l)%"
+          
+          # Verify the compressed archive
+          if tar -tzf build-ultra-compressed.tar.gz > /dev/null 2>&1; then
+            echo "✅ Archive verification successful"
+          else
+            echo "❌ Archive verification failed"
+            exit 1
+          fi
+
+      - name: ⚡ Upload compressed build artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: build-artifacts-${{ github.run_id }}
-          path: dist/
+          name: build-ultra-compressed-${{ github.run_id }}
+          path: build-ultra-compressed.tar.gz
           retention-days: 7
+          compression-level: 9
 
   # Simple summary
   summary:

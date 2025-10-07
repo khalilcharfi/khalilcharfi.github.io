@@ -1,8 +1,9 @@
 name: 🚀 Deploy to GitHub Pages
 
 on:
-  push:
-    branches: [master]
+  workflow_run:
+    workflows: ["🚀 Simple CI Pipeline"]
+    types: [completed]
   workflow_dispatch:
 
 permissions:
@@ -11,45 +12,43 @@ permissions:
   id-token: write
 
 concurrency:
-  group: "deploy-${{ github.ref_name }}-${{ github.event.head_commit.id }}"
+  group: "deploy-${{ github.event.workflow_run.head_branch }}-${{ github.event.workflow_run.head_sha }}"
   cancel-in-progress: true
 
 env:
   NODE_VERSION: '22'
 
 jobs:
-  build-and-deploy:
-    name: 🚀 Build and Deploy to GitHub Pages
+  deploy:
+    name: 🚀 Deploy to GitHub Pages
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
-      - name: ⚡ Checkout
-        uses: actions/checkout@v4
+      - name: ⚡ Download compressed build artifacts
+        uses: actions/download-artifact@v4
         with:
-          fetch-depth: 1
+          name: build-ultra-compressed-${{ github.event.workflow_run.run_id }}
+          path: ./compressed-build
 
-      - name: ⚡ Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
-
-      - name: ⚡ Install dependencies
-        run: npm ci --prefer-offline --no-audit --no-fund --silent
-
-      - name: ⚡ Build project
+      - name: ⚡ Extract and verify build
         run: |
-          echo "🏗️ Building project..."
-          npm run build:prod --silent
-          echo "✅ Build completed successfully"
-
-      - name: ⚡ Verify build output
-        run: |
-          echo "🔍 Verifying build output..."
+          echo "📦 Extracting ultra-compressed build..."
+          
+          # Extract the compressed build
+          cd compressed-build
+          tar -xzf build-ultra-compressed.tar.gz
+          
+          # Move extracted files to dist directory
+          mkdir -p ../dist
+          mv * ../dist/ 2>/dev/null || true
+          cd ..
+          
+          echo "🔍 Verifying extracted build..."
           
           # Check required files
           REQUIRED_FILES=("index.html" "robots.txt" "sitemap.xml")
@@ -73,7 +72,13 @@ jobs:
             echo "✅ Bundle size acceptable: ${TOTAL_SIZE_KB} KB"
           fi
           
-          echo "✅ Build verification passed"
+          # Show extraction stats
+          echo "📊 Extraction Statistics:"
+          echo "  Extracted files: $(find dist -type f | wc -l)"
+          echo "  Total size: $(du -sh dist | cut -f1)"
+          echo "  Assets: $(find dist/assets -type f | wc -l) files"
+          
+          echo "✅ Build extraction and verification completed"
 
       - name: ⚡ Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
