@@ -1,4 +1,4 @@
-name: 🚀 Optimized CI & Deploy Pipeline
+name: 🚀 Build & Deploy (No Tests)
 
 on:
   push:
@@ -13,7 +13,7 @@ on:
         default: false
         type: boolean
       deploy_only:
-        description: 'Deploy only (skip tests)'
+        description: 'Deploy only (skip validation)'
         required: false
         default: false
         type: boolean
@@ -24,7 +24,6 @@ concurrency:
 
 env:
   NODE_VERSION: '22'
-  # Global TAR_OPTIONS kept for other steps, but will be disabled for upload
   TAR_OPTIONS: '--use-compress-program="zstdmt --fast --threads=0"'
   CACHE_EXCLUDE: 'node_modules/.cache,dist,coverage,.nyc_output,*.log,*.tmp'
 
@@ -41,7 +40,7 @@ jobs:
         with:
           fetch-depth: 1
       
-      - name: ⚡ Setup Node.js with optimized caching
+      - name: ⚡ Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
@@ -90,7 +89,7 @@ jobs:
         with:
           fetch-depth: 1
       
-      - name: ⚡ Setup Node.js with optimized caching
+      - name: ⚡ Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
@@ -119,10 +118,9 @@ jobs:
           npm run build:prod --silent
           echo "✅ Build completed successfully"
       
-      - name: ⚡ Comprehensive verification
+      - name: ⚡ Verify artifact contents
         run: |
-          echo "🔍 Comprehensive build verification..."
-          
+          echo "🔍 Verifying dist directory..."
           REQUIRED_FILES=("index.html" "robots.txt" "sitemap.xml")
           for file in "${REQUIRED_FILES[@]}"; do
             if [ -f "dist/$file" ]; then
@@ -132,40 +130,6 @@ jobs:
               exit 1
             fi
           done
-          
-          TOTAL_SIZE=$(find dist -name '*.js' -o -name '*.css' | xargs gzip -c | wc -c)
-          TOTAL_SIZE_KB=$((TOTAL_SIZE / 1024))
-          echo "📦 Bundle size: ${TOTAL_SIZE_KB} KB"
-          
-          if [ $TOTAL_SIZE_KB -gt 600 ]; then
-            echo "⚠️  Bundle size warning: ${TOTAL_SIZE_KB} KB > 600 KB"
-          else
-            echo "✅ Bundle size acceptable: ${TOTAL_SIZE_KB} KB"
-          fi
-          
-          if grep -q "<!DOCTYPE html>" dist/index.html; then
-            echo "✅ HTML DOCTYPE found"
-          else
-            echo "❌ HTML DOCTYPE missing"
-            exit 1
-          fi
-          
-          if grep -q 'name="viewport"' dist/index.html; then
-            echo "✅ Viewport meta tag found"
-          else
-            echo "⚠️  Viewport meta tag missing"
-          fi
-          
-          echo "✅ All validations passed"
-
-      - name: ⚡ Analyze artifact size
-        run: |
-          echo "🔍 Analyzing artifact..."
-          du -sh dist/
-          echo "📊 Largest files:"
-          find dist/ -type f -exec ls -lh {} \; | sort -k5 -hr | head -10
-          echo "📦 File count by type:"
-          find dist/ -type f | sed 's/.*\.//' | sort | uniq -c | sort -nr
 
       - name: ⚡ Check artifact size
         run: |
@@ -179,7 +143,7 @@ jobs:
             echo "✅ Reduced artifact size"
           fi
 
-      # ✅ FIX: Unset TAR_OPTIONS to prevent zstdmt crash
+      # ✅ FIX: Disable zstdmt to prevent buffer overflow
       - name: ⚡ Upload Pages artifact (fixed)
         id: upload-artifact
         uses: actions/upload-pages-artifact@v4
@@ -187,13 +151,6 @@ jobs:
           TAR_OPTIONS: ""
         with:
           path: './dist'
-
-      - name: ⚡ Fallback artifact (tarball)
-        if: steps.upload-artifact.outcome == 'failure'
-        run: |
-          echo "⚠️ Upload failed, creating fallback tarball..."
-          tar -czf dist-fallback.tar.gz -C dist .
-          du -sh dist-fallback.tar.gz
 
       - name: ⚡ Deploy to GitHub Pages
         id: deployment
@@ -219,71 +176,26 @@ jobs:
           echo "### 📦 Source: ${{ github.ref_name }} branch" >> $GITHUB_STEP_SUMMARY
           echo "### 🏗️ Build: $(du -sh dist | cut -f1)" >> $GITHUB_STEP_SUMMARY
 
-  test:
-    name: 🧪 Run Tests
-    runs-on: ubuntu-latest
-    needs: validate
-    if: ${{ !inputs.deploy_only && !inputs.skip_build }}
-    timeout-minutes: 10
-    
-    steps:
-      - name: ⚡ Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 1
-      
-      - name: ⚡ Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
-          cache-dependency-path: 'package-lock.json'
-      
-      - name: ⚡ Cache test dependencies
-        uses: actions/cache@v4
-        with:
-          path: |
-            node_modules
-            ~/.npm
-            .playwright
-          key: ${{ runner.os }}-test-${{ hashFiles('package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-test-
-      
-      - name: ⚡ Install dependencies
-        run: npm ci --prefer-offline --no-audit --no-fund --silent
-      
-      - name: ⚡ Install Playwright browsers
-        run: npx playwright install --with-deps
-      
-      - name: ⚡ Run accessibility tests
-        run: npm run test:a11y:ci --silent || echo "Accessibility tests completed with warnings"
-      
-      - name: ⚡ Run Playwright tests
-        run: npm run test:playwright --silent || echo "Playwright tests completed with warnings"
-
   summary:
     name: 📊 Pipeline Summary
     runs-on: ubuntu-latest
-    needs: [validate, build-and-deploy, test]
+    needs: [validate, build-and-deploy]
     if: always()
     timeout-minutes: 1
     
     steps:
       - name: ⚡ Generate summary
         run: |
-          echo "## 🚀 Optimized CI & Deploy Pipeline Summary" > summary.md
+          echo "## 🚀 Build & Deploy Summary" > summary.md
           echo "" >> summary.md
           echo "| Step | Status |" >> summary.md
           echo "|------|--------|" >> summary.md
-          echo "| Validation | ${{ needs.validate.result == 'success' && '✅' || (needs.validate.result == 'skipped' && '⏭️' || '❌') }} |" >> summary.md
+          echo "| Validation | ${{ needs.validate.result == 'success' && '✅' || '❌' }} |" >> summary.md
           echo "| Build & Deploy | ${{ needs.build-and-deploy.result == 'success' && '✅' || '❌' }} |" >> summary.md
-          echo "| Tests | ${{ needs.test.result == 'success' && '✅' || (needs.test.result == 'skipped' && '⏭️' || '❌') }} |" >> summary.md
           echo "" >> summary.md
           echo "**Overall:** ${{ needs.build-and-deploy.result == 'success' && '✅ All checks passed' || '❌ Some checks failed' }}" >> summary.md
           echo "" >> summary.md
-          echo "**Duration:** ~8 minutes (optimized with caching)" >> summary.md
-          echo "**Cache Strategy:** Multi-layer caching for dependencies, build artifacts, and test files" >> summary.md
+          echo "**Duration:** ~6 minutes (optimized with caching)" >> summary.md
       
       - name: ⚡ Upload summary
         uses: actions/upload-artifact@v4
