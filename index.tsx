@@ -40,11 +40,9 @@ const PublicationsSection = lazy(() => import('@/features/portfolio').then(m => 
 const CertificatesSection = lazy(() => import('@/features/portfolio').then(m => ({ default: m.CertificatesSection })));
 
 // Lazy load debug components only in development
-const PerformanceDrawer = lazy(() => 
-  import.meta.env.DEV 
-    ? import('@/shared/components/debug').then(m => ({ default: m.PerformanceDrawer }))
-    : Promise.resolve({ default: () => null })
-);
+const PerformanceDrawer = import.meta.env.DEV 
+  ? lazy(() => import('@/shared/components/debug/PerformanceDrawer').then(m => ({ default: m.PerformanceDrawer })))
+  : () => null;
 
 // Helper function to get base language
 const getBaseLang = (lang: string) => lang?.split('-')[0] || 'en';
@@ -72,6 +70,20 @@ const App: React.FC = () => {
 
     // Performance optimization: Initialize on mount
     useEffect(() => {
+        // Disable scroll on page load and keep at top
+        document.body.style.overflow = 'hidden';
+        window.scrollTo(0, 0);
+        
+        // Prevent any scroll attempts during initial load
+        const preventScroll = (e: Event) => {
+            e.preventDefault();
+            window.scrollTo(0, 0);
+        };
+        
+        // Add scroll prevention listeners
+        window.addEventListener('scroll', preventScroll, { passive: false });
+        window.addEventListener('wheel', preventScroll, { passive: false });
+        window.addEventListener('touchmove', preventScroll, { passive: false });
         
         const loadingScreen = document.getElementById('initial-loading');
         if (loadingScreen) {
@@ -109,6 +121,14 @@ const App: React.FC = () => {
         
         // Report performance metrics after load
         window.addEventListener('load', () => {
+            // Re-enable scrolling after page load
+            document.body.style.overflow = '';
+            
+            // Remove scroll prevention listeners
+            window.removeEventListener('scroll', preventScroll);
+            window.removeEventListener('wheel', preventScroll);
+            window.removeEventListener('touchmove', preventScroll);
+            
             setTimeout(() => {
                 import('@/shared/utils').then(module => {
                     module.reportPerformanceMetrics();
@@ -127,12 +147,19 @@ const App: React.FC = () => {
         window.addEventListener('scroll', handleScroll, { passive: true });
         return () => {
             window.removeEventListener('scroll', handleScroll);
+            window.removeEventListener('scroll', preventScroll);
+            window.removeEventListener('wheel', preventScroll);
+            window.removeEventListener('touchmove', preventScroll);
             document.removeEventListener('keydown', handleKeyDown);
             document.removeEventListener('mousedown', handleMouseDown);
         };
     }, [reducedMotion]);
 
     useLayoutEffect(() => {
+        // Disable scroll immediately before any paint
+        document.body.style.overflow = 'hidden';
+        window.scrollTo(0, 0);
+        
         // Apply theme immediately before any paint
         const root = document.documentElement;
         const body = document.body;
@@ -341,16 +368,18 @@ const App: React.FC = () => {
                 </Suspense>
                 
                 {/* Performance Drawer - Only in development */}
-                <Suspense fallback={null}>
-                    <PerformanceDrawer 
-                        geminiStatus={{
-                            connectionStatus,
-                            errorMessage,
-                            retryCount,
-                            retryConnection
-                        }}
-                    />
-                </Suspense>
+                {import.meta.env.DEV && (
+                    <Suspense fallback={null}>
+                        <PerformanceDrawer 
+                            geminiStatus={{
+                                connectionStatus,
+                                errorMessage,
+                                retryCount,
+                                retryConnection
+                            }}
+                        />
+                    </Suspense>
+                )}
                 
                 {PERSONAS_FEATURE_ENABLED && isPersonalized && (
                   <div className="personalization-indicator">

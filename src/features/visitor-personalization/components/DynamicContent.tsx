@@ -164,25 +164,31 @@ export const DynamicContentProvider: React.FC<DynamicContentProviderProps> = ({ 
   const useDefaultContent = FORCE_DEFAULT_CONTENT || !DYNAMIC_CONTENT_ENABLED;
   const useDynamicContent = DYNAMIC_CONTENT_ENABLED && !FORCE_DEFAULT_CONTENT;
   
-  // Debug logging for content mode
+  // Debug logging for content mode (only in development)
   useEffect(() => {
-    console.log('Content Mode Debug:', {
-      PERSONAS_ENABLED,
-      DYNAMIC_CONTENT_ENABLED,
-      FORCE_DEFAULT_CONTENT,
-      useDefaultContent,
-      useDynamicContent,
-      personasActive,
-      analyticsConsent
-    });
+    if (import.meta.env.DEV) {
+      console.log('Content Mode Debug:', {
+        PERSONAS_ENABLED,
+        DYNAMIC_CONTENT_ENABLED,
+        FORCE_DEFAULT_CONTENT,
+        useDefaultContent,
+        useDynamicContent,
+        personasActive,
+        analyticsConsent
+      });
+    }
   }, [useDefaultContent, useDynamicContent, personasActive, analyticsConsent]);
 
   const trackEvent = (event: string, data?: any) => {
     if (!personasActive || !useDynamicContent) {
-      console.log('Event tracking skipped - no analytics consent, personas disabled, or dynamic content disabled');
+      if (import.meta.env.DEV) {
+        console.log('Event tracking skipped - no analytics consent, personas disabled, or dynamic content disabled');
+      }
       return;
     }
-    console.log('Event tracked:', event, data);
+    if (import.meta.env.DEV) {
+      console.log('Event tracked:', event, data);
+    }
   };
 
   // Update meta tags based on content mode and personas
@@ -257,7 +263,9 @@ export const useSectionTracking = (section: string): {
 
   // Manual tracker (used by components that want to trigger logging explicitly)
   const trackSectionView = () => {
-    console.log('Section view tracked:', section);
+    if (import.meta.env.DEV) {
+      console.log('Section view tracked:', section);
+    }
     // Here you can wire up real analytics if needed, e.g. analytics.trackEvent('section_view', { section })
   };
 

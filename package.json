@@ -8,6 +8,7 @@
     "prebuild": "npm run generate:html",
     "build": "vite build && node scripts/copy-assets.js && node scripts/generate-sitemap.js",
     "build:prod": "vite build --mode production && node scripts/copy-assets.js && node scripts/generate-sitemap.js",
+    "build:prod:debug": "VITE_NO_MINIFY=true vite build --mode production && node scripts/copy-assets.js && node scripts/generate-sitemap.js",
     "build:analyze": "vite build && open dist/bundle-analysis.html",
     "preview": "vite preview",
     "preview:prod": "vite preview --mode production",

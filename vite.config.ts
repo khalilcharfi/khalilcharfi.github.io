@@ -8,6 +8,11 @@ export default defineConfig(({ mode }) => {
     // Support both GEMINI_API_KEY and VITE_GEMINI_API_KEY
     const geminiApiKey = env.VITE_GEMINI_API_KEY || env.GEMINI_API_KEY;
     
+    // Dead Code Elimination configuration
+    // DCE removes unused code, variables, and functions to reduce bundle size
+    // Defaults to enabled in production, can be controlled via VITE_ENABLE_DCE
+    const enableDCE = env.VITE_ENABLE_DCE === 'true' || (env.VITE_ENABLE_DCE === undefined && mode === 'production');
+    
     const clientEnv = {
         'process.env.API_KEY': JSON.stringify(geminiApiKey),
         'process.env.GEMINI_API_KEY': JSON.stringify(geminiApiKey),
@@ -21,6 +26,7 @@ export default defineConfig(({ mode }) => {
         'process.env.VITE_SHOW_PROFILE_INSIGHTS': JSON.stringify(env.VITE_SHOW_PROFILE_INSIGHTS),
         'process.env.VITE_SHOW_TRANSLATION_DEBUG': JSON.stringify(env.VITE_SHOW_TRANSLATION_DEBUG),
         'process.env.VITE_SHOW_DEBUG_INFO': JSON.stringify(env.VITE_SHOW_DEBUG_INFO),
+        'process.env.VITE_ENABLE_DCE': JSON.stringify(enableDCE),
         'process.env.NODE_ENV': JSON.stringify(mode),
         'process.env.DEV': JSON.stringify(mode === 'development'),
         'process.env.PROD': JSON.stringify(mode === 'production')
@@ -124,24 +130,24 @@ export default defineConfig(({ mode }) => {
         entryFileNames: 'assets/[name]-[hash].js',
         assetFileNames: 'assets/[name]-[hash].[ext]'
       },
-      // Enable tree-shaking
-      treeshake: {
+      // Enable tree-shaking with Dead Code Elimination
+      treeshake: enableDCE ? {
         moduleSideEffects: false,
         propertyReadSideEffects: false,
-        tryCatchDeoptimization: false
-      },
-      // Exclude debug components from production builds
-      external: mode === 'production' ? (id) => {
-        // Only externalize if it's a direct import of debug components
-        if (id.includes('debug/PerformanceDrawer') || id.includes('debug/DebugComponents')) {
-          return true;
-        }
-        return false;
-      } : undefined
+        tryCatchDeoptimization: false,
+        // Enhanced DCE settings when enabled
+        unknownGlobalSideEffects: false,
+        preset: 'recommended'
+      } : {
+        // Conservative tree-shaking when DCE is disabled
+        moduleSideEffects: 'no-external',
+        propertyReadSideEffects: true,
+        tryCatchDeoptimization: true
+      }
     },
     chunkSizeWarningLimit: 1000,
-    minify: 'terser',
-    terserOptions: {
+    minify: env.VITE_NO_MINIFY === 'true' ? false : 'terser',
+    terserOptions: env.VITE_NO_MINIFY === 'true' ? undefined : {
       compress: {
         drop_console: mode === 'production',
         drop_debugger: mode === 'production',
@@ -151,18 +157,32 @@ export default defineConfig(({ mode }) => {
         unsafe_methods: true,
         unsafe_proto: true,
         unsafe_regexp: true,
-        unsafe_undefined: true
+        unsafe_undefined: true,
+        // Enhanced DCE when enabled
+        ...(enableDCE && {
+          dead_code: true,
+          drop_unused: true,
+          unused: true,
+          side_effects: false
+        })
       },
       format: {
         comments: false
       },
       mangle: {
-        safari10: true // Better Safari compatibility
+        safari10: true, // Better Safari compatibility
+        // Enhanced mangling when DCE is enabled
+        ...(enableDCE && {
+          toplevel: true,
+          properties: {
+            regex: /^_/
+          }
+        })
       }
     },
-    sourcemap: mode === 'development',
+    sourcemap: mode === 'development' || env.VITE_NO_MINIFY === 'true',
     cssCodeSplit: true,
-    cssMinify: mode === 'production',
+    cssMinify: env.VITE_NO_MINIFY === 'true' ? false : mode === 'production',
     target: 'es2020', // Updated for better modern features
     assetsInlineLimit: 4096,
     reportCompressedSize: true,
@@ -171,25 +191,12 @@ export default defineConfig(({ mode }) => {
     }
   },
   plugins: [
-    // Plugin to remove debug components in production
-    mode === 'production' ? {
-      name: 'remove-debug-components',
-      generateBundle(options, bundle) {
-        // Remove debug component files from the bundle
-        Object.keys(bundle).forEach(fileName => {
-          if (bundle[fileName].type === 'chunk' && 
-              (fileName.includes('debug-') || fileName.includes('PerformanceDrawer'))) {
-            delete bundle[fileName];
-          }
-        });
-      }
-    } : null,
     visualizer({
       filename: 'dist/bundle-analysis.html',
       open: false,
       gzipSize: true,
       brotliSize: true
     })
-  ].filter(Boolean)
+  ]
 };
 });

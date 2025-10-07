@@ -18,7 +18,7 @@ self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then(cache => {
-        console.log('ServiceWorker: Caching core assets');
+        // Silent caching in production for better performance
         return cache.addAll(ASSETS_TO_CACHE);
       })
       .then(() => self.skipWaiting())
@@ -34,7 +34,7 @@ self.addEventListener('activate', event => {
       return Promise.all(
         cacheNames.map(cacheName => {
           if (cacheName !== CACHE_NAME) {
-            console.log('ServiceWorker: Clearing old cache:', cacheName);
+            // Silent cache cleanup in production
             return caches.delete(cacheName);
           }
         })

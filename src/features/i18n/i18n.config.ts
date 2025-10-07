@@ -10,40 +10,43 @@ Object.keys(translations).forEach((lang) => {
   };
 });
 
-i18n
-  .use(LanguageDetector)
-  .use(initReactI18next)
-  .init({
-    resources,
-    fallbackLng: 'en',
-    debug: process.env.NODE_ENV === 'development',
-    interpolation: {
-      escapeValue: false,
-    },
-    detection: {
-      order: ['localStorage', 'navigator', 'htmlTag'],
-      caches: ['localStorage'],
-      lookupFromPathIndex: 0,
-      lookupFromSubdomainIndex: 0,
-      lookupLocalStorage: 'i18nextLng',
-      checkWhitelist: true,
-    },
-    react: {
-      useSuspense: false,
-    },
-    defaultNS: 'translation',
-    ns: ['translation'],
-    saveMissing: process.env.NODE_ENV === 'development',
-    missingKeyHandler: (lng, ns, key) => {
-      if (process.env.NODE_ENV === 'development') {
-        console.warn(`Missing translation key: ${key} for language: ${lng}`);
-      }
-    },
-    pluralSeparator: '_',
-    contextSeparator: '_',
-    keySeparator: '.',
-    nsSeparator: ':',
-  });
+// Initialize i18n synchronously to avoid React warnings
+if (!i18n.isInitialized) {
+  i18n
+    .use(LanguageDetector)
+    .use(initReactI18next)
+    .init({
+      resources,
+      fallbackLng: 'en',
+      debug: process.env.NODE_ENV === 'development',
+      interpolation: {
+        escapeValue: false,
+      },
+      detection: {
+        order: ['localStorage', 'navigator', 'htmlTag'],
+        caches: ['localStorage'],
+        lookupFromPathIndex: 0,
+        lookupFromSubdomainIndex: 0,
+        lookupLocalStorage: 'i18nextLng',
+        checkWhitelist: true,
+      },
+      react: {
+        useSuspense: false,
+      },
+      defaultNS: 'translation',
+      ns: ['translation'],
+      saveMissing: process.env.NODE_ENV === 'development',
+      missingKeyHandler: (lng, ns, key) => {
+        if (process.env.NODE_ENV === 'development') {
+          console.warn(`Missing translation key: ${key} for language: ${lng}`);
+        }
+      },
+      pluralSeparator: '_',
+      contextSeparator: '_',
+      keySeparator: '.',
+      nsSeparator: ':',
+    });
+}
 
 export default i18n;
 

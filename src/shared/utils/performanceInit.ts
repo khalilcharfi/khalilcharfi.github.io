@@ -1,4 +1,4 @@
-/**
+  /**
  * Performance Initialization Module
  * Handles service worker registration, preloading, and performance monitoring
  */
@@ -12,11 +12,27 @@ import {
 import { setupImageLazyLoading } from './imageOptimization';
 import { performanceLogger } from './logger';
 
+// Performance severity levels based on DCE configuration
+const getPerformanceSeverity = () => {
+  const enableDCE = process.env.VITE_ENABLE_DCE === 'true' || 
+    (process.env.VITE_ENABLE_DCE === undefined && process.env.NODE_ENV === 'production');
+  
+  return {
+    // When DCE is enabled, use more aggressive performance monitoring
+    forcedReflowThreshold: enableDCE ? 16 : 50, // 16ms = 60fps, 50ms = 20fps
+    domProcessingThreshold: enableDCE ? 100 : 300, // 100ms vs 300ms
+    logLevel: enableDCE ? 'warn' : 'log' as 'log' | 'warn' | 'error',
+    enableDetailedMonitoring: enableDCE
+  };
+};
+
 /**
  * Initialize all performance optimizations
  */
 export const initializePerformanceOptimizations = async () => {
-  performanceLogger.log('🚀 Initializing performance optimizations...');
+  if (import.meta.env.DEV) {
+    performanceLogger.log('🚀 Initializing performance optimizations...');
+  }
 
   // 1. Preload critical resources immediately (production only)
   preloadCriticalChunks();
@@ -24,7 +40,9 @@ export const initializePerformanceOptimizations = async () => {
   // 2. Register service worker (in production only)
   if (process.env.NODE_ENV === 'production') {
     await registerServiceWorker();
-    performanceLogger.log('✅ Service worker registered');
+    if (import.meta.env.DEV) {
+      performanceLogger.log('✅ Service worker registered');
+    }
   }
 
   // 3. Conditionally preload Three.js based on device capabilities
@@ -47,13 +65,17 @@ export const initializePerformanceOptimizations = async () => {
     }, 1000);
   }
 
-  performanceLogger.log('✅ Performance optimizations initialized');
+  if (import.meta.env.DEV) {
+    performanceLogger.log('✅ Performance optimizations initialized');
+  }
 };
 
 /**
  * Setup performance monitoring and reporting
  */
 const setupPerformanceMonitoring = () => {
+  const severity = getPerformanceSeverity();
+  
   // Monitor Core Web Vitals
   if ('PerformanceObserver' in window) {
     try {
@@ -61,7 +83,14 @@ const setupPerformanceMonitoring = () => {
       const lcpObserver = new PerformanceObserver((list) => {
         const entries = list.getEntries();
         const lastEntry = entries[entries.length - 1] as any;
-        performanceLogger.log('📊 LCP:', lastEntry.renderTime || lastEntry.loadTime);
+        const lcp = lastEntry.renderTime || lastEntry.loadTime;
+        
+        if (severity.enableDetailedMonitoring) {
+          const level = lcp > 2500 ? 'warn' : 'log';
+          performanceLogger[level]('📊 LCP:', lcp, lcp > 2500 ? '(SLOW)' : '');
+        } else {
+          performanceLogger.log('📊 LCP:', lcp);
+        }
       });
       lcpObserver.observe({ entryTypes: ['largest-contentful-paint'] });
 
@@ -72,7 +101,13 @@ const setupPerformanceMonitoring = () => {
           for (const entry of list.getEntries()) {
             const fidEntry = entry as any;
             const fid = fidEntry.processingStart - fidEntry.startTime;
-            performanceLogger.log('📊 FID:', fid);
+            
+            if (severity.enableDetailedMonitoring) {
+              const level = fid > 100 ? 'warn' : 'log';
+              performanceLogger[level]('📊 FID:', fid, fid > 100 ? '(SLOW)' : '');
+            } else {
+              performanceLogger.log('📊 FID:', fid);
+            }
             fidLogged = true;
             break;
           }
@@ -94,7 +129,12 @@ const setupPerformanceMonitoring = () => {
       // Log final CLS on page hide
       window.addEventListener('pagehide', () => {
         if (clsValue > 0) {
-          performanceLogger.log('📊 CLS:', clsValue);
+          if (severity.enableDetailedMonitoring) {
+            const level = clsValue > 0.1 ? 'warn' : 'log';
+            performanceLogger[level]('📊 CLS:', clsValue, clsValue > 0.1 ? '(POOR)' : '');
+          } else {
+            performanceLogger.log('📊 CLS:', clsValue);
+          }
         }
       }, { once: true });
     } catch (error) {
@@ -102,8 +142,14 @@ const setupPerformanceMonitoring = () => {
     }
   }
 
+  // Enhanced forced reflow detection
+  setupForcedReflowDetection(severity);
+  
+  // Enhanced DOM processing monitoring
+  setupDOMMonitoring(severity);
+
   // Monitor bundle sizes in development only
-  if (performance.getEntriesByType) {
+  if (import.meta.env.DEV && performance.getEntriesByType) {
     window.addEventListener('load', () => {
       setTimeout(() => {
         const resources = performance.getEntriesByType('resource') as PerformanceResourceTiming[];
@@ -112,6 +158,113 @@ const setupPerformanceMonitoring = () => {
         performanceLogger.log('📦 Total JS Size:', (totalScriptSize / 1024 / 1024).toFixed(2), 'MB');
       }, 1000);
     });
+  }
+};
+
+/**
+ * Setup forced reflow detection with DCE severity levels
+ */
+const setupForcedReflowDetection = (severity: ReturnType<typeof getPerformanceSeverity>) => {
+  if (!severity.enableDetailedMonitoring) return;
+
+  let reflowCount = 0;
+  let totalReflowTime = 0;
+
+  // Monitor layout thrashing
+  const observer = new PerformanceObserver((list) => {
+    for (const entry of list.getEntries()) {
+      if (entry.entryType === 'measure') {
+        const measure = entry as PerformanceMeasure;
+        const duration = measure.duration;
+        
+        if (duration > severity.forcedReflowThreshold) {
+          reflowCount++;
+          totalReflowTime += duration;
+          
+          const level = duration > severity.forcedReflowThreshold * 2 ? 'warn' : 'log';
+          performanceLogger[level](
+            `🔄 Forced reflow detected: ${duration.toFixed(2)}ms`,
+            duration > severity.forcedReflowThreshold * 2 ? '(SEVERE)' : '(MODERATE)'
+          );
+        }
+      }
+    }
+  });
+
+  observer.observe({ entryTypes: ['measure'] });
+
+  // Report summary on page unload
+  window.addEventListener('beforeunload', () => {
+    if (reflowCount > 0) {
+      const avgReflowTime = totalReflowTime / reflowCount;
+      const level = avgReflowTime > severity.forcedReflowThreshold ? 'warn' : 'log';
+      performanceLogger[level](
+        `🔄 Reflow Summary: ${reflowCount} reflows, avg ${avgReflowTime.toFixed(2)}ms`
+      );
+    }
+  });
+};
+
+/**
+ * Setup DOM processing monitoring with DCE severity levels
+ */
+const setupDOMMonitoring = (severity: ReturnType<typeof getPerformanceSeverity>) => {
+  if (!severity.enableDetailedMonitoring) return;
+
+
+  // Monitor DOM processing time
+  const measureDOMProcessing = () => {
+    const navigation = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
+    if (navigation) {
+      const domProcessing = navigation.domComplete - navigation.domContentLoadedEventStart;
+      
+      const level = domProcessing > severity.domProcessingThreshold ? 'warn' : 'log';
+      performanceLogger[level](
+        `🏗️ DOM Processing: ${domProcessing}ms`,
+        domProcessing > severity.domProcessingThreshold ? '(SLOW)' : ''
+      );
+    }
+  };
+
+  // Measure on load
+  window.addEventListener('load', () => {
+    setTimeout(measureDOMProcessing, 100);
+  });
+
+  // Monitor DOM mutations that might cause performance issues
+  if ('MutationObserver' in window) {
+    let mutationCount = 0;
+    let lastMutationTime = 0;
+
+    const mutationObserver = new MutationObserver(() => {
+      const now = performance.now();
+      mutationCount++;
+      
+      // Check for rapid mutations (potential performance issue)
+      if (now - lastMutationTime < 16) { // Less than one frame
+        const level = mutationCount > 10 ? 'warn' : 'log';
+        performanceLogger[level](
+          `🔧 Rapid DOM mutations detected: ${mutationCount} in ${(now - lastMutationTime).toFixed(2)}ms`
+        );
+      }
+      
+      lastMutationTime = now;
+    });
+
+    mutationObserver.observe(document.body, {
+      childList: true,
+      subtree: true,
+      attributes: true
+    });
+
+    // Reset mutation count periodically
+    setInterval(() => {
+      if (mutationCount > 0) {
+        const level = mutationCount > 50 ? 'warn' : 'log';
+        performanceLogger[level](`🔧 DOM Mutations: ${mutationCount} in last 5s`);
+        mutationCount = 0;
+      }
+    }, 5000);
   }
 };
 
@@ -191,21 +344,50 @@ export const getOptimalParticleCount = (): number => {
 };
 
 /**
- * Report performance metrics to console (or analytics)
+ * Report performance metrics to console (or analytics) with DCE severity levels
  */
 export const reportPerformanceMetrics = () => {
-  if (!performance.timing) return;
+  const severity = getPerformanceSeverity();
+  
+  // Use modern PerformanceNavigationTiming API
+  const navigation = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
+  if (!navigation) return;
 
-  const timing = performance.timing;
   const metrics = {
-    'DNS Lookup': timing.domainLookupEnd - timing.domainLookupStart,
-    'TCP Connection': timing.connectEnd - timing.connectStart,
-    'Server Response': timing.responseEnd - timing.requestStart,
-    'DOM Processing': timing.domComplete - timing.domLoading,
-    'Total Load Time': timing.loadEventEnd - timing.navigationStart
+    'DNS Lookup': navigation.domainLookupEnd - navigation.domainLookupStart,
+    'TCP Connection': navigation.connectEnd - navigation.connectStart,
+    'Server Response': navigation.responseEnd - navigation.requestStart,
+    'DOM Processing': navigation.domComplete - navigation.domContentLoadedEventStart,
+    'Total Load Time': navigation.loadEventEnd - navigation.fetchStart
   };
 
-  console.table(metrics);
+  // Only log performance metrics in development
+  if (import.meta.env.DEV) {
+    // Check for performance issues and use appropriate severity
+    const domProcessing = metrics['DOM Processing'];
+    const totalLoadTime = metrics['Total Load Time'];
+    
+    if (severity.enableDetailedMonitoring) {
+      const hasIssues = domProcessing > severity.domProcessingThreshold || totalLoadTime > 3000;
+      const level = hasIssues ? 'warn' : 'log';
+      
+      performanceLogger[level]('📊 Performance Metrics:', metrics);
+      
+      if (domProcessing > severity.domProcessingThreshold) {
+        performanceLogger.warn(`⚠️ DOM Processing exceeded threshold: ${domProcessing}ms > ${severity.domProcessingThreshold}ms`);
+      }
+      
+      if (totalLoadTime > 3000) {
+        performanceLogger.warn(`⚠️ Total Load Time exceeded threshold: ${totalLoadTime}ms > 3000ms`);
+      }
+    } else {
+      // Standard logging when DCE is disabled
+      performanceLogger.log('📊 Performance Metrics:', metrics);
+    }
+    
+    // Show formatted table in development
+    console.table(metrics);
+  }
 };
 
 export default {
