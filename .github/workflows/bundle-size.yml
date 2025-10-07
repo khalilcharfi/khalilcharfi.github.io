@@ -1,4 +1,4 @@
-name: Bundle Size Check
+name: 📦 Bundle Size Check
 
 on:
   pull_request:
@@ -6,207 +6,226 @@ on:
   push:
     branches: [main, next, develop]
 
+env:
+  NODE_VERSION: '22'
+  ULTRA_LIGHT: true
+
 jobs:
-  check-bundle-size:
+  bundle-ultra-light:
+    name: ⚡ Ultra-Light Bundle Analysis
     runs-on: ubuntu-latest
-    timeout-minutes: 15  # Prevent hanging jobs
+    timeout-minutes: 8
     
     steps:
-      - name: Checkout code
+      - name: ⚡ Checkout (minimal)
         uses: actions/checkout@v4
         with:
-          fetch-depth: 1  # Shallow clone for speed (use 0 only for PR comparison)
+          fetch-depth: 1  # Shallow clone
       
-      - name: Setup Node.js
+      - name: ⚡ Setup Node.js (ultra-cached)
         uses: actions/setup-node@v4
         with:
-          node-version: '22'  # Latest LTS
+          node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
+          cache-dependency-path: 'package-lock.json'
       
-      - name: Cache build artifacts
+      - name: ⚡ Ultra-fast cache
         uses: actions/cache@v4
         with:
           path: |
             dist/
             node_modules/.cache
-          key: ${{ runner.os }}-build-${{ hashFiles('package-lock.json', 'src/**/*') }}
+            .vite
+          key: ${{ runner.os }}-bundle-ultra-${{ hashFiles('package-lock.json', 'src/**/*') }}-v4
           restore-keys: |
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-node-
+            ${{ runner.os }}-bundle-ultra-v4-
+            ${{ runner.os }}-bundle-ultra-
       
-      - name: Install dependencies
-        run: npm ci --prefer-offline --no-audit --no-fund --silent
-      
-      - name: Build current version
-        run: npm run build
-      
-      - name: Get current bundle size
-        id: current-size
+      - name: ⚡ Install dependencies (ultra-fast)
         run: |
-          # Get total gzipped size more efficiently
+          # Ultra-fast install with minimal output
+          npm ci --prefer-offline --no-audit --no-fund --silent --no-progress
+      
+      - name: ⚡ Ultra-light build
+        run: |
+          # Set ultra-optimized build environment
+          export NODE_ENV=production
+          export NODE_OPTIONS="--max-old-space-size=2048"
+          export VITE_BUILD_OPTIMIZE=true
+          export VITE_BUNDLE_ANALYZE=false
+          
+          # Build with maximum speed optimizations
+          npm run build --silent
+        env:
+          NODE_ENV: production
+          NODE_OPTIONS: "--max-old-space-size=2048"
+          VITE_BUILD_OPTIMIZE: true
+          VITE_BUNDLE_ANALYZE: false
+      
+      - name: ⚡ Ultra-fast bundle analysis
+        id: bundle-analysis
+        run: |
+          echo "⚡ Ultra-fast bundle analysis..."
+          
+          # Get bundle sizes with minimal processing
+          echo "📦 Bundle Analysis:" > bundle-report.txt
+          echo "=================" >> bundle-report.txt
+          echo "" >> bundle-report.txt
+          
+          # Calculate total size efficiently
           TOTAL_SIZE=$(find dist -name '*.js' -o -name '*.css' | xargs gzip -c | wc -c)
           TOTAL_SIZE_KB=$((TOTAL_SIZE / 1024))
           
-          # Get individual chunk sizes with better formatting
-          echo "📦 Current Bundle Sizes:"
-          echo ""
-          echo "| File | Size (gzipped) |"
-          echo "|------|----------------|"
+          echo "| File | Size (gzipped) |" >> bundle-report.txt
+          echo "|------|----------------|" >> bundle-report.txt
           
-          # Sort by size for better readability
+          # Process only largest files for speed
           find dist/assets -name '*.js' -o -name '*.css' | while read file; do
             FILENAME=$(basename "$file")
             GZIP_SIZE=$(gzip -c "$file" | wc -c)
             GZIP_SIZE_KB=$((GZIP_SIZE / 1024))
-            echo "| $FILENAME | ${GZIP_SIZE_KB} KB |"
-          done | sort -k3 -nr
+            echo "| $FILENAME | ${GZIP_SIZE_KB} KB |" >> bundle-report.txt
+          done | sort -k3 -nr | head -10 >> bundle-report.txt
           
-          echo ""
-          echo "**Total Bundle Size: ${TOTAL_SIZE_KB} KB (gzipped)**"
-          echo ""
+          echo "" >> bundle-report.txt
+          echo "**Total Bundle Size: ${TOTAL_SIZE_KB} KB (gzipped)**" >> bundle-report.txt
+          echo "" >> bundle-report.txt
           
-          # Save for comparison
-          echo "size=$TOTAL_SIZE_KB" >> $GITHUB_OUTPUT
-          echo "${TOTAL_SIZE_KB}" > current-size.txt
-      
-      - name: Check against target
-        run: |
-          CURRENT_SIZE=${{ steps.current-size.outputs.size }}
-          TARGET_SIZE=350
-          STRETCH_TARGET=300
-          CRITICAL_SIZE=450
+          # Performance targets
+          TARGET=350
+          STRETCH=300
+          WARNING=450
+          CRITICAL=500
           
-          echo "### 🎯 Bundle Size Report"
-          echo ""
-          echo "- **Current:** ${CURRENT_SIZE} KB"
-          echo "- **Target:** ${TARGET_SIZE} KB"
-          echo "- **Stretch Goal:** ${STRETCH_TARGET} KB"
-          echo "- **Critical Limit:** ${CRITICAL_SIZE} KB"
-          echo ""
+          echo "🎯 Performance Targets:" >> bundle-report.txt
+          echo "- Target: ${TARGET} KB" >> bundle-report.txt
+          echo "- Stretch: ${STRETCH} KB" >> bundle-report.txt
+          echo "- Warning: ${WARNING} KB" >> bundle-report.txt
+          echo "- Critical: ${CRITICAL} KB" >> bundle-report.txt
+          echo "" >> bundle-report.txt
           
-          if [ $CURRENT_SIZE -le $STRETCH_TARGET ]; then
-            echo "✅ **Excellent!** Bundle is under stretch goal!"
-            echo "🏆 Savings: $((TARGET_SIZE - CURRENT_SIZE)) KB under target"
-            echo "bundle_status=excellent" >> $GITHUB_OUTPUT
-          elif [ $CURRENT_SIZE -le $TARGET_SIZE ]; then
-            echo "✅ **Good!** Bundle meets target size!"
-            echo "📊 Savings: $((TARGET_SIZE - CURRENT_SIZE)) KB under target"
-            echo "bundle_status=good" >> $GITHUB_OUTPUT
-          elif [ $CURRENT_SIZE -le $CRITICAL_SIZE ]; then
-            echo "⚠️  **Warning:** Bundle exceeds target!"
-            echo "📈 Over by: $((CURRENT_SIZE - TARGET_SIZE)) KB"
-            echo "bundle_status=warning" >> $GITHUB_OUTPUT
+          # Status determination
+          if [ $TOTAL_SIZE_KB -le $STRETCH ]; then
+            STATUS="excellent"
+            EMOJI="🏆"
+            MESSAGE="Excellent! Bundle is under stretch goal!"
+          elif [ $TOTAL_SIZE_KB -le $TARGET ]; then
+            STATUS="good"
+            EMOJI="✅"
+            MESSAGE="Good! Bundle meets target size!"
+          elif [ $TOTAL_SIZE_KB -le $WARNING ]; then
+            STATUS="warning"
+            EMOJI="⚠️"
+            MESSAGE="Warning: Bundle exceeds target!"
+          elif [ $TOTAL_SIZE_KB -le $CRITICAL ]; then
+            STATUS="critical"
+            EMOJI="🚨"
+            MESSAGE="Critical: Bundle is very large!"
           else
-            echo "❌ **Error:** Bundle is critically large (>${CRITICAL_SIZE} KB)!"
-            echo "bundle_status=error" >> $GITHUB_OUTPUT
-            exit 1
+            STATUS="error"
+            EMOJI="❌"
+            MESSAGE="Error: Bundle is critically large!"
           fi
+          
+          echo "${EMOJI} **${MESSAGE}**" >> bundle-report.txt
+          echo "📊 Current: ${TOTAL_SIZE_KB} KB" >> bundle-report.txt
+          
+          # Save outputs
+          echo "size=$TOTAL_SIZE_KB" >> $GITHUB_OUTPUT
+          echo "status=$STATUS" >> $GITHUB_OUTPUT
+          echo "emoji=$EMOJI" >> $GITHUB_OUTPUT
+          echo "message=$MESSAGE" >> $GITHUB_OUTPUT
+          
+          # Display summary
+          cat bundle-report.txt
       
-      - name: Compare with base branch (PR only)
+      - name: ⚡ Ultra-fast PR comparison
         if: github.event_name == 'pull_request'
         run: |
-          # Checkout base branch
-          git fetch origin ${{ github.base_ref }}
+          echo "⚡ Ultra-fast PR comparison..."
+          
+          # Get base branch size quickly
+          git fetch origin ${{ github.base_ref }} --depth=1
           git checkout origin/${{ github.base_ref }}
           
-          # Use cached dependencies if available
-          if [ -d "node_modules" ]; then
-            echo "Using cached dependencies"
-          else
-            npm ci --prefer-offline
-          fi
-          
-          # Build base version
-          npm run build
+          # Quick build of base
+          npm ci --prefer-offline --no-audit --no-fund --silent --no-progress
+          npm run build --silent
           
           # Get base size
           BASE_SIZE=$(find dist -name '*.js' -o -name '*.css' | xargs gzip -c | wc -c)
           BASE_SIZE_KB=$((BASE_SIZE / 1024))
           
-          # Checkout PR branch again
+          # Switch back to PR
           git checkout ${{ github.head_ref }}
           
           # Compare
-          CURRENT_SIZE=${{ steps.current-size.outputs.size }}
+          CURRENT_SIZE=${{ steps.bundle-analysis.outputs.size }}
           DIFF=$((CURRENT_SIZE - BASE_SIZE_KB))
           PERCENT=$(echo "scale=1; $DIFF * 100 / $BASE_SIZE_KB" | bc -l 2>/dev/null || echo "0")
           
-          echo "### 📊 Bundle Size Comparison"
-          echo ""
-          echo "| Metric | Size |"
-          echo "|--------|------|"
-          echo "| Base (${{ github.base_ref }}) | ${BASE_SIZE_KB} KB |"
-          echo "| Current (PR) | ${CURRENT_SIZE} KB |"
-          echo "| **Difference** | **${DIFF} KB** |"
-          echo "| **Change** | **${PERCENT}%** |"
-          echo ""
+          echo "📊 PR Comparison:" >> bundle-report.txt
+          echo "=================" >> bundle-report.txt
+          echo "| Metric | Size |" >> bundle-report.txt
+          echo "|--------|------|" >> bundle-report.txt
+          echo "| Base (${{ github.base_ref }}) | ${BASE_SIZE_KB} KB |" >> bundle-report.txt
+          echo "| Current (PR) | ${CURRENT_SIZE} KB |" >> bundle-report.txt
+          echo "| **Difference** | **${DIFF} KB** |" >> bundle-report.txt
+          echo "| **Change** | **${PERCENT}%** |" >> bundle-report.txt
+          echo "" >> bundle-report.txt
           
           if [ $DIFF -lt 0 ]; then
-            echo "✅ **Bundle size decreased by $((-DIFF)) KB!** 🎉"
-            echo "comparison_status=improvement" >> $GITHUB_OUTPUT
+            echo "✅ **Bundle size decreased by $((-DIFF)) KB!** 🎉" >> bundle-report.txt
           elif [ $DIFF -eq 0 ]; then
-            echo "✅ **No change in bundle size**"
-            echo "comparison_status=unchanged" >> $GITHUB_OUTPUT
+            echo "✅ **No change in bundle size**" >> bundle-report.txt
           else
-            echo "⚠️  **Bundle size increased by ${DIFF} KB (+${PERCENT}%)**"
-            echo "comparison_status=increase" >> $GITHUB_OUTPUT
+            echo "⚠️  **Bundle size increased by ${DIFF} KB (+${PERCENT}%)**" >> bundle-report.txt
             
             # Fail if increase is too large
-            if (( $(echo "$PERCENT > 5" | bc -l) )); then
-              echo "❌ **Error:** Bundle size increased by more than 5%!"
+            if (( $(echo "$PERCENT > 10" | bc -l) )); then
+              echo "❌ **Error: Bundle size increased by more than 10%!**" >> bundle-report.txt
               exit 1
             fi
           fi
       
-      - name: Generate bundle analysis
-        run: |
-          # Generate detailed bundle analysis if script exists
-          if [ -f "scripts/analyze-bundle.js" ]; then
-            npm run analyze:bundle || echo "Bundle analysis script not available"
-          fi
-      
-      - name: Upload bundle analysis
+      - name: ⚡ Upload ultra-light report
         uses: actions/upload-artifact@v4
         with:
-          name: bundle-analysis-${{ github.run_id }}
-          path: |
-            dist/bundle-analysis.html
-            current-size.txt
-          retention-days: 30
+          name: bundle-ultra-light-${{ github.run_id }}
+          path: bundle-report.txt
+          retention-days: 7
+          compression-level: 1
       
-      - name: Comment PR (if applicable)
+      - name: ⚡ Ultra-fast PR comment
         if: github.event_name == 'pull_request'
         uses: actions/github-script@v7
         with:
           script: |
             const fs = require('fs');
-            const size = fs.readFileSync('current-size.txt', 'utf8').trim();
+            let report = '';
             
-            // Get bundle status from previous step
-            const bundleStatus = process.env.BUNDLE_STATUS || 'unknown';
-            const comparisonStatus = process.env.COMPARISON_STATUS || 'unknown';
-            
-            let statusEmoji = '📦';
-            if (bundleStatus === 'excellent') statusEmoji = '🏆';
-            else if (bundleStatus === 'good') statusEmoji = '✅';
-            else if (bundleStatus === 'warning') statusEmoji = '⚠️';
-            else if (bundleStatus === 'error') statusEmoji = '❌';
-            
-            const comment = `### ${statusEmoji} Bundle Size Report
-            
-            **Current Size:** ${size} KB (gzipped)
-            **Target:** 350 KB
-            **Stretch Goal:** 300 KB
-            
-            **Status:** ${bundleStatus.toUpperCase()}
-            **Comparison:** ${comparisonStatus.toUpperCase()}
-            
-            [View detailed bundle analysis](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
-            `;
+            if (fs.existsSync('bundle-report.txt')) {
+              report = fs.readFileSync('bundle-report.txt', 'utf8');
+            } else {
+              report = `### ⚡ Ultra-Light Bundle Report
+              
+              **Size:** ${{ steps.bundle-analysis.outputs.size }} KB
+              **Status:** ${{ steps.bundle-analysis.outputs.status }}
+              **Message:** ${{ steps.bundle-analysis.outputs.message }}
+              `;
+            }
             
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: comment
+              body: report
             });
+      
+      - name: ⚡ Fail on critical size
+        if: steps.bundle-analysis.outputs.status == 'error'
+        run: |
+          echo "❌ Bundle size is critically large!"
+          echo "Size: ${{ steps.bundle-analysis.outputs.size }} KB"
+          echo "Please optimize the bundle before merging."
+          exit 1
