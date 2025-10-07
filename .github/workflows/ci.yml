@@ -214,11 +214,14 @@ jobs:
         with:
           path: './dist'
           name: 'github-pages'
+          retention-days: 1
         env:
-          # Increase buffer size to prevent overflow
-          NODE_OPTIONS: '--max-old-space-size=4096'
-          # Set compression timeout
-          ACTIONS_STEP_DEBUG: 'true'
+          # Increase buffer sizes to prevent overflow
+          NODE_OPTIONS: '--max-old-space-size=6144 --max-buffer-size=8192'
+          # Reduce compression to prevent buffer issues
+          GZIP_OPT: '-1'
+          # Set environment for stable tar operations
+          TAR_OPTIONS: '--no-same-permissions --no-same-owner'
         continue-on-error: true
 
       - name: ⚡ Fallback upload (if main upload fails)
@@ -226,20 +229,27 @@ jobs:
         run: |
           echo "⚠️ Main upload failed, trying fallback approach..."
           
-          # Create a smaller artifact by excluding large files
+          # Create a smaller artifact by being more aggressive with optimization
           mkdir -p dist-fallback
           cp -r dist/* dist-fallback/
           
-          # Remove the largest files that might cause buffer overflow
-          find dist-fallback/ -name "*.js" -size +500k -delete
-          find dist-fallback/ -name "*.css" -size +200k -delete
+          # Remove source maps completely
+          find dist-fallback/ -name "*.map" -delete
+          
+          # Remove large vendor chunks that can be recreated
+          find dist-fallback/ -name "*vendor*.js" -size +1M -delete
+          
+          # Keep only essential files for basic functionality
+          echo "📦 Fallback artifact contents:"
+          find dist-fallback/ -type f -name "*.html" -o -name "*.css" -o -name "*.js" | head -20
           
           echo "📦 Fallback artifact size:"
           du -sh dist-fallback/
           
-          # (Optional) Create tarball of fallback artifact; ignore failures to prevent job abort
-          tar -czf dist-fallback.tar.gz -C dist-fallback . || echo "⚠️ Tarball creation failed, proceeding without tarball"
-          echo "✅ Fallback artifact prepared"
+          # Ensure we don't have any problematic file permissions
+          chmod -R 755 dist-fallback/
+          
+          echo "✅ Fallback artifact prepared safely"
 
       - name: ⚡ Upload fallback artifact
         if: env.SKIP_PAGES_STEPS != 'true' && steps.upload-artifact.outcome == 'failure'
@@ -247,6 +257,11 @@ jobs:
         with:
           path: './dist-fallback'
           name: 'github-pages'
+          retention-days: 1
+        env:
+          # Use minimal buffer settings for fallback
+          NODE_OPTIONS: '--max-old-space-size=2048'
+          GZIP_OPT: '-1'
 
       - name: ⚡ Deploy to GitHub Pages
         if: env.SKIP_PAGES_STEPS != 'true' && (steps.upload-artifact.outcome == 'success' || steps.upload-artifact.outcome == 'failure')
