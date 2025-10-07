@@ -89,7 +89,7 @@ jobs:
           else
             echo "📋 Creating gh-pages branch..."
             git checkout --orphan gh-pages
-            git rm -rf .
+            git rm -rf . || true
           fi
           
           # Copy dist contents to root
@@ -98,8 +98,8 @@ jobs:
           # Add all files
           git add .
           
-          # Commit changes
-          git commit -m "🚀 Deploy from ${{ github.ref_name }} (${{ github.sha }})
+          # Commit changes (skip pre-commit hooks for gh-pages branch)
+          git commit --no-verify -m "🚀 Deploy from ${{ github.ref_name }} (${{ github.sha }})
           
           📊 Build Info:
           - Source Branch: ${{ github.ref_name }}
