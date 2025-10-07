@@ -79,6 +79,10 @@ jobs:
     needs: validate
     if: ${{ inputs.skip_build != true && (needs.validate.result == 'success' || inputs.deploy_only) }}
     timeout-minutes: 15
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -164,16 +168,14 @@ jobs:
           
           echo "✅ All validations passed"
 
-      - name: ⚡ Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
-        with:
-          artifact_name: github-pages
-
       - name: ⚡ Upload Pages artifact (optimized)
         uses: actions/upload-pages-artifact@v3
         with:
           path: './dist'
+
+      - name: ⚡ Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
 
       - name: ⚡ Verify deployment
         run: |
