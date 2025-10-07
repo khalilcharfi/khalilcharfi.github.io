@@ -190,19 +190,37 @@ jobs:
           TOTAL_SIZE_MB=$((TOTAL_SIZE / 1024 / 1024))
           echo "📏 Total artifact size: ${TOTAL_SIZE_MB}MB"
           
-          if [ $TOTAL_SIZE_MB -gt 500 ]; then
-            echo "⚠️ Artifact size is large (${TOTAL_SIZE_MB}MB), applying size optimizations..."
-            
-            # Remove source maps if they exist and are large
-            find dist/ -name "*.map" -size +1M -delete
-            
-            # Optimize large JS files by removing comments and whitespace
-            find dist/ -name "*.js" -size +500k -exec sed -i '/^[[:space:]]*\/\//d' {} \;
-            
-            echo "✅ Size optimization completed"
-            OPTIMIZED_SIZE=$(du -sb dist/ | cut -f1)
-            OPTIMIZED_SIZE_MB=$((OPTIMIZED_SIZE / 1024 / 1024))
-            echo "📊 Optimized size: ${OPTIMIZED_SIZE_MB}MB"
+          # Always apply optimizations to prevent buffer overflow
+          echo "🔧 Applying artifact optimizations to prevent buffer overflow..."
+          
+          # Remove source maps completely to reduce size
+          find dist/ -name "*.map" -delete
+          echo "✅ Removed source maps"
+          
+          # Remove large vendor chunks that can be recreated
+          find dist/ -name "*vendor*.js" -size +500k -delete
+          echo "✅ Removed large vendor chunks"
+          
+          # Optimize large JS files by removing comments and whitespace
+          find dist/ -name "*.js" -size +200k -exec sed -i '/^[[:space:]]*\/\//d' {} \;
+          echo "✅ Optimized large JS files"
+          
+          # Remove any temporary or cache files
+          find dist/ -name "*.tmp" -o -name "*.cache" -o -name "*.log" -delete
+          echo "✅ Removed temporary files"
+          
+          # Ensure proper file permissions
+          chmod -R 755 dist/
+          echo "✅ Set proper file permissions"
+          
+          OPTIMIZED_SIZE=$(du -sb dist/ | cut -f1)
+          OPTIMIZED_SIZE_MB=$((OPTIMIZED_SIZE / 1024 / 1024))
+          echo "📊 Optimized size: ${OPTIMIZED_SIZE_MB}MB (reduced from ${TOTAL_SIZE_MB}MB)"
+          
+          if [ $OPTIMIZED_SIZE_MB -gt 200 ]; then
+            echo "⚠️ Warning: Artifact size is still large (${OPTIMIZED_SIZE_MB}MB), may cause upload issues"
+          else
+            echo "✅ Artifact size is acceptable for upload"
           fi
           
           echo "✅ Artifact preparation completed"
@@ -217,9 +235,7 @@ jobs:
           retention-days: 1
         env:
           # Increase buffer sizes to prevent overflow
-          NODE_OPTIONS: '--max-old-space-size=6144 --max-buffer-size=8192'
-          # Reduce compression to prevent buffer issues
-          GZIP_OPT: '-1'
+          NODE_OPTIONS: '--max-old-space-size=4096'
           # Set environment for stable tar operations
           TAR_OPTIONS: '--no-same-permissions --no-same-owner'
         continue-on-error: true
@@ -237,7 +253,21 @@ jobs:
           find dist-fallback/ -name "*.map" -delete
           
           # Remove large vendor chunks that can be recreated
-          find dist-fallback/ -name "*vendor*.js" -size +1M -delete
+          find dist-fallback/ -name "*vendor*.js" -size +500k -delete
+          
+          # Remove any non-essential JS files larger than 100k
+          find dist-fallback/ -name "*.js" -size +100k -not -name "index.*" -delete
+          
+          # Remove any non-essential CSS files larger than 50k
+          find dist-fallback/ -name "*.css" -size +50k -not -name "index.*" -delete
+          
+          # Remove any large image files that aren't critical
+          find dist-fallback/ -name "*.jpg" -o -name "*.jpeg" -o -name "*.png" -o -name "*.gif" -o -name "*.webp" | while read file; do
+            if [ $(stat -f%z "$file" 2>/dev/null || stat -c%s "$file" 2>/dev/null || echo 0) -gt 500000 ]; then
+              echo "Removing large image: $file"
+              rm "$file"
+            fi
+          done
           
           # Keep only essential files for basic functionality
           echo "📦 Fallback artifact contents:"
@@ -248,6 +278,17 @@ jobs:
           
           # Ensure we don't have any problematic file permissions
           chmod -R 755 dist-fallback/
+          
+          # Final size check
+          FALLBACK_SIZE=$(du -sb dist-fallback/ | cut -f1)
+          FALLBACK_SIZE_MB=$((FALLBACK_SIZE / 1024 / 1024))
+          echo "📊 Fallback artifact size: ${FALLBACK_SIZE_MB}MB"
+          
+          if [ $FALLBACK_SIZE_MB -gt 100 ]; then
+            echo "⚠️ Warning: Fallback artifact is still large (${FALLBACK_SIZE_MB}MB)"
+          else
+            echo "✅ Fallback artifact size is acceptable"
+          fi
           
           echo "✅ Fallback artifact prepared safely"
 
@@ -261,7 +302,6 @@ jobs:
         env:
           # Use minimal buffer settings for fallback
           NODE_OPTIONS: '--max-old-space-size=2048'
-          GZIP_OPT: '-1'
 
       - name: ⚡ Deploy to GitHub Pages
         if: env.SKIP_PAGES_STEPS != 'true' && (steps.upload-artifact.outcome == 'success' || steps.upload-artifact.outcome == 'failure')
