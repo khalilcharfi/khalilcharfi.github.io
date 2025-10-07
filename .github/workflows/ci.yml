@@ -24,6 +24,7 @@ concurrency:
 
 env:
   NODE_VERSION: '22'
+  # ⚙️ Keep TAR_OPTIONS globally for caching/other steps, but we’ll override it safely during upload
   TAR_OPTIONS: '--use-compress-program="zstdmt --fast --threads=0"'
   CACHE_EXCLUDE: 'node_modules/.cache,dist,coverage,.nyc_output,*.log,*.tmp'
 
@@ -178,9 +179,12 @@ jobs:
             echo "✅ Reduced artifact size"
           fi
 
-      - name: ⚡ Upload Pages artifact (optimized)
+      # ✅ FIX: unset TAR_OPTIONS only for this upload to prevent zstdmt crash
+      - name: ⚡ Upload Pages artifact (fixed)
         id: upload-artifact
         uses: actions/upload-pages-artifact@v4
+        env:
+          TAR_OPTIONS: ""
         with:
           path: './dist'
 
