@@ -18,7 +18,7 @@ import {
 import { analytics } from '@/features/analytics';
 import { PERSONAS_FEATURE_ENABLED, getSectionIds } from '@/shared/config';
 import { AnimationPauseProvider, SimpleConsentProvider } from '@/context';
-import { Navbar, SkipLinks, SEOHead, PerformanceDrawer } from '@/shared/components';
+import { Navbar, SkipLinks, SEOHead } from '@/shared/components';
 import { performanceLogger, LazyTranslationTest, LazyThreeBackground } from '@/shared/utils';
 import { ANIMATION_DURATION, SCROLL, OBSERVER_CONFIG } from '@/shared/constants';
 import { 
@@ -38,6 +38,13 @@ const CertificateModal = lazy(() => import('@/features/portfolio').then(m => ({ 
 const ProjectsSection = lazy(() => import('@/features/portfolio').then(m => ({ default: m.ProjectsSection })));
 const PublicationsSection = lazy(() => import('@/features/portfolio').then(m => ({ default: m.PublicationsSection })));
 const CertificatesSection = lazy(() => import('@/features/portfolio').then(m => ({ default: m.CertificatesSection })));
+
+// Lazy load debug components only in development
+const PerformanceDrawer = lazy(() => 
+  import.meta.env.DEV 
+    ? import('@/shared/components').then(m => ({ default: m.PerformanceDrawer }))
+    : Promise.resolve({ default: () => null })
+);
 
 // Helper function to get base language
 const getBaseLang = (lang: string) => lang?.split('-')[0] || 'en';
@@ -334,7 +341,7 @@ const App: React.FC = () => {
                 </Suspense>
                 
                 {/* Performance Drawer - Only in development */}
-                {IS_DEVELOPMENT && (
+                <Suspense fallback={null}>
                     <PerformanceDrawer 
                         geminiStatus={{
                             connectionStatus,
@@ -343,7 +350,7 @@ const App: React.FC = () => {
                             retryConnection
                         }}
                     />
-                )}
+                </Suspense>
                 
                 {PERSONAS_FEATURE_ENABLED && isPersonalized && (
                   <div className="personalization-indicator">

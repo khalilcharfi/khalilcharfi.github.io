@@ -29,7 +29,7 @@
   "@type": "Person",
   "name": "Khalil Charfi",
   "url": "https://khalilcharfi.github.io/",
-  "image": "https://khalilcharfi.github.io/asset/profile-photo.jpg",
+  "image": "https://khalilcharfi.github.io/asset/profile/profile-photo.jpg",
   "sameAs": [
     "https://github.com/khalil-charfi",
     "https://www.linkedin.com/in/khalil-charfi/"
@@ -39,7 +39,7 @@
     "@type": "Organization",
     "name": "Independent"
   },
-  "description": "Full-Stack-Ingenieur mit umfassender Erfahrung in der Bereitstellung skalierbarer Web- und Mobilanwendungen. Kompetent in der Frontend-Entwicklung mit Vue.js und Angular, Backend mit Laravel und Laminas sowie mobilen Apps mit Flutter und Ionic. Leidenschaft für saubere Architektur, Offline-First-Funktionen und DevOps-gesteuerte Bereitstellung. Erfahren in funktionsübergreifenden Teams in Tunesien und Deutschland.",
+  "description": "Full-Stack-Entwickler mit umfangreicher Erfahrung in der Entwicklung skalierbarer Web- und Mobile-Anwendungen. Versiert im Frontend mit Vue.js und Angular, im Backend mit Laravel und Laminas sowie in der mobilen Entwicklung mit Flutter und Ionic. Mit Leidenschaft für Clean Architecture, Offline-First-Ansätze und DevOps-getriebene Deployments. Erfahrung in crossfunktionalen Teams in Tunesien und Deutschland.",
   "knowsAbout": [
     "Vue.js",
     "Angular",
@@ -47,8 +47,8 @@
     "HTML5",
     "CSS3 (Sass/LESS)",
     "Bootstrap",
-    "jQuery",
-    "JSP"
+    "PHP (Laravel, Laminas)",
+    "Java (Spring Boot)"
   ],
   "inLanguage": [
     "en",
@@ -68,7 +68,7 @@
     <meta property="og:url" content="https://khalilcharfi.github.io/">
     <meta property="og:title" content="Khalil Charfi | Full-Stack Engineer Portfolio">
     <meta property="og:description" content="Entdecken Sie die Projekte und Erfahrungen von Khalil Charfi, einem Spezialisten für skalierbare und benutzerzentrierte Web- und Mobilanwendungen.">
-    <meta property="og:image" content="https://khalilcharfi.github.io/asset/profile-photo.jpg">
+    <meta property="og:image" content="https://khalilcharfi.github.io/asset/profile/profile-photo.jpg">
     <meta property="og:image:alt" content="Khalil Charfi - Full-Stack Engineer">
     <meta property="og:site_name" content="Khalil Charfi Portfolio">
     <meta property="og:locale" content="en_US">
@@ -81,7 +81,7 @@
     <meta property="twitter:url" content="https://khalilcharfi.github.io/">
     <meta property="twitter:title" content="Khalil Charfi | Full-Stack Engineer Portfolio">
     <meta property="twitter:description" content="Entdecken Sie die Projekte und Erfahrungen von Khalil Charfi, einem Spezialisten für skalierbare und benutzerzentrierte Web- und Mobilanwendungen.">
-    <meta property="twitter:image" content="https://khalilcharfi.github.io/asset/profile-photo.jpg">
+    <meta property="twitter:image" content="https://khalilcharfi.github.io/asset/profile/profile-photo.jpg">
     <meta property="twitter:image:alt" content="Khalil Charfi - Full-Stack Engineer">
 
     <!-- PWA Manifest and Theme Color -->
@@ -618,7 +618,11 @@
     
     <!-- Defer non-critical CSS -->
     <link rel="preload" href="index.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="index.css"></noscript>
+    <link rel="preload" href="src/styles/scrollbar.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript>
+        <link rel="stylesheet" href="index.css">
+        <link rel="stylesheet" href="src/styles/scrollbar.css">
+    </noscript>
     
     <!-- Accessibility Styles -->
     <link rel="preload" href="src/styles/accessibility.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
@@ -637,7 +641,7 @@
             <line x1="12" y1="9" x2="12" y2="13"></line>
             <line x1="12" y1="17" x2="12.01" y2="17"></line>
         </svg>
-        <strong>Interaktive Funktionen nicht verfügbar.</strong> Sie können alle Inhalte durchsuchen und mich direkt kontaktieren.
+        <strong></strong> 
     </div>
     
     <!-- Initial Loading Screen (Hidden when JS disabled/failed) -->
@@ -650,7 +654,7 @@
     <main id="main-content" class="static-content" itemscope itemtype="https://schema.org/Person">
         <header>
             <figure style="margin: 0 0 1.5rem 0; text-align: center;">
-                <img src="https://khalilcharfi.github.io/asset/profile-photo.jpg" 
+                <img src="https://khalilcharfi.github.io/asset/profile/profile-photo.jpg" 
                      alt="Khalil Charfi" 
                      itemprop="image"
                      width="150" 
@@ -699,11 +703,11 @@
             <section id="about-section">
                 <h2>Über Mich</h2>
                 <p itemprop="description" style="font-size: 1.05rem; line-height: 1.8;">
-                    Full-Stack-Ingenieur mit umfassender Erfahrung in der Bereitstellung skalierbarer Web- und Mobilanwendungen. Kompetent in der Frontend-Entwicklung mit Vue.js und Angular, Backend mit Laravel und Laminas sowie mobilen Apps mit Flutter und Ionic. Leidenschaft für saubere Architektur, Offline-First-Funktionen und DevOps-gesteuerte Bereitstellung. Erfahren in funktionsübergreifenden Teams in Tunesien und Deutschland.
+                    Full-Stack-Entwickler mit umfangreicher Erfahrung in der Entwicklung skalierbarer Web- und Mobile-Anwendungen. Versiert im Frontend mit Vue.js und Angular, im Backend mit Laravel und Laminas sowie in der mobilen Entwicklung mit Flutter und Ionic. Mit Leidenschaft für Clean Architecture, Offline-First-Ansätze und DevOps-getriebene Deployments. Erfahrung in crossfunktionalen Teams in Tunesien und Deutschland.
                 </p>
                 
-                <h3 style="margin-top: 1.5rem; font-size: 1.2rem;">Berufliche Zusammenfassung</h3>
-                <p>Ich entwerfe und erstelle außergewöhnliche digitale Produkte. Als Full-Stack-Ingenieur bin ich auf die Erstellung intuitiver, leistungsstarker Web- und Mobilanwendungen spezialisiert, die sowohl skalierbar als auch benutzerorientiert sind.</p>
+                <h3 style="margin-top: 1.5rem; font-size: 1.2rem;">Berufliches Profil</h3>
+                <p>Ich konzipiere und entwickle außergewöhnliche digitale Produkte. Als Full-Stack-Entwickler spezialisiere ich mich auf intuitive, hochperformante Web- und Mobilanwendungen, die skalierbar und benutzerzentriert sind.</p>
                 <p>Meine Reise in die Tech-Welt begann mit der Faszination, komplexe Probleme mit elegantem Code zu lösen. Ich lebe davon, Ideen in die Realität umzusetzen, von der Konzeption bis zur Bereitstellung, und es ist meine Leidenschaft, nahtlose Benutzeroberflächen zu schaffen, die sowohl schön als auch hochfunktional sind.</p>
                 
                 <h3 style="margin-top: 1.5rem; font-size: 1.2rem;">Sprachen</h3>
@@ -720,16 +724,16 @@
                 <h2>Technische Kernkompetenzen</h2>
                 
                 <article>
-                    <h3 style="color: var(--accent-color); font-size: 1.1rem;">Front-End-Entwicklung</h3>
-                    <p><strong>Technologies:</strong> Vue.js, Angular, JavaScript/TypeScript, HTML5, CSS3 (Sass/LESS), Bootstrap, jQuery, JSP</p>
+                    <h3 style="color: var(--accent-color); font-size: 1.1rem;">Front-End</h3>
+                    <p><strong>Technologies:</strong> Vue.js, Angular, JavaScript/TypeScript, HTML5, CSS3 (Sass/LESS), Bootstrap</p>
                     <p><strong>Expertise:</strong> Component-based architecture, state management, responsive design, progressive web apps (PWA), accessibility (WCAG 2.1)</p>
                     <label for="frontend-skill" style="display: block; margin-top: 0.5rem;">Proficiency Level:</label>
                     <progress id="frontend-skill" max="100" value="95" style="width: 100%; height: 20px; margin-top: 0.25rem;">95%</progress>
                 </article>
                 
                 <article>
-                    <h3 style="color: var(--accent-color); font-size: 1.1rem;">Back-End-Entwicklung</h3>
-                    <p><strong>Technologies:</strong> PHP (Laravel, Laminas), Java (Spring Boot, Spring Framework), RESTful APIs, Node.js</p>
+                    <h3 style="color: var(--accent-color); font-size: 1.1rem;">Back-End</h3>
+                    <p><strong>Technologies:</strong> PHP (Laravel, Laminas), Java (Spring Boot)</p>
                     <p><strong>Expertise:</strong> Microservices architecture, API design, authentication & authorization, database optimization</p>
                     <label for="backend-skill" style="display: block; margin-top: 0.5rem;">Proficiency Level:</label>
                     <progress id="backend-skill" max="100" value="90" style="width: 100%; height: 20px; margin-top: 0.25rem;">90%</progress>
@@ -737,7 +741,7 @@
                 
                 <article>
                     <h3 style="color: var(--accent-color); font-size: 1.1rem;">Mobile Entwicklung</h3>
-                    <p><strong>Technologies:</strong> Flutter, Ionic, Capacitor, Android (Java), Hybrid Apps, Offline-First Apps</p>
+                    <p><strong>Technologies:</strong> Flutter, Ionic, Android (Java)</p>
                     <p><strong>Expertise:</strong> Offline-first applications, cross-platform development, native integrations, Bluetooth/IoT</p>
                     <label for="mobile-skill" style="display: block; margin-top: 0.5rem;">Proficiency Level:</label>
                     <progress id="mobile-skill" max="100" value="85" style="width: 100%; height: 20px; margin-top: 0.25rem;">85%</progress>
@@ -745,7 +749,7 @@
                 
                 <article>
                     <h3 style="color: var(--accent-color); font-size: 1.1rem;">Datenbanken &amp; APIs</h3>
-                    <p><strong>Technologies:</strong> MySQL, MongoDB, SQLite, CouchDB/PouchDB, GraphQL (Apollo Client), REST APIs, Datensynchronisation</p>
+                    <p><strong>Technologies:</strong> MySQL, MongoDB, SQLite, CouchDB, GraphQL (Apollo Client)</p>
                     <p><strong>Expertise:</strong> Data synchronization, database design, query optimization, API integration</p>
                     <label for="databases-skill" style="display: block; margin-top: 0.5rem;">Proficiency Level:</label>
                     <progress id="databases-skill" max="100" value="88" style="width: 100%; height: 20px; margin-top: 0.25rem;">88%</progress>
@@ -753,15 +757,15 @@
                 
                 <article>
                     <h3 style="color: var(--accent-color); font-size: 1.1rem;">DevOps &amp; CI/CD</h3>
-                    <p><strong>Technologies:</strong> Git, Docker, Jenkins, GitLab CI/CD, Bitrise, Puppet, Rancher, SonarQube</p>
+                    <p><strong>Technologies:</strong> Git, Docker, Jenkins, GitLab CI/CD, Bitrise, Puppet</p>
                     <p><strong>Expertise:</strong> Continuous integration/deployment, containerization, infrastructure as code, monitoring</p>
                     <label for="devops-skill" style="display: block; margin-top: 0.5rem;">Proficiency Level:</label>
                     <progress id="devops-skill" max="100" value="82" style="width: 100%; height: 20px; margin-top: 0.25rem;">82%</progress>
                 </article>
                 
                 <article>
-                    <h3 style="color: var(--accent-color); font-size: 1.1rem;">Tools &amp; Technologien</h3>
-                    <p><strong>Technologies:</strong> Drupal, Keycloak, Firebase, Mapbox GL JS, WSO2 CEP, JHipster, TestCafe, Cucumber, Grafana, Kibana, Bluetooth-Integration, IoT-Systeme</p>
+                    <h3 style="color: var(--accent-color); font-size: 1.1rem;">Sonstiges &amp; Werkzeuge</h3>
+                    <p><strong>Technologies:</strong> Drupal, Keycloak, Firebase, Mapbox GL, WSO2 CEP, JHipster, TestCafe, Cucumber, Grafana, Kibana</p>
                     <p><strong>Expertise:</strong> CMS development, authentication systems, real-time mapping, testing automation, monitoring</p>
                     <label for="tools-skill" style="display: block; margin-top: 0.5rem;">Proficiency Level:</label>
                     <progress id="tools-skill" max="100" value="90" style="width: 100%; height: 20px; margin-top: 0.25rem;">90%</progress>
@@ -910,7 +914,7 @@
         
         <aside id="contact-aside">
             <section id="contact-section" style="margin-top: 2.5rem;">
-                <h2>Lassen Sie uns etwas Großartiges bauen</h2>
+                <h2>Lassen Sie uns zusammenarbeiten</h2>
                 <p style="margin-bottom: 1.5rem;">
                     
                 </p>
@@ -958,7 +962,7 @@
             </p>
             
             <p style="font-size: 0.9rem; padding: 1rem; background: var(--fallback-bg); color: var(--fallback-fg); border-radius: 8px;">
-                <strong>⚡ Erweiterte Erfahrung verfügbar: Aktivieren Sie JavaScript für das vollständige interaktive Portfolio mit 3D-Animationen, Live-Projektdemos, KI-gestütztem Chatbot, mehrsprachiger Unterstützung (Englisch, Deutsch, Französisch, Arabisch) und dynamischer Inhaltspersonalisierung.</strong>
+                <strong>⚡ </strong>
             </p>
             
             <p style="margin-top: 1.5rem; text-align: center; color: var(--secondary-text); font-size: 0.85rem;">

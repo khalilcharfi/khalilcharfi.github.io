@@ -19,7 +19,7 @@ console.log('\n🏗️  Generating index.html from Handlebars templates...\n');
 
 // Load translations using tsx
 console.log('📦 Loading translations from TypeScript...');
-const translationsPath = path.join(__dirname, '../src/features/i18n/data/translations.ts');
+const translationsPath = path.join(__dirname, '../translations.ts');
 
 let translations;
 try {
@@ -54,7 +54,7 @@ const profile = {
   email: 'Available on LinkedIn',
   linkedin: 'https://www.linkedin.com/in/khalil-charfi/',
   github: 'https://github.com/khalil-charfi',
-  photo: 'https://khalilcharfi.github.io/asset/profile-photo.jpg',
+  photo: 'https://khalilcharfi.github.io/asset/profile/profile-photo.jpg',
   website: 'https://khalilcharfi.github.io/',
 };
 

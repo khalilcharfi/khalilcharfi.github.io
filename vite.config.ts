@@ -77,6 +77,10 @@ export default defineConfig(({ mode }) => {
               if (id.includes('TranslationTest')) {
                 return undefined;
               }
+              // Skip PerformanceDrawer and debug components in production builds
+              if (id.includes('PerformanceDrawer') || id.includes('debug/')) {
+                return undefined;
+              }
             }
             
             // Keep React and React-DOM together - CRITICAL for proper React hooks
@@ -125,7 +129,14 @@ export default defineConfig(({ mode }) => {
         moduleSideEffects: false,
         propertyReadSideEffects: false,
         tryCatchDeoptimization: false
-      }
+      },
+      // Exclude debug components from production builds
+      external: mode === 'production' ? (id) => {
+        if (id.includes('debug/') || id.includes('PerformanceDrawer')) {
+          return true;
+        }
+        return false;
+      } : undefined
     },
     chunkSizeWarningLimit: 1000,
     minify: 'terser',
@@ -159,12 +170,25 @@ export default defineConfig(({ mode }) => {
     }
   },
   plugins: [
+    // Plugin to remove debug components in production
+    mode === 'production' ? {
+      name: 'remove-debug-components',
+      generateBundle(options, bundle) {
+        // Remove debug component files from the bundle
+        Object.keys(bundle).forEach(fileName => {
+          if (bundle[fileName].type === 'chunk' && 
+              (fileName.includes('debug') || fileName.includes('PerformanceDrawer'))) {
+            delete bundle[fileName];
+          }
+        });
+      }
+    } : null,
     visualizer({
       filename: 'dist/bundle-analysis.html',
       open: false,
       gzipSize: true,
       brotliSize: true
     })
-  ]
+  ].filter(Boolean)
 };
 });

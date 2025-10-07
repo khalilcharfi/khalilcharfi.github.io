@@ -1,0 +1,308 @@
+/* scrollbar.css - Optimized Scrollbar System */
+
+/* CSS Custom Properties for Scrollbar Theming */
+:root {
+  /* Scrollbar dimensions */
+  --scrollbar-width: 8px;
+  --scrollbar-width-thin: 6px;
+  --scrollbar-width-mobile: 4px;
+  
+  /* Scrollbar colors - Dark theme (default) */
+  --scrollbar-track-bg: rgba(0, 0, 0, 0.2);
+  --scrollbar-thumb-bg: rgba(0, 166, 255, 0.5);
+  --scrollbar-thumb-bg-hover: rgba(0, 100, 200, 0.9);
+  --scrollbar-thumb-bg-active: rgba(0, 80, 160, 1);
+  --scrollbar-thumb-bg-selected: rgba(0, 120, 220, 0.8);
+  --scrollbar-thumb-border: rgba(0, 166, 255, 0.3);
+  
+  /* Scrollbar transitions - Smoother animations */
+  --scrollbar-transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --scrollbar-fade-in: 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --scrollbar-fade-out: 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  
+  /* Scrollbar visibility states */
+  --scrollbar-opacity-hidden: 0;
+  --scrollbar-opacity-visible: 1;
+  --scrollbar-opacity-hover: 0.9;
+}
+
+/* Light theme scrollbar colors */
+html[data-theme="light"] {
+  --scrollbar-track-bg: rgba(0, 0, 0, 0.1);
+  --scrollbar-thumb-bg: rgba(79, 70, 229, 0.5);
+  --scrollbar-thumb-bg-hover: rgba(55, 48, 163, 0.9);
+  --scrollbar-thumb-bg-active: rgba(37, 29, 128, 1);
+  --scrollbar-thumb-bg-selected: rgba(67, 56, 202, 0.8);
+  --scrollbar-thumb-border: rgba(79, 70, 229, 0.3);
+}
+
+/* High contrast mode scrollbar colors */
+@media (prefers-contrast: high) {
+  :root {
+    --scrollbar-thumb-bg: rgba(0, 0, 0, 0.6);
+    --scrollbar-thumb-bg-hover: rgba(0, 0, 0, 0.8);
+    --scrollbar-thumb-bg-active: rgba(0, 0, 0, 1);
+  }
+  
+  html[data-theme="dark"] {
+    --scrollbar-thumb-bg: rgba(255, 255, 255, 0.6);
+    --scrollbar-thumb-bg-hover: rgba(255, 255, 255, 0.8);
+    --scrollbar-thumb-bg-active: rgba(255, 255, 255, 1);
+  }
+}
+
+/* Base scrollbar styles - Auto-hide by default */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb-bg) var(--scrollbar-track-bg);
+  transition: scrollbar-color var(--scrollbar-transition);
+}
+
+/* WebKit scrollbar base styles */
+*::-webkit-scrollbar {
+  width: var(--scrollbar-width);
+  height: var(--scrollbar-width);
+}
+
+*::-webkit-scrollbar-track {
+  background: var(--scrollbar-track-bg);
+  border-radius: 4px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb-bg);
+  border-radius: 6px;
+  border: 1px solid var(--scrollbar-thumb-border);
+  background-clip: content-box;
+  transition: var(--scrollbar-transition);
+  opacity: var(--scrollbar-opacity-hidden);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+/* Scrollbar visibility on hover/active */
+*:hover::-webkit-scrollbar-thumb,
+*:active::-webkit-scrollbar-thumb,
+*:focus::-webkit-scrollbar-thumb {
+  opacity: var(--scrollbar-opacity-visible);
+  background: var(--scrollbar-thumb-bg-hover);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  transform: scale(1.05);
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-bg-hover);
+  opacity: var(--scrollbar-opacity-visible);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4);
+  transform: scale(1.1);
+}
+
+*::-webkit-scrollbar-thumb:active {
+  background: var(--scrollbar-thumb-bg-active);
+  opacity: var(--scrollbar-opacity-visible);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+  transform: scale(1.02);
+}
+
+/* Scrollbar selection state for manual scrolling */
+*::-webkit-scrollbar-thumb:focus {
+  background: var(--scrollbar-thumb-bg-selected);
+  opacity: var(--scrollbar-opacity-visible);
+  box-shadow: 0 0 0 2px var(--scrollbar-thumb-bg-hover), 0 2px 6px rgba(0, 0, 0, 0.3);
+  outline: 2px solid var(--scrollbar-thumb-bg-hover);
+  outline-offset: 1px;
+}
+
+/* Scrollbar corner */
+*::-webkit-scrollbar-corner {
+  background: var(--scrollbar-track-bg);
+}
+
+/* Thin scrollbar variant */
+.scrollbar-thin {
+  scrollbar-width: thin;
+}
+
+.scrollbar-thin::-webkit-scrollbar {
+  width: var(--scrollbar-width-thin);
+  height: var(--scrollbar-width-thin);
+}
+
+/* Mobile scrollbar variant */
+@media (max-width: 768px) {
+  * {
+    scrollbar-width: thin;
+  }
+  
+  *::-webkit-scrollbar {
+    width: var(--scrollbar-width-mobile);
+    height: var(--scrollbar-width-mobile);
+  }
+  
+  *::-webkit-scrollbar-thumb {
+    border-radius: 2px;
+  }
+}
+
+/* Always visible scrollbar variant */
+.scrollbar-visible {
+  scrollbar-color: var(--scrollbar-thumb-bg) var(--scrollbar-track-bg);
+}
+
+.scrollbar-visible::-webkit-scrollbar-thumb {
+  opacity: var(--scrollbar-opacity-visible);
+  background: var(--scrollbar-thumb-bg);
+}
+
+/* Hidden scrollbar variant */
+.scrollbar-hidden {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.scrollbar-hidden::-webkit-scrollbar {
+  display: none;
+}
+
+/* Performance optimized scrollbar for large containers */
+.scrollbar-performance {
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb-bg) var(--scrollbar-track-bg);
+  will-change: scroll-position;
+  contain: layout style paint;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+
+.scrollbar-performance::-webkit-scrollbar {
+  width: var(--scrollbar-width-thin);
+  height: var(--scrollbar-width-thin);
+}
+
+.scrollbar-performance::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb-bg);
+  border-radius: 3px;
+  border: 1px solid var(--scrollbar-thumb-border);
+  opacity: var(--scrollbar-opacity-hidden);
+  transition: all var(--scrollbar-fade-out);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.scrollbar-performance:hover::-webkit-scrollbar-thumb,
+.scrollbar-performance:active::-webkit-scrollbar-thumb {
+  opacity: var(--scrollbar-opacity-visible);
+  background: var(--scrollbar-thumb-bg-hover);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  transform: scale(1.05);
+  transition: all var(--scrollbar-fade-in);
+}
+
+.scrollbar-performance::-webkit-scrollbar-thumb:focus {
+  background: var(--scrollbar-thumb-bg-selected);
+  opacity: var(--scrollbar-opacity-visible);
+  box-shadow: 0 0 0 1px var(--scrollbar-thumb-bg-hover), 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Smooth scrollbar animation */
+.scrollbar-smooth {
+  scroll-behavior: smooth;
+}
+
+/* Custom scrollbar for specific components */
+.scrollbar-custom {
+  scrollbar-width: thin;
+  scrollbar-color: var(--accent-color) var(--primary-bg);
+}
+
+.scrollbar-custom::-webkit-scrollbar {
+  width: var(--scrollbar-width);
+  height: var(--scrollbar-width);
+}
+
+.scrollbar-custom::-webkit-scrollbar-track {
+  background: var(--primary-bg);
+  border-radius: 4px;
+}
+
+.scrollbar-custom::-webkit-scrollbar-thumb {
+  background: var(--accent-color);
+  border-radius: 6px;
+  border: 1px solid var(--primary-bg);
+  transition: var(--scrollbar-transition);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  opacity: 0.8;
+}
+
+.scrollbar-custom::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-hover-color);
+  box-shadow: 0 4px 8px var(--accent-glow), 0 2px 4px rgba(0, 0, 0, 0.3);
+  transform: scale(1.05);
+  opacity: 1;
+}
+
+.scrollbar-custom::-webkit-scrollbar-thumb:active {
+  background: var(--accent-color);
+  box-shadow: 0 2px 6px var(--accent-glow);
+  transform: scale(1.02);
+  opacity: 1;
+}
+
+.scrollbar-custom::-webkit-scrollbar-thumb:focus {
+  background: var(--accent-color);
+  box-shadow: 0 0 0 2px var(--accent-glow), 0 2px 6px var(--accent-glow);
+  outline: 2px solid var(--accent-glow);
+  outline-offset: 1px;
+  opacity: 1;
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    scrollbar-color: var(--scrollbar-thumb-bg) var(--scrollbar-track-bg);
+    transition: none;
+  }
+  
+  *::-webkit-scrollbar-thumb {
+    transition: none;
+    opacity: var(--scrollbar-opacity-visible);
+  }
+  
+  .scrollbar-performance::-webkit-scrollbar-thumb {
+    transition: none;
+    opacity: var(--scrollbar-opacity-visible);
+  }
+}
+
+/* Print styles - hide scrollbars */
+@media print {
+  * {
+    scrollbar-width: none;
+  }
+  
+  *::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* Focus styles for scrollbar accessibility */
+*:focus-visible::-webkit-scrollbar-thumb {
+  outline: 2px solid var(--focus-outline-color, #FBBF24);
+  outline-offset: 1px;
+}
+
+/* RTL support */
+html[dir="rtl"] *::-webkit-scrollbar {
+  direction: rtl;
+}
+
+/* High DPI displays */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  *::-webkit-scrollbar {
+    width: calc(var(--scrollbar-width) * 0.75);
+    height: calc(var(--scrollbar-width) * 0.75);
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar {
+    width: calc(var(--scrollbar-width-thin) * 0.75);
+    height: calc(var(--scrollbar-width-thin) * 0.75);
+  }
+}
