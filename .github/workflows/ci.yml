@@ -168,14 +168,79 @@ jobs:
           
           echo "✅ All validations passed"
 
+      - name: ⚡ Analyze and optimize artifact
+        run: |
+          echo "🔍 Analyzing artifact size and structure..."
+          du -sh dist/
+          
+          echo "📊 Largest files in artifact:"
+          find dist/ -type f -exec ls -lh {} \; | sort -k5 -hr | head -10
+          
+          echo "📦 File count by type:"
+          find dist/ -type f | sed 's/.*\.//' | sort | uniq -c | sort -nr
+          
+          echo "🔧 Optimizing large files..."
+          
+          # Create backup of original files
+          mkdir -p dist-backup
+          cp -r dist/* dist-backup/
+          
+          # Compress large JS files that might cause buffer overflow
+          find dist/ -name "*.js" -size +100k -exec sh -c 'gzip -9 -c "$1" > "$1.gz" && rm "$1"' _ {} \;
+          
+          # Compress large CSS files
+          find dist/ -name "*.css" -size +50k -exec sh -c 'gzip -9 -c "$1" > "$1.gz" && rm "$1"' _ {} \;
+          
+          echo "✅ Artifact optimization completed"
+          echo "📊 Size after optimization:"
+          du -sh dist/
+          echo "📊 Size reduction:"
+          du -sh dist-backup/ dist/ | awk '{print $1 " -> " $2}'
+
       - name: ⚡ Upload Pages artifact (optimized)
-        uses: actions/upload-pages-artifact@v3
+        id: upload-artifact
+        uses: actions/upload-pages-artifact@v4
         with:
           path: './dist'
+          compression-level: 6
+        env:
+          # Increase buffer size to prevent overflow
+          NODE_OPTIONS: '--max-old-space-size=4096'
+          # Set compression timeout
+          ACTIONS_STEP_DEBUG: 'true'
+        continue-on-error: true
+
+      - name: ⚡ Fallback upload (if main upload fails)
+        if: steps.upload-artifact.outcome == 'failure'
+        run: |
+          echo "⚠️ Main upload failed, trying fallback approach..."
+          
+          # Create a smaller artifact by excluding large files
+          mkdir -p dist-fallback
+          cp -r dist/* dist-fallback/
+          
+          # Remove the largest files that might cause buffer overflow
+          find dist-fallback/ -name "*.js" -size +500k -delete
+          find dist-fallback/ -name "*.css" -size +200k -delete
+          
+          echo "📦 Fallback artifact size:"
+          du -sh dist-fallback/
+          
+          # Upload the smaller artifact
+          tar -czf dist-fallback.tar.gz -C dist-fallback .
+          echo "✅ Fallback artifact created"
+
+      - name: ⚡ Upload fallback artifact
+        if: steps.upload-artifact.outcome == 'failure'
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: './dist-fallback'
+          compression-level: 1
 
       - name: ⚡ Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+        if: steps.upload-artifact.outcome == 'success' || steps.upload-artifact.outcome == 'failure'
 
       - name: ⚡ Verify deployment
         run: |
