@@ -109,7 +109,7 @@ jobs:
           
           🤖 Auto-deployed by GitHub Actions"
           
-          # Push to gh-pages
-          git push origin gh-pages
+          # Force push to gh-pages
+          git push origin gh-pages --force
           
-          echo "✅ Successfully pushed to gh-pages branch"
+          echo "✅ Successfully force pushed to gh-pages branch"
