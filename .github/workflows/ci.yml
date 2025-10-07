@@ -198,6 +198,7 @@ jobs:
           du -sh dist-backup/ dist/ | awk '{print $1 " -> " $2}'
 
       - name: ⚡ Upload Pages artifact (optimized)
+        if: env.SKIP_PAGES_STEPS != 'true'
         id: upload-artifact
         uses: actions/upload-pages-artifact@v4
         with:
@@ -226,23 +227,24 @@ jobs:
           echo "📦 Fallback artifact size:"
           du -sh dist-fallback/
           
-          # Upload the smaller artifact
-          tar -czf dist-fallback.tar.gz -C dist-fallback .
-          echo "✅ Fallback artifact created"
+          # (Optional) Create tarball of fallback artifact; ignore failures to prevent job abort
+          tar -czf dist-fallback.tar.gz -C dist-fallback . || echo "⚠️ Tarball creation failed, proceeding without tarball"
+          echo "✅ Fallback artifact prepared"
 
       - name: ⚡ Upload fallback artifact
-        if: steps.upload-artifact.outcome == 'failure'
+        if: env.SKIP_PAGES_STEPS != 'true' && steps.upload-artifact.outcome == 'failure'
         uses: actions/upload-pages-artifact@v4
         with:
           path: './dist-fallback'
           compression-level: 1
 
       - name: ⚡ Deploy to GitHub Pages
+        if: env.SKIP_PAGES_STEPS != 'true' && (steps.upload-artifact.outcome == 'success' || steps.upload-artifact.outcome == 'failure')
         id: deployment
         uses: actions/deploy-pages@v4
-        if: steps.upload-artifact.outcome == 'success' || steps.upload-artifact.outcome == 'failure'
 
       - name: ⚡ Verify deployment
+        if: env.SKIP_PAGES_STEPS != 'true'
         run: |
           echo "🚀 Deployment completed!"
           echo "URL: ${{ steps.deployment.outputs.page_url }}"
@@ -258,6 +260,7 @@ jobs:
           fi
 
       - name: ⚡ Deployment summary
+        if: env.SKIP_PAGES_STEPS != 'true'
         run: |
           echo "## 🚀 Deployment Summary" >> $GITHUB_STEP_SUMMARY
           echo "### ✅ Status: Success" >> $GITHUB_STEP_SUMMARY
