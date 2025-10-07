@@ -24,6 +24,7 @@
     "perf:report": "npm run build:analyze && npm run perf:audit",
     "optimize": "npm run build:prod && npm run build:analyze",
     "test:a11y": "node scripts/test-accessibility.cjs",
+    "test:a11y:ci": "node scripts/test-ci-accessibility.cjs",
     "test:a11y:lighthouse": "lighthouse http://localhost:5181 --only-categories=accessibility --output html --output-path ./test-results/lighthouse-a11y.html --view",
     "test:a11y:quick": "lighthouse http://localhost:5181 --only-categories=accessibility --quiet",
     "test:playwright": "playwright test",
