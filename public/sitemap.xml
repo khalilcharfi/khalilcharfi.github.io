@@ -6,7 +6,7 @@
         http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
   <url>
     <loc>https://khalilcharfi.github.io/</loc>
-    <lastmod>2025-10-06</lastmod>
+    <lastmod>2025-10-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://khalilcharfi.github.io/?lang=en" />
@@ -17,7 +17,7 @@
   </url>
   <url>
     <loc>https://khalilcharfi.github.io/#home</loc>
-    <lastmod>2025-10-06</lastmod>
+    <lastmod>2025-10-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://khalilcharfi.github.io/#home?lang=en" />
@@ -28,7 +28,7 @@
   </url>
   <url>
     <loc>https://khalilcharfi.github.io/#about</loc>
-    <lastmod>2025-10-06</lastmod>
+    <lastmod>2025-10-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://khalilcharfi.github.io/#about?lang=en" />
@@ -39,7 +39,7 @@
   </url>
   <url>
     <loc>https://khalilcharfi.github.io/#skills</loc>
-    <lastmod>2025-10-06</lastmod>
+    <lastmod>2025-10-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://khalilcharfi.github.io/#skills?lang=en" />
@@ -50,7 +50,7 @@
   </url>
   <url>
     <loc>https://khalilcharfi.github.io/#projects</loc>
-    <lastmod>2025-10-06</lastmod>
+    <lastmod>2025-10-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://khalilcharfi.github.io/#projects?lang=en" />
@@ -61,7 +61,7 @@
   </url>
   <url>
     <loc>https://khalilcharfi.github.io/#experience</loc>
-    <lastmod>2025-10-06</lastmod>
+    <lastmod>2025-10-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://khalilcharfi.github.io/#experience?lang=en" />
@@ -72,7 +72,7 @@
   </url>
   <url>
     <loc>https://khalilcharfi.github.io/#education</loc>
-    <lastmod>2025-10-06</lastmod>
+    <lastmod>2025-10-07</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://khalilcharfi.github.io/#education?lang=en" />
@@ -83,7 +83,7 @@
   </url>
   <url>
     <loc>https://khalilcharfi.github.io/#publications</loc>
-    <lastmod>2025-10-06</lastmod>
+    <lastmod>2025-10-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://khalilcharfi.github.io/#publications?lang=en" />
@@ -94,7 +94,7 @@
   </url>
   <url>
     <loc>https://khalilcharfi.github.io/#certificates</loc>
-    <lastmod>2025-10-06</lastmod>
+    <lastmod>2025-10-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://khalilcharfi.github.io/#certificates?lang=en" />
@@ -105,7 +105,7 @@
   </url>
   <url>
     <loc>https://khalilcharfi.github.io/#contact</loc>
-    <lastmod>2025-10-06</lastmod>
+    <lastmod>2025-10-07</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://khalilcharfi.github.io/#contact?lang=en" />
