@@ -179,23 +179,33 @@ jobs:
           echo "📦 File count by type:"
           find dist/ -type f | sed 's/.*\.//' | sort | uniq -c | sort -nr
           
-          echo "🔧 Optimizing large files..."
+          echo "🔧 Preparing artifact for upload..."
           
           # Create backup of original files
           mkdir -p dist-backup
           cp -r dist/* dist-backup/
           
-          # Compress large JS files that might cause buffer overflow
-          find dist/ -name "*.js" -size +100k -exec sh -c 'gzip -9 -c "$1" > "$1.gz" && rm "$1"' _ {} \;
+          # Check total artifact size and warn if too large
+          TOTAL_SIZE=$(du -sb dist/ | cut -f1)
+          TOTAL_SIZE_MB=$((TOTAL_SIZE / 1024 / 1024))
+          echo "📏 Total artifact size: ${TOTAL_SIZE_MB}MB"
           
-          # Compress large CSS files
-          find dist/ -name "*.css" -size +50k -exec sh -c 'gzip -9 -c "$1" > "$1.gz" && rm "$1"' _ {} \;
+          if [ $TOTAL_SIZE_MB -gt 500 ]; then
+            echo "⚠️ Artifact size is large (${TOTAL_SIZE_MB}MB), applying size optimizations..."
+            
+            # Remove source maps if they exist and are large
+            find dist/ -name "*.map" -size +1M -delete
+            
+            # Optimize large JS files by removing comments and whitespace
+            find dist/ -name "*.js" -size +500k -exec sed -i '/^[[:space:]]*\/\//d' {} \;
+            
+            echo "✅ Size optimization completed"
+            OPTIMIZED_SIZE=$(du -sb dist/ | cut -f1)
+            OPTIMIZED_SIZE_MB=$((OPTIMIZED_SIZE / 1024 / 1024))
+            echo "📊 Optimized size: ${OPTIMIZED_SIZE_MB}MB"
+          fi
           
-          echo "✅ Artifact optimization completed"
-          echo "📊 Size after optimization:"
-          du -sh dist/
-          echo "📊 Size reduction:"
-          du -sh dist-backup/ dist/ | awk '{print $1 " -> " $2}'
+          echo "✅ Artifact preparation completed"
 
       - name: ⚡ Upload Pages artifact (optimized)
         if: env.SKIP_PAGES_STEPS != 'true'
@@ -203,7 +213,7 @@ jobs:
         uses: actions/upload-pages-artifact@v4
         with:
           path: './dist'
-          compression-level: 6
+          name: 'github-pages'
         env:
           # Increase buffer size to prevent overflow
           NODE_OPTIONS: '--max-old-space-size=4096'
@@ -236,7 +246,7 @@ jobs:
         uses: actions/upload-pages-artifact@v4
         with:
           path: './dist-fallback'
-          compression-level: 1
+          name: 'github-pages'
 
       - name: ⚡ Deploy to GitHub Pages
         if: env.SKIP_PAGES_STEPS != 'true' && (steps.upload-artifact.outcome == 'success' || steps.upload-artifact.outcome == 'failure')
