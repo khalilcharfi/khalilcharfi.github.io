@@ -34,6 +34,9 @@ jobs:
       - name: ⚡ Checkout
         uses: actions/checkout@v4
         with:
+          ref: ${{ github.event.workflow_run.head_branch }}
+          repository: ${{ github.event.workflow_run.head_repository.full_name }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0  # Need full history for git operations
       
       - name: ⚡ Setup Node.js
