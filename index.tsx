@@ -42,7 +42,7 @@ const CertificatesSection = lazy(() => import('@/features/portfolio').then(m => 
 // Lazy load debug components only in development
 const PerformanceDrawer = lazy(() => 
   import.meta.env.DEV 
-    ? import('@/shared/components').then(m => ({ default: m.PerformanceDrawer }))
+    ? import('@/shared/components/debug').then(m => ({ default: m.PerformanceDrawer }))
     : Promise.resolve({ default: () => null })
 );
 

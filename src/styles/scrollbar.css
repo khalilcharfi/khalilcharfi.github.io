@@ -2,10 +2,11 @@
 
 /* CSS Custom Properties for Scrollbar Theming */
 :root {
-  /* Scrollbar dimensions */
-  --scrollbar-width: 8px;
-  --scrollbar-width-thin: 6px;
-  --scrollbar-width-mobile: 4px;
+  /* Scrollbar dimensions - Optimized for better UX */
+  --scrollbar-width: 10px;
+  --scrollbar-width-thin: 8px;
+  --scrollbar-width-mobile: 6px;
+  --scrollbar-width-hover: 12px;
   
   /* Scrollbar colors - Dark theme (default) */
   --scrollbar-track-bg: rgba(0, 0, 0, 0.2);
@@ -15,15 +16,17 @@
   --scrollbar-thumb-bg-selected: rgba(0, 120, 220, 0.8);
   --scrollbar-thumb-border: rgba(0, 166, 255, 0.3);
   
-  /* Scrollbar transitions - Smoother animations */
-  --scrollbar-transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  --scrollbar-fade-in: 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  --scrollbar-fade-out: 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  /* Scrollbar transitions - Optimized for better UX */
+  --scrollbar-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --scrollbar-fade-in: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  --scrollbar-fade-out: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  --scrollbar-hover-transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
   
   /* Scrollbar visibility states */
   --scrollbar-opacity-hidden: 0;
   --scrollbar-opacity-visible: 1;
-  --scrollbar-opacity-hover: 0.9;
+  --scrollbar-opacity-hover: 0.95;
+  --scrollbar-opacity-minimal: 0.3;
 }
 
 /* Light theme scrollbar colors */
@@ -51,65 +54,92 @@ html[data-theme="light"] {
   }
 }
 
-/* Base scrollbar styles - Auto-hide by default */
+/* Base scrollbar styles - Auto-hide by default with better UX */
 * {
   scrollbar-width: thin;
   scrollbar-color: var(--scrollbar-thumb-bg) var(--scrollbar-track-bg);
   transition: scrollbar-color var(--scrollbar-transition);
 }
 
-/* WebKit scrollbar base styles */
+/* Auto-show scrollbar on scroll */
+*:hover {
+  scrollbar-width: auto;
+  scrollbar-color: var(--scrollbar-thumb-bg-hover) var(--scrollbar-track-bg);
+}
+
+/* WebKit scrollbar base styles - Enhanced UX */
 *::-webkit-scrollbar {
   width: var(--scrollbar-width);
   height: var(--scrollbar-width);
+  transition: width var(--scrollbar-hover-transition), height var(--scrollbar-hover-transition);
+}
+
+*:hover::-webkit-scrollbar {
+  width: var(--scrollbar-width-hover);
+  height: var(--scrollbar-width-hover);
 }
 
 *::-webkit-scrollbar-track {
   background: var(--scrollbar-track-bg);
-  border-radius: 4px;
+  border-radius: 6px;
+  transition: background var(--scrollbar-hover-transition);
+}
+
+*:hover::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1);
 }
 
 *::-webkit-scrollbar-thumb {
   background: var(--scrollbar-thumb-bg);
-  border-radius: 6px;
-  border: 1px solid var(--scrollbar-thumb-border);
+  border-radius: 8px;
+  border: 2px solid transparent;
   background-clip: content-box;
   transition: var(--scrollbar-transition);
-  opacity: var(--scrollbar-opacity-hidden);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  opacity: var(--scrollbar-opacity-minimal);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+  min-height: 20px;
+  min-width: 20px;
 }
 
-/* Scrollbar visibility on hover/active */
+/* Scrollbar visibility on hover/active - Enhanced UX */
 *:hover::-webkit-scrollbar-thumb,
 *:active::-webkit-scrollbar-thumb,
 *:focus::-webkit-scrollbar-thumb {
   opacity: var(--scrollbar-opacity-visible);
   background: var(--scrollbar-thumb-bg-hover);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-  transform: scale(1.05);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25);
+  transform: scale(1.02);
+  border-color: var(--scrollbar-thumb-bg-hover);
+  transition: var(--scrollbar-hover-transition);
 }
 
 *::-webkit-scrollbar-thumb:hover {
   background: var(--scrollbar-thumb-bg-hover);
-  opacity: var(--scrollbar-opacity-visible);
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4);
-  transform: scale(1.1);
+  opacity: var(--scrollbar-opacity-hover);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  transform: scale(1.05);
+  border-color: var(--scrollbar-thumb-bg-hover);
+  transition: var(--scrollbar-hover-transition);
 }
 
 *::-webkit-scrollbar-thumb:active {
   background: var(--scrollbar-thumb-bg-active);
   opacity: var(--scrollbar-opacity-visible);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
-  transform: scale(1.02);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  transform: scale(1.01);
+  border-color: var(--scrollbar-thumb-bg-active);
+  transition: var(--scrollbar-hover-transition);
 }
 
 /* Scrollbar selection state for manual scrolling */
 *::-webkit-scrollbar-thumb:focus {
   background: var(--scrollbar-thumb-bg-selected);
   opacity: var(--scrollbar-opacity-visible);
-  box-shadow: 0 0 0 2px var(--scrollbar-thumb-bg-hover), 0 2px 6px rgba(0, 0, 0, 0.3);
-  outline: 2px solid var(--scrollbar-thumb-bg-hover);
-  outline-offset: 1px;
+  box-shadow: 0 0 0 3px var(--scrollbar-thumb-bg-hover), 0 3px 8px rgba(0, 0, 0, 0.25);
+  outline: 3px solid var(--scrollbar-thumb-bg-hover);
+  outline-offset: 2px;
+  border-color: var(--scrollbar-thumb-bg-selected);
+  transition: var(--scrollbar-hover-transition);
 }
 
 /* Scrollbar corner */
@@ -127,7 +157,7 @@ html[data-theme="light"] {
   height: var(--scrollbar-width-thin);
 }
 
-/* Mobile scrollbar variant */
+/* Mobile scrollbar variant - Enhanced for touch devices */
 @media (max-width: 768px) {
   * {
     scrollbar-width: thin;
@@ -138,8 +168,38 @@ html[data-theme="light"] {
     height: var(--scrollbar-width-mobile);
   }
   
+  *:hover::-webkit-scrollbar {
+    width: calc(var(--scrollbar-width-mobile) + 2px);
+    height: calc(var(--scrollbar-width-mobile) + 2px);
+  }
+  
   *::-webkit-scrollbar-thumb {
-    border-radius: 2px;
+    border-radius: 4px;
+    min-height: 30px;
+    min-width: 30px;
+    opacity: var(--scrollbar-opacity-minimal);
+  }
+  
+  *:hover::-webkit-scrollbar-thumb {
+    opacity: var(--scrollbar-opacity-visible);
+  }
+}
+
+/* Touch device optimization */
+@media (pointer: coarse) {
+  *::-webkit-scrollbar {
+    width: calc(var(--scrollbar-width) + 2px);
+    height: calc(var(--scrollbar-width) + 2px);
+  }
+  
+  *::-webkit-scrollbar-thumb {
+    min-height: 40px;
+    min-width: 40px;
+    border-radius: 10px;
+  }
+  
+  *:hover::-webkit-scrollbar-thumb {
+    transform: scale(1.1);
   }
 }
 
@@ -205,6 +265,49 @@ html[data-theme="light"] {
 /* Smooth scrollbar animation */
 .scrollbar-smooth {
   scroll-behavior: smooth;
+}
+
+/* Enhanced scrollbar with better UX */
+.scrollbar-enhanced {
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb-bg) var(--scrollbar-track-bg);
+  transition: scrollbar-color var(--scrollbar-transition);
+}
+
+.scrollbar-enhanced:hover {
+  scrollbar-width: auto;
+  scrollbar-color: var(--scrollbar-thumb-bg-hover) var(--scrollbar-track-bg);
+}
+
+.scrollbar-enhanced::-webkit-scrollbar {
+  width: var(--scrollbar-width);
+  height: var(--scrollbar-width);
+  transition: width var(--scrollbar-hover-transition), height var(--scrollbar-hover-transition);
+}
+
+.scrollbar-enhanced:hover::-webkit-scrollbar {
+  width: var(--scrollbar-width-hover);
+  height: var(--scrollbar-width-hover);
+}
+
+.scrollbar-enhanced::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb-bg);
+  border-radius: 8px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+  transition: var(--scrollbar-transition);
+  opacity: var(--scrollbar-opacity-minimal);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+  min-height: 20px;
+  min-width: 20px;
+}
+
+.scrollbar-enhanced:hover::-webkit-scrollbar-thumb {
+  opacity: var(--scrollbar-opacity-visible);
+  background: var(--scrollbar-thumb-bg-hover);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25);
+  transform: scale(1.02);
+  border-color: var(--scrollbar-thumb-bg-hover);
 }
 
 /* Custom scrollbar for specific components */
@@ -285,8 +388,36 @@ html[data-theme="light"] {
 
 /* Focus styles for scrollbar accessibility */
 *:focus-visible::-webkit-scrollbar-thumb {
-  outline: 2px solid var(--focus-outline-color, #FBBF24);
-  outline-offset: 1px;
+  outline: 3px solid var(--focus-outline-color, #FBBF24);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 3px var(--focus-outline-color, #FBBF24), 0 3px 8px rgba(0, 0, 0, 0.25);
+}
+
+/* Scrollbar progress indicator */
+*::-webkit-scrollbar-thumb::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--scrollbar-thumb-bg-hover), transparent);
+  opacity: 0;
+  transition: opacity var(--scrollbar-hover-transition);
+}
+
+*:hover::-webkit-scrollbar-thumb::before {
+  opacity: 0.6;
+}
+
+/* Scrollbar corner enhancement */
+*::-webkit-scrollbar-corner {
+  background: var(--scrollbar-track-bg);
+  transition: background var(--scrollbar-hover-transition);
+}
+
+*:hover::-webkit-scrollbar-corner {
+  background: rgba(0, 0, 0, 0.1);
 }
 
 /* RTL support */

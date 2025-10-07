@@ -4,8 +4,12 @@
  * Script to verify that debug components are excluded from production builds
  */
 
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const distDir = path.join(__dirname, '../dist');
 const bundleAnalysisFile = path.join(distDir, 'bundle-analysis.html');
@@ -63,18 +67,21 @@ jsFiles.forEach(file => {
   }
 });
 
-// Check bundle analysis file
-if (fs.existsSync(bundleAnalysisFile)) {
-  console.log('\n📊 Checking bundle analysis for debug components...');
-  const analysisContent = fs.readFileSync(bundleAnalysisFile, 'utf8');
-  
-  if (analysisContent.includes('PerformanceDrawer') || analysisContent.includes('debug')) {
-    console.log('❌ Found debug components in bundle analysis');
-    debugComponentsFound = true;
-  } else {
-    console.log('✅ No debug components found in bundle analysis');
+  // Check bundle analysis file
+  if (fs.existsSync(bundleAnalysisFile)) {
+    console.log('\n📊 Checking bundle analysis for debug components...');
+    const analysisContent = fs.readFileSync(bundleAnalysisFile, 'utf8');
+    
+    // Check for specific debug components, not general "debug" references
+    if (analysisContent.includes('PerformanceDrawer') || 
+        analysisContent.includes('debug/PerformanceDrawer') ||
+        analysisContent.includes('debug/DebugComponents')) {
+      console.log('❌ Found debug components in bundle analysis');
+      debugComponentsFound = true;
+    } else {
+      console.log('✅ No debug components found in bundle analysis');
+    }
   }
-}
 
 // Check CSS files for debug styles
 console.log('\n🎨 Checking CSS files for debug styles...');

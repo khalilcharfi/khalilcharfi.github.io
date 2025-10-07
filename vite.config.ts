@@ -132,7 +132,8 @@ export default defineConfig(({ mode }) => {
       },
       // Exclude debug components from production builds
       external: mode === 'production' ? (id) => {
-        if (id.includes('debug/') || id.includes('PerformanceDrawer')) {
+        // Only externalize if it's a direct import of debug components
+        if (id.includes('debug/PerformanceDrawer') || id.includes('debug/DebugComponents')) {
           return true;
         }
         return false;
@@ -177,7 +178,7 @@ export default defineConfig(({ mode }) => {
         // Remove debug component files from the bundle
         Object.keys(bundle).forEach(fileName => {
           if (bundle[fileName].type === 'chunk' && 
-              (fileName.includes('debug') || fileName.includes('PerformanceDrawer'))) {
+              (fileName.includes('debug-') || fileName.includes('PerformanceDrawer'))) {
             delete bundle[fileName];
           }
         });

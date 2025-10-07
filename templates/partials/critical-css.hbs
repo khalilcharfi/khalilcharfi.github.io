@@ -20,22 +20,25 @@
         --shadow-soft: 0 4px 6px rgba(0, 0, 0, 0.1);
         --shadow-hover: 0 10px 20px rgba(0, 0, 0, 0.2);
         
-        /* Scrollbar variables */
-        --scrollbar-width: 8px;
-        --scrollbar-width-thin: 6px;
-        --scrollbar-width-mobile: 4px;
+        /* Scrollbar variables - Optimized for better UX */
+        --scrollbar-width: 10px;
+        --scrollbar-width-thin: 8px;
+        --scrollbar-width-mobile: 6px;
+        --scrollbar-width-hover: 12px;
         --scrollbar-track-bg: rgba(0, 0, 0, 0.2);
         --scrollbar-thumb-bg: rgba(0, 166, 255, 0.5);
         --scrollbar-thumb-bg-hover: rgba(0, 100, 200, 0.9);
         --scrollbar-thumb-bg-active: rgba(0, 80, 160, 1);
         --scrollbar-thumb-bg-selected: rgba(0, 120, 220, 0.8);
         --scrollbar-thumb-border: rgba(0, 166, 255, 0.3);
-        --scrollbar-transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-        --scrollbar-fade-in: 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-        --scrollbar-fade-out: 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        --scrollbar-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        --scrollbar-fade-in: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        --scrollbar-fade-out: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        --scrollbar-hover-transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
         --scrollbar-opacity-hidden: 0;
         --scrollbar-opacity-visible: 1;
-        --scrollbar-opacity-hover: 0.9;
+        --scrollbar-opacity-hover: 0.95;
+        --scrollbar-opacity-minimal: 0.3;
     }
     html[data-theme="light"] {
         --accent-color: #4F46E5;
@@ -55,6 +58,8 @@
         --scrollbar-thumb-bg-active: rgba(37, 29, 128, 1);
         --scrollbar-thumb-bg-selected: rgba(67, 56, 202, 0.8);
         --scrollbar-thumb-border: rgba(79, 70, 229, 0.3);
+        --scrollbar-hover-transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+        --scrollbar-opacity-minimal: 0.3;
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     
@@ -85,37 +90,50 @@
         overscroll-behavior-y: none;
     }
     
-    /* Global scrollbar optimization - Auto-hide by default */
+    /* Global scrollbar optimization - Enhanced UX */
     * {
         scrollbar-width: thin;
         scrollbar-color: var(--scrollbar-thumb-bg) var(--scrollbar-track-bg);
         transition: scrollbar-color var(--scrollbar-transition);
     }
     
-    *:hover,
-    *:active {
+    *:hover {
+        scrollbar-width: auto;
         scrollbar-color: var(--scrollbar-thumb-bg-hover) var(--scrollbar-track-bg);
     }
     
-    /* WebKit scrollbar styling */
+    /* WebKit scrollbar styling - Enhanced UX */
     *::-webkit-scrollbar {
         width: var(--scrollbar-width);
         height: var(--scrollbar-width);
+        transition: width var(--scrollbar-hover-transition), height var(--scrollbar-hover-transition);
+    }
+    
+    *:hover::-webkit-scrollbar {
+        width: var(--scrollbar-width-hover);
+        height: var(--scrollbar-width-hover);
     }
     
     *::-webkit-scrollbar-track {
         background: var(--scrollbar-track-bg);
-        border-radius: 4px;
+        border-radius: 6px;
+        transition: background var(--scrollbar-hover-transition);
+    }
+    
+    *:hover::-webkit-scrollbar-track {
+        background: rgba(0, 0, 0, 0.1);
     }
     
     *::-webkit-scrollbar-thumb {
         background: var(--scrollbar-thumb-bg);
-        border-radius: 6px;
-        border: 1px solid var(--scrollbar-thumb-border);
+        border-radius: 8px;
+        border: 2px solid transparent;
         background-clip: content-box;
         transition: var(--scrollbar-transition);
-        opacity: var(--scrollbar-opacity-hidden);
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+        opacity: var(--scrollbar-opacity-minimal);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+        min-height: 20px;
+        min-width: 20px;
     }
     
     *:hover::-webkit-scrollbar-thumb,
@@ -123,35 +141,48 @@
     *:focus::-webkit-scrollbar-thumb {
         opacity: var(--scrollbar-opacity-visible);
         background: var(--scrollbar-thumb-bg-hover);
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-        transform: scale(1.05);
+        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25);
+        transform: scale(1.02);
+        border-color: var(--scrollbar-thumb-bg-hover);
+        transition: var(--scrollbar-hover-transition);
     }
     
     *::-webkit-scrollbar-thumb:hover {
         background: var(--scrollbar-thumb-bg-hover);
-        opacity: var(--scrollbar-opacity-visible);
-        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4);
-        transform: scale(1.1);
+        opacity: var(--scrollbar-opacity-hover);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        transform: scale(1.05);
+        border-color: var(--scrollbar-thumb-bg-hover);
+        transition: var(--scrollbar-hover-transition);
     }
     
     *::-webkit-scrollbar-thumb:active {
         background: var(--scrollbar-thumb-bg-active);
         opacity: var(--scrollbar-opacity-visible);
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
-        transform: scale(1.02);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+        transform: scale(1.01);
+        border-color: var(--scrollbar-thumb-bg-active);
+        transition: var(--scrollbar-hover-transition);
     }
     
     *::-webkit-scrollbar-thumb:focus {
         background: var(--scrollbar-thumb-bg-selected);
         opacity: var(--scrollbar-opacity-visible);
-        box-shadow: 0 0 0 2px var(--scrollbar-thumb-bg-hover), 0 2px 6px rgba(0, 0, 0, 0.3);
-        outline: 2px solid var(--scrollbar-thumb-bg-hover);
-        outline-offset: 1px;
+        box-shadow: 0 0 0 3px var(--scrollbar-thumb-bg-hover), 0 3px 8px rgba(0, 0, 0, 0.25);
+        outline: 3px solid var(--scrollbar-thumb-bg-hover);
+        outline-offset: 2px;
+        border-color: var(--scrollbar-thumb-bg-selected);
+        transition: var(--scrollbar-hover-transition);
     }
     
-    /* Scrollbar corner */
+    /* Scrollbar corner enhancement */
     *::-webkit-scrollbar-corner {
         background: var(--scrollbar-track-bg);
+        transition: background var(--scrollbar-hover-transition);
+    }
+    
+    *:hover::-webkit-scrollbar-corner {
+        background: rgba(0, 0, 0, 0.1);
     }
     
     /* Scroll performance optimization */
