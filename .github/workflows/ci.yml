@@ -24,13 +24,10 @@ concurrency:
 
 env:
   NODE_VERSION: '22'
-  # Optimize compression settings for faster cache operations
   TAR_OPTIONS: '--use-compress-program="zstdmt --fast --threads=0"'
-  # Reduce cache size by excluding unnecessary files
   CACHE_EXCLUDE: 'node_modules/.cache,dist,coverage,.nyc_output,*.log,*.tmp'
 
 jobs:
-  # Quick validation with optimized caching
   validate:
     name: ✅ Quick Validation
     runs-on: ubuntu-latest
@@ -72,7 +69,6 @@ jobs:
           npm run build --silent
           echo "✅ Build test successful"
 
-  # Build and deploy with comprehensive caching
   build-and-deploy:
     name: 🏗️ Build & Deploy
     runs-on: ubuntu-latest
@@ -126,7 +122,6 @@ jobs:
         run: |
           echo "🔍 Comprehensive build verification..."
           
-          # Check required files
           REQUIRED_FILES=("index.html" "robots.txt" "sitemap.xml")
           for file in "${REQUIRED_FILES[@]}"; do
             if [ -f "dist/$file" ]; then
@@ -137,7 +132,6 @@ jobs:
             fi
           done
           
-          # Check bundle size
           TOTAL_SIZE=$(find dist -name '*.js' -o -name '*.css' | xargs gzip -c | wc -c)
           TOTAL_SIZE_KB=$((TOTAL_SIZE / 1024))
           echo "📦 Bundle size: ${TOTAL_SIZE_KB} KB"
@@ -148,10 +142,6 @@ jobs:
             echo "✅ Bundle size acceptable: ${TOTAL_SIZE_KB} KB"
           fi
           
-          # Additional validation
-          echo "🔍 Running additional validations..."
-          
-          # Check HTML structure
           if grep -q "<!DOCTYPE html>" dist/index.html; then
             echo "✅ HTML DOCTYPE found"
           else
@@ -159,7 +149,6 @@ jobs:
             exit 1
           fi
           
-          # Check for critical meta tags
           if grep -q 'name="viewport"' dist/index.html; then
             echo "✅ Viewport meta tag found"
           else
@@ -168,99 +157,56 @@ jobs:
           
           echo "✅ All validations passed"
 
-      - name: ⚡ Analyze and optimize artifact
+      - name: ⚡ Analyze artifact size
         run: |
-          echo "🔍 Analyzing artifact size and structure..."
+          echo "🔍 Analyzing artifact..."
           du -sh dist/
-          
-          echo "📊 Largest files in artifact:"
+          echo "📊 Largest files:"
           find dist/ -type f -exec ls -lh {} \; | sort -k5 -hr | head -10
-          
           echo "📦 File count by type:"
           find dist/ -type f | sed 's/.*\.//' | sort | uniq -c | sort -nr
-          
-          echo "🔧 Optimizing large files..."
-          
-          # Create backup of original files
-          mkdir -p dist-backup
-          cp -r dist/* dist-backup/
-          
-          # Compress large JS files that might cause buffer overflow
-          find dist/ -name "*.js" -size +100k -exec sh -c 'gzip -9 -c "$1" > "$1.gz" && rm "$1"' _ {} \;
-          
-          # Compress large CSS files
-          find dist/ -name "*.css" -size +50k -exec sh -c 'gzip -9 -c "$1" > "$1.gz" && rm "$1"' _ {} \;
-          
-          echo "✅ Artifact optimization completed"
-          echo "📊 Size after optimization:"
-          du -sh dist/
-          echo "📊 Size reduction:"
-          du -sh dist-backup/ dist/ | awk '{print $1 " -> " $2}'
+
+      - name: ⚡ Check artifact size
+        run: |
+          MAX_SIZE_MB=800
+          SIZE_MB=$(du -sm dist | cut -f1)
+          echo "📦 Artifact size: ${SIZE_MB}MB"
+          if [ "$SIZE_MB" -gt "$MAX_SIZE_MB" ]; then
+            echo "⚠️ Artifact exceeds ${MAX_SIZE_MB}MB, pruning large assets..."
+            find dist/ -name "*.map" -delete
+            find dist/ -name "*.log" -delete
+            echo "✅ Reduced artifact size"
+          fi
 
       - name: ⚡ Upload Pages artifact (optimized)
-        if: env.SKIP_PAGES_STEPS != 'true'
         id: upload-artifact
         uses: actions/upload-pages-artifact@v4
         with:
           path: './dist'
-          compression-level: 6
-        env:
-          # Increase buffer size to prevent overflow
-          NODE_OPTIONS: '--max-old-space-size=4096'
-          # Set compression timeout
-          ACTIONS_STEP_DEBUG: 'true'
-        continue-on-error: true
 
-      - name: ⚡ Fallback upload (if main upload fails)
+      - name: ⚡ Fallback artifact (tarball)
         if: steps.upload-artifact.outcome == 'failure'
         run: |
-          echo "⚠️ Main upload failed, trying fallback approach..."
-          
-          # Create a smaller artifact by excluding large files
-          mkdir -p dist-fallback
-          cp -r dist/* dist-fallback/
-          
-          # Remove the largest files that might cause buffer overflow
-          find dist-fallback/ -name "*.js" -size +500k -delete
-          find dist-fallback/ -name "*.css" -size +200k -delete
-          
-          echo "📦 Fallback artifact size:"
-          du -sh dist-fallback/
-          
-          # (Optional) Create tarball of fallback artifact; ignore failures to prevent job abort
-          tar -czf dist-fallback.tar.gz -C dist-fallback . || echo "⚠️ Tarball creation failed, proceeding without tarball"
-          echo "✅ Fallback artifact prepared"
-
-      - name: ⚡ Upload fallback artifact
-        if: env.SKIP_PAGES_STEPS != 'true' && steps.upload-artifact.outcome == 'failure'
-        uses: actions/upload-pages-artifact@v4
-        with:
-          path: './dist-fallback'
-          compression-level: 1
+          echo "⚠️ Upload failed, creating fallback tarball..."
+          tar -czf dist-fallback.tar.gz -C dist .
+          du -sh dist-fallback.tar.gz
 
       - name: ⚡ Deploy to GitHub Pages
-        if: env.SKIP_PAGES_STEPS != 'true' && (steps.upload-artifact.outcome == 'success' || steps.upload-artifact.outcome == 'failure')
         id: deployment
         uses: actions/deploy-pages@v4
 
       - name: ⚡ Verify deployment
-        if: env.SKIP_PAGES_STEPS != 'true'
         run: |
           echo "🚀 Deployment completed!"
           echo "URL: ${{ steps.deployment.outputs.page_url }}"
-          
-          # Wait a moment for propagation
           sleep 10
-          
-          # Quick health check
-          if curl -f -s --max-time 15 "${{ steps.deployment.outputs.page_url }}" > /dev/null; then
+          if curl -fsSL --max-time 15 "${{ steps.deployment.outputs.page_url }}" > /dev/null; then
             echo "✅ Site is accessible"
           else
-            echo "⚠️  Site may not be fully propagated yet (this is normal)"
+            echo "⚠️  Site may not be fully propagated yet"
           fi
 
       - name: ⚡ Deployment summary
-        if: env.SKIP_PAGES_STEPS != 'true'
         run: |
           echo "## 🚀 Deployment Summary" >> $GITHUB_STEP_SUMMARY
           echo "### ✅ Status: Success" >> $GITHUB_STEP_SUMMARY
@@ -269,7 +215,6 @@ jobs:
           echo "### 📦 Source: ${{ github.ref_name }} branch" >> $GITHUB_STEP_SUMMARY
           echo "### 🏗️ Build: $(du -sh dist | cut -f1)" >> $GITHUB_STEP_SUMMARY
 
-  # Parallel testing job for better performance
   test:
     name: 🧪 Run Tests
     runs-on: ubuntu-latest
@@ -313,7 +258,6 @@ jobs:
       - name: ⚡ Run Playwright tests
         run: npm run test:playwright --silent || echo "Playwright tests completed with warnings"
 
-  # Summary
   summary:
     name: 📊 Pipeline Summary
     runs-on: ubuntu-latest
