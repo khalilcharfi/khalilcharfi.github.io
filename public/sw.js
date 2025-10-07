@@ -1,5 +1,5 @@
 
-const CACHE_NAME = 'khalil-portfolio-cache-v4.2';
+const CACHE_NAME = 'khalil-portfolio-cache-v4.3';
 const ASSETS_TO_CACHE = [
   '/',
   './index.html',

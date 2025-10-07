@@ -161,7 +161,6 @@ export default defineConfig(({ mode }) => {
         // Enhanced DCE when enabled
         ...(enableDCE && {
           dead_code: true,
-          drop_unused: true,
           unused: true,
           side_effects: false
         })
