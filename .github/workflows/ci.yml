@@ -66,7 +66,7 @@ jobs:
     
     strategy:
       matrix:
-        test-group: [unit, integration, e2e]
+        test-group: [accessibility, playwright, integration]
     
     steps:
       - name: ⚡ Checkout (shallow)
@@ -88,17 +88,19 @@ jobs:
       - name: ⚡ Run ${{ matrix.test-group }} tests
         run: |
           case "${{ matrix.test-group }}" in
-            unit) npm run test:unit --silent --coverage --watchAll=false ;;
-            integration) npm run test:integration --silent --watchAll=false ;;
-            e2e) npm run test:e2e --silent --watchAll=false ;;
+            accessibility) npm run test:a11y --silent ;;
+            playwright) npm run test:playwright --silent ;;
+            integration) npm run test:all --silent ;;
           esac
       
-      - name: ⚡ Upload coverage (unit only)
-        if: matrix.test-group == 'unit'
+      - name: ⚡ Upload test results
+        if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: coverage-${{ matrix.test-group }}-${{ github.run_id }}
-          path: coverage/
+          name: test-results-${{ matrix.test-group }}-${{ github.run_id }}
+          path: |
+            test-results/
+            coverage/
           retention-days: 3
 
   validate-translations-ultra:
