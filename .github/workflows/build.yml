@@ -8,6 +8,10 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: "build-${{ github.ref_name }}-${{ github.event.head_commit.id }}"
+  cancel-in-progress: true
+
 env:
   NODE_VERSION: '22'
 

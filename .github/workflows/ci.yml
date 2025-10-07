@@ -13,6 +13,10 @@ on:
         default: false
         type: boolean
 
+concurrency:
+  group: "ci-${{ github.ref_name }}-${{ github.event.head_commit.id }}"
+  cancel-in-progress: true
+
 env:
   NODE_VERSION: '22'
 
@@ -47,13 +51,13 @@ jobs:
           npm run build --silent
           echo "✅ Build test successful"
 
-  # Simple build
+  # Comprehensive validation and build
   build:
-    name: 🏗️ Build Project
+    name: 🏗️ Build & Validate
     runs-on: ubuntu-latest
     needs: validate
     if: ${{ inputs.skip_build != true }}
-    timeout-minutes: 10
+    timeout-minutes: 15
     
     steps:
       - name: ⚡ Checkout
@@ -76,9 +80,9 @@ jobs:
           npm run build:prod --silent
           echo "✅ Build completed successfully"
       
-      - name: ⚡ Verify build
+      - name: ⚡ Comprehensive verification
         run: |
-          echo "🔍 Verifying build output..."
+          echo "🔍 Comprehensive build verification..."
           
           # Check required files
           REQUIRED_FILES=("index.html" "robots.txt" "sitemap.xml")
@@ -101,6 +105,26 @@ jobs:
           else
             echo "✅ Bundle size acceptable: ${TOTAL_SIZE_KB} KB"
           fi
+          
+          # Additional validation
+          echo "🔍 Running additional validations..."
+          
+          # Check HTML structure
+          if grep -q "<!DOCTYPE html>" dist/index.html; then
+            echo "✅ HTML DOCTYPE found"
+          else
+            echo "❌ HTML DOCTYPE missing"
+            exit 1
+          fi
+          
+          # Check for critical meta tags
+          if grep -q 'name="viewport"' dist/index.html; then
+            echo "✅ Viewport meta tag found"
+          else
+            echo "⚠️  Viewport meta tag missing"
+          fi
+          
+          echo "✅ All validations passed"
       
       - name: ⚡ Upload build artifacts
         uses: actions/upload-artifact@v4

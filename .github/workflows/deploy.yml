@@ -11,8 +11,8 @@ permissions:
   id-token: write
 
 concurrency:
-  group: "pages"
-  cancel-in-progress: false
+  group: "deploy-${{ github.ref_name }}-${{ github.event.head_commit.id }}"
+  cancel-in-progress: true
 
 env:
   NODE_VERSION: '22'
