@@ -1,8 +1,8 @@
-name: 🚀 Deploy to GitHub Pages
+name: 🚀 Build and Deploy to GitHub Pages
 
 on:
   push:
-    branches: [gh-pages]
+    branches: [main]  # change 'main' to your source branch if needed
   workflow_dispatch:
 
 permissions:
@@ -18,39 +18,50 @@ env:
   NODE_VERSION: '22'
 
 jobs:
-  # Deploy to GitHub Pages
-  deploy:
-    name: 🚀 Deploy to GitHub Pages
+  build-and-deploy:
+    name: 🚀 Build and Deploy to GitHub Pages
     runs-on: ubuntu-latest
     timeout-minutes: 10
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    
+
     steps:
-      - name: ⚡ Checkout gh-pages
+      - name: ⚡ Checkout source branch
         uses: actions/checkout@v4
         with:
           fetch-depth: 1
-      
+
+      - name: ⚡ Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      # Uncomment and adjust the following lines if you have dependencies
+      - name: ⚡ Install dependencies
+        run: npm ci
+
+      # Adjust this step to your actual build command and output directory
+      - name: ⚡ Build project
+        run: npm run build
+
+      # Upload the build output (change 'dist' to your actual build output directory)
       - name: ⚡ Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: '.'
-      
+          path: './dist'  # change this if your output directory is not 'dist'
+
       - name: ⚡ Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-      
+
       - name: ⚡ Verify deployment
         run: |
           echo "🚀 Deployment completed!"
           echo "URL: ${{ steps.deployment.outputs.page_url }}"
-          
-          # Wait a moment for propagation
+
           sleep 10
-          
-          # Quick health check
+
           if curl -f -s --max-time 15 "${{ steps.deployment.outputs.page_url }}" > /dev/null; then
             echo "✅ Site is accessible"
           else
