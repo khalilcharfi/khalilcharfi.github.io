@@ -2,7 +2,7 @@ name: 🚀 Simple Deploy to GitHub Pages
 
 on:
   push:
-    branches: [gh-pages]
+    branches: [main, next]
   workflow_dispatch:
 
 permissions:

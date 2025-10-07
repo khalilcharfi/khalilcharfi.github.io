@@ -1,26 +1,20 @@
-name: 🚀 Simple Deploy to GitHub Pages
+name: 🏗️ Build and Prepare for Deployment
 
 on:
   push:
-    branches: [gh-pages]
+    branches: [main, next]
   workflow_dispatch:
 
 permissions:
   contents: write
-  pages: write
-  id-token: write
-
-concurrency:
-  group: "pages"
-  cancel-in-progress: false
 
 env:
   NODE_VERSION: '22'
 
 jobs:
-  # Build and deploy
-  build-and-deploy:
-    name: 🏗️ Build & Deploy
+  # Build and push to gh-pages
+  build-and-push:
+    name: 🏗️ Build & Push to gh-pages
     runs-on: ubuntu-latest
     timeout-minutes: 15
     
@@ -28,7 +22,7 @@ jobs:
       - name: ⚡ Checkout
         uses: actions/checkout@v4
         with:
-          fetch-depth: 1
+          fetch-depth: 0  # Need full history for git operations
       
       - name: ⚡ Setup Node.js
         uses: actions/setup-node@v4
@@ -71,26 +65,44 @@ jobs:
             echo "✅ Bundle size acceptable: ${TOTAL_SIZE_KB} KB"
           fi
       
-      - name: ⚡ Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: './dist'
-      
-      - name: ⚡ Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
-      
-      - name: ⚡ Verify deployment
+      - name: ⚡ Configure Git
         run: |
-          echo "🚀 Deployment completed!"
-          echo "URL: ${{ steps.deployment.outputs.page_url }}"
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+      
+      - name: ⚡ Push to gh-pages
+        run: |
+          echo "🚀 Pushing build to gh-pages branch..."
           
-          # Wait a moment for propagation
-          sleep 10
-          
-          # Quick health check
-          if curl -f -s --max-time 15 "${{ steps.deployment.outputs.page_url }}" > /dev/null; then
-            echo "✅ Site is accessible"
+          # Create or update gh-pages branch
+          if git show-ref --verify --quiet refs/heads/gh-pages; then
+            echo "📋 gh-pages branch exists, switching to it..."
+            git checkout gh-pages
+            git pull origin gh-pages
           else
-            echo "⚠️  Site may not be fully propagated yet (this is normal)"
+            echo "📋 Creating gh-pages branch..."
+            git checkout --orphan gh-pages
+            git rm -rf .
           fi
+          
+          # Copy dist contents to root
+          cp -r dist/* .
+          
+          # Add all files
+          git add .
+          
+          # Commit changes
+          git commit -m "🚀 Deploy from ${{ github.ref_name }} (${{ github.sha }})
+          
+          📊 Build Info:
+          - Source Branch: ${{ github.ref_name }}
+          - Commit: ${{ github.sha }}
+          - Build Time: $(date -u)
+          - Bundle Size: ${TOTAL_SIZE_KB} KB
+          
+          🤖 Auto-deployed by GitHub Actions"
+          
+          # Push to gh-pages
+          git push origin gh-pages
+          
+          echo "✅ Successfully pushed to gh-pages branch"
