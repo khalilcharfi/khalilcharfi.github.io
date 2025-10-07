@@ -9,17 +9,18 @@ on:
 jobs:
   check-bundle-size:
     runs-on: ubuntu-latest
+    timeout-minutes: 15  # Prevent hanging jobs
     
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Full history for comparison
+          fetch-depth: 1  # Shallow clone for speed (use 0 only for PR comparison)
       
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'  # Updated to LTS
+          node-version: '22'  # Latest LTS
           cache: 'npm'
       
       - name: Cache build artifacts
@@ -34,7 +35,7 @@ jobs:
             ${{ runner.os }}-node-
       
       - name: Install dependencies
-        run: npm ci --prefer-offline
+        run: npm ci --prefer-offline --no-audit --no-fund --silent
       
       - name: Build current version
         run: npm run build

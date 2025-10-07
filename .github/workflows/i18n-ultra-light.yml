@@ -1,0 +1,174 @@
+name: ⚡ Ultra-Light i18n Validation
+
+on:
+  push:
+    branches: [main, next, develop]
+  pull_request:
+    branches: [main, next, develop]
+  workflow_dispatch:
+    inputs:
+      check_quality:
+        description: 'Check translation quality'
+        required: false
+        default: false
+        type: boolean
+
+env:
+  NODE_VERSION: '22'
+  ULTRA_LIGHT: true
+
+jobs:
+  i18n-ultra-light:
+    name: ⚡ Ultra-Light i18n Check
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    
+    steps:
+      - name: ⚡ Checkout (minimal)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      
+      - name: ⚡ Setup Node.js (cached)
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: 'package-lock.json'
+      
+      - name: ⚡ Ultra-fast cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            node_modules
+            ~/.npm
+          key: ${{ runner.os }}-i18n-ultra-${{ hashFiles('package-lock.json') }}-v4
+          restore-keys: |
+            ${{ runner.os }}-i18n-ultra-v4-
+            ${{ runner.os }}-i18n-ultra-
+      
+      - name: ⚡ Cache translations
+        uses: actions/cache@v4
+        with:
+          path: |
+            src/features/i18n/data/translations.ts
+            translations.ts
+          key: ${{ runner.os }}-translations-${{ hashFiles('**/translations.ts') }}-v4
+          restore-keys: |
+            ${{ runner.os }}-translations-v4-
+            ${{ runner.os }}-translations-
+      
+      - name: ⚡ Install dependencies (ultra-fast)
+        run: npm ci --prefer-offline --no-audit --no-fund --silent
+      
+      - name: ⚡ Ultra-fast translation validation
+        id: validation
+        run: |
+          echo "⚡ Ultra-fast translation validation..."
+          
+          # Run validation with minimal output
+          npm run i18n:validate --silent > validation-output.txt 2>&1
+          VALIDATION_EXIT_CODE=$?
+          
+          if [ $VALIDATION_EXIT_CODE -eq 0 ]; then
+            echo "✅ All translations are complete!"
+            echo "has-errors=false" >> $GITHUB_OUTPUT
+            echo "missing-count=0" >> $GITHUB_OUTPUT
+            echo "status=success" >> $GITHUB_OUTPUT
+          else
+            echo "❌ Translation validation failed!"
+            cat validation-output.txt
+            
+            # Extract missing count quickly
+            MISSING_COUNT=$(grep -o "Missing Keys: [0-9]*" validation-output.txt | grep -o "[0-9]*" || echo "0")
+            echo "missing-count=$MISSING_COUNT" >> $GITHUB_OUTPUT
+            echo "has-errors=true" >> $GITHUB_OUTPUT
+            echo "status=failed" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: ⚡ Ultra-fast quality check
+        if: ${{ inputs.check_quality == true }}
+        run: |
+          echo "⚡ Ultra-fast quality check..."
+          
+          # Quick quality checks
+          PLACEHOLDERS=$(grep -r "TODO\|FIXME\|XXX" src/features/i18n/ 2>/dev/null | wc -l || echo "0")
+          SHORT_TRANSLATIONS=$(grep -r ":\s*'[^']\{1,3\}'" src/features/i18n/ 2>/dev/null | wc -l || echo "0")
+          
+          echo "📊 Quality Metrics:"
+          echo "- Placeholders: $PLACEHOLDERS"
+          echo "- Short translations: $SHORT_TRANSLATIONS"
+          
+          if [ $PLACEHOLDERS -gt 0 ] || [ $SHORT_TRANSLATIONS -gt 0 ]; then
+            echo "⚠️  Quality issues found"
+          else
+            echo "✅ Quality check passed"
+          fi
+      
+      - name: ⚡ Ultra-fast report generation
+        if: always()
+        run: |
+          echo "⚡ Ultra-fast report generation..."
+          
+          echo "## ⚡ Ultra-Light i18n Report" > i18n-report.md
+          echo "=============================" >> i18n-report.md
+          echo "" >> i18n-report.md
+          echo "- **Branch:** ${{ github.ref_name }}" >> i18n-report.md
+          echo "- **Commit:** ${{ github.sha }}" >> i18n-report.md
+          echo "- **Status:** ${{ steps.validation.outputs.status }}" >> i18n-report.md
+          echo "- **Missing Keys:** ${{ steps.validation.outputs.missing-count }}" >> i18n-report.md
+          echo "- **Has Errors:** ${{ steps.validation.outputs.has-errors }}" >> i18n-report.md
+          echo "- **Timestamp:** $(date -u)" >> i18n-report.md
+          echo "" >> i18n-report.md
+          
+          if [ -f validation-output.txt ]; then
+            echo "## Validation Output" >> i18n-report.md
+            echo "\`\`\`" >> i18n-report.md
+            cat validation-output.txt >> i18n-report.md
+            echo "\`\`\`" >> i18n-report.md
+          fi
+      
+      - name: ⚡ Upload ultra-light report
+        uses: actions/upload-artifact@v4
+        with:
+          name: i18n-ultra-light-${{ github.run_id }}
+          path: |
+            i18n-report.md
+            validation-output.txt
+          retention-days: 3
+          compression-level: 1
+      
+      - name: ⚡ Ultra-fast PR comment
+        if: github.event_name == 'pull_request' && steps.validation.outputs.has-errors == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            let report = '';
+            
+            if (fs.existsSync('i18n-report.md')) {
+              report = fs.readFileSync('i18n-report.md', 'utf8');
+            } else {
+              report = `### ⚡ Ultra-Light i18n Report
+              
+              **Status:** ${{ steps.validation.outputs.status }}
+              **Missing Keys:** ${{ steps.validation.outputs.missing-count }}
+              
+              Please run \`npm run i18n:fix-missing\` to add missing translations.
+              `;
+            }
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: report
+            });
+      
+      - name: ⚡ Fail on errors
+        if: steps.validation.outputs.has-errors == 'true'
+        run: |
+          echo "❌ Translation validation failed!"
+          echo "Missing keys: ${{ steps.validation.outputs.missing-count }}"
+          echo "Please run 'npm run i18n:fix-missing' to add missing translations."
+          exit 1
