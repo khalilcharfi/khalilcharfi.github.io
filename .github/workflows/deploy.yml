@@ -1,203 +1,96 @@
-name: 🚀 Deploy to GitHub Pages
+name: 🚀 Simple Deploy to GitHub Pages
 
 on:
   push:
     branches: [main, next]
   workflow_dispatch:
-    inputs:
-      environment:
-        description: 'Deployment environment'
-        required: true
-        default: 'production'
-        type: choice
-        options: [production, staging]
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
 concurrency:
-  group: "pages-${{ github.ref_name }}"
+  group: "pages"
   cancel-in-progress: false
 
 env:
   NODE_VERSION: '22'
-  ULTRA_LIGHT: true
 
 jobs:
-  # Ultra-fast validation
-  validate-ultra:
-    name: ⚡ Ultra-Fast Validation
+  # Build and deploy
+  build-and-deploy:
+    name: 🏗️ Build & Deploy
     runs-on: ubuntu-latest
-    timeout-minutes: 5
-    outputs:
-      should-deploy: ${{ steps.check.outputs.should-deploy }}
-      environment: ${{ steps.check.outputs.environment }}
+    timeout-minutes: 15
     
     steps:
-      - name: ⚡ Checkout (minimal)
+      - name: ⚡ Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 1
       
-      - name: ⚡ Setup Node.js (cached)
+      - name: ⚡ Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
-          cache-dependency-path: 'package-lock.json'
       
-      - name: ⚡ Install dependencies (ultra-fast)
+      - name: ⚡ Install dependencies
         run: npm ci --prefer-offline --no-audit --no-fund --silent
       
-      - name: ⚡ Ultra-fast validation
+      - name: ⚡ Build project
         run: |
-          echo "⚡ Ultra-fast validation..."
-          
-          # Quick translation check
-          npm run i18n:validate --silent || echo "Translation check failed"
-          
-          # Quick build test
-          npm run build --silent
-          
-          # Quick size check
-          SIZE=$(find dist -name '*.js' -o -name '*.css' | xargs gzip -c | wc -c)
-          SIZE_KB=$((SIZE / 1024))
-          echo "Bundle size: ${SIZE_KB} KB"
-          
-          # Only fail on critical issues
-          if [ $SIZE_KB -gt 600 ]; then
-            echo "❌ Bundle too large: ${SIZE_KB} KB"
-            exit 1
-          fi
-      
-      - name: ⚡ Check deployment readiness
-        id: check
-        run: |
-          if [ "${{ github.ref_name }}" = "main" ]; then
-            echo "should-deploy=true" >> $GITHUB_OUTPUT
-            echo "environment=production" >> $GITHUB_OUTPUT
-            echo "✅ Ready for production deployment"
-          elif [ "${{ github.ref_name }}" = "next" ]; then
-            echo "should-deploy=true" >> $GITHUB_OUTPUT
-            echo "environment=staging" >> $GITHUB_OUTPUT
-            echo "✅ Ready for staging deployment"
-          else
-            echo "should-deploy=false" >> $GITHUB_OUTPUT
-            echo "environment=none" >> $GITHUB_OUTPUT
-            echo "⏭️  Skipping deployment for branch: ${{ github.ref_name }}"
-          fi
-
-  # Ultra-optimized build
-  build-ultra:
-    name: 🏗️ Ultra-Optimized Build
-    runs-on: ubuntu-latest
-    needs: validate-ultra
-    if: needs.validate-ultra.outputs.should-deploy == 'true'
-    timeout-minutes: 12
-    
-    steps:
-      - name: ⚡ Checkout (minimal)
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 1
-      
-      - name: ⚡ Setup Node.js (cached)
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
-          cache-dependency-path: 'package-lock.json'
-      
-      - name: ⚡ Ultra-fast cache
-        uses: actions/cache@v4
-        with:
-          path: |
-            dist/
-            node_modules/.cache
-            .vite
-          key: ${{ runner.os }}-deploy-ultra-${{ hashFiles('package-lock.json', 'src/**/*') }}-v4
-          restore-keys: |
-            ${{ runner.os }}-deploy-ultra-v4-
-            ${{ runner.os }}-deploy-ultra-
-      
-      - name: ⚡ Install dependencies (ultra-fast)
-        run: npm ci --prefer-offline --no-audit --no-fund --silent
-      
-      - name: ⚡ Ultra-optimized build
-        run: |
-          # Set ultra-optimized environment
-          export NODE_ENV=production
-          export NODE_OPTIONS="--max-old-space-size=4096"
-          export VITE_BUILD_OPTIMIZE=true
-          export VITE_DEPLOY_OPTIMIZE=true
-          
-          # Build with maximum optimization
+          echo "🏗️ Building project..."
           npm run build:prod --silent
-        env:
-          NODE_ENV: production
-          NODE_OPTIONS: "--max-old-space-size=4096"
-          VITE_BUILD_OPTIMIZE: true
-          VITE_DEPLOY_OPTIMIZE: true
-          GITHUB_REF: ${{ github.ref }}
-          GITHUB_SHA: ${{ github.sha }}
+          echo "✅ Build completed"
       
-      - name: ⚡ Ultra-fast verification
+      - name: ⚡ Verify build
         run: |
-          echo "⚡ Ultra-fast build verification..."
+          echo "🔍 Verifying build..."
           
-          # Check only critical files
-          CRITICAL_FILES=("index.html" "robots.txt" "sitemap.xml")
-          for file in "${CRITICAL_FILES[@]}"; do
-            [ -f "dist/$file" ] && echo "✅ $file" || (echo "❌ $file missing" && exit 1)
+          # Check required files
+          REQUIRED_FILES=("index.html" "robots.txt" "sitemap.xml")
+          for file in "${REQUIRED_FILES[@]}"; do
+            if [ -f "dist/$file" ]; then
+              echo "✅ $file exists"
+            else
+              echo "❌ $file missing"
+              exit 1
+            fi
           done
           
-          # Quick size check
-          SIZE=$(find dist -name '*.js' -o -name '*.css' | xargs gzip -c | wc -c)
-          SIZE_KB=$((SIZE / 1024))
-          echo "📦 Final bundle: ${SIZE_KB} KB"
+          # Check bundle size
+          TOTAL_SIZE=$(find dist -name '*.js' -o -name '*.css' | xargs gzip -c | wc -c)
+          TOTAL_SIZE_KB=$((TOTAL_SIZE / 1024))
+          echo "📦 Bundle size: ${TOTAL_SIZE_KB} KB"
           
-          # Generate deployment info
-          echo "🚀 Deployment Info" > dist/deployment-info.txt
-          echo "==================" >> dist/deployment-info.txt
-          echo "Environment: ${{ needs.validate-ultra.outputs.environment }}" >> dist/deployment-info.txt
-          echo "Branch: ${{ github.ref_name }}" >> dist/deployment-info.txt
-          echo "Commit: ${{ github.sha }}" >> dist/deployment-info.txt
-          echo "Build Time: $(date -u)" >> dist/deployment-info.txt
-          echo "Bundle Size: ${SIZE_KB} KB" >> dist/deployment-info.txt
+          if [ $TOTAL_SIZE_KB -gt 600 ]; then
+            echo "⚠️  Bundle size warning: ${TOTAL_SIZE_KB} KB > 600 KB"
+          else
+            echo "✅ Bundle size acceptable: ${TOTAL_SIZE_KB} KB"
+          fi
       
-      - name: ⚡ Upload artifact (ultra-fast)
+      - name: ⚡ Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: './dist'
-
-  # Ultra-light deployment
-  deploy-ultra:
-    name: 🚀 Ultra-Light Deploy
-    environment:
-      name: ${{ needs.validate-ultra.outputs.environment == 'production' && 'github-pages' || 'github-pages-staging' }}
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    needs: [validate-ultra, build-ultra]
-    if: needs.validate-ultra.outputs.should-deploy == 'true'
-    timeout-minutes: 5
-    
-    steps:
-      - name: ⚡ Ultra-fast deployment
+      
+      - name: ⚡ Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
       
-      - name: ⚡ Ultra-fast verification
+      - name: ⚡ Verify deployment
         run: |
-          echo "🚀 Ultra-fast deployment completed!"
-          echo "Environment: ${{ needs.validate-ultra.outputs.environment }}"
+          echo "🚀 Deployment completed!"
           echo "URL: ${{ steps.deployment.outputs.page_url }}"
           
+          # Wait a moment for propagation
+          sleep 10
+          
           # Quick health check
-          sleep 5
-          if curl -f -s --max-time 10 "${{ steps.deployment.outputs.page_url }}" > /dev/null; then
+          if curl -f -s --max-time 15 "${{ steps.deployment.outputs.page_url }}" > /dev/null; then
             echo "✅ Site is accessible"
           else
-            echo "⚠️  Site may not be fully propagated yet"
+            echo "⚠️  Site may not be fully propagated yet (this is normal)"
           fi
