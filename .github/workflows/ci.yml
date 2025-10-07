@@ -2,9 +2,9 @@ name: 🚀 Simple CI Pipeline
 
 on:
   push:
-    branches: [main, next, develop]
+    branches: [master, next, develop]
   pull_request:
-    branches: [main, next, develop]
+    branches: [master, next, develop]
   workflow_dispatch:
     inputs:
       skip_build:
