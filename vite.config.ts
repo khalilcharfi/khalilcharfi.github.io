@@ -13,6 +13,9 @@ export default defineConfig(({ mode }) => {
   // Dead Code Elimination - enabled by default in production
   const enableDCE = env.VITE_ENABLE_DCE !== 'false' && (env.VITE_ENABLE_DCE === 'true' || isProd);
   
+  // Tree shaking - disabled if VITE_DISABLE_TREE_SHAKING is true
+  const disableTreeShaking = env.VITE_DISABLE_TREE_SHAKING === 'true';
+  
   // Build optimization flags
   const shouldMinify = env.VITE_NO_MINIFY !== 'true';
   
@@ -31,6 +34,7 @@ export default defineConfig(({ mode }) => {
     VITE_SHOW_TRANSLATION_DEBUG: env.VITE_SHOW_TRANSLATION_DEBUG,
     VITE_SHOW_DEBUG_INFO: env.VITE_SHOW_DEBUG_INFO,
     VITE_ENABLE_DCE: enableDCE,
+    VITE_DISABLE_TREE_SHAKING: disableTreeShaking,
     NODE_ENV: mode,
     DEV: isDev,
     PROD: isProd
@@ -171,7 +175,7 @@ export default defineConfig(({ mode }) => {
           inlineDynamicImports: false
         },
         
-        treeshake: enableDCE ? {
+        treeshake: disableTreeShaking ? false : (enableDCE ? {
           moduleSideEffects: (id) => {
             // Preserve side effects for entry point to ensure app initialization
             if (id.includes('index.tsx') || id.includes('i18n')) {
@@ -187,7 +191,7 @@ export default defineConfig(({ mode }) => {
           moduleSideEffects: 'no-external',
           propertyReadSideEffects: true,
           tryCatchDeoptimization: true
-        }
+        })
       },
       
       terserOptions: shouldMinify ? {
