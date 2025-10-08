@@ -120,35 +120,8 @@ jobs:
       
       - name: ⚡ Optimize for GitHub Pages
         run: |
-          echo "🔧 Optimizing build for GitHub Pages deployment..."
-          
-          # Create a GitHub Pages optimized build
-          mkdir -p dist-github-pages
-          cp -r dist/* dist-github-pages/
-          
-          # Remove unnecessary files that cause CDN issues
-          find dist-github-pages/ -name "*.map" -delete
-          find dist-github-pages/ -name "bundle-analysis.html" -delete
-          
-          # Split large JS files into smaller chunks
-          find dist-github-pages/ -name "*.js" -size +200k -exec sh -c '
-            file="$1"
-            echo "Splitting large file: $file"
-            # Create smaller chunks
-            split -b 150k "$file" "${file%.js}_part_"
-            # Keep the original but make it smaller
-            head -c 100k "$file" > "${file}.tmp"
-            mv "${file}.tmp" "$file"
-          ' _ {} \;
-          
-          # Compress remaining large files
-          find dist-github-pages/ -name "*.js" -size +100k -exec gzip -9 -c {} > {}.gz \;
-          
-          # Replace dist with optimized version
-          rm -rf dist
-          mv dist-github-pages dist
-          
-          echo "✅ GitHub Pages optimization completed"
+          echo "🔧 Running GitHub Pages optimization script..."
+          node scripts/optimize-for-github-pages.js
       
       - name: ⚡ Verify artifact contents
         run: |
