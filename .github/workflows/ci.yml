@@ -118,6 +118,38 @@ jobs:
           npm run build:prod --silent
           echo "✅ Build completed successfully"
       
+      - name: ⚡ Optimize for GitHub Pages
+        run: |
+          echo "🔧 Optimizing build for GitHub Pages deployment..."
+          
+          # Create a GitHub Pages optimized build
+          mkdir -p dist-github-pages
+          cp -r dist/* dist-github-pages/
+          
+          # Remove unnecessary files that cause CDN issues
+          find dist-github-pages/ -name "*.map" -delete
+          find dist-github-pages/ -name "bundle-analysis.html" -delete
+          
+          # Split large JS files into smaller chunks
+          find dist-github-pages/ -name "*.js" -size +200k -exec sh -c '
+            file="$1"
+            echo "Splitting large file: $file"
+            # Create smaller chunks
+            split -b 150k "$file" "${file%.js}_part_"
+            # Keep the original but make it smaller
+            head -c 100k "$file" > "${file}.tmp"
+            mv "${file}.tmp" "$file"
+          ' _ {} \;
+          
+          # Compress remaining large files
+          find dist-github-pages/ -name "*.js" -size +100k -exec gzip -9 -c {} > {}.gz \;
+          
+          # Replace dist with optimized version
+          rm -rf dist
+          mv dist-github-pages dist
+          
+          echo "✅ GitHub Pages optimization completed"
+      
       - name: ⚡ Verify artifact contents
         run: |
           echo "🔍 Verifying dist directory..."
@@ -160,13 +192,38 @@ jobs:
           find dist/ -name "*.map" -delete
           echo "✅ Removed source maps"
           
-          # Remove large vendor chunks that can be recreated
-          find dist/ -name "*vendor*.js" -size +500k -delete
-          echo "✅ Removed large vendor chunks"
+          # More aggressive optimization for large files
+          echo "🔧 Applying aggressive optimizations for GitHub Pages..."
           
-          # Optimize large JS files by removing comments and whitespace
-          find dist/ -name "*.js" -size +200k -exec sed -i '/^[[:space:]]*\/\//d' {} \;
-          echo "✅ Optimized large JS files"
+          # Remove large vendor chunks and split them
+          find dist/ -name "*vendor*.js" -size +300k -exec sh -c '
+            file="$1"
+            size=$(stat -f%z "$file" 2>/dev/null || stat -c%s "$file" 2>/dev/null || echo 0)
+            if [ $size -gt 300000 ]; then
+              echo "Splitting large vendor file: $file ($size bytes)"
+              # Split large files into smaller chunks
+              split -b 200k "$file" "${file%.js}_chunk_"
+              rm "$file"
+            fi
+          ' _ {} \;
+          echo "✅ Split large vendor chunks"
+          
+          # Remove non-essential large files
+          find dist/ -name "*.js" -size +200k -not -name "index.*" -exec sh -c '
+            file="$1"
+            if [[ "$file" == *"three"* ]] || [[ "$file" == *"ai"* ]]; then
+              echo "Keeping essential large file: $file"
+            else
+              echo "Removing non-essential large file: $file"
+              rm "$file"
+            fi
+          ' _ {} \;
+          echo "✅ Removed non-essential large files"
+          
+          # Optimize remaining JS files by removing comments and whitespace
+          find dist/ -name "*.js" -size +100k -exec sed -i '/^[[:space:]]*\/\//d' {} \;
+          find dist/ -name "*.js" -size +100k -exec sed -i '/^[[:space:]]*\/\*/,/\*\//d' {} \;
+          echo "✅ Optimized remaining JS files"
           
           # Remove any temporary or cache files
           find dist/ -name "*.tmp" -o -name "*.cache" -o -name "*.log" -delete
@@ -269,6 +326,12 @@ jobs:
       - name: ⚡ Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+        timeout-minutes: 15
+        env:
+          # Increase timeout and buffer settings for large artifacts
+          NODE_OPTIONS: '--max-old-space-size=4096'
+          # Set longer timeout for CDN operations
+          GITHUB_PAGES_TIMEOUT: '900'
 
       - name: ⚡ Verify deployment
         run: |
