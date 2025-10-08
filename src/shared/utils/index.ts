@@ -10,6 +10,18 @@ export {
   LazyVisitorTypeSelector
 } from './lazyLoading';
 export {
+  loadingManager,
+  useLoadingManager,
+  ResourceLoader,
+  loadImageWithProgress,
+  isResourceCached
+} from './loadingManager';
+export type {
+  LoadingState,
+  LoadingProgress,
+  LoadingMetrics
+} from './loadingManager';
+export {
   initializePerformanceOptimizations,
   canHandleHeavyAnimations,
   getOptimalParticleCount,

@@ -23,8 +23,7 @@ export const AboutSection: React.FC = () => {
             // Note: Direct LinkedIn CDN URLs cause CORS errors and cannot be used
             // LinkedIn blocks cross-origin image requests
             // Fallback to local asset
-            '/asset/profile/profile-photo.jpg',
-            '/asset/profile/profile-photo.jpeg'
+            '/asset/profile/profile-photo.jpg'
         ];
 
         let currentIndex = 0;

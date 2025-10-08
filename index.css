@@ -2743,6 +2743,7 @@ canvas {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    user-select: none;
     transition:
         background-color var(--theme-transition-duration) var(--theme-transition-timing),
         border-color var(--theme-transition-duration) var(--theme-transition-timing),

@@ -4,6 +4,7 @@ export { ErrorBoundary, AnalyticsErrorBoundary, withErrorBoundary } from './feed
 export { CustomCursor } from './feedback/CustomCursor';
 export { ThreeBackground } from './feedback/ThreeBackground';
 export * from './icons';
+export * from './loading';
 
 // Conditionally export debug components only in development
 // Use dynamic imports instead of conditional exports

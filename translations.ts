@@ -398,7 +398,7 @@ export const translations: Translations = {
       keyHighlightsTitle: 'Key Highlights',
     },
     skills: {
-      title: 'Core Technical Skills',
+      title: 'Core Technical Skill',
       categories: {
         frontend: { name: 'Front-End', items: ['Vue.js', 'Angular', 'JavaScript/TypeScript', 'HTML5', 'CSS3 (Sass/LESS)', 'Bootstrap'] },
         backend: { name: 'Back-End', items: ['PHP (Laravel, Laminas)', 'Java (Spring Boot)'] },
@@ -505,7 +505,7 @@ export const translations: Translations = {
       ]
     },
     projects: {
-      title: 'My Projects',
+      title: 'My Project',
       items: [
         {
             title: 'Cover 3D Mobile (ASM)',
@@ -533,7 +533,7 @@ export const translations: Translations = {
       githubRepoLabel: 'GitHub',
     },
     publications: {
-      title: 'Publications',
+      title: 'Publication',
       items: [
         {
           title: 'CEP4HFP: Complex Event Processing for Heart Failure Prediction',
@@ -547,7 +547,7 @@ export const translations: Translations = {
       ]
     },
     certificates: {
-      title: 'Certificates & Awards',
+      title: 'Certificate & Award',
       items: [
         {
           id: 'cert-presentation-darmstadt-2016',
@@ -846,7 +846,7 @@ export const translations: Translations = {
       keyHighlightsTitle: 'Schlüsselmerkmale',
     },
      skills: {
-      title: 'Technische Kernkompetenzen',
+      title: 'Technische Kernkompetenz',
       categories: {
         frontend: { name: 'Front-End', items: ['Vue.js', 'Angular', 'JavaScript/TypeScript', 'HTML5', 'CSS3 (Sass/LESS)', 'Bootstrap'] },
         backend: { name: 'Back-End', items: ['PHP (Laravel, Laminas)', 'Java (Spring Boot)'] },
@@ -953,7 +953,7 @@ export const translations: Translations = {
       ]
     },
     projects: {
-      title: 'Meine Projekte',
+      title: 'Mein Projekt',
       items: [
          {
             title: 'Cover 3D Mobile (ASM)',
@@ -981,7 +981,7 @@ export const translations: Translations = {
       githubRepoLabel: 'GitHub',
     },
     publications: {
-      title: 'Publikationen',
+      title: 'Publikation',
       items: [
         {
           title: 'CEP4HFP: Komplexe Ereignisverarbeitung zur Vorhersage von Herzinsuffizienz',
@@ -995,7 +995,7 @@ export const translations: Translations = {
       ]
     },
     certificates: {
-      title: 'Zertifikate & Auszeichnungen',
+      title: 'Zertifikat & Auszeichnung',
       items: [
         {
           id: 'cert-presentation-darmstadt-2016',
@@ -1294,7 +1294,7 @@ export const translations: Translations = {
       keyHighlightsTitle: 'Points Fort',
     },
     skills: {
-      title: 'Compétences Clés',
+      title: 'Compétence Clé',
       categories: {
         frontend: { name: 'Front-End', items: ['Vue.js', 'Angular', 'JavaScript/TypeScript', 'HTML5', 'CSS3 (Sass/LESS)', 'Bootstrap'] },
         backend: { name: 'Back-End', items: ['PHP (Laravel, Laminas)', 'Java (Spring Boot)'] },
@@ -1401,7 +1401,7 @@ export const translations: Translations = {
       ]
     },
     projects: {
-      title: 'Mes Projets',
+      title: 'Mon Projet',
       items: [
         {
             title: 'Cover 3D Mobile (ASM)',
@@ -1429,7 +1429,7 @@ export const translations: Translations = {
       githubRepoLabel: 'GitHub',
     },
     publications: {
-      title: 'Publications',
+      title: 'Publication',
       items: [
         {
           title: "CEP4HFP : Traitement Complexe d\'Événements pour la Prédiction de l\'Insuffisance Cardiaque",
@@ -1443,7 +1443,7 @@ export const translations: Translations = {
       ]
     },
     certificates: {
-      title: 'Certificats et Récompenses',
+      title: 'Certificat et Récompense',
       items: [
         {
           id: 'cert-presentation-darmstadt-2016',
@@ -1742,7 +1742,7 @@ export const translations: Translations = {
       keyHighlightsTitle: 'أبرز المهارات',
     },
     skills: {
-      title: 'المهارات',
+      title: 'المهارة',
       categories: {
         frontend: { name: 'الواجهة الأمامية', items: ['Vue.js', 'Angular', 'JavaScript/TypeScript', 'HTML5', 'CSS3 (Sass/LESS)', 'Bootstrap'] },
         backend: { name: 'الواجهة الخلفية', items: ['PHP (Laravel, Laminas)', 'Java (Spring Boot)'] },
@@ -1849,7 +1849,7 @@ export const translations: Translations = {
       ]
     },
     projects: {
-      title: 'مشاريعي',
+      title: 'مشروعي',
       items: [
         {
             title: 'Cover 3D Mobile (ASM)',
@@ -1877,7 +1877,7 @@ export const translations: Translations = {
       githubRepoLabel: 'GitHub',
     },
     publications: {
-      title: 'المنشورات العلمية',
+      title: 'المنشور العلمي',
       items: [
         {
           title: 'CEP4HFP: معالجة الأحداث المعقدة لتوقع قصور القلب',
@@ -1891,7 +1891,7 @@ export const translations: Translations = {
       ]
     },
     certificates: {
-      title: 'الشهادات والجوائز',
+      title: 'الشهادة والجائزة',
       items: [
         {
           id: 'cert-presentation-darmstadt-2016',

@@ -1,6 +1,34 @@
 import React, { useState, useEffect, useMemo, useLayoutEffect, Suspense, lazy } from 'react';
 import { createRoot } from 'react-dom/client';
 
+// Safely handle React DevTools
+if (typeof window !== 'undefined') {
+  // Disable React DevTools in production to avoid errors
+  if (process.env.NODE_ENV === 'production') {
+    // Suppress console errors
+    const originalConsoleError = console.error;
+    console.error = (...args) => {
+      const message = args[0];
+      if (typeof message === 'string' && 
+          (message.includes('displayName') || 
+           message.includes('React DevTools') ||
+           message.includes('getDisplayNameForFiber') ||
+           message.includes('renderer.js'))) {
+        return; // Suppress these specific errors
+      }
+      originalConsoleError.apply(console, args);
+    };
+    
+    // Disable React DevTools completely in production
+    if (typeof window.__REACT_DEVTOOLS_GLOBAL_HOOK__ === 'object') {
+      window.__REACT_DEVTOOLS_GLOBAL_HOOK__.inject = () => {};
+      window.__REACT_DEVTOOLS_GLOBAL_HOOK__.onCommitFiberRoot = () => {};
+      window.__REACT_DEVTOOLS_GLOBAL_HOOK__.onCommitFiberUnmount = () => {};
+      window.__REACT_DEVTOOLS_GLOBAL_HOOK__.supportsFiber = false;
+    }
+  }
+}
+
 import '@/i18n';
 import { useTranslation, CertificateItem } from '@/features/i18n';
 import { useGeminiConnectionCheck } from '@/features/chatbot';
@@ -18,8 +46,8 @@ import {
 import { analytics } from '@/features/analytics';
 import { PERSONAS_FEATURE_ENABLED, getSectionIds } from '@/shared/config';
 import { AnimationPauseProvider, SimpleConsentProvider } from '@/context';
-import { Navbar, SkipLinks, SEOHead } from '@/shared/components';
-import { performanceLogger, LazyTranslationTest, LazyThreeBackground } from '@/shared/utils';
+import { Navbar, SkipLinks, SEOHead, EnhancedLoadingScreen } from '@/shared/components';
+import { performanceLogger, LazyTranslationTest, LazyThreeBackground, loadingManager, useLoadingManager, canHandleHeavyAnimations } from '@/shared/utils';
 import { ANIMATION_DURATION, SCROLL, OBSERVER_CONFIG } from '@/shared/constants';
 import { 
   HomeSection,
@@ -44,17 +72,31 @@ const PerformanceDrawer = import.meta.env.DEV
   ? lazy(() => import('@/shared/components/debug/PerformanceDrawer').then(m => ({ default: m.PerformanceDrawer })))
   : () => null;
 
+// DebugLogger should only be included during development to avoid shipping debug tools to production
+const DebugLogger = import.meta.env.DEV
+  ? lazy(() => import('@/shared/components/debug/DebugLogger').then(m => ({ default: m.DebugLogger })))
+  : () => null;
+
 // Helper function to get base language
 const getBaseLang = (lang: string) => lang?.split('-')[0] || 'en';
 
 const App: React.FC = () => {
     const { t, i18n } = useTranslation();
+    const { state: loadingState, progress: loadingProgress } = useLoadingManager();
+    
+    console.log('[App Render] Rendering with state:', {
+        loadingState,
+        progress: loadingProgress.percentage,
+        stage: loadingProgress.stage
+    });
+    
     const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'dark');
     const [isThemeTransitioning, setIsThemeTransitioning] = useState(false);
     const reducedMotion = useReducedMotion();
     const { announce } = useAnnouncer();
     const [activeSection, setActiveSection] = useState('home');
     const [selectedCert, setSelectedCert] = useState<CertificateItem | null>(null);
+    const [showBackground, setShowBackground] = useState(false);
     const { 
         isAvailable: isChatbotAvailable, 
         isChecking: isChatbotChecking,
@@ -70,6 +112,19 @@ const App: React.FC = () => {
 
     // Performance optimization: Initialize on mount
     useEffect(() => {
+        console.log('[App Init] Starting initialization...', {
+            isDev: import.meta.env.DEV,
+            isProd: import.meta.env.PROD,
+            mode: import.meta.env.MODE,
+            nodeEnv: process.env.NODE_ENV
+        });
+        
+        // Start loading manager
+        loadingManager.startLoading(10);
+        console.log('[Loading] Started with 10 steps');
+        loadingManager.updateProgress(1, 10, 'Initializing application');
+        console.log('[Loading] Progress: 1/10 - Initializing application');
+        
         // Disable scroll on page load and keep at top
         document.body.style.overflow = 'hidden';
         window.scrollTo(0, 0);
@@ -85,11 +140,8 @@ const App: React.FC = () => {
         window.addEventListener('wheel', preventScroll, { passive: false });
         window.addEventListener('touchmove', preventScroll, { passive: false });
         
-        const loadingScreen = document.getElementById('initial-loading');
-        if (loadingScreen) {
-            loadingScreen.style.opacity = '0';
-            setTimeout(() => loadingScreen.remove(), 300);
-        }
+        loadingManager.incrementProgress('Setting up UI');
+        console.log('[Loading] Progress: 2/10 - Setting up UI');
 
         // Add keyboard navigation class for focus styles
         const handleKeyDown = (e: KeyboardEvent) => {
@@ -104,33 +156,60 @@ const App: React.FC = () => {
 
         document.addEventListener('keydown', handleKeyDown);
         document.addEventListener('mousedown', handleMouseDown);
+        console.log('[App Init] Event listeners attached');
         
         // Apply reduced motion class if user prefers
         if (reducedMotion) {
             document.body.classList.add('reduce-motion');
+            console.log('[App Init] Reduced motion enabled');
         }
         
         // Initialize performance optimizations
         if (typeof window !== 'undefined') {
+            console.log('[App Init] Loading performance optimizations...');
             import('@/shared/utils').then(module => {
+                loadingManager.incrementProgress('Loading performance optimizations');
+                console.log('[Loading] Progress: 3/10 - Loading performance optimizations');
                 module.initializePerformanceOptimizations().catch((error) => {
+                    console.error('[App Init] Performance optimization failed:', error);
                     performanceLogger.error('Failed to initialize performance optimizations:', error);
+                    loadingManager.trackResource('failed');
                 });
+            }).catch(err => {
+                console.error('[App Init] Failed to import utils:', err);
             });
         }
         
-        // Report performance metrics after load
-        window.addEventListener('load', () => {
-            // Re-enable scrolling after page load
+        loadingManager.incrementProgress('Loading React components');
+        console.log('[Loading] Progress: 4/10 - Loading React components');
+        
+        // Complete loading after a short delay (components are ready)
+        const completeTimer = setTimeout(() => {
+            console.log('[Loading] Timer fired - completing loading...');
+            loadingManager.incrementProgress('Finalizing');
+            console.log('[Loading] Progress: 5/10 - Finalizing');
+            loadingManager.completeLoading();
+            console.log('[Loading] ✅ Loading complete! State should be "success"');
+            
+            // Re-enable scrolling
             document.body.style.overflow = '';
+            console.log('[App Init] Scrolling re-enabled');
             
             // Remove scroll prevention listeners
             window.removeEventListener('scroll', preventScroll);
             window.removeEventListener('wheel', preventScroll);
             window.removeEventListener('touchmove', preventScroll);
-            
+            console.log('[App Init] Scroll prevention removed');
+        }, 500); // Short delay to ensure components are mounted
+        
+        console.log('[App Init] Complete timer set for 500ms');
+        
+        // Report performance metrics after full load
+        window.addEventListener('load', () => {
+            console.log('[App Init] Window load event fired');
             setTimeout(() => {
                 import('@/shared/utils').then(module => {
+                    console.log('[App Init] Reporting performance metrics');
                     module.reportPerformanceMetrics();
                 });
             }, ANIMATION_DURATION.PERF_REPORT_DELAY);
@@ -145,7 +224,12 @@ const App: React.FC = () => {
         };
 
         window.addEventListener('scroll', handleScroll, { passive: true });
+        
+        console.log('[App Init] Setup complete, returning cleanup function');
+        
         return () => {
+            console.log('[App Init] Cleanup running...');
+            clearTimeout(completeTimer);
             window.removeEventListener('scroll', handleScroll);
             window.removeEventListener('scroll', preventScroll);
             window.removeEventListener('wheel', preventScroll);
@@ -310,8 +394,16 @@ const App: React.FC = () => {
     };
 
     return (
-        <Suspense fallback={<div>{String(t('general.loading'))}</div>}>
-            <>
+        <>
+            {/* Enhanced Loading Screen - Shows until loading completes */}
+            {loadingState === 'loading' && (
+                <EnhancedLoadingScreen 
+                    progress={loadingProgress.percentage} 
+                    stage={loadingProgress.stage} 
+                />
+            )}
+            
+            <Suspense fallback={<div className="suspense-fallback">{String(t('general.loading'))}</div>}>
                 {/* SEO Meta Tags - Multilingual Support */}
                 <SEOHead currentSection={activeSection} />
                 
@@ -341,7 +433,7 @@ const App: React.FC = () => {
                 )}
 
                 <Suspense fallback={<div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', zIndex: -1, background: theme === 'light' ? '#f1f5f9' : '#0a0a0a' }} />}>
-                    <LazyThreeBackground theme={theme} />
+                    {showBackground && <LazyThreeBackground theme={theme} />}
                 </Suspense>
                 <Navbar activeSection={activeSection} setActiveSectionDirectly={setActiveSection} theme={theme} toggleTheme={toggleTheme} />
                 <main id="main-content" role="main" aria-label={String(t('general.skipToMain'))}>
@@ -502,18 +594,51 @@ const App: React.FC = () => {
                         }
                     }
                 `}</style>
-            </>
-        </Suspense>
+                
+                {/* Debug Logger - Shows console logs in UI */}
+                <Suspense fallback={null}>
+                    <DebugLogger />
+                </Suspense>
+            </Suspense>
+        </>
     );
 };
 
-const root = createRoot(document.getElementById('root')!);
-root.render(
-    <SimpleConsentProvider>
+// Initialize app - force execution with IIFE and side effects
+(() => {
+  // This IIFE must execute immediately to hydrate the React app
+  // It's marked with side effects to prevent tree-shaking
+  
+  // Force a side effect by modifying the DOM
+  const scriptTag = document.currentScript || document.querySelector('script[type="module"]');
+  if (scriptTag) {
+    scriptTag.setAttribute('data-init', 'true');
+  }
+  
+  function initApp() {
+    const container = document.getElementById('root');
+    if (!container) {
+      console.error('[Init] Root element not found');
+      return;
+    }
+    
+    const root = createRoot(container);
+    root.render(
+      <SimpleConsentProvider>
         <AnimationPauseProvider>
-            <DynamicContentProvider>
-                <App />
-            </DynamicContentProvider>
+          <DynamicContentProvider>
+            <App />
+          </DynamicContentProvider>
         </AnimationPauseProvider>
-    </SimpleConsentProvider>
- );
+      </SimpleConsentProvider>
+    );
+  }
+
+  // Check if DOM is already ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initApp, { once: true });
+  } else {
+    // DOM is already ready, init immediately
+    initApp();
+  }
+})();

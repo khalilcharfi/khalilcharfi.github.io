@@ -1,5 +1,6 @@
 import { lazy } from 'react';
 import { logger, chatbotLogger } from './logger';
+import { loadingManager, ResourceLoader } from './loadingManager';
 
 export const LazyVisitorTypeSelector = lazy(() => import('../../features/visitor-personalization').then(m => ({ default: m.VisitorTypeSelector })));
 
@@ -55,6 +56,7 @@ export const preloadCriticalChunks = () => {
   }
   
   logger.log('✅ Using Vite-generated modulepreload links for critical chunks');
+  loadingManager.incrementProgress('Loading critical resources');
 };
 
 export const conditionallyPreloadThreeJS = () => {
@@ -76,11 +78,27 @@ export const conditionallyPreloadThreeJS = () => {
   if (shouldPreload) {
     if ('requestIdleCallback' in window) {
       requestIdleCallback(() => {
-        import('three').catch((error) => logger.error('Failed to preload Three.js:', error));
+        import('three')
+          .then(() => {
+            loadingManager.incrementProgress('Three.js loaded');
+            loadingManager.trackResource('loaded');
+          })
+          .catch((error) => {
+            logger.error('Failed to preload Three.js:', error);
+            loadingManager.trackResource('failed');
+          });
       }, { timeout: 2000 });
     } else {
       setTimeout(() => {
-        import('three').catch((error) => logger.error('Failed to preload Three.js:', error));
+        import('three')
+          .then(() => {
+            loadingManager.incrementProgress('Three.js loaded');
+            loadingManager.trackResource('loaded');
+          })
+          .catch((error) => {
+            logger.error('Failed to preload Three.js:', error);
+            loadingManager.trackResource('failed');
+          });
       }, 2000);
     }
   }
@@ -90,30 +108,152 @@ export const registerServiceWorker = async () => {
   if ('serviceWorker' in navigator && process.env.NODE_ENV === 'production') {
     try {
       const registration = await navigator.serviceWorker.register('/sw.js', {
-        scope: '/'
+        scope: '/',
+        updateViaCache: 'none' // Always check for updates
       });
       
       logger.log('✅ Service Worker registered:', registration.scope);
       
+      // Handle updates
       registration.addEventListener('updatefound', () => {
         const newWorker = registration.installing;
-        logger.log('Service Worker update found');
+        logger.log('🔄 Service Worker update found');
         
-        newWorker?.addEventListener('statechange', () => {
-          if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-            if (confirm('New version available! Reload to update?')) {
-              window.location.reload();
+        if (!newWorker) return;
+        
+        newWorker.addEventListener('statechange', () => {
+          if (newWorker.state === 'installed') {
+            if (navigator.serviceWorker.controller) {
+              // New SW installed, but old SW is still controlling the page
+              showUpdateNotification(registration);
+            } else {
+              // First time installation
+              logger.log('✅ Service Worker installed for the first time');
             }
           }
         });
       });
       
+      // Check for updates periodically (every hour)
+      setInterval(() => {
+        registration.update().catch(error => {
+          logger.warn('Failed to check for SW updates:', error);
+        });
+      }, 60 * 60 * 1000);
+      
+      // Listen for messages from SW
+      navigator.serviceWorker.addEventListener('message', event => {
+        if (event.data?.type === 'SW_UPDATED') {
+          logger.log('📦 Service Worker updated to version:', event.data.version);
+        }
+      });
+      
+      // Handle controlling SW change
+      let refreshing = false;
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        if (!refreshing) {
+          refreshing = true;
+          logger.log('🔄 New Service Worker took control, reloading...');
+          window.location.reload();
+        }
+      });
+      
       return registration;
     } catch (error) {
-      logger.error('Service Worker registration failed:', error);
+      logger.error('❌ Service Worker registration failed:', error);
     }
   }
 };
+
+// Show update notification to user
+function showUpdateNotification(registration: ServiceWorkerRegistration) {
+  const updateBanner = document.createElement('div');
+  updateBanner.id = 'sw-update-banner';
+  updateBanner.style.cssText = `
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 16px 24px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-family: system-ui, -apple-system, sans-serif;
+    animation: slideUp 0.3s ease-out;
+  `;
+  
+  updateBanner.innerHTML = `
+    <div style="flex: 1;">
+      <strong style="display: block; margin-bottom: 4px;">🎉 New version available!</strong>
+      <span style="font-size: 14px; opacity: 0.9;">Click update to get the latest features</span>
+    </div>
+    <button id="sw-update-button" style="
+      background: white;
+      color: #667eea;
+      border: none;
+      padding: 8px 20px;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s;
+    ">Update Now</button>
+    <button id="sw-dismiss-button" style="
+      background: transparent;
+      color: white;
+      border: 1px solid rgba(255,255,255,0.3);
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+    ">Later</button>
+  `;
+  
+  // Add animation keyframes
+  if (!document.querySelector('#sw-update-styles')) {
+    const style = document.createElement('style');
+    style.id = 'sw-update-styles';
+    style.textContent = `
+      @keyframes slideUp {
+        from {
+          opacity: 0;
+          transform: translateX(-50%) translateY(100px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(-50%) translateY(0);
+        }
+      }
+      #sw-update-button:hover {
+        transform: scale(1.05);
+      }
+      #sw-dismiss-button:hover {
+        background: rgba(255,255,255,0.1);
+      }
+    `;
+    document.head.appendChild(style);
+  }
+  
+  document.body.appendChild(updateBanner);
+  
+  // Handle update button
+  document.getElementById('sw-update-button')?.addEventListener('click', () => {
+    const waitingWorker = registration.waiting;
+    if (waitingWorker) {
+      waitingWorker.postMessage({ type: 'SKIP_WAITING' });
+    }
+    updateBanner.remove();
+  });
+  
+  // Handle dismiss button
+  document.getElementById('sw-dismiss-button')?.addEventListener('click', () => {
+    updateBanner.remove();
+  });
+}
 
 export default {
   LazyVisitorTypeSelector,
