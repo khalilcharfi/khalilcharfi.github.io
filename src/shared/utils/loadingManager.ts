@@ -1,3 +1,4 @@
+import React from 'react';
 /**
  * Loading Manager - Centralized loading state management
  * Handles loading states, progress tracking, and performance monitoring
@@ -187,9 +188,9 @@ class LoadingManager {
   private notifyListeners(): void {
     console.log('[LoadingManager] notifyListeners() called. Notifying', this.listeners.size, 'listeners');
     console.log('[LoadingManager] Current state:', this.state, 'Progress:', this.progress);
-    this.listeners.forEach((listener, index) => {
+    Array.from(this.listeners).forEach((listener, idx) => {
       try {
-        console.log('[LoadingManager] Calling listener', index + 1, 'with state:', this.state);
+        console.log('[LoadingManager] Calling listener', idx + 1, 'with state:', this.state);
         listener(this.state, this.progress);
       } catch (error) {
         console.error('[LoadingManager] Listener error:', error);
@@ -235,7 +236,11 @@ class LoadingManager {
     });
 
     // Track in performance API if available
-    if (typeof window !== 'undefined' && window.performance && window.performance.mark) {
+    if (
+      typeof window !== 'undefined' &&
+      window.performance &&
+      typeof window.performance.mark === 'function'
+    ) {
       performance.mark('app-loaded');
       performance.measure('app-loading-duration', 'navigationStart', 'app-loaded');
     }
@@ -301,9 +306,6 @@ export function useLoadingManager() {
     failLoading: (error?: Error) => loadingManager.failLoading(error)
   };
 }
-
-// Note: React import handled at runtime
-declare const React: any;
 
 /**
  * Enhanced resource loader with progress tracking
