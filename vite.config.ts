@@ -106,7 +106,14 @@ export default defineConfig(({ mode }) => {
       rollupOptions: {
         output: {
           manualChunks: (id) => {
-            if (!id.includes('node_modules')) return;
+            if (!id.includes('node_modules')) {
+              // Portfolio-specific chunking for source files
+              if (id.includes('src/features/portfolio/content/')) return 'portfolio-content';
+              if (id.includes('src/features/portfolio/domain/')) return 'portfolio-domain';
+              if (id.includes('src/core/performance/')) return 'performance-core';
+              if (id.includes('src/shared/wasm/')) return 'wasm-modules';
+              return undefined;
+            }
             
             // Exclude dev-only dependencies in production
             if (isProd) {
@@ -120,9 +127,7 @@ export default defineConfig(({ mode }) => {
               }
             }
             
-            // React ecosystem - MUST be first to ensure React is bundled properly
-            // Include ALL React-related packages to prevent undefined errors
-            // Check for React core packages and reconciler
+            // Critical path - React ecosystem (loads first)
             if (id.match(/\/node_modules\/react\//) ||
                 id.match(/\/node_modules\/react-dom\//) ||
                 id.match(/\/node_modules\/scheduler\//) ||
@@ -131,7 +136,7 @@ export default defineConfig(({ mode }) => {
               return 'react-vendor';
             }
             
-            // Check for React ecosystem libraries and hooks
+            // React ecosystem libraries
             if (id.includes('/@react-three/') ||
                 id.includes('/react-hook-consent/') ||
                 id.includes('/react-i18next/') ||
@@ -143,19 +148,18 @@ export default defineConfig(({ mode }) => {
               return 'react-vendor';
             }
             
-            // Three.js - split for better tree-shaking and smaller chunks
-            if (id.includes('three/src/')) return 'three-core';
-            if (id.includes('three/examples/')) return 'three-addons';
+            // Deferred features - Three.js (loads after critical)
             if (id.includes('three') || id.includes('simplex-noise') || id.includes('postprocessing')) {
-              // Split large Three.js into smaller chunks
+              // Split Three.js for better performance
               if (id.includes('three/src/math/') || id.includes('three/src/core/')) return 'three-math';
               if (id.includes('three/src/objects/') || id.includes('three/src/geometries/')) return 'three-objects';
               if (id.includes('three/src/materials/') || id.includes('three/src/shaders/')) return 'three-materials';
               if (id.includes('three/src/renderers/') || id.includes('three/src/scenes/')) return 'three-render';
+              if (id.includes('three/examples/')) return 'three-addons';
               return 'three-vendor';
             }
             
-            // Split AI vendor into smaller chunks
+            // Deferred features - AI (loads last)
             if (id.includes('@google/genai')) {
               if (id.includes('@google/genai/src/types/')) return 'ai-types';
               if (id.includes('@google/genai/src/models/')) return 'ai-models';

@@ -97,30 +97,65 @@ const updateLinkTag = (rel: string, href: string, hreflang?: string) => {
 };
 
 /**
- * Generate structured data (JSON-LD) for person
+ * Generate structured data (JSON-LD) for person with portfolio-specific enhancements
  */
 const generateStructuredData = () => {
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "Person",
     "name": "Khalil Charfi",
-    "jobTitle": "Full Stack Developer",
-    "description": "Software Engineer specializing in full-stack development",
+    "jobTitle": "Full-Stack Engineer",
+    "description": "Full-Stack Engineer with 6+ years of experience building scalable web and mobile applications",
     "url": SITE_URL,
     "image": DEFAULT_IMAGE,
     "sameAs": [
-      "https://github.com/khalilcharfi",
-      "https://linkedin.com/in/khalilcharfi"
+      "https://github.com/khalil-charfi",
+      "https://linkedin.com/in/khalil-charfi",
+      "https://twitter.com/khalilcharfi"
     ],
     "knowsAbout": [
       "Software Engineering",
-      "Full Stack Development",
+      "Full-Stack Development",
       "Web Development",
+      "Mobile Development",
       "React",
+      "Vue.js",
       "TypeScript",
-      "Node.js"
+      "Laravel",
+      "Flutter",
+      "Node.js",
+      "MySQL",
+      "Docker"
     ],
-    "inLanguage": Object.keys(LANGUAGES)
+    "hasOccupation": {
+      "@type": "Occupation",
+      "name": "Full-Stack Engineer",
+      "description": "Developing web and mobile applications using modern technologies",
+      "skills": [
+        "Frontend Development",
+        "Backend Development",
+        "Mobile Development",
+        "Database Design",
+        "DevOps"
+      ]
+    },
+    "alumniOf": {
+      "@type": "EducationalOrganization",
+      "name": "Institut Supérieur d'Informatique et de Multimédia de Sfax",
+      "description": "Computer Science Master's Degree"
+    },
+    "worksFor": {
+      "@type": "Organization",
+      "name": "ASM Software",
+      "description": "Software Development Company"
+    },
+    "inLanguage": Object.keys(LANGUAGES),
+    "nationality": "Tunisian",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Tunis",
+      "addressCountry": "Tunisia"
+    }
   };
 
   // Update or create JSON-LD script
@@ -176,16 +211,29 @@ export const SEOHead: React.FC<SEOHeadProps> = ({
     updateMetaTag('meta[name="description"]', 'content', description);
     updateMetaTag('meta[name="author"]', 'content', 'Khalil Charfi');
     updateMetaTag('meta[name="keywords"]', 'content', 
-      'Khalil Charfi, Software Engineer, Full Stack Developer, Web Development, React, TypeScript');
+      'Khalil Charfi, Full-Stack Engineer, Software Engineer, Web Development, Mobile Development, React, Vue.js, TypeScript, Laravel, Flutter, Portfolio, Tunisia, Tunis');
+    
+    // Portfolio-specific meta tags
+    updateMetaTag('meta[name="robots"]', 'content', 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1');
+    updateMetaTag('meta[name="googlebot"]', 'content', 'index, follow');
+    updateMetaTag('meta[name="theme-color"]', 'content', '#1a1a1a');
+    updateMetaTag('meta[name="msapplication-TileColor"]', 'content', '#1a1a1a');
+    updateMetaTag('meta[name="viewport"]', 'content', 'width=device-width, initial-scale=1.0, viewport-fit=cover');
     
     // Update Open Graph tags (for social media sharing)
     updateMetaTag('meta[property="og:title"]', 'content', fullTitle);
     updateMetaTag('meta[property="og:description"]', 'content', description);
     updateMetaTag('meta[property="og:image"]', 'content', image);
+    updateMetaTag('meta[property="og:image:width"]', 'content', '1200');
+    updateMetaTag('meta[property="og:image:height"]', 'content', '630');
+    updateMetaTag('meta[property="og:image:alt"]', 'content', 'Khalil Charfi - Full-Stack Engineer Portfolio');
     updateMetaTag('meta[property="og:url"]', 'content', currentUrl);
-    updateMetaTag('meta[property="og:type"]', 'content', 'website');
+    updateMetaTag('meta[property="og:type"]', 'content', 'profile');
     updateMetaTag('meta[property="og:site_name"]', 'content', 'Khalil Charfi Portfolio');
     updateMetaTag('meta[property="og:locale"]', 'content', LANGUAGES[currentLang as keyof typeof LANGUAGES]);
+    updateMetaTag('meta[property="profile:first_name"]', 'content', 'Khalil');
+    updateMetaTag('meta[property="profile:last_name"]', 'content', 'Charfi');
+    updateMetaTag('meta[property="profile:username"]', 'content', 'khalil-charfi');
     
     // Add alternate locales for Open Graph
     Object.keys(LANGUAGES).forEach(lang => {
