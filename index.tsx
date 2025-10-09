@@ -80,9 +80,22 @@ const DebugLogger = import.meta.env.DEV
 // Helper function to get base language
 const getBaseLang = (lang: string) => lang?.split('-')[0] || 'en';
 
+// Toggle to completely disable the initial loading overlay for static builds
+const SHOW_LOADING_SCREEN = false;
+
+// Utility to hide the legacy #initial-loading element when we skip the fancy loader
+function hideLegacyInitialLoader() {
+  const el = document.getElementById('initial-loading');
+  if (el) {
+    el.style.display = 'none';
+  }
+}
+
 const App: React.FC = () => {
     const { t, i18n } = useTranslation();
-    const { state: loadingState, progress: loadingProgress } = useLoadingManager();
+    const { state: loadingState, progress: loadingProgress } = SHOW_LOADING_SCREEN
+        ? useLoadingManager()
+        : { state: 'success', progress: { percentage: 100, stage: 'Complete' } as any };
     
     console.log('[App Render] Rendering with state:', {
         loadingState,
@@ -93,6 +106,13 @@ const App: React.FC = () => {
     const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'dark');
     const [isThemeTransitioning, setIsThemeTransitioning] = useState(false);
     const reducedMotion = useReducedMotion();
+
+    // Make sure the legacy loader is removed on first paint when disabled
+    useEffect(() => {
+        if (!SHOW_LOADING_SCREEN) {
+            hideLegacyInitialLoader();
+        }
+    }, []);
     const { announce } = useAnnouncer();
     const [activeSection, setActiveSection] = useState('home');
     const [selectedCert, setSelectedCert] = useState<CertificateItem | null>(null);
@@ -119,15 +139,19 @@ const App: React.FC = () => {
             nodeEnv: process.env.NODE_ENV
         });
         
-        // Start loading manager
-        loadingManager.startLoading(10);
-        console.log('[Loading] Started with 10 steps');
-        loadingManager.updateProgress(1, 10, 'Initializing application');
-        console.log('[Loading] Progress: 1/10 - Initializing application');
+        if (SHOW_LOADING_SCREEN) {
+            // Start loading manager
+            loadingManager.startLoading(10);
+            console.log('[Loading] Started with 10 steps');
+            loadingManager.updateProgress(1, 10, 'Initializing application');
+            console.log('[Loading] Progress: 1/10 - Initializing application');
+        }
         
         // Disable scroll on page load and keep at top
-        document.body.style.overflow = 'hidden';
-        window.scrollTo(0, 0);
+        if (SHOW_LOADING_SCREEN) {
+            document.body.style.overflow = 'hidden';
+            window.scrollTo(0, 0);
+        }
         
         // Prevent any scroll attempts during initial load
         const preventScroll = (e: Event) => {
@@ -136,12 +160,16 @@ const App: React.FC = () => {
         };
         
         // Add scroll prevention listeners
-        window.addEventListener('scroll', preventScroll, { passive: false });
-        window.addEventListener('wheel', preventScroll, { passive: false });
-        window.addEventListener('touchmove', preventScroll, { passive: false });
+        if (SHOW_LOADING_SCREEN) {
+            window.addEventListener('scroll', preventScroll, { passive: false });
+            window.addEventListener('wheel', preventScroll, { passive: false });
+            window.addEventListener('touchmove', preventScroll, { passive: false });
+        }
         
-        loadingManager.incrementProgress('Setting up UI');
-        console.log('[Loading] Progress: 2/10 - Setting up UI');
+        if (SHOW_LOADING_SCREEN) {
+            loadingManager.incrementProgress('Setting up UI');
+            console.log('[Loading] Progress: 2/10 - Setting up UI');
+        }
 
         // Add keyboard navigation class for focus styles
         const handleKeyDown = (e: KeyboardEvent) => {
@@ -168,8 +196,10 @@ const App: React.FC = () => {
         if (typeof window !== 'undefined') {
             console.log('[App Init] Loading performance optimizations...');
             import('@/shared/utils').then(module => {
-                loadingManager.incrementProgress('Loading performance optimizations');
-                console.log('[Loading] Progress: 3/10 - Loading performance optimizations');
+                if (SHOW_LOADING_SCREEN) {
+                    loadingManager.incrementProgress('Loading performance optimizations');
+                    console.log('[Loading] Progress: 3/10 - Loading performance optimizations');
+                }
                 module.initializePerformanceOptimizations().catch((error) => {
                     console.error('[App Init] Performance optimization failed:', error);
                     performanceLogger.error('Failed to initialize performance optimizations:', error);
@@ -180,27 +210,31 @@ const App: React.FC = () => {
             });
         }
         
-        loadingManager.incrementProgress('Loading React components');
-        console.log('[Loading] Progress: 4/10 - Loading React components');
+        if (SHOW_LOADING_SCREEN) {
+            loadingManager.incrementProgress('Loading React components');
+            console.log('[Loading] Progress: 4/10 - Loading React components');
+        }
         
         // Complete loading after a short delay (components are ready)
-        const completeTimer = setTimeout(() => {
-            console.log('[Loading] Timer fired - completing loading...');
-            loadingManager.incrementProgress('Finalizing');
-            console.log('[Loading] Progress: 5/10 - Finalizing');
-            loadingManager.completeLoading();
-            console.log('[Loading] ✅ Loading complete! State should be "success"');
-            
-            // Re-enable scrolling
-            document.body.style.overflow = '';
-            console.log('[App Init] Scrolling re-enabled');
-            
-            // Remove scroll prevention listeners
-            window.removeEventListener('scroll', preventScroll);
-            window.removeEventListener('wheel', preventScroll);
-            window.removeEventListener('touchmove', preventScroll);
-            console.log('[App Init] Scroll prevention removed');
-        }, 500); // Short delay to ensure components are mounted
+        let completeTimer: any;
+        if (SHOW_LOADING_SCREEN) {
+            completeTimer = setTimeout(() => {
+                console.log('[Loading] Timer fired - completing loading...');
+                loadingManager.incrementProgress('Finalizing');
+                console.log('[Loading] Progress: 5/10 - Finalizing');
+                loadingManager.completeLoading();
+                console.log('[Loading] ✅ Loading complete! State should be "success"');
+                
+                // Re-enable scrolling after loading completes
+                document.body.style.overflow = '';
+                
+                // Remove scroll prevention listeners
+                window.removeEventListener('scroll', preventScroll);
+                window.removeEventListener('wheel', preventScroll);
+                window.removeEventListener('touchmove', preventScroll);
+                console.log('[App Init] Scrolling re-enabled');
+            }, 500);
+        }
         
         console.log('[App Init] Complete timer set for 500ms');
         
@@ -228,14 +262,15 @@ const App: React.FC = () => {
         console.log('[App Init] Setup complete, returning cleanup function');
         
         return () => {
-            console.log('[App Init] Cleanup running...');
-            clearTimeout(completeTimer);
-            window.removeEventListener('scroll', handleScroll);
-            window.removeEventListener('scroll', preventScroll);
-            window.removeEventListener('wheel', preventScroll);
-            window.removeEventListener('touchmove', preventScroll);
+            if (completeTimer) clearTimeout(completeTimer);
             document.removeEventListener('keydown', handleKeyDown);
             document.removeEventListener('mousedown', handleMouseDown);
+            if (SHOW_LOADING_SCREEN) {
+                window.removeEventListener('scroll', preventScroll);
+                window.removeEventListener('wheel', preventScroll);
+                window.removeEventListener('touchmove', preventScroll);
+            }
+            console.log('[App Init] Cleanup complete');
         };
     }, [reducedMotion]);
 
@@ -395,8 +430,7 @@ const App: React.FC = () => {
 
     return (
         <>
-            {/* Enhanced Loading Screen - Shows until loading completes */}
-            {loadingState === 'loading' && (
+            {SHOW_LOADING_SCREEN && loadingState === 'loading' && (
                 <EnhancedLoadingScreen 
                     progress={loadingProgress.percentage} 
                     stage={loadingProgress.stage} 
