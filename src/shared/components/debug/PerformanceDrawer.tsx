@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from '@/features/i18n';
 import { analytics } from '@/features/analytics';
+import { DebugLogger } from './DebugLogger';
 import './performanceDrawer.css';
 
 interface PerformanceMetrics {
@@ -67,13 +68,11 @@ export const PerformanceDrawer: React.FC<PerformanceDrawerProps> = ({ geminiStat
         threeJs: { geometries: 0, textures: 0, programs: 0, calls: 0, triangles: 0, points: 0 },
         userInfo: { language: '', profile: '', source: '', referrer: '', theme: '' }
     });
-    const [logs, setLogs] = useState<Array<{ type: string; message: string; timestamp: string }>>([]);
     const [activeTab, setActiveTab] = useState<'metrics' | 'resources' | 'console' | 'user' | 'api'>('metrics');
     
     const frameCountRef = useRef(0);
     const lastTimeRef = useRef(performance.now());
     const fpsHistoryRef = useRef<number[]>([]);
-    const maxLogsRef = useRef(50);
 
     // FPS Calculation
     useEffect(() => {
@@ -286,57 +285,6 @@ export const PerformanceDrawer: React.FC<PerformanceDrawerProps> = ({ geminiStat
         return () => clearInterval(interval);
     }, []);
 
-    // Console Interception
-    useEffect(() => {
-        const originalConsole = {
-            log: console.log,
-            warn: console.warn,
-            error: console.error,
-            info: console.info
-        };
-        
-        const addLog = (type: string, args: any[]) => {
-            const message = args.map(arg => 
-                typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg)
-            ).join(' ');
-            
-            const timestamp = new Date().toLocaleTimeString();
-            
-            setLogs(prev => {
-                const newLogs = [...prev, { type, message, timestamp }];
-                return newLogs.slice(-maxLogsRef.current);
-            });
-        };
-        
-        console.log = (...args: any[]) => {
-            originalConsole.log(...args);
-            addLog('log', args);
-        };
-        
-        console.warn = (...args: any[]) => {
-            originalConsole.warn(...args);
-            addLog('warn', args);
-        };
-        
-        console.error = (...args: any[]) => {
-            originalConsole.error(...args);
-            addLog('error', args);
-        };
-        
-        console.info = (...args: any[]) => {
-            originalConsole.info(...args);
-            addLog('info', args);
-        };
-        
-        return () => {
-            console.log = originalConsole.log;
-            console.warn = originalConsole.warn;
-            console.error = originalConsole.error;
-            console.info = originalConsole.info;
-        };
-    }, []);
-
-    const clearLogs = () => setLogs([]);
     
     const isLightMode = document.documentElement.getAttribute('data-theme') === 'light';
     
@@ -464,7 +412,7 @@ export const PerformanceDrawer: React.FC<PerformanceDrawerProps> = ({ geminiStat
                         className={`perf-drawer-tab ${activeTab === 'console' ? 'active' : ''}`}
                         onClick={() => setActiveTab('console')}
                     >
-                        Console ({logs.length})
+                        Console
                     </button>
                 </div>
 
@@ -949,24 +897,7 @@ export const PerformanceDrawer: React.FC<PerformanceDrawerProps> = ({ geminiStat
                     {/* Console Tab */}
                     {activeTab === 'console' && (
                         <div className="perf-console">
-                            <div className="perf-console-header">
-                                <button className="perf-console-clear" onClick={clearLogs}>
-                                    Clear
-                                </button>
-                            </div>
-                            <div className="perf-console-logs">
-                                {logs.length === 0 ? (
-                                    <div className="perf-console-empty">No console logs</div>
-                                ) : (
-                                    logs.map((log, i) => (
-                                        <div key={i} className={`perf-console-log perf-console-${log.type}`}>
-                                            <span className="perf-console-time">{log.timestamp}</span>
-                                            <span className="perf-console-type">{log.type}</span>
-                                            <span className="perf-console-message">{log.message}</span>
-                                        </div>
-                                    ))
-                                )}
-                            </div>
+                            <DebugLogger />
                         </div>
                     )}
                 </div>

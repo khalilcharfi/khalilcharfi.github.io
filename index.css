@@ -596,6 +596,11 @@ html[lang="ar"] .nav-links a {
     height: 20px;
 }
 
+.desktop-controls .privacy-settings-trigger:hover svg,
+.desktop-controls .theme-toggle-btn:hover svg {
+    cursor: pointer;
+}
+
 /* Header controls - always visible on mobile, hidden on desktop */
 .header-controls {
     display: none;
@@ -644,11 +649,13 @@ html[dir="rtl"] .header-controls .language-options {
 
 .nav-toggle { display: none; background: transparent; border: none; color: var(--primary-text); cursor: pointer; padding: 0.5rem; border-radius: 50%; z-index: 1001; transition: color var(--transition-fast)}
 .nav-toggle svg { width: 30px; height: 30px; fill: currentColor}
+.nav-toggle:hover svg { cursor: pointer; }
 .nav-toggle:hover, .nav-toggle:focus-visible { color: var(--accent-color)}
 
 /* Mobile controls removed - privacy button now in header-controls */
 .theme-toggle-btn { background: transparent; border: 1px solid var(--glass-border-color); color: var(--secondary-text); cursor: pointer; padding: 0.6rem; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all var(--transition-fast); will-change: color, transform; position: relative; z-index: 1001}
 .theme-toggle-btn:hover, .theme-toggle-btn:focus-visible { color: var(--accent-color); transform: scale(1.1); border-color: var(--accent-color); background: rgba(0, 166, 255, 0.1)}
+.theme-toggle-btn:hover svg { cursor: pointer; }
 
 .language-switcher {
     position: relative}
@@ -2763,7 +2770,12 @@ canvas {
     transform: scale(0.95) rotate(-5deg)}
 
 .theme-toggle svg {
-    transition: all 0.4s cubic-bezier(0.4, 0.0, 0.2, 1)}
+    transition: all 0.4s cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+
+.theme-toggle:hover svg {
+    cursor: pointer;
+}
 
 .theme-toggle:hover svg {
     filter: drop-shadow(0 0 8px var(--accent-glow))}

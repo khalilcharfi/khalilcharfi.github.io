@@ -64,6 +64,10 @@ html[data-theme="light"] {
   transform: scale(0.95);
 }
 
+.perf-drawer-toggle:hover svg {
+  cursor: pointer;
+}
+
 .perf-drawer-fps-badge {
   position: absolute;
   top: -5px;
@@ -769,4 +773,256 @@ html[data-theme="light"] .perf-console-clear:hover {
 
 html[data-theme="light"] .perf-drawer-tab.active {
   background: rgba(102, 126, 234, 0.12);
+}
+
+/* ==========================================================================
+   Debug Logger Integration
+   ========================================================================== */
+
+/* Override DebugLogger styles when inside PerformanceDrawer */
+.perf-console .debug-logger {
+  position: static;
+  width: 100%;
+  max-width: none;
+  max-height: 400px;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  backdrop-filter: none;
+  z-index: auto;
+}
+
+.perf-console .debug-logger.minimized {
+  max-height: 50px;
+}
+
+.perf-console .debug-logger-header {
+  background: rgba(102, 126, 234, 0.1);
+  border: 1px solid var(--perf-border);
+  border-radius: var(--perf-radius-sm);
+  margin-bottom: 12px;
+  padding: 12px 16px;
+}
+
+.perf-console .debug-logger-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--perf-text-primary);
+}
+
+.perf-console .debug-logger-icon {
+  font-size: 16px;
+}
+
+.perf-console .debug-logger-count {
+  font-size: 12px;
+  opacity: 0.7;
+  font-weight: 400;
+}
+
+.perf-console .debug-logger-controls {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.perf-console .debug-logger-content {
+  background: rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--perf-border);
+  border-radius: var(--perf-radius-sm);
+  max-height: 350px;
+  min-height: 200px;
+  padding: 8px;
+}
+
+.perf-console .debug-logger-entry {
+  background: rgba(255, 255, 255, 0.03);
+  border-left: 2px solid transparent;
+  margin-bottom: 4px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  line-height: 1.5;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  transition: all 0.2s ease;
+}
+
+.perf-console .debug-logger-entry:hover {
+  background: rgba(255, 255, 255, 0.06);
+  transform: translateX(2px);
+}
+
+.perf-console .debug-logger-time {
+  color: var(--perf-text-muted);
+  font-size: 10px;
+  min-width: 70px;
+  flex-shrink: 0;
+  font-family: 'SF Mono', 'Monaco', 'Courier New', monospace;
+  margin-top: 1px;
+}
+
+.perf-console .debug-logger-message {
+  color: var(--perf-text-primary);
+  flex: 1;
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-family: 'SF Mono', 'Monaco', 'Courier New', monospace;
+  font-size: 11px;
+}
+
+.perf-console .debug-logger-level {
+  flex-shrink: 0;
+  font-size: 12px;
+  margin-top: 1px;
+}
+
+/* Log level colors for PerformanceDrawer integration */
+.perf-console .debug-logger-log {
+  border-left-color: #4299e1;
+}
+
+.perf-console .debug-logger-info {
+  border-left-color: #48bb78;
+  background: rgba(72, 187, 120, 0.08);
+}
+
+.perf-console .debug-logger-warn {
+  border-left-color: #ed8936;
+  background: rgba(237, 137, 54, 0.08);
+}
+
+.perf-console .debug-logger-warn .debug-logger-message {
+  color: #fbd38d;
+}
+
+.perf-console .debug-logger-error {
+  border-left-color: #f56565;
+  background: rgba(245, 101, 101, 0.12);
+}
+
+.perf-console .debug-logger-error .debug-logger-message {
+  color: #fc8181;
+  font-weight: 500;
+}
+
+.perf-console .debug-logger-empty {
+  color: var(--perf-text-muted);
+  text-align: center;
+  padding: 40px 20px;
+  font-style: italic;
+  font-size: 13px;
+}
+
+.perf-console .debug-logger-filter {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--perf-border);
+  color: var(--perf-text-primary);
+  font-size: 12px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  outline: none;
+  width: 140px;
+  transition: all 0.2s ease;
+}
+
+.perf-console .debug-logger-filter::placeholder {
+  color: var(--perf-text-muted);
+}
+
+.perf-console .debug-logger-filter:focus {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: var(--perf-primary);
+  box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2);
+}
+
+.perf-console .debug-logger-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--perf-border);
+  border-radius: 6px;
+  padding: 6px 10px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 0.2s ease;
+  color: var(--perf-text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  height: 32px;
+}
+
+.perf-console .debug-logger-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: var(--perf-primary);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.perf-console .debug-logger-btn:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+/* Hide the toggle button when inside PerformanceDrawer */
+.perf-console .debug-logger-toggle {
+  display: none;
+}
+
+/* Light theme overrides for DebugLogger integration */
+html[data-theme="light"] .perf-console .debug-logger-header {
+  background: rgba(102, 126, 234, 0.08);
+  border-color: rgba(102, 126, 234, 0.15);
+}
+
+html[data-theme="light"] .perf-console .debug-logger-content {
+  background: rgba(0, 0, 0, 0.03);
+  border-color: rgba(102, 126, 234, 0.15);
+}
+
+html[data-theme="light"] .perf-console .debug-logger-entry {
+  background: rgba(0, 0, 0, 0.02);
+}
+
+html[data-theme="light"] .perf-console .debug-logger-entry:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+html[data-theme="light"] .perf-console .debug-logger-message,
+html[data-theme="light"] .perf-console .debug-logger-time {
+  color: rgba(0, 0, 0, 0.8);
+}
+
+html[data-theme="light"] .perf-console .debug-logger-filter {
+  background: rgba(0, 0, 0, 0.05);
+  color: rgba(0, 0, 0, 0.8);
+  border-color: rgba(0, 0, 0, 0.15);
+}
+
+html[data-theme="light"] .perf-console .debug-logger-filter::placeholder {
+  color: rgba(0, 0, 0, 0.4);
+}
+
+html[data-theme="light"] .perf-console .debug-logger-filter:focus {
+  background: rgba(0, 0, 0, 0.08);
+  border-color: var(--perf-primary);
+  box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.15);
+}
+
+html[data-theme="light"] .perf-console .debug-logger-btn {
+  background: rgba(0, 0, 0, 0.08);
+  color: rgba(0, 0, 0, 0.8);
+  border-color: rgba(0, 0, 0, 0.15);
+}
+
+html[data-theme="light"] .perf-console .debug-logger-btn:hover {
+  background: rgba(0, 0, 0, 0.12);
+  border-color: var(--perf-primary);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }

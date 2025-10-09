@@ -10,7 +10,6 @@
   ],
   "scripts": {
     "dev": "vite",
-    "prebuild": "npm run generate:html",
     "build": "vite build && node scripts/copy-assets.js && node scripts/generate-sitemap.js",
     "build:prod": "vite build --mode production && node scripts/copy-assets.js && node scripts/generate-sitemap.js",
     "build:prod:debug": "VITE_NO_MINIFY=true vite build --mode production && node scripts/copy-assets.js && node scripts/generate-sitemap.js",
@@ -44,7 +43,6 @@
     "test:playwright:report": "playwright show-report test-results/playwright-report",
     "test:all": "npm run test:a11y && npm run test:playwright",
     "test:no-js": "bash scripts/test-no-js.sh",
-    "generate:html": "node scripts/generate-html.mjs",
     "ci:validate-translations": "npm run i18n:validate",
     "ci:bundle-size": "npm run build && node scripts/check-bundle-size.js",
     "ci:build": "npm run build:prod && node scripts/verify-build.js && npm run verify:debug-exclusion",
@@ -94,7 +92,6 @@
     "@vitest/coverage-v8": "^3.2.4",
     "@wasm-tool/wasm-pack-plugin": "^1.7.0",
     "glob": "^11.0.3",
-    "handlebars": "^4.7.8",
     "lighthouse": "^12.8.2",
     "playwright": "^1.55.1",
     "puppeteer": "^24.23.0",

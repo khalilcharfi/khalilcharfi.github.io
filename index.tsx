@@ -2,32 +2,28 @@ import React, { useState, useEffect, useMemo, useLayoutEffect, Suspense, lazy } 
 import { createRoot } from 'react-dom/client';
 
 // Safely handle React DevTools
-if (typeof window !== 'undefined') {
-  // Disable React DevTools in production to avoid errors
-  if (process.env.NODE_ENV === 'production') {
-    // Suppress console errors
-    const originalConsoleError = console.error;
+if (typeof window !== 'undefined' && process.env.NODE_ENV === 'production') {
+    // Suppress React DevTools-related console errors
+    const originalError = console.error;
+    const suppressedPatterns = ['displayName', 'React DevTools', 'getDisplayNameForFiber', 'renderer.js'];
+    
     console.error = (...args) => {
-      const message = args[0];
-      if (typeof message === 'string' && 
-          (message.includes('displayName') || 
-           message.includes('React DevTools') ||
-           message.includes('getDisplayNameForFiber') ||
-           message.includes('renderer.js'))) {
-        return; // Suppress these specific errors
+      const msg = args[0];
+      if (typeof msg === 'string' && suppressedPatterns.some(pattern => msg.includes(pattern))) {
+        return;
       }
-      originalConsoleError.apply(console, args);
+      originalError(...args);
     };
     
-    // Disable React DevTools completely in production
-    if (typeof window.__REACT_DEVTOOLS_GLOBAL_HOOK__ === 'object') {
-      window.__REACT_DEVTOOLS_GLOBAL_HOOK__.inject = () => {};
-      window.__REACT_DEVTOOLS_GLOBAL_HOOK__.onCommitFiberRoot = () => {};
-      window.__REACT_DEVTOOLS_GLOBAL_HOOK__.onCommitFiberUnmount = () => {};
-      window.__REACT_DEVTOOLS_GLOBAL_HOOK__.supportsFiber = false;
+    // Disable React DevTools hook
+    const hook = (window as any).__REACT_DEVTOOLS_GLOBAL_HOOK__;
+    if (hook) {
+      for (const prop of ['inject', 'onCommitFiberRoot', 'onCommitFiberUnmount']) {
+        hook[prop] = () => {};
+      }
+      hook.supportsFiber = false;
     }
   }
-}
 
 import '@/i18n';
 import { useTranslation, CertificateItem } from '@/features/i18n';
@@ -47,7 +43,7 @@ import { analytics } from '@/features/analytics';
 import { PERSONAS_FEATURE_ENABLED, getSectionIds } from '@/shared/config';
 import { AnimationPauseProvider, SimpleConsentProvider } from '@/context';
 import { Navbar, SkipLinks, SEOHead, EnhancedLoadingScreen } from '@/shared/components';
-import { performanceLogger, LazyTranslationTest, LazyThreeBackground, loadingManager, useLoadingManager, canHandleHeavyAnimations } from '@/shared/utils';
+import { performanceLogger, LazyTranslationTest, LazyThreeBackground, loadingManager, useLoadingManager } from '@/shared/utils';
 import { ANIMATION_DURATION, SCROLL, OBSERVER_CONFIG } from '@/shared/constants';
 import { 
   HomeSection,
@@ -72,10 +68,6 @@ const PerformanceDrawer = import.meta.env.DEV
   ? lazy(() => import('@/shared/components/debug/PerformanceDrawer').then(m => ({ default: m.PerformanceDrawer })))
   : () => null;
 
-// DebugLogger should only be included during development to avoid shipping debug tools to production
-const DebugLogger = import.meta.env.DEV
-  ? lazy(() => import('@/shared/components/debug/DebugLogger').then(m => ({ default: m.DebugLogger })))
-  : () => null;
 
 // Helper function to get base language
 const getBaseLang = (lang: string) => lang?.split('-')[0] || 'en';
@@ -105,6 +97,7 @@ const App: React.FC = () => {
     
     const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'dark');
     const [isThemeTransitioning, setIsThemeTransitioning] = useState(false);
+    const [showBackground, setShowBackground] = useState(true);
     const reducedMotion = useReducedMotion();
 
     // Make sure the legacy loader is removed on first paint when disabled
@@ -116,7 +109,6 @@ const App: React.FC = () => {
     const { announce } = useAnnouncer();
     const [activeSection, setActiveSection] = useState('home');
     const [selectedCert, setSelectedCert] = useState<CertificateItem | null>(null);
-    const [showBackground, setShowBackground] = useState(false);
     const { 
         isAvailable: isChatbotAvailable, 
         isChecking: isChatbotChecking,
@@ -234,6 +226,10 @@ const App: React.FC = () => {
                 window.removeEventListener('touchmove', preventScroll);
                 console.log('[App Init] Scrolling re-enabled');
             }, 500);
+        } else {
+            // When loading screen is disabled, ensure scrolling is enabled immediately
+            document.body.style.overflow = '';
+            console.log('[App Init] Scrolling enabled immediately (no loading screen)');
         }
         
         console.log('[App Init] Complete timer set for 500ms');
@@ -275,9 +271,11 @@ const App: React.FC = () => {
     }, [reducedMotion]);
 
     useLayoutEffect(() => {
-        // Disable scroll immediately before any paint
-        document.body.style.overflow = 'hidden';
-        window.scrollTo(0, 0);
+        // Only disable scroll during loading screen, not for theme changes
+        if (SHOW_LOADING_SCREEN) {
+            document.body.style.overflow = 'hidden';
+            window.scrollTo(0, 0);
+        }
         
         // Apply theme immediately before any paint
         const root = document.documentElement;
@@ -629,10 +627,6 @@ const App: React.FC = () => {
                     }
                 `}</style>
                 
-                {/* Debug Logger - Shows console logs in UI */}
-                <Suspense fallback={null}>
-                    <DebugLogger />
-                </Suspense>
             </Suspense>
         </>
     );

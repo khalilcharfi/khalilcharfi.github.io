@@ -11,7 +11,7 @@ interface LogEntry {
 export const DebugLogger: React.FC = () => {
   const [logs, setLogs] = useState<LogEntry[]>([]);
   const [isOpen, setIsOpen] = useState(true);
-  const [isMinimized, setIsMinimized] = useState(false);
+  const [isMinimized] = useState(false);
   const logsEndRef = useRef<HTMLDivElement>(null);
   const logsContainerRef = useRef<HTMLDivElement>(null);
 
@@ -92,9 +92,8 @@ export const DebugLogger: React.FC = () => {
       hour12: false, 
       hour: '2-digit', 
       minute: '2-digit', 
-      second: '2-digit',
-      fractionalSecondDigits: 3
-    });
+      second: '2-digit'
+    }) + '.' + date.getMilliseconds().toString().padStart(3, '0');
   };
 
   const getLevelIcon = (level: LogEntry['level']) => {
@@ -133,37 +132,23 @@ export const DebugLogger: React.FC = () => {
       <div className="debug-logger-header">
         <div className="debug-logger-title">
           <span className="debug-logger-icon">📊</span>
-          <span>Debug Logger</span>
-          <span className="debug-logger-count">({logs.length} logs)</span>
+          <span>Console</span>
+          <span className="debug-logger-count">({logs.length})</span>
         </div>
         <div className="debug-logger-controls">
           <input
             type="text"
             className="debug-logger-filter"
-            placeholder="Filter logs..."
+            placeholder="Filter..."
             value={filter}
             onChange={(e) => setFilter(e.target.value)}
           />
           <button 
             onClick={clearLogs}
             className="debug-logger-btn"
-            title="Clear logs"
+            title="Clear"
           >
             🗑️
-          </button>
-          <button 
-            onClick={() => setIsMinimized(!isMinimized)}
-            className="debug-logger-btn"
-            title={isMinimized ? 'Maximize' : 'Minimize'}
-          >
-            {isMinimized ? '⬆️' : '⬇️'}
-          </button>
-          <button 
-            onClick={() => setIsOpen(false)}
-            className="debug-logger-btn"
-            title="Close"
-          >
-            ✖️
           </button>
         </div>
       </div>
@@ -172,7 +157,7 @@ export const DebugLogger: React.FC = () => {
         <div className="debug-logger-content" ref={logsContainerRef}>
           {filteredLogs.length === 0 ? (
             <div className="debug-logger-empty">
-              {filter ? `No logs matching "${filter}"` : 'No logs yet'}
+              {filter ? 'No matches' : 'No logs yet'}
             </div>
           ) : (
             filteredLogs.map((log, index) => (
