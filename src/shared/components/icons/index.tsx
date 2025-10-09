@@ -100,3 +100,15 @@ export const SendIcon: React.FC = React.memo(() => (
 ));
 SendIcon.displayName = 'SendIcon';
 
+export const XingIcon: React.FC = React.memo(() => (
+    <svg
+        viewBox="0 0 24 24"
+        fill="currentColor"
+        aria-hidden="true"
+        focusable="false"
+    >
+        <path d="M20.5 0h-17C1.57 0 0 1.57 0 3.5v17C0 22.43 1.57 24 3.5 24h17c1.93 0 3.5-1.57 3.5-3.5v-17C24 1.57 22.43 0 20.5 0zM7.5 18.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm0-3c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm0-3c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm0-3c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm0-3c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"></path>
+    </svg>
+));
+XingIcon.displayName = 'XingIcon';
+
