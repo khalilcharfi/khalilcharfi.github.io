@@ -995,11 +995,14 @@ export class EnhancedUserAnalytics {
   private fallbackMode: boolean = false;
   private errorCount: number = 0;
   private maxErrors: number = 3;
+  private wasmAnalytics: any = null;
+  private isWASMInitialized: boolean = false;
 
   constructor() {
     try {
       this.initializeProfile();
       this.setupEventListeners();
+      this.initializeWASM(); // Initialize WASM analytics
     } catch (error) {
       console.warn('EnhancedUserAnalytics initialization failed, using fallback mode:', error);
       this.enableFallbackMode();
