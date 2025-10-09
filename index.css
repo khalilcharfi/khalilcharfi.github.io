@@ -1326,7 +1326,8 @@ html[dir="rtl"] .modal-description {
     margin: 0 0.75rem;
     color: var(--secondary-text);
     transition: transform var(--transition-speed), color var(--transition-speed);
-    will-change: transform}
+    will-change: transform;
+    cursor: pointer}
 .social-links a:hover,
 .social-links a:focus-visible {
     color: var(--accent-color);
@@ -1335,6 +1336,10 @@ html[dir="rtl"] .modal-description {
     width: var(--social-icon-size, 30px);
     height: var(--social-icon-size, 30px);
     fill: currentColor}
+
+.social-links a:hover svg {
+    cursor: pointer;
+}
 
 .form-group input.invalid,
 .form-group textarea.invalid {

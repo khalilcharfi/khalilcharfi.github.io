@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { createPortal } from 'react-dom';
-import { useConsent } from '../context/ConsentContext';
+import { useConsent } from '@/core/contexts';
 import { useTranslation } from '../../i18n';
 
 export const PrivacySettings: React.FC = () => {

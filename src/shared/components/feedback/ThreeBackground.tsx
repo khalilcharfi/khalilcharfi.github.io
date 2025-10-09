@@ -15,7 +15,7 @@ import {
   SRGBColorSpace
 } from 'three';
 import { createNoise3D } from 'simplex-noise';
-import { useAnimationPause } from '../../../context';
+import { useAnimationPause } from '@/core/contexts';
 
 extend({ Points, BufferGeometry, BufferAttribute });
 

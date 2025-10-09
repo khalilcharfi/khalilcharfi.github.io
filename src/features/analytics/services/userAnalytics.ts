@@ -1,7 +1,7 @@
 // User Analytics and Context Detection System
 import React from 'react';
 import { advancedFingerprinter, type AdvancedFingerprint } from './advancedFingerprinting';
-import { useConsent } from 'react-hook-consent';
+import { useConsent } from '@/core/contexts';
 import { ENABLED_PERSONAS } from '../../../shared/config';
 
 export interface UserProfile {

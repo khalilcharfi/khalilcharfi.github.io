@@ -4,7 +4,7 @@
  */
 
 import { useEffect, useCallback } from 'react';
-import { useConsent } from '../../privacy';
+import { useConsent } from '@/core/contexts';
 import { googleAnalytics } from '../services/googleAnalytics';
 
 export const useGoogleAnalytics = () => {

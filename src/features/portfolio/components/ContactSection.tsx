@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from '@/features/i18n';
 import { useDynamicContent, useSectionTracking } from '@/features/visitor-personalization';
-import { Section, LinkedinIcon, GithubIcon } from '@/shared/components';
+import { Section, LinkedinIcon, GithubIcon, XingIcon } from '@/shared/components';
 import { FORM_LIMITS, ANIMATION_DURATION } from '@/shared/constants';
 
 export const ContactSection: React.FC = () => {
@@ -235,6 +235,7 @@ export const ContactSection: React.FC = () => {
                     <h3>{t('contact.connectTitle')}</h3>
                     <a href="https://www.linkedin.com/in/khalil-charfi/" aria-label={String(t('contact.linkedinAria'))} target="_blank" rel="noopener noreferrer"><LinkedinIcon /></a>
                     <a href="https://github.com/khalil-charfi" aria-label={String(t('contact.githubAria'))} target="_blank" rel="noopener noreferrer"><GithubIcon /></a>
+                    <a href="https://www.xing.com/profile/Khalil_Charfi2" aria-label="Khalil Charfi's Xing Profile" target="_blank" rel="noopener noreferrer"><XingIcon /></a>
                 </div>
             </div>
         </Section>

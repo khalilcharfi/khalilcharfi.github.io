@@ -41,7 +41,7 @@ import {
 } from '@/features/visitor-personalization';
 import { analytics } from '@/features/analytics';
 import { PERSONAS_FEATURE_ENABLED, getSectionIds } from '@/shared/config';
-import { AnimationPauseProvider, SimpleConsentProvider } from '@/context';
+import { AnimationPauseProvider, SimpleConsentProvider } from '@/core';
 import { Navbar, SkipLinks, SEOHead, EnhancedLoadingScreen } from '@/shared/components';
 import { performanceLogger, LazyTranslationTest, LazyThreeBackground, loadingManager, useLoadingManager } from '@/shared/utils';
 import { ANIMATION_DURATION, SCROLL, OBSERVER_CONFIG } from '@/shared/constants';
