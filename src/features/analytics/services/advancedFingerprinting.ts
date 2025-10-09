@@ -579,7 +579,17 @@ export class AdvancedFingerprintCollector {
   public async getFingerprint(): Promise<AdvancedFingerprint> {
     // Wait for all fingerprinting to complete
     await new Promise(resolve => setTimeout(resolve, 6000));
-    return this.fingerprint as AdvancedFingerprint;
+    
+    // Get WASM-accelerated fingerprints as enhancement
+    const wasmFingerprint = await this.getWASMFingerprints();
+    
+    // Merge JS and WASM results, with WASM taking precedence where available
+    const mergedFingerprint = {
+      ...this.fingerprint,
+      ...wasmFingerprint // WASM overrides JS where available
+    };
+    
+    return mergedFingerprint as AdvancedFingerprint;
   }
   
   public getFingerprintSync(): Partial<AdvancedFingerprint> {
