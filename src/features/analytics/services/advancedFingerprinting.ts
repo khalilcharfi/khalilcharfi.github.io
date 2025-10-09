@@ -1,5 +1,6 @@
 // Advanced Browser Fingerprinting System
 // Using built-in browser APIs for comprehensive user profiling (no external dependencies)
+import { loadWASM, isWASMAvailable } from '@/shared/utils/wasmLoader';
 
 // Enhanced fingerprint data structure
 export interface AdvancedFingerprint {
@@ -118,6 +119,39 @@ export class AdvancedFingerprintCollector {
     await this.collectStorageInfo();
     await this.collectPrivacyIndicators();
     this.initializeBehavioralTracking();
+  }
+
+  /**
+   * Get WASM-accelerated fingerprints as fallback/enhancement
+   * @returns Partial fingerprint data from WASM
+   */
+  private async getWASMFingerprints(): Promise<Partial<AdvancedFingerprint>> {
+    try {
+      if (!isWASMAvailable()) {
+        const wasm = await loadWASM();
+        if (!wasm) return {}; // Fallback to JS
+      }
+      
+      const wasm = await loadWASM();
+      if (!wasm) return {}; // Fallback to JS
+      
+      const engine = new wasm.FingerprintEngine();
+      const canvasFingerprint = engine.generate_canvas_fingerprint();
+      const webglFingerprint = engine.generate_webgl_fingerprint();
+      const completeFingerprint = engine.generate_complete_fingerprint();
+      
+      // Clean up WASM resources
+      engine.free();
+      
+      return {
+        canvasFingerprint,
+        webglFingerprint,
+        fingerprintId: completeFingerprint
+      };
+    } catch (error) {
+      console.warn('WASM fingerprinting failed, using JS fallback:', error);
+      return {}; // Fallback to existing JS implementation
+    }
   }
   
   private async collectBasicFingerprint(): Promise<void> {
