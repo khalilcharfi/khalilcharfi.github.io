@@ -51,7 +51,7 @@ const ConsentContext = createContext<ConsentContextValue>({
     respectedDNT: false
 });
 
-export const SimpleConsentProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const SimpleConsentProvider: React.FC<{ children: React.ReactNode }> = React.memo(({ children }) => {
     const [consent, setConsent] = useState<ConsentState>(defaultConsent);
     const [privacySettings, setPrivacySettings] = useState<PrivacySettings>(defaultPrivacySettings);
     const [respectedDNT, setRespectedDNT] = useState(false);

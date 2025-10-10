@@ -207,6 +207,7 @@ export const useEscapeKey = (callback: () => void, isActive: boolean = true) => 
 export const useScrollLock = (isLocked: boolean) => {
   useEffect(() => {
     if (isLocked) {
+      // Cache scrollbar width calculation to avoid multiple DOM queries
       const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
       document.body.style.overflow = 'hidden';
       document.body.style.paddingRight = `${scrollbarWidth}px`;

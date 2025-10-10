@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react';
 import { useTranslation } from '@/features/i18n';
-import { useDynamicContent, useSectionTracking, SHOW_RECOMMENDED_SECTIONS, IS_DEVELOPMENT } from '@/features/visitor-personalization';
+import {useDynamicContent, useSectionTracking, SHOW_RECOMMENDED_SECTIONS} from '@/features/visitor-personalization';
 import { analytics } from '@/features/analytics';
 import { PERSONAS_FEATURE_ENABLED } from '@/shared/config';
 import { smoothScrollTo } from '@/shared/utils';
 import { Section } from '@/shared/components';
 
-export const HomeSection: React.FC = () => {
+export const HomeSection: React.FC = React.memo(() => {
     const { t } = useTranslation();
     const { personalizedContent, userProfile, trackEvent } = useDynamicContent();
     const sectionTracking = useSectionTracking('home');
@@ -39,9 +39,9 @@ export const HomeSection: React.FC = () => {
                     <span className="source-hint"> (from {userProfile.source})</span>
                 )}
             </p>
-            <h1 className="animate-in" style={{ '--stagger-index': 2 } as React.CSSProperties}>{t('home.name')}</h1>
-            <p className="tagline animate-in" style={{ '--stagger-index': 3 } as React.CSSProperties}>{tagline}</p>
-            <p className="intro-text animate-in" style={{ '--stagger-index': 4 } as React.CSSProperties}>{personalizedContent.home.intro}</p>
+            <h1 className="animate-in" style={{ '--stagger-index': 2 } as React.CSSProperties}>{String(t('home.name'))}</h1>
+            <p className="tagline animate-in" style={{ '--stagger-index': 3 } as React.CSSProperties}>{String(tagline)}</p>
+            <p className="intro-text animate-in" style={{ '--stagger-index': 4 } as React.CSSProperties}>{String(personalizedContent.home.intro)}</p>
             <div className="cta-buttons animate-in" style={{ '--stagger-index': 5 } as React.CSSProperties}>
                 <button className="btn" onClick={() => { handleCtaClick('viewWork'); smoothScrollTo('projects'); }}>
                     {ctaText}
@@ -55,13 +55,13 @@ export const HomeSection: React.FC = () => {
                         smoothScrollTo('contact'); 
                     }}
                 >
-                    {t('home.getInTouchBtn')}
+                    {String(t('home.getInTouchBtn'))}
                 </a>
             </div>
 
             {PERSONAS_FEATURE_ENABLED && SHOW_RECOMMENDED_SECTIONS && analyticsContent?.prioritySections && analyticsContent.prioritySections.length > 0 && (
                 <div className="priority-sections animate-in" style={{ '--stagger-index': 6 } as React.CSSProperties}>
-                    <h3>{t('home.recommendedForYou')}</h3>
+                    <h3>{String(t('home.recommendedForYou'))}</h3>
                     <div className="section-chips">
                         {analyticsContent.prioritySections.map((section: string) => (
                             <button 
@@ -74,7 +74,7 @@ export const HomeSection: React.FC = () => {
                                     smoothScrollTo(section);
                                 }}
                             >
-                                {t(`nav.${section}`) || section}
+                                {String(t(`nav.${section}`)) || section}
                             </button>
                         ))}
                     </div>
@@ -82,4 +82,4 @@ export const HomeSection: React.FC = () => {
             )}
         </Section>
     );
-};
+});

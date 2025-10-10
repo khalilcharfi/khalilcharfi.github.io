@@ -8,7 +8,7 @@ export interface CardProps extends HTMLAttributes<HTMLDivElement> {
     children: ReactNode;
 }
 
-export const Card: React.FC<CardProps> = ({
+export const Card: React.FC = React.memo(({<CardProps> = ({
     variant = 'default',
     padding = 'md',
     hoverable = false,
@@ -40,7 +40,7 @@ export interface CardHeaderProps {
     className?: string;
 }
 
-export const CardHeader: React.FC<CardHeaderProps> = ({
+export const CardHeader: React.FC = React.memo(({<CardHeaderProps> = ({
     title,
     subtitle,
     action,
@@ -62,7 +62,7 @@ export interface CardBodyProps {
     className?: string;
 }
 
-export const CardBody: React.FC<CardBodyProps> = ({ children, className = '' }) => {
+export const CardBody: React.FC = React.memo(({<CardBodyProps> = ({ children, className = '' }) => {
     return <div className={`card-body ${className}`}>{children}</div>;
 };
 
@@ -72,7 +72,7 @@ export interface CardFooterProps {
     align?: 'left' | 'center' | 'right' | 'space-between';
 }
 
-export const CardFooter: React.FC<CardFooterProps> = ({
+export const CardFooter: React.FC = React.memo(({<CardFooterProps> = ({
     children,
     className = '',
     align = 'right'

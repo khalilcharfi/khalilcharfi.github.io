@@ -13,7 +13,7 @@ export interface SkeletonProps {
 /**
  * Skeleton component for loading placeholders
  */
-export const Skeleton: React.FC<SkeletonProps> = ({
+export const Skeleton: React.FC = React.memo(({<SkeletonProps> = ({
   width = '100%',
   height = '1rem',
   borderRadius,
@@ -54,12 +54,12 @@ export const Skeleton: React.FC<SkeletonProps> = ({
       aria-live="polite"
     />
   );
-};
+});
 
 /**
  * Skeleton for profile section
  */
-export const ProfileSkeleton: React.FC = () => (
+export const ProfileSkeleton: React.FC = React.memo(() => (
   <div className="skeleton-profile">
     <Skeleton variant="circular" width={120} height={120} />
     <div className="skeleton-profile-content">
@@ -74,7 +74,7 @@ export const ProfileSkeleton: React.FC = () => (
 /**
  * Skeleton for section card
  */
-export const CardSkeleton: React.FC<{ count?: number }> = ({ count = 1 }) => (
+export const CardSkeleton: React.FC = React.memo(({<{ count?: number }> = ({ count = 1 }) => (
   <>
     {Array.from({ length: count }).map((_, index) => (
       <div key={index} className="skeleton-card">
@@ -94,7 +94,7 @@ export const CardSkeleton: React.FC<{ count?: number }> = ({ count = 1 }) => (
 /**
  * Skeleton for skills section
  */
-export const SkillsSkeleton: React.FC = () => (
+export const SkillsSkeleton: React.FC = React.memo(() => (
   <div className="skeleton-skills">
     {Array.from({ length: 6 }).map((_, index) => (
       <div key={index} className="skeleton-skill-category">
@@ -112,7 +112,7 @@ export const SkillsSkeleton: React.FC = () => (
 /**
  * Skeleton for timeline (experience/education)
  */
-export const TimelineSkeleton: React.FC<{ count?: number }> = ({ count = 3 }) => (
+export const TimelineSkeleton: React.FC = React.memo(({<{ count?: number }> = ({ count = 3 }) => (
   <div className="skeleton-timeline">
     {Array.from({ length: count }).map((_, index) => (
       <div key={index} className="skeleton-timeline-item">
@@ -132,7 +132,7 @@ export const TimelineSkeleton: React.FC<{ count?: number }> = ({ count = 3 }) =>
 /**
  * Skeleton for project grid
  */
-export const ProjectsSkeleton: React.FC = () => (
+export const ProjectsSkeleton: React.FC = React.memo(() => (
   <div className="skeleton-projects">
     {Array.from({ length: 6 }).map((_, index) => (
       <div key={index} className="skeleton-project-card">
@@ -161,7 +161,7 @@ export interface EnhancedLoadingScreenProps {
   onComplete?: () => void;
 }
 
-export const EnhancedLoadingScreen: React.FC<EnhancedLoadingScreenProps> = ({
+export const EnhancedLoadingScreen: React.FC = React.memo(({<EnhancedLoadingScreenProps> = ({
   progress = 0,
   stage = 'Loading...'
 }) => {
@@ -199,7 +199,7 @@ export const EnhancedLoadingScreen: React.FC<EnhancedLoadingScreenProps> = ({
       </div>
     </div>
   );
-};
+});
 
 /**
  * Section loading placeholder
@@ -209,7 +209,7 @@ export interface SectionLoadingProps {
   count?: number;
 }
 
-export const SectionLoading: React.FC<SectionLoadingProps> = ({ type, count = 3 }) => {
+export const SectionLoading: React.FC = React.memo(({<SectionLoadingProps> = ({ type, count = 3 }) => {
   switch (type) {
     case 'profile':
       return <ProfileSkeleton />;

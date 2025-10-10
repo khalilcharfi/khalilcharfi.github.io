@@ -13,7 +13,7 @@ const convertMessage = (msg: ChatMessage): { role: 'user' | 'assistant'; content
     content: msg.content,
 });
 
-export const Chatbot: React.FC = () => {
+export const Chatbot: React.FC = React.memo(() => {
     const { t, i18n } = useTranslation();
     const [isOpen, setIsOpen] = useState(false);
     const { isAvailable: isChatbotAvailable, isChecking: isChatbotChecking } = useChatbotAvailability();
@@ -164,7 +164,7 @@ export const Chatbot: React.FC = () => {
             </div>
         </>
     );
-};
+});
 
 export default Chatbot;
 

@@ -9,7 +9,7 @@ interface ScrollToTopProps {
   isVisible: boolean;
 }
 
-export const ScrollToTop: React.FC<ScrollToTopProps> = ({ chatbotVisible, isVisible }) => {
+export const ScrollToTop: React.FC = React.memo(({<ScrollToTopProps> = ({ chatbotVisible, isVisible }) => {
     const { t } = useTranslation();
     const bottom = chatbotVisible ? POSITION.SCROLL_TOP_WITH_CHATBOT : POSITION.SCROLL_TOP_DEFAULT;
     

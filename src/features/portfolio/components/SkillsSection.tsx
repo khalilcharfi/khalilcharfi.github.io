@@ -4,7 +4,7 @@ import { useDynamicContent, useSectionTracking } from '@/features/visitor-person
 import { Section } from '@/shared/components';
 import type { SkillCategories } from '@/shared/types';
 
-export const SkillsSection: React.FC = () => {
+export const SkillsSection: React.FC = React.memo(() => {
     const { t } = useTranslation();
     const { personalizedContent } = useDynamicContent();
     const sectionTracking = useSectionTracking('skills');
@@ -42,4 +42,4 @@ export const SkillsSection: React.FC = () => {
             </div>
         </Section>
     );
-};
+});

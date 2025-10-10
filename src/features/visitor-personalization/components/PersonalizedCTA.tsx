@@ -9,7 +9,7 @@ interface PersonalizedCTAProps {
   className?: string;
 }
 
-export const PersonalizedCTA: React.FC<PersonalizedCTAProps> = ({
+export const PersonalizedCTA: React.FC = React.memo(({<PersonalizedCTAProps> = ({
   context = 'hero',
   className = ''
 }) => {

@@ -11,7 +11,7 @@ const flagEmojis: { [key: string]: string } = {
 
 const getBaseLang = (lang: string) => lang?.split('-')[0] || 'en';
 
-export const LanguageSwitcher: React.FC = () => {
+export const LanguageSwitcher: React.FC = React.memo(() => {
     const { i18n, t } = useTranslation();
     const [isOpen, setIsOpen] = useState(false);
     const switcherRef = useRef<HTMLDivElement>(null);
@@ -50,10 +50,10 @@ export const LanguageSwitcher: React.FC = () => {
             <button
                 className="language-switcher-toggle"
                 onClick={() => setIsOpen(!isOpen)}
-                aria-label={t('languageSwitcher.label')}
+                aria-label={String(t('languageSwitcher.label'))}
                 aria-haspopup="true"
                 aria-expanded={isOpen}
-                title={t('languageSwitcher.label')}
+                title={String(t('languageSwitcher.label'))}
             >
                 <span className="flag-emoji">{currentFlag}</span>
                 <span className="lang-code">{currentLangName}</span>
@@ -68,7 +68,7 @@ export const LanguageSwitcher: React.FC = () => {
                                 onClick={() => selectLanguage(lang)}
                             >
                                 <span className="flag-emoji">{flagEmojis[lang]}</span>
-                                <span>{t(`languageSwitcher.${lang}`)}</span>
+                                <span>{String(t(`languageSwitcher.${lang}`))}</span>
                             </button>
                         </li>
                     ))}
@@ -76,5 +76,5 @@ export const LanguageSwitcher: React.FC = () => {
             )}
         </div>
     );
-};
+});
 

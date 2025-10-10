@@ -17,7 +17,7 @@ export async function loadWASM(): Promise<any> {
   if (wasmInstance) return wasmInstance;
   if (wasmLoadPromise) return wasmLoadPromise;
   
-  wasmLoadPromise = import('../../wasm-modules/pkg/portfolio_engine.js')
+  wasmLoadPromise = import('../wasm/portfolio_engine.js')
     .then(async (module) => {
       try {
         // Initialize WASM module
@@ -31,7 +31,7 @@ export async function loadWASM(): Promise<any> {
         throw error;
       }
     })
-    .catch((error) => {
+    .catch(async (error) => {
       console.warn('⚠️ WASM loading failed, using JS fallback:', error);
       return null;
     });

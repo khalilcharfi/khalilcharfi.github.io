@@ -98,18 +98,47 @@ export const createResponsiveImage = (src: string, alt: string, sizes?: string):
 };
 
 /**
- * Preload critical images
+ * Preload critical images with priority hints
  */
 export const preloadCriticalImages = (imageSrcs: string[]) => {
   if (typeof document === 'undefined') return;
   
-  imageSrcs.forEach(src => {
+  imageSrcs.forEach((src, index) => {
     const link = document.createElement('link');
     link.rel = 'preload';
     link.as = 'image';
     link.href = src;
+    
+    // Add priority hints for critical images
+    if (index === 0) {
+      link.setAttribute('fetchpriority', 'high');
+    }
+    
+    // Add responsive image hints
+    if (src.includes('profile-photo')) {
+      link.setAttribute('imagesizes', '106px');
+      link.setAttribute('imagesrcset', `${src} 106w`);
+    }
+    
     document.head.appendChild(link);
   });
+};
+
+/**
+ * Create optimized profile photo with responsive loading
+ */
+export const createOptimizedProfilePhoto = (baseSrc: string): string => {
+  // For now, return the base source
+  // In a real implementation, you would generate different sizes
+  return baseSrc;
+};
+
+/**
+ * Generate responsive image srcset for profile photo
+ */
+export const generateProfilePhotoSrcset = (baseSrc: string): string => {
+  const sizes = [53, 106, 212, 424]; // 0.5x, 1x, 2x, 4x for 106px base
+  return sizes.map(size => `${baseSrc} ${size}w`).join(', ');
 };
 
 export default {

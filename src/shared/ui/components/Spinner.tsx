@@ -11,7 +11,7 @@ export interface SpinnerProps {
     className?: string;
 }
 
-export const Spinner: React.FC<SpinnerProps> = ({
+export const Spinner: React.FC = React.memo(({<SpinnerProps> = ({
     size = 'md',
     variant = 'border',
     color,
@@ -57,7 +57,7 @@ export interface LoadingOverlayProps {
     children?: React.ReactNode;
 }
 
-export const LoadingOverlay: React.FC<LoadingOverlayProps> = ({
+export const LoadingOverlay: React.FC = React.memo(({<LoadingOverlayProps> = ({
     isLoading,
     message = 'Loading...',
     transparent = false,

@@ -11,6 +11,7 @@ import {
 
 import { setupImageLazyLoading } from './imageOptimization';
 import { performanceLogger } from './logger';
+import { preloadWASM } from './wasmLoader';
 
 // Performance severity levels based on DCE configuration
 const getPerformanceSeverity = () => {
@@ -47,6 +48,9 @@ export const initializePerformanceOptimizations = async () => {
 
   // 3. Conditionally preload Three.js based on device capabilities
   conditionallyPreloadThreeJS();
+
+  // 4. Preload WASM modules for performance-critical operations
+  preloadWASM();
 
   // 4. Setup performance monitoring
   setupPerformanceMonitoring();

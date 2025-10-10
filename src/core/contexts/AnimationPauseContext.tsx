@@ -4,7 +4,7 @@ export const AnimationPauseContext = createContext<boolean>(false);
 
 export const useAnimationPause = () => useContext(AnimationPauseContext);
 
-export const AnimationPauseProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const AnimationPauseProvider: React.FC = React.memo(({<{ children: React.ReactNode }> = ({ children }) => {
   const [paused, setPaused] = useState(false);
 
   useEffect(() => {

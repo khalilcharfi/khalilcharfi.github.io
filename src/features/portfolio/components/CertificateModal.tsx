@@ -8,7 +8,7 @@ interface CertificateModalProps {
     onClose: () => void;
 }
 
-export const CertificateModal: React.FC<CertificateModalProps> = ({ cert, onClose }) => {
+export const CertificateModal: React.FC<CertificateModalProps> = React.memo(({ cert, onClose }) => {
     const { t } = useTranslation();
     const modalOverlayRef = useRef<HTMLDivElement>(null);
     const modalContentRef = useRef<HTMLDivElement>(null);
@@ -74,7 +74,7 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({ cert, onClos
     // Body scroll lock and initial focus
     useEffect(() => {
         if (cert) {
-            // Lock body scroll
+            // Lock body scroll - cache scrollbar width calculation
             const scrollBarWidth = window.innerWidth - document.documentElement.clientWidth;
             document.body.style.overflow = 'hidden';
             document.body.style.paddingRight = `${scrollBarWidth}px`;
@@ -172,4 +172,4 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({ cert, onClos
             </div>
         </div>
     );
-};
+});

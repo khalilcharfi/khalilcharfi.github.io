@@ -20,7 +20,7 @@ export interface MenuItemButtonProps extends BaseMenuItemProps, ButtonHTMLAttrib
 
 export type MenuItemProps = MenuItemLinkProps | MenuItemButtonProps;
 
-export const MenuItem: React.FC<MenuItemProps> = (props) => {
+export const MenuItem: React.FC = React.memo(({<MenuItemProps> = (props) => {
     const {
         icon,
         label,
@@ -78,7 +78,7 @@ export interface MenuProps {
     variant?: 'default' | 'compact' | 'bordered';
 }
 
-export const Menu: React.FC<MenuProps> = ({
+export const Menu: React.FC = React.memo(({<MenuProps> = ({
     children,
     className = '',
     orientation = 'vertical',
@@ -94,7 +94,7 @@ export const Menu: React.FC<MenuProps> = ({
     );
 };
 
-export const MenuDivider: React.FC<{ className?: string }> = ({ className = '' }) => {
+export const MenuDivider: React.FC = React.memo(({<{ className?: string }> = ({ className = '' }) => {
     return <div className={`menu-divider ${className}`} role="separator" />;
 };
 
@@ -104,7 +104,7 @@ export interface MenuGroupProps {
     className?: string;
 }
 
-export const MenuGroup: React.FC<MenuGroupProps> = ({ label, children, className = '' }) => {
+export const MenuGroup: React.FC = React.memo(({<MenuGroupProps> = ({ label, children, className = '' }) => {
     return (
         <div className={`menu-group ${className}`} role="group" aria-label={label}>
             {label && <div className="menu-group-label">{label}</div>}

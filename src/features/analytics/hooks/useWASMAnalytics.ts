@@ -6,7 +6,7 @@
  */
 
 import { useEffect, useRef, useCallback } from 'react';
-import { loadWASM, isWASMAvailable } from '@/shared/utils/wasmLoader';
+import {loadWASM} from '@/shared/utils/wasmLoader';
 
 interface WASMAnalyticsReturn {
   trackEvent: (type: string, data: string) => void;

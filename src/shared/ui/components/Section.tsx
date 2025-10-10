@@ -6,7 +6,7 @@ interface SectionProps {
     className?: string;
 }
 
-export const Section: React.FC<SectionProps> = ({ id, children, className }) => {
+export const Section: React.FC<SectionProps> = React.memo(({ id, children, className }) => {
     const sectionRef = useRef<HTMLElement>(null);
 
     useEffect(() => {
@@ -43,5 +43,5 @@ export const Section: React.FC<SectionProps> = ({ id, children, className }) => 
             </div>
         </section>
     );
-};
+});
 

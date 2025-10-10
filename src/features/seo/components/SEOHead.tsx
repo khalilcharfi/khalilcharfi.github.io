@@ -12,7 +12,7 @@
  * - Structured data (JSON-LD)
  */
 
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useTranslation } from '../../i18n';
 
 interface SEOHeadProps {
@@ -171,7 +171,7 @@ const generateStructuredData = () => {
 /**
  * SEOHead Component
  */
-export const SEOHead: React.FC<SEOHeadProps> = ({
+export const SEOHead: React.FC<SEOHeadProps> = React.memo(({
   currentSection = 'home',
   customTitle,
   customDescription,
@@ -292,6 +292,6 @@ export const SEOHead: React.FC<SEOHeadProps> = ({
   }, [currentSection, customTitle, customDescription, customImage, t, i18n.language, currentLang]);
   
   return null; // This component only manages head elements
-};
+});
 
 export default SEOHead;

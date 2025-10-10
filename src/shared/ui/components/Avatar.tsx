@@ -13,7 +13,7 @@ export interface AvatarProps {
     className?: string;
 }
 
-export const Avatar: React.FC<AvatarProps> = ({
+export const Avatar: React.FC = React.memo(({<AvatarProps> = ({
     src,
     alt,
     size = 'md',
@@ -48,7 +48,7 @@ export const Avatar: React.FC<AvatarProps> = ({
                     src={src}
                     alt={alt}
                     className="avatar-image"
-                    onError={() => setImageError(true)}
+                    onError={() = loading="lazy"> setImageError(true)}
                 />
             );
         }
@@ -81,7 +81,7 @@ export interface AvatarGroupProps {
     className?: string;
 }
 
-export const AvatarGroup: React.FC<AvatarGroupProps> = ({
+export const AvatarGroup: React.FC = React.memo(({<AvatarGroupProps> = ({
     max = 5,
     size = 'md',
     shape = 'circle',

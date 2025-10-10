@@ -83,7 +83,7 @@ class PerformanceMonitor {
     return { ...this.settings };
   }
 
-  subscribe(callback: (settings: AdaptiveSettings) => void) {
+  subscribe(_callback: (settings: AdaptiveSettings) => void) {
     // Simplified - in production, this would monitor FPS and adjust
   }
 }
@@ -92,7 +92,7 @@ const performanceMonitor = new PerformanceMonitor();
 
 function FractalParticles({ count = 5000, theme }: { count?: number; theme: string }) {
   const ref = useRef<Points>(null!);
-  const { viewport, mouse, camera } = useThree();
+  const { camera } = useThree();
   const frameCount = useRef(0);
 
   const [adaptiveSettings, setAdaptiveSettings] = useState<AdaptiveSettings>(() =>
@@ -107,16 +107,12 @@ function FractalParticles({ count = 5000, theme }: { count?: number; theme: stri
   const currentMouse = useRef(new Vector3());
   const mouseVelocity = useRef(new Vector3());
   const lastMousePosition = useRef(new Vector3());
-  const mouseHistory = useRef<Vector3[]>([]);
   const mouseInfluenceRadius = useRef(0);
   const isMouseMoving = useRef(false);
   const lastMouseMoveTime = useRef(0);
 
   const mouseTrail = useRef<Vector3[]>([]);
   const maxTrailLength = 20;
-  const attractionStrength = useRef(0);
-  const repulsionStrength = useRef(0);
-  const colorInfluence = useRef(0);
 
   useEffect(() => {
     const handleMouseMove = (event: MouseEvent) => {
@@ -215,7 +211,7 @@ function FractalParticles({ count = 5000, theme }: { count?: number; theme: stri
     return theme === 'light' ? lightConfig : darkConfig;
   }, [theme, adaptiveSettings]);
 
-  const { positions, velocities, colors, originalPositions, rand, sizes } = useMemo(() => {
+  const { positions, colors, originalPositions, rand, sizes } = useMemo(() => {
     const orig = new Float32Array(optimizedCount * 3);
     const vel = new Float32Array(optimizedCount * 3);
     const col = new Float32Array(optimizedCount * 3);
@@ -293,12 +289,8 @@ function FractalParticles({ count = 5000, theme }: { count?: number; theme: stri
   }, [optimizedCount, themeConfig]);
 
   const tempColor = useMemo(() => new Color(), []);
-  const tempVector = useMemo(() => new Vector3(), []);
   const tempDisplacement = useMemo(() => new Vector3(), []);
   const tempParticlePos = useMemo(() => new Vector3(), []);
-  const tempDirection = useMemo(() => new Vector3(), []);
-  const tempTrailDirection = useMemo(() => new Vector3(), []);
-  const tempExplosionDirection = useMemo(() => new Vector3(), []);
 
   const paused = useAnimationPause();
 
@@ -353,7 +345,6 @@ function FractalParticles({ count = 5000, theme }: { count?: number; theme: stri
       const effectiveRadius = mouseInfluenceRadius.current;
 
       let mouseInfluence = 0;
-      let isAttracting = true;
 
       if (isMouseMoving.current && distanceToMouse < effectiveRadius) {
         mouseInfluence = 1 - distanceToMouse / effectiveRadius;
@@ -444,7 +435,7 @@ interface ThreeBackgroundProps {
   theme: string;
 }
 
-export const ThreeBackground: React.FC<ThreeBackgroundProps> = ({ theme }) => {
+export const ThreeBackground: React.FC<ThreeBackgroundProps> = React.memo(({ theme }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [hasError, setHasError] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
@@ -608,7 +599,7 @@ export const ThreeBackground: React.FC<ThreeBackgroundProps> = ({ theme }) => {
       </WebGLErrorBoundary>
     </div>
   );
-};
+});
 
 export default ThreeBackground;
 

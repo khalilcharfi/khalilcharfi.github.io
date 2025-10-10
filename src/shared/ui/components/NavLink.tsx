@@ -8,7 +8,7 @@ interface NavLinkProps {
     onClick: () => void;
 }
 
-export const NavLink: React.FC<NavLinkProps> = ({ href, label, isActive, onClick }) => (
+export const NavLink: React.FC = React.memo(({<NavLinkProps> = ({ href, label, isActive, onClick }) => (
     <li>
         <a
             href={`#${href}`}

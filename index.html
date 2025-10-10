@@ -117,9 +117,18 @@
     <link rel="dns-prefetch" href="https://fonts.googleapis.com">
     <link rel="dns-prefetch" href="https://fonts.gstatic.com">
     <link rel="dns-prefetch" href="https://esm.sh">
+    <link rel="dns-prefetch" href="https://www.google-analytics.com">
+    <link rel="dns-prefetch" href="https://www.googletagmanager.com">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://esm.sh" crossorigin>
+    <link rel="preconnect" href="https://www.google-analytics.com">
+    <link rel="preconnect" href="https://www.googletagmanager.com">
+    
+    <!-- Preload critical resources -->
+    <link rel="modulepreload" href="/src/shared/wasm/portfolio_engine.js">
+    <link rel="preload" href="/src/shared/wasm/portfolio_engine_bg.wasm" as="fetch" crossorigin>
+    <link rel="preload" href="/asset/profile/profile-photo.jpg" as="image" type="image/jpeg">
     <!-- Critical CSS - inline for faster initial render -->
     <style>
         /* Critical above-the-fold styles */

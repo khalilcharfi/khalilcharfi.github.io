@@ -12,7 +12,7 @@ export interface TooltipProps {
     className?: string;
 }
 
-export const Tooltip: React.FC<TooltipProps> = ({
+export const Tooltip: React.FC = React.memo(({<TooltipProps> = ({
     content,
     placement = 'top',
     delay = 200,

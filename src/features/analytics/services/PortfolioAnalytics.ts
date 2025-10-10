@@ -1,5 +1,4 @@
 // Portfolio Analytics Service - Lightweight tracking for portfolio showcase
-import { useConsent } from '@/core/contexts';
 import { projectService, skillService } from '@/features/portfolio/domain';
 import type { Project } from '@/features/portfolio/content/projects';
 
@@ -331,12 +330,26 @@ export class PortfolioAnalytics {
       this.metrics.timeOnSite = Date.now() - this.sessionStart;
     }, 1000);
 
-    // Track scroll depth
+    // Track scroll depth with throttling
     let maxScrollDepth = 0;
+    let lastScrollTime = 0;
+    
     const trackScroll = () => {
-      const scrollDepth = Math.round((window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100);
-      maxScrollDepth = Math.max(maxScrollDepth, scrollDepth);
-      this.trackScrollDepth(maxScrollDepth);
+      const now = performance.now();
+      // Throttle scroll tracking to avoid excessive calculations
+      if (now - lastScrollTime < 100) return;
+      lastScrollTime = now;
+      
+      // Cache scroll values to avoid multiple DOM queries
+      const scrollY = window.scrollY;
+      const bodyHeight = document.body.scrollHeight;
+      const windowHeight = window.innerHeight;
+      
+      if (bodyHeight > windowHeight) {
+        const scrollDepth = Math.round((scrollY / (bodyHeight - windowHeight)) * 100);
+        maxScrollDepth = Math.max(maxScrollDepth, scrollDepth);
+        this.trackScrollDepth(maxScrollDepth);
+      }
     };
 
     window.addEventListener('scroll', trackScroll, { passive: true });

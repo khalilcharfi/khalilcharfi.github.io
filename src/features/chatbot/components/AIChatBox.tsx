@@ -5,7 +5,7 @@ import { useChatMessages } from '../hooks/useChatMessages';
 import { ChatMessage } from './ChatMessage';
 import { CHATBOX_STYLES, CHAT_COLORS } from '../constants';
 
-export const AIChatBox: React.FC<AIChatBoxProps> = ({ 
+export const AIChatBox: React.FC<AIChatBoxProps> = React.memo(({ 
   isOpen, 
   onClose, 
   theme, 
@@ -166,7 +166,7 @@ export const AIChatBox: React.FC<AIChatBoxProps> = ({
       </div>
     </div>
   );
-};
+});
 
 export default AIChatBox;
 

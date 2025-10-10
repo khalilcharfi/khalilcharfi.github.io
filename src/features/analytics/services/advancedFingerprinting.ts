@@ -538,15 +538,23 @@ export class AdvancedFingerprintCollector {
   }
   
   private detectAdBlocker(): boolean {
-    // Simple ad blocker detection
+    // Simple ad blocker detection - optimized to avoid forced reflow
     const testElement = document.createElement('div');
     testElement.innerHTML = '&nbsp;';
     testElement.className = 'adsbox';
     testElement.style.position = 'absolute';
     testElement.style.left = '-999px';
+    testElement.style.visibility = 'hidden';
+    testElement.style.height = '1px';
+    testElement.style.width = '1px';
+    testElement.style.top = '-999px';
+    
     document.body.appendChild(testElement);
     
-    const isBlocked = testElement.offsetHeight === 0;
+    // Use getComputedStyle instead of offsetHeight to avoid forced reflow
+    const computedStyle = window.getComputedStyle(testElement);
+    const isBlocked = computedStyle.display === 'none' || computedStyle.visibility === 'hidden';
+    
     document.body.removeChild(testElement);
     
     return isBlocked;
@@ -580,16 +588,39 @@ export class AdvancedFingerprintCollector {
     // Wait for all fingerprinting to complete
     await new Promise(resolve => setTimeout(resolve, 6000));
     
-    // Get WASM-accelerated fingerprints as enhancement
-    const wasmFingerprint = await this.getWASMFingerprints();
+    // Defer WASM fingerprinting to idle time
+    this.deferWASMFingerprinting();
     
-    // Merge JS and WASM results, with WASM taking precedence where available
-    const mergedFingerprint = {
-      ...this.fingerprint,
-      ...wasmFingerprint // WASM overrides JS where available
-    };
-    
-    return mergedFingerprint as AdvancedFingerprint;
+    // Return JS-based fingerprint immediately
+    return this.fingerprint as AdvancedFingerprint;
+  }
+
+  /**
+   * Defer WASM fingerprinting to idle time
+   */
+  private deferWASMFingerprinting(): void {
+    if ('requestIdleCallback' in window) {
+      requestIdleCallback(async () => {
+        try {
+          const wasmFingerprint = await this.getWASMFingerprints();
+          // Update fingerprint with WASM data
+          Object.assign(this.fingerprint, wasmFingerprint);
+        } catch (error) {
+          console.warn('Deferred WASM fingerprinting failed:', error);
+        }
+      }, { timeout: 10000 });
+    } else {
+      // Fallback for browsers without requestIdleCallback
+      setTimeout(async () => {
+        try {
+          const wasmFingerprint = await this.getWASMFingerprints();
+          // Update fingerprint with WASM data
+          Object.assign(this.fingerprint, wasmFingerprint);
+        } catch (error) {
+          console.warn('Deferred WASM fingerprinting failed:', error);
+        }
+      }, 5000);
+    }
   }
   
   public getFingerprintSync(): Partial<AdvancedFingerprint> {

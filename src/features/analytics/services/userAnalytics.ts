@@ -3,6 +3,7 @@ import React from 'react';
 import { advancedFingerprinter, type AdvancedFingerprint } from './advancedFingerprinting';
 import { useConsent } from '@/core/contexts';
 import { ENABLED_PERSONAS } from '../../../shared/config';
+import { loadWASM } from '@/shared/utils/wasmLoader';
 
 export interface UserProfile {
   type: 'job_seeker' | 'head_hunter' | 'peer_developer' | 'client' | 'unknown';
@@ -516,13 +517,29 @@ export class UserAnalytics {
 
   private trackScrollDepth(): void {
     let maxScroll = 0;
-    window.addEventListener('scroll', () => {
-      const scrolled = (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100;
-      if (scrolled > maxScroll) {
-        maxScroll = scrolled;
-        this.profile.sessionData.scrollDepth = Math.round(maxScroll);
+    let lastScrollTime = 0;
+    
+    const trackScroll = () => {
+      const now = performance.now();
+      // Throttle scroll tracking to avoid excessive calculations
+      if (now - lastScrollTime < 100) return;
+      lastScrollTime = now;
+      
+      // Cache scroll values to avoid multiple DOM queries
+      const scrollY = window.scrollY;
+      const bodyHeight = document.body.scrollHeight;
+      const windowHeight = window.innerHeight;
+      
+      if (bodyHeight > windowHeight) {
+        const scrolled = (scrollY / (bodyHeight - windowHeight)) * 100;
+        if (scrolled > maxScroll) {
+          maxScroll = scrolled;
+          this.profile.sessionData.scrollDepth = Math.round(maxScroll);
+        }
       }
-    });
+    };
+    
+    window.addEventListener('scroll', trackScroll, { passive: true });
   }
 
   private trackSectionViewing(): void {
@@ -1002,7 +1019,8 @@ export class EnhancedUserAnalytics {
     try {
       this.initializeProfile();
       this.setupEventListeners();
-      this.initializeWASM(); // Initialize WASM analytics
+      // Defer WASM initialization to idle time
+      this.deferWASMInitialization();
     } catch (error) {
       console.warn('EnhancedUserAnalytics initialization failed, using fallback mode:', error);
       this.enableFallbackMode();
@@ -1013,6 +1031,40 @@ export class EnhancedUserAnalytics {
     this.fallbackMode = true;
     this.profile = this.getFallbackProfile();
     console.info('Enhanced analytics running in fallback mode');
+  }
+
+  /**
+   * Defer WASM initialization to idle time
+   */
+  private deferWASMInitialization(): void {
+    if ('requestIdleCallback' in window) {
+      requestIdleCallback(() => {
+        this.initializeWASM();
+      }, { timeout: 5000 });
+    } else {
+      // Fallback for browsers without requestIdleCallback
+      setTimeout(() => {
+        this.initializeWASM();
+      }, 2000);
+    }
+  }
+
+  /**
+   * Initialize WASM analytics engine as enhancement
+   */
+  private async initializeWASM(): Promise<void> {
+    try {
+      const wasm = await loadWASM();
+      if (wasm) {
+        this.wasmAnalytics = new wasm.AnalyticsEngine();
+        this.isWASMInitialized = true;
+        console.log('✅ WASM Analytics Engine initialized for EnhancedUserAnalytics');
+      } else {
+        console.warn('⚠️ WASM not available for EnhancedUserAnalytics, using JS fallback');
+      }
+    } catch (error) {
+      console.warn('⚠️ WASM Analytics initialization failed for EnhancedUserAnalytics:', error);
+    }
   }
 
   private handleError(context: string, error: any): void {
@@ -1107,6 +1159,19 @@ export class EnhancedUserAnalytics {
       this.profile.sessionData.interactions = this.interactions;
       this.saveProfile();
     }
+
+    // Enhance with WASM analytics if available
+    if (this.isWASMInitialized && this.wasmAnalytics) {
+      try {
+        this.wasmAnalytics.track_event(type, JSON.stringify({
+          timestamp: Date.now(),
+          count: this.interactions,
+          sessionId: this.profile?.id || 'unknown'
+        }));
+      } catch (error) {
+        console.warn('WASM track_event failed, using JS fallback:', error);
+      }
+    }
   }
 
   private trackSectionView(sectionId: string): void {
@@ -1147,6 +1212,37 @@ export class EnhancedUserAnalytics {
     if (this.profile) {
       this.profile.sessionData.timeSpent = Date.now() - this.sessionStartTime;
       localStorage.setItem('userProfile', JSON.stringify(this.profile));
+    }
+  }
+
+  /**
+   * Get engagement metrics with WASM enhancement
+   * @returns Engagement score (0-100)
+   */
+  public getEngagementMetrics(): number {
+    try {
+      // Calculate JS-based engagement score
+      const timeSpent = Date.now() - this.sessionStartTime;
+      const timeScore = Math.min(timeSpent / (1000 * 60), 10) / 10; // Max 10 minutes
+      const interactionScore = Math.min(this.interactions / 50, 1); // Max 50 interactions
+      const sectionScore = Math.min(this.sectionsViewed.size / 10, 1); // Max 10 sections
+      const jsScore = (timeScore * 0.4 + interactionScore * 0.4 + sectionScore * 0.2) * 100;
+
+      // Enhance with WASM analytics if available
+      if (this.isWASMInitialized && this.wasmAnalytics) {
+        try {
+          const wasmScore = this.wasmAnalytics.get_engagement_score();
+          // Use WASM score if available, otherwise use JS score
+          return wasmScore > 0 ? wasmScore : jsScore;
+        } catch (error) {
+          console.warn('WASM get_engagement_score failed, using JS fallback:', error);
+        }
+      }
+
+      return jsScore;
+    } catch (error) {
+      this.handleError('getEngagementMetrics', error);
+      return 0;
     }
   }
 

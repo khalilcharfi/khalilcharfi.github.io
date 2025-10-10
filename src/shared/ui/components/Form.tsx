@@ -5,7 +5,7 @@ export interface FormProps extends FormHTMLAttributes<HTMLFormElement> {
     onSubmit?: (e: React.FormEvent<HTMLFormElement>) => void;
 }
 
-export const Form: React.FC<FormProps> = ({ children, onSubmit, className = '', ...props }) => {
+export const Form: React.FC = React.memo(({<FormProps> = ({ children, onSubmit, className = '', ...props }) => {
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         if (onSubmit) {
             e.preventDefault();
@@ -25,7 +25,7 @@ export interface FormGroupProps {
     className?: string;
 }
 
-export const FormGroup: React.FC<FormGroupProps> = ({ children, className = '' }) => {
+export const FormGroup: React.FC = React.memo(({<FormGroupProps> = ({ children, className = '' }) => {
     return <div className={`form-group ${className}`}>{children}</div>;
 };
 
@@ -36,7 +36,7 @@ export interface FormRowProps {
     gap?: 'sm' | 'md' | 'lg';
 }
 
-export const FormRow: React.FC<FormRowProps> = ({
+export const FormRow: React.FC = React.memo(({<FormRowProps> = ({
     children,
     className = '',
     columns,
@@ -60,7 +60,7 @@ export interface FormSectionProps {
     className?: string;
 }
 
-export const FormSection: React.FC<FormSectionProps> = ({
+export const FormSection: React.FC = React.memo(({<FormSectionProps> = ({
     title,
     description,
     children,
@@ -85,7 +85,7 @@ export interface FormActionsProps {
     align?: 'left' | 'center' | 'right' | 'space-between';
 }
 
-export const FormActions: React.FC<FormActionsProps> = ({
+export const FormActions: React.FC = React.memo(({<FormActionsProps> = ({
     children,
     className = '',
     align = 'right'

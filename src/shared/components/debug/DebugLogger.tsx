@@ -8,7 +8,7 @@ interface LogEntry {
   data?: any[];
 }
 
-export const DebugLogger: React.FC = () => {
+export const DebugLogger: React.FC = React.memo(() => {
   const [logs, setLogs] = useState<LogEntry[]>([]);
   const [isOpen, setIsOpen] = useState(true);
   const [isMinimized] = useState(false);
@@ -173,5 +173,5 @@ export const DebugLogger: React.FC = () => {
       )}
     </div>
   );
-};
+});
 

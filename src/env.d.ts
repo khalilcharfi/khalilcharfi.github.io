@@ -60,6 +60,45 @@ declare module '*.wasm' {
   export default content;
 }
 
+// Declare WASM module types
+declare module '@/wasm' {
+  export default function init(input?: string | URL | Request | Response): Promise<any>;
+  export class FingerprintEngine {
+    constructor();
+    free(): void;
+    generate_canvas_fingerprint(): string;
+    generate_webgl_fingerprint(): string;
+    generate_performance_fingerprint(): string;
+    generate_complete_fingerprint(): string;
+  }
+  export class AnalyticsEngine {
+    constructor();
+    free(): void;
+    track_event(event_type: string, data: string): void;
+    update_scroll_depth(depth: number): void;
+    get_engagement_score(): number;
+    classify_visitor_behavior(): string;
+    get_analytics_summary(): string;
+  }
+  export class PerformanceMonitor {
+    constructor();
+    free(): void;
+    update(current_time: number): void;
+    get_average_fps(): number;
+    get_frame_time_variance(): number;
+    should_reduce_quality(): boolean;
+  }
+  export class ParticleSystem {
+    constructor(count: number);
+    free(): void;
+    update(delta_time: number, theme_is_dark: boolean): void;
+    set_mouse_position(x: number, y: number): void;
+    get_positions(): Float32Array;
+    get_colors(): Float32Array;
+    get_sizes(): Float32Array;
+  }
+}
+
 // Declare module for worker files
 declare module '*?worker' {
   const workerConstructor: {

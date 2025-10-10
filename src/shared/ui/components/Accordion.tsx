@@ -17,7 +17,7 @@ export interface AccordionProps {
     onChange?: (openIds: string[]) => void;
 }
 
-export const Accordion: React.FC<AccordionProps> = ({
+export const Accordion: React.FC = React.memo(({<AccordionProps> = ({
     items,
     allowMultiple = false,
     defaultOpen = [],

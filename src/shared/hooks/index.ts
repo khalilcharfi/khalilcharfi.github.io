@@ -5,4 +5,5 @@ export { useGeminiConnectionCheck, useChatbotAvailability } from '../../features
 
 // Local hooks
 export { usePerformanceMonitor } from './usePerformanceMonitor';
+export { useWASMPerformanceMonitor } from './useWASMPerformanceMonitor';
 export * from './useAccessibility';

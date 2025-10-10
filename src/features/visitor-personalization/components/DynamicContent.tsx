@@ -148,7 +148,7 @@ interface DynamicContentProviderProps {
   children: ReactNode;
 }
 
-export const DynamicContentProvider: React.FC<DynamicContentProviderProps> = ({ children }) => {
+export const DynamicContentProvider: React.FC<DynamicContentProviderProps> = React.memo(({ children }) => {
   const { i18n, t, ready } = useTranslation();
   const { consent } = useConsent();
   const [userProfile] = useState<SimpleUserProfile>(defaultProfile);
@@ -234,7 +234,7 @@ export const DynamicContentProvider: React.FC<DynamicContentProviderProps> = ({ 
       {children}
     </DynamicContentContext.Provider>
   );
-};
+});
 
 export const useDynamicContent = () => {
   return useContext(DynamicContentContext);
@@ -298,12 +298,12 @@ export const useSectionTracking = (section: string): {
 };
 
 // Dynamic Section component
-export const DynamicSection: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const DynamicSection: React.FC<{ children: React.ReactNode }> = React.memo(({ children }) => {
   return <div>{children}</div>;
-};
+});
 
 // Dynamic CTA component
-export const DynamicCTA: React.FC<{ className?: string }> = ({ className }) => {
+export const DynamicCTA: React.FC<{ className?: string }> = React.memo(({ className }) => {
   return (
     <a href="#projects" className={className} onClick={(e) => { 
       e.preventDefault(); 
@@ -315,7 +315,7 @@ export const DynamicCTA: React.FC<{ className?: string }> = ({ className }) => {
       View My Work
     </a>
   );
-};
+});
 
 // Helper to detect debug mode
 const isDebugMode = (): boolean => {
@@ -333,8 +333,7 @@ const isDebugMode = (): boolean => {
 };
 
 // Profile Insights component
-export const ProfileInsights: React.FC<{ chatbotOpen?: boolean; scrollToTopVisible?: boolean; }>
-  = ({ chatbotOpen = false, scrollToTopVisible = false }) => {
+export const ProfileInsights: React.FC<{ chatbotOpen?: boolean; scrollToTopVisible?: boolean; }> = React.memo(({ chatbotOpen = false, scrollToTopVisible = false }) => {
   const [isVisible, setIsVisible] = useState(false);
   const debug = isDebugMode();
   if (!PERSONAS_FEATURE_ENABLED || !DYNAMIC_CONTENT_ENABLED) return null;
@@ -364,4 +363,4 @@ export const ProfileInsights: React.FC<{ chatbotOpen?: boolean; scrollToTopVisib
       </div>
     </>
   );
-};
+});

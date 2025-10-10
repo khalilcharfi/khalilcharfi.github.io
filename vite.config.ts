@@ -51,6 +51,7 @@ export default defineConfig(({ mode }) => {
         '@': path.resolve(__dirname, './src'),
         '@/features': path.resolve(__dirname, './src/features'),
         '@/shared': path.resolve(__dirname, './src/shared'),
+        '@/wasm': path.resolve(__dirname, './wasm-modules/pkg'), // WASM module resolution
       },
       dedupe: ['react', 'react-dom', 'react/jsx-runtime', 'scheduler', 'use-sync-external-store']
     },
@@ -90,21 +91,31 @@ export default defineConfig(({ mode }) => {
       cors: true
     },
     publicDir: 'public',
+    assetsInclude: ['**/*.wasm'],
     
     build: {
       copyPublicDir: true,
       target: 'es2020',
-      assetsInlineLimit: 4096,
-      chunkSizeWarningLimit: 500, // Reduced to catch large chunks earlier
+      assetsInlineLimit: 2048, // Reduced for better caching
+      chunkSizeWarningLimit: 400, // Further reduced to catch large chunks
       cssCodeSplit: true,
       cssMinify: shouldMinify && isProd,
       minify: shouldMinify ? 'terser' : false,
       sourcemap: isDev || !shouldMinify,
       reportCompressedSize: true,
       modulePreload: { polyfill: false },
-      
+      // Performance optimizations
       rollupOptions: {
+        external: isProd ? [
+          /.*PerformanceDrawer.*/,
+          /.*TranslationTest.*/,
+          /.*DebugComponents.*/,
+          /@axe-core/,
+          /puppeteer/,
+          /lighthouse/
+        ] : [],
         output: {
+          // Optimize chunk loading
           manualChunks: (id) => {
             if (!id.includes('node_modules')) {
               // Portfolio-specific chunking for source files
@@ -112,6 +123,20 @@ export default defineConfig(({ mode }) => {
               if (id.includes('src/features/portfolio/domain/')) return 'portfolio-domain';
               if (id.includes('src/core/performance/')) return 'performance-core';
               if (id.includes('src/shared/wasm/')) return 'wasm-modules';
+              
+              // Split portfolio sections for better loading
+              if (id.includes('src/features/portfolio/sections/HomeSection')) return 'portfolio-home';
+              if (id.includes('src/features/portfolio/sections/AboutSection')) return 'portfolio-about';
+              if (id.includes('src/features/portfolio/sections/SkillsSection')) return 'portfolio-skills';
+              if (id.includes('src/features/portfolio/sections/ExperienceSection')) return 'portfolio-experience';
+              if (id.includes('src/features/portfolio/sections/ProjectsSection')) return 'portfolio-projects';
+              if (id.includes('src/features/portfolio/sections/ContactSection')) return 'portfolio-contact';
+              
+              // Split analytics and features
+              if (id.includes('src/features/analytics/')) return 'analytics-features';
+              if (id.includes('src/features/chatbot/')) return 'chatbot-features';
+              if (id.includes('src/features/i18n/')) return 'i18n-features';
+              
               return undefined;
             }
             
@@ -156,6 +181,8 @@ export default defineConfig(({ mode }) => {
               if (id.includes('three/src/materials/') || id.includes('three/src/shaders/')) return 'three-materials';
               if (id.includes('three/src/renderers/') || id.includes('three/src/scenes/')) return 'three-render';
               if (id.includes('three/examples/')) return 'three-addons';
+              if (id.includes('simplex-noise')) return 'three-noise';
+              if (id.includes('postprocessing')) return 'three-postprocessing';
               return 'three-vendor';
             }
             
@@ -200,15 +227,18 @@ export default defineConfig(({ mode }) => {
       
       terserOptions: shouldMinify ? {
         compress: {
-          passes: 3, // Increased for better compression
+          passes: 5, // Increased for better compression
           drop_console: isProd,
           drop_debugger: isProd,
-        //  pure_funcs: isProd ? ['console.log', 'console.debug', 'console.info'] : [],
+          pure_funcs: isProd ? ['console.log', 'console.debug', 'console.info', 'console.warn'] : [],
           unsafe_arrows: true,
           unsafe_methods: true,
           unsafe_proto: true,
           unsafe_regexp: true,
           unsafe_undefined: true,
+          unsafe_comps: true,
+          unsafe_math: true,
+          unsafe_Function: true,
           // Additional compression options for large files
           sequences: true,
           properties: true,
@@ -221,6 +251,11 @@ export default defineConfig(({ mode }) => {
           hoist_vars: true,
           if_return: true,
           join_vars: true,
+          collapse_vars: true,
+          reduce_vars: true,
+          inline: 2,
+          keep_fargs: false,
+          keep_fnames: false,
           ...(enableDCE && {
             dead_code: true,
             unused: true,

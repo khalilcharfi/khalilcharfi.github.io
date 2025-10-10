@@ -6,13 +6,13 @@ interface CertificatesSectionProps {
     onCertClick: (cert: CertificateItem) => void;
 }
 
-export const CertificatesSection: React.FC<CertificatesSectionProps> = ({ onCertClick }) => {
+export const CertificatesSection: React.FC<CertificatesSectionProps> = React.memo(({ onCertClick }) => {
     const { t } = useTranslation();
     const items = t('certificates.items', { returnObjects: true }) as CertificateItem[];
 
     return (
         <Section id="certificates">
-            <h2 className="section-title animate-in">{t('certificates.title')}</h2>
+            <h2 className="section-title animate-in">{String(t('certificates.title'))}</h2>
             <div className="card-grid">
                 {Array.isArray(items) && items.map((cert, index) => (
                     <div
@@ -51,4 +51,4 @@ export const CertificatesSection: React.FC<CertificatesSectionProps> = ({ onCert
             </div>
         </Section>
     );
-};
+});

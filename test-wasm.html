@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WASM Integration Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 10px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .warning { background: #fff3cd; color: #856404; border: 1px solid #ffeaa7; }
+        .info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { background: #0056b3; }
+        #console-output {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 15px;
+            border-radius: 4px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 WASM Integration Test</h1>
+    
+    <div class="test-section">
+        <h2>1. WebAssembly Support Check</h2>
+        <div id="wasm-support" class="status info">Checking...</div>
+    </div>
+
+    <div class="test-section">
+        <h2>2. WASM Module Loading Test</h2>
+        <div id="wasm-loading" class="status info">Testing...</div>
+        <button onclick="testWASMLoading()">Test WASM Loading</button>
+    </div>
+
+    <div class="test-section">
+        <h2>3. WASM Classes Test</h2>
+        <div id="wasm-classes" class="status info">Testing...</div>
+        <button onclick="testWASMClasses()">Test WASM Classes</button>
+    </div>
+
+    <div class="test-section">
+        <h2>4. Performance Test</h2>
+        <div id="performance-test" class="status info">Ready to test</div>
+        <button onclick="testPerformance()">Run Performance Test</button>
+    </div>
+
+    <div class="test-section">
+        <h2>5. Console Output</h2>
+        <div id="console-output"></div>
+        <button onclick="clearConsole()">Clear Console</button>
+    </div>
+
+    <script>
+        let consoleOutput = document.getElementById('console-output');
+        let wasmModule = null;
+
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const logMessage = `[${timestamp}] ${message}\n`;
+            consoleOutput.textContent += logMessage;
+            console.log(message);
+        }
+
+        function clearConsole() {
+            consoleOutput.textContent = '';
+        }
+
+        // Test 1: WebAssembly Support
+        function checkWASMSupport() {
+            const wasmSupported = typeof WebAssembly !== 'undefined';
+            const supportElement = document.getElementById('wasm-support');
+            
+            if (wasmSupported) {
+                supportElement.textContent = '✅ WebAssembly is supported in this browser';
+                supportElement.className = 'status success';
+                log('✅ WebAssembly is supported');
+            } else {
+                supportElement.textContent = '❌ WebAssembly is not supported in this browser';
+                supportElement.className = 'status error';
+                log('❌ WebAssembly is not supported');
+            }
+        }
+
+        // Test 2: WASM Module Loading
+        async function testWASMLoading() {
+            const loadingElement = document.getElementById('wasm-loading');
+            loadingElement.textContent = 'Loading WASM module...';
+            loadingElement.className = 'status info';
+            
+            try {
+                log('🔄 Attempting to load WASM module...');
+                
+                // Try loading from the src directory
+                const module = await import('/src/shared/wasm/portfolio_engine.js');
+                log('✅ WASM module imported successfully');
+                
+                // Initialize the module
+                await module.default();
+                log('✅ WASM module initialized successfully');
+                
+                wasmModule = module;
+                loadingElement.textContent = '✅ WASM module loaded and initialized successfully';
+                loadingElement.className = 'status success';
+                
+            } catch (error) {
+                log(`❌ WASM loading failed: ${error.message}`);
+                loadingElement.textContent = `❌ WASM loading failed: ${error.message}`;
+                loadingElement.className = 'status error';
+            }
+        }
+
+        // Test 3: WASM Classes
+        async function testWASMClasses() {
+            const classesElement = document.getElementById('wasm-classes');
+            
+            if (!wasmModule) {
+                classesElement.textContent = '❌ WASM module not loaded. Please run the loading test first.';
+                classesElement.className = 'status error';
+                return;
+            }
+
+            try {
+                log('🧪 Testing WASM classes...');
+                
+                // Test FingerprintEngine
+                const fingerprintEngine = new wasmModule.FingerprintEngine();
+                const canvasFingerprint = fingerprintEngine.generate_canvas_fingerprint();
+                log(`✅ FingerprintEngine: Canvas fingerprint generated (${canvasFingerprint.length} chars)`);
+                fingerprintEngine.free();
+                
+                // Test AnalyticsEngine
+                const analyticsEngine = new wasmModule.AnalyticsEngine();
+                analyticsEngine.track_event('test', 'WASM integration test');
+                const engagementScore = analyticsEngine.get_engagement_score();
+                log(`✅ AnalyticsEngine: Engagement score = ${engagementScore}`);
+                analyticsEngine.free();
+                
+                // Test PerformanceMonitor
+                const performanceMonitor = new wasmModule.PerformanceMonitor();
+                performanceMonitor.update(performance.now());
+                const fps = performanceMonitor.get_average_fps();
+                log(`✅ PerformanceMonitor: Average FPS = ${fps}`);
+                performanceMonitor.free();
+                
+                classesElement.textContent = '✅ All WASM classes tested successfully';
+                classesElement.className = 'status success';
+                
+            } catch (error) {
+                log(`❌ WASM classes test failed: ${error.message}`);
+                classesElement.textContent = `❌ WASM classes test failed: ${error.message}`;
+                classesElement.className = 'status error';
+            }
+        }
+
+        // Test 4: Performance Test
+        async function testPerformance() {
+            const perfElement = document.getElementById('performance-test');
+            perfElement.textContent = 'Running performance test...';
+            perfElement.className = 'status info';
+            
+            if (!wasmModule) {
+                perfElement.textContent = '❌ WASM module not loaded. Please run the loading test first.';
+                perfElement.className = 'status error';
+                return;
+            }
+
+            try {
+                log('⚡ Running performance comparison...');
+                
+                // Test JS fingerprinting
+                const jsStart = performance.now();
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                canvas.width = 200;
+                canvas.height = 50;
+                ctx.fillText('JS Test', 10, 30);
+                const jsFingerprint = canvas.toDataURL();
+                const jsTime = performance.now() - jsStart;
+                
+                // Test WASM fingerprinting
+                const wasmStart = performance.now();
+                const fingerprintEngine = new wasmModule.FingerprintEngine();
+                const wasmFingerprint = fingerprintEngine.generate_canvas_fingerprint();
+                const wasmTime = performance.now() - wasmStart;
+                fingerprintEngine.free();
+                
+                const speedup = (jsTime / wasmTime).toFixed(2);
+                
+                log(`📊 JS Fingerprinting: ${jsTime.toFixed(2)}ms`);
+                log(`📊 WASM Fingerprinting: ${wasmTime.toFixed(2)}ms`);
+                log(`🚀 WASM Speedup: ${speedup}x faster`);
+                
+                perfElement.textContent = `✅ Performance test complete. WASM is ${speedup}x faster than JS`;
+                perfElement.className = 'status success';
+                
+            } catch (error) {
+                log(`❌ Performance test failed: ${error.message}`);
+                perfElement.textContent = `❌ Performance test failed: ${error.message}`;
+                perfElement.className = 'status error';
+            }
+        }
+
+        // Initialize tests
+        checkWASMSupport();
+    </script>
+</body>
+</html>

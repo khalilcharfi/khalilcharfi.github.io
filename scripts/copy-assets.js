@@ -68,6 +68,30 @@ try {
   process.exit(1);
 }
 
+// Copy WASM files to dist
+console.log('\n🚀 Copying WASM files to dist...');
+const wasmFiles = [
+  'wasm-modules/pkg/portfolio_engine_bg.wasm',
+  'wasm-modules/pkg/portfolio_engine.js'
+];
+
+try {
+  for (const file of wasmFiles) {
+    if (existsSync(file)) {
+      const filename = file.split('/').pop(); // Get just the filename
+      const destPath = join(distRoot, filename);
+      copyFileSync(file, destPath);
+      console.log(`✓ Copied WASM: ${filename}`);
+    } else {
+      console.log(`⚠ Skipped: ${file} (not found)`);
+    }
+  }
+  console.log('✅ WASM files copied successfully!');
+} catch (error) {
+  console.error('❌ Error copying WASM files:', error);
+  process.exit(1);
+}
+
 // Copy language-specific HTML files to dist
 console.log('\n🌐 Copying language-specific HTML files to dist...');
 const langFiles = ['index.de.html', 'index.fr.html', 'index.ar.html'];

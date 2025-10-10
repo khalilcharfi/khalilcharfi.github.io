@@ -3,7 +3,7 @@ import { createPortal } from 'react-dom';
 import { useConsent } from '@/core/contexts';
 import { useTranslation } from '../../i18n';
 
-export const PrivacySettings: React.FC = () => {
+export const PrivacySettings: React.FC = React.memo(() => {
     const [isOpen, setIsOpen] = useState(false);
     const [activeTab, setActiveTab] = useState<'consent' | 'data'>('consent');
     const [dataSize, setDataSize] = useState(0);
@@ -468,7 +468,7 @@ export const PrivacySettings: React.FC = () => {
             {typeof document !== 'undefined' && createPortal(modalContent, document.body)}
         </>
     );
-};
+});
 
 export default PrivacySettings;
 

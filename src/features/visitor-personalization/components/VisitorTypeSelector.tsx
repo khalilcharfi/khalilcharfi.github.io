@@ -59,7 +59,7 @@ const VISITOR_TYPE_LABELS = {
   potential_collaborator: 'Potential Collaborator'
 };
 
-export const VisitorTypeSelector: React.FC<VisitorTypeSelectorProps> = ({
+export const VisitorTypeSelector: React.FC<VisitorTypeSelectorProps> = React.memo(({
   onVisitorTypeChange,
   className = ''
 }) => {
@@ -354,6 +354,6 @@ export const VisitorTypeSelector: React.FC<VisitorTypeSelectorProps> = ({
       `}</style>
     </div>
   );
-};
+});
 
 export { VisitorTypeSelector as default }; 

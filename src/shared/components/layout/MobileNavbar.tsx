@@ -7,7 +7,7 @@ interface MobileNavbarProps {
   onSectionChange?: (section: string) => void;
 }
 
-export const MobileNavbar: React.FC<MobileNavbarProps> = ({
+export const MobileNavbar: React.FC = React.memo(({<MobileNavbarProps> = ({
   currentSection = 'home',
   onSectionChange
 }) => {

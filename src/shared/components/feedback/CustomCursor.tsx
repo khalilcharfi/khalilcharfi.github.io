@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import './customCursor.css';
 
-export const CustomCursor: React.FC = () => {
+export const CustomCursor: React.FC = React.memo(() => {
     const containerRef = useRef<HTMLDivElement>(null);
     const mousePos = useRef({ x: 0, y: 0 });
     const prevMousePos = useRef({ x: 0, y: 0 });
@@ -565,5 +565,5 @@ export const CustomCursor: React.FC = () => {
             }} 
         />
     );
-};
+});
 

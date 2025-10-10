@@ -5,10 +5,12 @@ export {
   preloadCriticalChunks,
   conditionallyPreloadThreeJS,
   registerServiceWorker,
-  LazyTranslationTest,
   LazyThreeBackground,
   LazyVisitorTypeSelector
 } from './lazyLoading';
+
+// Conditionally export debug components
+export { LazyTranslationTest } from './lazyLoading';
 export {
   loadingManager,
   useLoadingManager,

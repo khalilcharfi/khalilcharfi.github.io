@@ -43,7 +43,7 @@ import {
  * in a real-world scenario.
  */
 
-export const ExampleUsage: React.FC = () => {
+export const ExampleUsage: React.FC = React.memo(() => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [progress, setProgress] = useState(45);
@@ -427,6 +427,6 @@ export const ExampleUsage: React.FC = () => {
             </Alert>
         </div>
     );
-};
+});
 
 export default ExampleUsage;

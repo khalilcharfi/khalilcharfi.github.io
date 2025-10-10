@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from '@/features/i18n';
 import { analytics } from '@/features/analytics';
 import { DebugLogger } from './DebugLogger';
+import { isWASMAvailable, getWASMInstance } from '@/shared/utils/wasmLoader';
 import './performanceDrawer.css';
 
 interface PerformanceMetrics {
@@ -43,6 +44,12 @@ interface PerformanceMetrics {
         referrer: string;
         theme: string;
     };
+    wasm: {
+        available: boolean;
+        loaded: boolean;
+        memoryUsage: number;
+        modules: string[];
+    };
 }
 
 interface GeminiStatus {
@@ -56,7 +63,7 @@ interface PerformanceDrawerProps {
     geminiStatus?: GeminiStatus;
 }
 
-export const PerformanceDrawer: React.FC<PerformanceDrawerProps> = ({ geminiStatus }) => {
+export const PerformanceDrawer: React.FC<PerformanceDrawerProps> = React.memo(({ geminiStatus }) => {
     const { i18n } = useTranslation();
     const [isOpen, setIsOpen] = useState(false);
     const [metrics, setMetrics] = useState<PerformanceMetrics>({
@@ -66,7 +73,8 @@ export const PerformanceDrawer: React.FC<PerformanceDrawerProps> = ({ geminiStat
         resources: { scripts: 0, stylesheets: 0, images: 0, fonts: 0, total: 0 },
         network: { totalSize: 0, totalRequests: 0 },
         threeJs: { geometries: 0, textures: 0, programs: 0, calls: 0, triangles: 0, points: 0 },
-        userInfo: { language: '', profile: '', source: '', referrer: '', theme: '' }
+        userInfo: { language: '', profile: '', source: '', referrer: '', theme: '' },
+        wasm: { available: false, loaded: false, memoryUsage: 0, modules: [] }
     });
     const [activeTab, setActiveTab] = useState<'metrics' | 'resources' | 'console' | 'user' | 'api'>('metrics');
     
@@ -278,6 +286,22 @@ export const PerformanceDrawer: React.FC<PerformanceDrawerProps> = ({ geminiStat
                 threeJs: threeJsInfo
             }));
         };
+
+        // WASM Status Update
+        const updateWASMStatus = () => {
+            const wasmInstance = getWASMInstance();
+            const available = typeof WebAssembly !== 'undefined';
+            const loaded = isWASMAvailable() && wasmInstance !== null;
+            const memoryUsage = wasmInstance?.get_wasm_memory_usage ? wasmInstance.get_wasm_memory_usage() : 0;
+            const modules = loaded ? ['FingerprintEngine', 'AnalyticsEngine', 'PerformanceMonitor', 'ParticleSystem'] : [];
+
+            setMetrics(prev => ({
+                ...prev,
+                wasm: { available, loaded, memoryUsage, modules }
+            }));
+        };
+
+        updateWASMStatus();
         
         updateThreeJsMetrics();
         const interval = setInterval(updateThreeJsMetrics, 2000);
@@ -481,6 +505,38 @@ export const PerformanceDrawer: React.FC<PerformanceDrawerProps> = ({ geminiStat
                                 <div className="perf-metric-detail">
                                     {metrics.memory.percentage}% of {metrics.memory.limit}MB limit
                                 </div>
+                            </div>
+
+                            <div className="perf-metric-card">
+                                <div className="perf-metric-header">
+                                    <span className="perf-metric-label">🚀 WASM Status</span>
+                                    <span className="perf-metric-value" style={{ 
+                                        color: metrics.wasm.loaded ? 'rgb(0, 170, 85)' : 'rgb(255, 100, 100)' 
+                                    }}>
+                                        {metrics.wasm.loaded ? 'Loaded' : 'Not Loaded'}
+                                    </span>
+                                </div>
+                                <div className="perf-metric-detail" style={{ 
+                                    textAlign: 'left', 
+                                    marginBottom: '8px',
+                                    color: metrics.wasm.loaded ? 'rgb(0, 170, 85)' : 'rgb(255, 100, 100)',
+                                    fontWeight: 600
+                                }}>
+                                    {metrics.wasm.loaded ? '● WASM Active' : '● WASM Inactive'}
+                                </div>
+                                <div className="perf-metric-detail">
+                                    WebAssembly: {metrics.wasm.available ? 'Supported' : 'Not Supported'}
+                                </div>
+                                {metrics.wasm.loaded && (
+                                    <>
+                                        <div className="perf-metric-detail">
+                                            Memory: {Math.round(metrics.wasm.memoryUsage / 1024)}KB
+                                        </div>
+                                        <div className="perf-metric-detail">
+                                            Modules: {metrics.wasm.modules.join(', ')}
+                                        </div>
+                                    </>
+                                )}
                             </div>
 
                             <div className="perf-metric-card">
@@ -907,4 +963,4 @@ export const PerformanceDrawer: React.FC<PerformanceDrawerProps> = ({ geminiStat
             {isOpen && <div className="perf-drawer-backdrop" onClick={() => setIsOpen(false)} />}
         </>
     );
-};
+});

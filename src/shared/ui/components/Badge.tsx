@@ -11,7 +11,7 @@ export interface BadgeProps extends HTMLAttributes<HTMLSpanElement> {
     children: ReactNode;
 }
 
-export const Badge: React.FC<BadgeProps> = ({
+export const Badge: React.FC = React.memo(({<BadgeProps> = ({
     variant = 'default',
     size = 'md',
     rounded = false,
@@ -41,7 +41,7 @@ export interface DotBadgeProps extends Omit<BadgeProps, 'children'> {
     pulse?: boolean;
 }
 
-export const DotBadge: React.FC<DotBadgeProps> = ({
+export const DotBadge: React.FC = React.memo(({<DotBadgeProps> = ({
     variant = 'default',
     size = 'md',
     label,

@@ -12,7 +12,7 @@ export interface ProgressProps {
     className?: string;
 }
 
-export const Progress: React.FC<ProgressProps> = ({
+export const Progress: React.FC = React.memo(({<ProgressProps> = ({
     value,
     max = 100,
     size = 'md',
@@ -72,7 +72,7 @@ export interface CircularProgressProps {
     className?: string;
 }
 
-export const CircularProgress: React.FC<CircularProgressProps> = ({
+export const CircularProgress: React.FC = React.memo(({<CircularProgressProps> = ({
     value,
     max = 100,
     size = 120,

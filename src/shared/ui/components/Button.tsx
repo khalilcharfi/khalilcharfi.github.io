@@ -13,7 +13,7 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
     children: ReactNode;
 }
 
-export const Button: React.FC<ButtonProps> = ({
+export const Button: React.FC = React.memo(({<ButtonProps> = ({
     variant = 'primary',
     size = 'md',
     fullWidth = false,
@@ -75,7 +75,7 @@ export interface IconButtonProps extends ButtonHTMLAttributes<HTMLButtonElement>
     'aria-label': string;
 }
 
-export const IconButton: React.FC<IconButtonProps> = ({
+export const IconButton: React.FC = React.memo(({<IconButtonProps> = ({
     icon,
     variant = 'ghost',
     size = 'md',

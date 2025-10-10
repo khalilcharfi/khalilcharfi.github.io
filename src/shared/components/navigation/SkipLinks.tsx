@@ -7,7 +7,7 @@ interface SkipLink {
   label: string;
 }
 
-export const SkipLinks: React.FC = () => {
+export const SkipLinks: React.FC = React.memo(() => {
   const { t } = useTranslation();
 
   const skipLinks: SkipLink[] = [
@@ -46,5 +46,5 @@ export const SkipLinks: React.FC = () => {
       ))}
     </nav>
   );
-};
+});
 

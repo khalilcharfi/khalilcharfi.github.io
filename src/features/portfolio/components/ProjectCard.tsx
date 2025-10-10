@@ -8,7 +8,7 @@ interface ProjectCardProps {
   onClick?: (project: Project) => void;
 }
 
-export const ProjectCard: React.FC<ProjectCardProps> = ({
+export const ProjectCard: React.FC = React.memo(({<ProjectCardProps> = ({
   project,
   variant = 'default',
   onClick
@@ -71,7 +71,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
             onError={handleImageError}
             loading="lazy"
             decoding="async"
-          />
+          / loading="lazy">
         ) : (
           <div className="project-image-placeholder">
             <div className="placeholder-icon">💼</div>

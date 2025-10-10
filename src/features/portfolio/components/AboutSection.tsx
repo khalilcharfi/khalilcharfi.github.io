@@ -3,9 +3,7 @@ import { useTranslation } from '@/features/i18n';
 import { useDynamicContent, useSectionTracking } from '@/features/visitor-personalization';
 import { Section } from '@/shared/components';
 import { logger } from '@/shared/utils';
-import { IMAGE } from '@/shared/constants';
-
-export const AboutSection: React.FC = () => {
+export const AboutSection: React.FC = React.memo(() => {
     const { t } = useTranslation();
     const { personalizedContent } = useDynamicContent();
     const sectionTracking = useSectionTracking('about');
@@ -132,7 +130,11 @@ export const AboutSection: React.FC = () => {
                         src={profilePhotoUrl}
                         alt="Khalil Charfi - Professional Profile" 
                         className="profile-photo"
-                        loading="lazy"
+                        loading="eager"
+                        fetchPriority="high"
+                        width="106"
+                        height="106"
+                        sizes="106px"
                         onError={(e) => {
                             const target = e.target as HTMLImageElement;
                             if (photoRetryCount < 2) {
@@ -157,4 +159,4 @@ export const AboutSection: React.FC = () => {
             </div>
         </Section>
     );
-};
+});

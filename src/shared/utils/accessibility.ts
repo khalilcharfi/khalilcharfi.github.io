@@ -263,11 +263,15 @@ export const removeAriaDescribedBy = (element: HTMLElement, descriptionId: strin
  * Check if element is visible and not hidden
  */
 export const isElementVisible = (element: HTMLElement): boolean => {
+  // Use getComputedStyle to avoid forced reflow
+  const computedStyle = window.getComputedStyle(element);
+  
   return !!(
-    element.offsetWidth ||
-    element.offsetHeight ||
-    element.getClientRects().length
-  ) && window.getComputedStyle(element).visibility !== 'hidden';
+    computedStyle.display !== 'none' &&
+    computedStyle.visibility !== 'hidden' &&
+    computedStyle.opacity !== '0' &&
+    element.getClientRects().length > 0
+  );
 };
 
 /**

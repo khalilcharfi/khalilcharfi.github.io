@@ -76,31 +76,88 @@ export const conditionallyPreloadThreeJS = () => {
   );
   
   if (shouldPreload) {
-    if ('requestIdleCallback' in window) {
-      requestIdleCallback(() => {
-        import('three')
-          .then(() => {
-            loadingManager.incrementProgress('Three.js loaded');
-            loadingManager.trackResource('loaded');
-          })
-          .catch((error) => {
-            logger.error('Failed to preload Three.js:', error);
-            loadingManager.trackResource('failed');
-          });
-      }, { timeout: 2000 });
-    } else {
-      setTimeout(() => {
-        import('three')
-          .then(() => {
-            loadingManager.incrementProgress('Three.js loaded');
-            loadingManager.trackResource('loaded');
-          })
-          .catch((error) => {
-            logger.error('Failed to preload Three.js:', error);
-            loadingManager.trackResource('failed');
-          });
-      }, 2000);
-    }
+    // Defer Three.js loading until after FCP and LCP
+    const deferThreeJS = () => {
+      // Wait for FCP to complete
+      if ('PerformanceObserver' in window) {
+        const observer = new PerformanceObserver((list) => {
+          const entries = list.getEntries();
+          const fcpEntry = entries.find(entry => entry.name === 'first-contentful-paint');
+          
+          if (fcpEntry) {
+            observer.disconnect();
+            
+            // Wait additional time after FCP before loading Three.js
+            setTimeout(() => {
+              if ('requestIdleCallback' in window) {
+                requestIdleCallback(() => {
+                  import('three')
+                    .then(() => {
+                      loadingManager.incrementProgress('Three.js loaded');
+                      loadingManager.trackResource('loaded');
+                    })
+                    .catch((error) => {
+                      logger.error('Failed to preload Three.js:', error);
+                      loadingManager.trackResource('failed');
+                    });
+                }, { timeout: 2000 });
+              } else {
+                setTimeout(() => {
+                  import('three')
+                    .then(() => {
+                      loadingManager.incrementProgress('Three.js loaded');
+                      loadingManager.trackResource('loaded');
+                    })
+                    .catch((error) => {
+                      logger.error('Failed to preload Three.js:', error);
+                      loadingManager.trackResource('failed');
+                    });
+                  }, 2000);
+              }
+            }, 1000); // Wait 1 second after FCP
+          }
+        });
+        
+        observer.observe({ entryTypes: ['paint'] });
+        
+        // Fallback timeout in case FCP doesn't fire
+        setTimeout(() => {
+          observer.disconnect();
+          deferThreeJS();
+        }, 5000);
+      } else {
+        // Fallback for browsers without PerformanceObserver
+        setTimeout(() => {
+          if ('requestIdleCallback' in window) {
+            requestIdleCallback(() => {
+              import('three')
+                .then(() => {
+                  loadingManager.incrementProgress('Three.js loaded');
+                  loadingManager.trackResource('loaded');
+                })
+                .catch((error) => {
+                  logger.error('Failed to preload Three.js:', error);
+                  loadingManager.trackResource('failed');
+                });
+            }, { timeout: 2000 });
+          } else {
+            setTimeout(() => {
+              import('three')
+                .then(() => {
+                  loadingManager.incrementProgress('Three.js loaded');
+                  loadingManager.trackResource('loaded');
+                })
+                .catch((error) => {
+                  logger.error('Failed to preload Three.js:', error);
+                  loadingManager.trackResource('failed');
+                });
+              }, 2000);
+          }
+        }, 2000);
+      }
+    };
+    
+    deferThreeJS();
   }
 };
 

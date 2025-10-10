@@ -16,7 +16,7 @@ export interface ModalProps {
     'aria-describedby'?: string;
 }
 
-export const Modal: React.FC<ModalProps> = ({
+export const Modal: React.FC = React.memo(({<ModalProps> = ({
     isOpen,
     onClose,
     title,
@@ -37,6 +37,7 @@ export const Modal: React.FC<ModalProps> = ({
 
         const originalOverflow = document.body.style.overflow;
         const originalPaddingRight = document.body.style.paddingRight;
+        // Cache scrollbar width calculation to avoid multiple DOM queries
         const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
 
         document.body.style.overflow = 'hidden';

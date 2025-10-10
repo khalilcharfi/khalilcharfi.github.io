@@ -28,6 +28,7 @@ if (typeof window !== 'undefined' && process.env.NODE_ENV === 'production') {
 import '@/i18n';
 import { useTranslation, CertificateItem } from '@/features/i18n';
 import { useGeminiConnectionCheck } from '@/features/chatbot';
+import { useChatbotLoader } from '@/features/chatbot/hooks/useChatbotLoader';
 import { useReducedMotion, useAnnouncer } from '@/shared/hooks';
 import { 
   DynamicContentProvider, 
@@ -56,7 +57,7 @@ import {
   Footer
 } from '@/features/portfolio';
 
-// Lazy load heavy components
+// Lazy load heavy components with preloading hints
 const Chatbot = lazy(() => import('@/shared/components').then(m => ({ default: m.Chatbot })));
 const CertificateModal = lazy(() => import('@/features/portfolio').then(m => ({ default: m.CertificateModal })));
 const ProjectsSection = lazy(() => import('@/features/portfolio').then(m => ({ default: m.ProjectsSection })));
@@ -67,6 +68,21 @@ const CertificatesSection = lazy(() => import('@/features/portfolio').then(m => 
 const PerformanceDrawer = import.meta.env.DEV 
   ? lazy(() => import('@/shared/components/debug/PerformanceDrawer').then(m => ({ default: m.PerformanceDrawer })))
   : () => null;
+
+// Preload critical components after initial render
+const preloadCriticalComponents = () => {
+  // Preload components that are likely to be needed soon
+  import('@/features/portfolio').then(() => {
+    // Components are now cached
+  });
+  
+  // Preload chatbot after a delay
+  setTimeout(() => {
+    import('@/shared/components').then(() => {
+      // Chatbot is now cached
+    });
+  }, 2000);
+};
 
 
 // Helper function to get base language
@@ -97,8 +113,11 @@ const App: React.FC = () => {
     
     const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'dark');
     const [isThemeTransitioning, setIsThemeTransitioning] = useState(false);
-    const [showBackground, setShowBackground] = useState(true);
+    const [showBackground] = useState(true);
     const reducedMotion = useReducedMotion();
+    
+    // Lazy load chatbot on user interaction
+    const { isLoaded: isChatbotLoaded, isLoading: isChatbotLoading, error: chatbotError } = useChatbotLoader();
 
     // Make sure the legacy loader is removed on first paint when disabled
     useEffect(() => {
@@ -243,6 +262,9 @@ const App: React.FC = () => {
                     module.reportPerformanceMetrics();
                 });
             }, ANIMATION_DURATION.PERF_REPORT_DELAY);
+            
+            // Preload critical components after initial load
+            preloadCriticalComponents();
         });
 
         const handleScroll = () => {
@@ -290,16 +312,17 @@ const App: React.FC = () => {
         
         // Add transitioning class for smooth animation
         if (isThemeTransitioning) {
-            // Force a reflow to ensure the class is applied
-            body.offsetHeight;
-            body.classList.add('theme-transitioning');
-            
-            const timeout = setTimeout(() => {
-                body.classList.remove('theme-transitioning');
-                setIsThemeTransitioning(false);
-            }, ANIMATION_DURATION.THEME_TRANSITION); // Match CSS transition duration
-            
-            return () => clearTimeout(timeout);
+            // Use requestAnimationFrame to avoid forced reflow
+            requestAnimationFrame(() => {
+                body.classList.add('theme-transitioning');
+                
+                const timeout = setTimeout(() => {
+                    body.classList.remove('theme-transitioning');
+                    setIsThemeTransitioning(false);
+                }, ANIMATION_DURATION.THEME_TRANSITION); // Match CSS transition duration
+                
+                return () => clearTimeout(timeout);
+            });
         }
     }, [theme, isThemeTransitioning]);
 
@@ -464,9 +487,12 @@ const App: React.FC = () => {
                   </div>
                 )}
 
-                <Suspense fallback={<div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', zIndex: -1, background: theme === 'light' ? '#f1f5f9' : '#0a0a0a' }} />}>
-                    {showBackground && <LazyThreeBackground theme={theme} />}
-                </Suspense>
+                {/* Three.js Background - Deferred loading after critical content */}
+                {showBackground && (
+                    <Suspense fallback={<div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', zIndex: -1, background: theme === 'light' ? '#f1f5f9' : '#0a0a0a' }} />}>
+                        <LazyThreeBackground theme={theme} />
+                    </Suspense>
+                )}
                 <Navbar activeSection={activeSection} setActiveSectionDirectly={setActiveSection} theme={theme} toggleTheme={toggleTheme} />
                 <main id="main-content" role="main" aria-label={String(t('general.skipToMain'))}>
                     {enabledSections.map((id: string) => sectionComponents[id as keyof typeof sectionComponents]).filter(Boolean)}
@@ -481,10 +507,26 @@ const App: React.FC = () => {
                 )}
                 <Footer />
                 <ScrollToTop chatbotVisible={isChatbotAvailable && !isChatbotChecking} isVisible={isScrollToTopVisible} />
-                {isChatbotAvailable && !isChatbotChecking && (
+                {/* Chatbot - Lazy loaded on user interaction */}
+                {isChatbotAvailable && !isChatbotChecking && isChatbotLoaded && (
                     <Suspense fallback={null}>
                         <Chatbot />
                     </Suspense>
+                )}
+                {isChatbotLoading && (
+                    <div style={{ 
+                        position: 'fixed', 
+                        bottom: '20px', 
+                        right: '20px', 
+                        background: 'rgba(0,0,0,0.8)', 
+                        color: 'white', 
+                        padding: '10px', 
+                        borderRadius: '5px',
+                        fontSize: '12px',
+                        zIndex: 1000
+                    }}>
+                        Loading AI assistant...
+                    </div>
                 )}
                 
                 <Suspense fallback={null}>

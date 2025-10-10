@@ -12,7 +12,7 @@ interface NavbarProps {
     toggleTheme: () => void;
 }
 
-export const Navbar: React.FC<NavbarProps> = ({ activeSection, setActiveSectionDirectly, theme, toggleTheme }) => {
+export const Navbar: React.FC<NavbarProps> = React.memo(({ activeSection, setActiveSectionDirectly, theme, toggleTheme }) => {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const { t } = useTranslation();
     const sectionDetails = getSectionIds().map((id) => ({ id, labelKey: `nav.${id}` }));
@@ -97,5 +97,5 @@ export const Navbar: React.FC<NavbarProps> = ({ activeSection, setActiveSectionD
             </div>
         </nav>
     );
-};
+});
 

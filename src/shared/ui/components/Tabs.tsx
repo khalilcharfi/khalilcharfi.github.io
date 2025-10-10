@@ -17,7 +17,7 @@ export interface TabsProps {
     variant?: 'default' | 'pills' | 'underline';
 }
 
-export const Tabs: React.FC<TabsProps> = ({
+export const Tabs: React.FC = React.memo(({<TabsProps> = ({
     tabs,
     defaultTab,
     activeTab: controlledActiveTab,
@@ -96,7 +96,7 @@ export interface SimpleTabsProps {
     children: ReactNode;
 }
 
-export const SimpleTabs: React.FC<SimpleTabsProps> = ({
+export const SimpleTabs: React.FC = React.memo(({<SimpleTabsProps> = ({
     tabs,
     defaultTab,
     activeTab: controlledActiveTab,

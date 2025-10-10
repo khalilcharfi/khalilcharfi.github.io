@@ -3,7 +3,7 @@ import { useTranslation } from '../hooks/useTranslation';
 import { validateAllTranslations, generateValidationReport } from '../utils/translationValidator';
 import type { TranslationTestProps } from '../../../shared/types';
 
-export const TranslationTest: React.FC<TranslationTestProps> = ({ showDebugInfo = false }) => {
+export const TranslationTest: React.FC = React.memo(({<TranslationTestProps> = ({ showDebugInfo = false }) => {
   const { t, currentLanguage, baseLanguage, isRTL } = useTranslation();
   const [validationResult, setValidationResult] = useState<any>(null);
   const [showValidation, setShowValidation] = useState(false);

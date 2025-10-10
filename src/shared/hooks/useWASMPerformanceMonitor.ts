@@ -6,7 +6,7 @@
  */
 
 import { useEffect, useRef, useState, useCallback } from 'react';
-import { loadWASM, isWASMAvailable } from '@/shared/utils/wasmLoader';
+import {loadWASM} from '@/shared/utils/wasmLoader';
 
 interface WASMPerformanceMonitorReturn {
   fps: number;

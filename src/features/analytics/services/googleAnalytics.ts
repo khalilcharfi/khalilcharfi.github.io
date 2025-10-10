@@ -10,8 +10,8 @@
 
 declare global {
   interface Window {
-    gtag: (...args: any[]) => void;
-    dataLayer: any[];
+    gtag?: (...args: any[]) => void;
+    dataLayer?: any[];
   }
 }
 
@@ -91,12 +91,12 @@ class GoogleAnalyticsService {
       // Initialize dataLayer
       window.dataLayer = window.dataLayer || [];
       window.gtag = function gtag(...args: any[]) {
-        window.dataLayer.push(args);
+        window.dataLayer?.push(args);
       };
 
       // Configure gtag
-      window.gtag('js', new Date());
-      window.gtag('config', this.config.measurementId, {
+      window.gtag?.('js', new Date());
+      window.gtag?.('config', this.config.measurementId, {
         anonymize_ip: this.config.anonymizeIp,
         cookie_flags: this.config.cookieFlags,
         send_page_view: false, // We'll manually send page views for SPA
@@ -126,7 +126,7 @@ class GoogleAnalyticsService {
     }
 
     if (this.initialized && window.gtag) {
-      window.gtag('consent', 'update', {
+      window.gtag?.('consent', 'update', {
         analytics_storage: granted ? 'granted' : 'denied',
         ad_storage: 'denied', // We don't use ads
       });
@@ -152,7 +152,7 @@ class GoogleAnalyticsService {
       page_path: page.page_path || window.location.pathname,
     };
 
-    window.gtag('event', 'page_view', pageData);
+    window.gtag?.('event', 'page_view', pageData);
 
     if (this.config.debug) {
       console.log('📊 Page view tracked:', pageData);
@@ -168,7 +168,7 @@ class GoogleAnalyticsService {
       return;
     }
 
-    window.gtag('event', eventName, params);
+    window.gtag?.('event', eventName, params);
 
     if (this.config.debug) {
       console.log('📊 Event tracked:', eventName, params);
@@ -181,7 +181,7 @@ class GoogleAnalyticsService {
   setUserProperties(properties: UserProperties): void {
     if (!this.canTrack()) return;
 
-    window.gtag('set', 'user_properties', properties);
+    window.gtag?.('set', 'user_properties', properties);
 
     if (this.config.debug) {
       console.log('📊 User properties set:', properties);
@@ -351,7 +351,7 @@ class GoogleAnalyticsService {
     if (!this.canTrack() || this.eventQueue.length === 0) return;
 
     this.eventQueue.forEach((event) => {
-      window.gtag('event', event.name, event.params);
+      window.gtag?.('event', event.name, event.params);
     });
 
     if (this.config.debug) {

@@ -6,7 +6,7 @@ export interface ToggleProps extends Omit<InputHTMLAttributes<HTMLInputElement>,
     disabled?: boolean;
 }
 
-export const Toggle: React.FC<ToggleProps> = ({
+export const Toggle: React.FC = React.memo(({<ToggleProps> = ({
     label,
     description,
     disabled = false,
@@ -44,7 +44,7 @@ export const Toggle: React.FC<ToggleProps> = ({
     );
 };
 
-export const ToggleSwitch: React.FC<Omit<InputHTMLAttributes<HTMLInputElement>, 'type'>> = ({
+export const ToggleSwitch: React.FC = React.memo(({<Omit<InputHTMLAttributes<HTMLInputElement>, 'type'>> = ({
     disabled = false,
     className = '',
     ...props

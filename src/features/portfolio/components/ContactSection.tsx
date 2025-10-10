@@ -4,7 +4,7 @@ import { useDynamicContent, useSectionTracking } from '@/features/visitor-person
 import { Section, LinkedinIcon, GithubIcon, XingIcon } from '@/shared/components';
 import { FORM_LIMITS, ANIMATION_DURATION } from '@/shared/constants';
 
-export const ContactSection: React.FC = () => {
+export const ContactSection: React.FC = React.memo(() => {
     const { t } = useTranslation();
     const { personalizedContent } = useDynamicContent();
     const sectionTracking = useSectionTracking('contact');
@@ -28,41 +28,34 @@ export const ContactSection: React.FC = () => {
         return emailRegex.test(email);
     };
 
-    // Validate individual field
+    // Validation helper functions
+    const validateName = (value: string): string | undefined => {
+        if (!value.trim()) return String(t('contact.form.requiredError'));
+        if (value.trim().length < FORM_LIMITS.NAME_MIN) return String(t('contact.form.nameTooShort'));
+        if (value.trim().length > FORM_LIMITS.NAME_MAX) return String(t('contact.form.nameTooLong'));
+        return undefined;
+    };
+
+    const validateEmailField = (value: string): string | undefined => {
+        if (!value.trim()) return String(t('contact.form.requiredError'));
+        if (!validateEmail(value.trim())) return String(t('contact.form.emailError'));
+        return undefined;
+    };
+
+    const validateMessage = (value: string): string | undefined => {
+        if (!value.trim()) return String(t('contact.form.requiredError'));
+        if (value.trim().length < FORM_LIMITS.MESSAGE_MIN) return String(t('contact.form.messageTooShort'));
+        if (value.trim().length > FORM_LIMITS.MESSAGE_MAX) return String(t('contact.form.messageTooLong'));
+        return undefined;
+    };
+
     const validateField = (fieldName: 'name' | 'email' | 'message', value: string): string | undefined => {
         switch (fieldName) {
-            case 'name':
-                if (!value.trim()) {
-                    return t('contact.form.requiredError');
-                }
-                if (value.trim().length < FORM_LIMITS.NAME_MIN) {
-                    return t('contact.form.nameTooShort');
-                }
-                if (value.trim().length > FORM_LIMITS.NAME_MAX) {
-                    return t('contact.form.nameTooLong');
-                }
-                break;
-            case 'email':
-                if (!value.trim()) {
-                    return t('contact.form.requiredError');
-                }
-                if (!validateEmail(value.trim())) {
-                    return t('contact.form.emailError');
-                }
-                break;
-            case 'message':
-                if (!value.trim()) {
-                    return t('contact.form.requiredError');
-                }
-                if (value.trim().length < FORM_LIMITS.MESSAGE_MIN) {
-                    return t('contact.form.messageTooShort');
-                }
-                if (value.trim().length > FORM_LIMITS.MESSAGE_MAX) {
-                    return t('contact.form.messageTooLong');
-                }
-                break;
+            case 'name': return validateName(value);
+            case 'email': return validateEmailField(value);
+            case 'message': return validateMessage(value);
+            default: return undefined;
         }
-        return undefined;
     };
 
     const validateForm = (): boolean => {
@@ -122,9 +115,9 @@ export const ContactSection: React.FC = () => {
                  <div className="contact-content">
                     <h2 className="section-title animate-in">{personalizedContent.contact.title}</h2>
                     <div className="contact-form-success glass-panel animate-in">
-                        <h3>{t('contact.form.successTitle')}</h3>
-                        <p>{t('contact.form.successMessage')}</p>
-                        <button onClick={handleResetForm} className="btn">{t('contact.form.sendAnother')}</button>
+                        <h3>{String(t('contact.form.successTitle'))}</h3>
+                        <p>{String(t('contact.form.successMessage'))}</p>
+                        <button onClick={handleResetForm} className="btn">{String(t('contact.form.sendAnother'))}</button>
                     </div>
                 </div>
             </Section>
@@ -134,12 +127,12 @@ export const ContactSection: React.FC = () => {
     return (
         <Section id="contact">
             <div className="contact-content">
-                 <h2 className="section-title animate-in">{personalizedContent.contact.title}</h2>
-                 <p className="contact-intro animate-in">{personalizedContent.contact.message}</p>
+                 <h2 className="section-title animate-in">{String(personalizedContent.contact.title)}</h2>
+                 <p className="contact-intro animate-in">{String(personalizedContent.contact.message)}</p>
                 <form onSubmit={handleSubmit} className="contact-form glass-panel animate-in" noValidate>
                      <div className="form-grid">
                         <div className="form-group">
-                            <label htmlFor="name">{t('contact.form.nameLabel')}</label>
+                            <label htmlFor="name">{String(t('contact.form.nameLabel'))}</label>
                             <input
                                 ref={nameInputRef}
                                 type="text"
@@ -168,7 +161,7 @@ export const ContactSection: React.FC = () => {
                             )}
                         </div>
                         <div className="form-group">
-                            <label htmlFor="email">{t('contact.form.emailLabel')}</label>
+                            <label htmlFor="email">{String(t('contact.form.emailLabel'))}</label>
                             <input
                                 ref={emailInputRef}
                                 type="email"
@@ -197,7 +190,7 @@ export const ContactSection: React.FC = () => {
                         </div>
                     </div>
                     <div className="form-group full-width">
-                        <label htmlFor="message">{t('contact.form.messageLabel')}</label>
+                        <label htmlFor="message">{String(t('contact.form.messageLabel'))}</label>
                         <textarea
                             ref={messageInputRef}
                             id="message"
@@ -228,11 +221,11 @@ export const ContactSection: React.FC = () => {
                         </small>
                     </div>
                     <button type="submit" className="btn" disabled={submissionStatus === 'submitting'}>
-                        {submissionStatus === 'submitting' ? t('contact.form.submitting') : t('contact.form.sendBtn')}
+                        {submissionStatus === 'submitting' ? String(t('contact.form.submitting')) : String(t('contact.form.sendBtn'))}
                     </button>
                 </form>
                 <div className="social-links animate-in">
-                    <h3>{t('contact.connectTitle')}</h3>
+                    <h3>{String(t('contact.connectTitle'))}</h3>
                     <a href="https://www.linkedin.com/in/khalil-charfi/" aria-label={String(t('contact.linkedinAria'))} target="_blank" rel="noopener noreferrer"><LinkedinIcon /></a>
                     <a href="https://github.com/khalil-charfi" aria-label={String(t('contact.githubAria'))} target="_blank" rel="noopener noreferrer"><GithubIcon /></a>
                     <a href="https://www.xing.com/profile/Khalil_Charfi2" aria-label="Khalil Charfi's Xing Profile" target="_blank" rel="noopener noreferrer"><XingIcon /></a>
@@ -240,4 +233,4 @@ export const ContactSection: React.FC = () => {
             </div>
         </Section>
     );
-};
+});
