@@ -1,5 +1,6 @@
 import React from 'react';
 import './SkeletonScreen.css';
+import { useTranslation } from '../../../features/i18n/hooks/useTranslation';
 
 export interface SkeletonProps {
   width?: string | number;
@@ -13,7 +14,7 @@ export interface SkeletonProps {
 /**
  * Skeleton component for loading placeholders
  */
-export const Skeleton: React.FC = React.memo(({<SkeletonProps> = ({
+export const Skeleton: React.FC<SkeletonProps> = React.memo(({
   width = '100%',
   height = '1rem',
   borderRadius,
@@ -69,12 +70,12 @@ export const ProfileSkeleton: React.FC = React.memo(() => (
       <Skeleton width="90%" height={16} />
     </div>
   </div>
-);
+));
 
 /**
  * Skeleton for section card
  */
-export const CardSkeleton: React.FC = React.memo(({<{ count?: number }> = ({ count = 1 }) => (
+export const CardSkeleton: React.FC<{ count?: number }> = React.memo(({ count = 1 }) => (
   <>
     {Array.from({ length: count }).map((_, index) => (
       <div key={index} className="skeleton-card">
@@ -89,7 +90,7 @@ export const CardSkeleton: React.FC = React.memo(({<{ count?: number }> = ({ cou
       </div>
     ))}
   </>
-);
+));
 
 /**
  * Skeleton for skills section
@@ -107,12 +108,12 @@ export const SkillsSkeleton: React.FC = React.memo(() => (
       </div>
     ))}
   </div>
-);
+));
 
 /**
  * Skeleton for timeline (experience/education)
  */
-export const TimelineSkeleton: React.FC = React.memo(({<{ count?: number }> = ({ count = 3 }) => (
+export const TimelineSkeleton: React.FC<{ count?: number }> = React.memo(({ count = 3 }) => (
   <div className="skeleton-timeline">
     {Array.from({ length: count }).map((_, index) => (
       <div key={index} className="skeleton-timeline-item">
@@ -127,7 +128,7 @@ export const TimelineSkeleton: React.FC = React.memo(({<{ count?: number }> = ({
       </div>
     ))}
   </div>
-);
+));
 
 /**
  * Skeleton for project grid
@@ -150,7 +151,7 @@ export const ProjectsSkeleton: React.FC = React.memo(() => (
       </div>
     ))}
   </div>
-);
+));
 
 /**
  * Enhanced loading screen with progress
@@ -161,10 +162,12 @@ export interface EnhancedLoadingScreenProps {
   onComplete?: () => void;
 }
 
-export const EnhancedLoadingScreen: React.FC = React.memo(({<EnhancedLoadingScreenProps> = ({
+export const EnhancedLoadingScreen: React.FC<EnhancedLoadingScreenProps> = React.memo(({
   progress = 0,
-  stage = 'Loading...'
+  stage
 }) => {
+  const { t } = useTranslation();
+  const loadingText = stage || (t('general.loading') as string);
   return (
     <div className="enhanced-loading-screen">
       <div className="loading-content">
@@ -188,7 +191,7 @@ export const EnhancedLoadingScreen: React.FC = React.memo(({<EnhancedLoadingScre
         <div className="loading-percentage">{progress}%</div>
 
         {/* Stage Text */}
-        <div className="loading-stage">{stage}</div>
+        <div className="loading-stage">{loadingText}</div>
 
         {/* Loading Animation */}
         <div className="loading-dots">
@@ -209,7 +212,7 @@ export interface SectionLoadingProps {
   count?: number;
 }
 
-export const SectionLoading: React.FC = React.memo(({<SectionLoadingProps> = ({ type, count = 3 }) => {
+export const SectionLoading: React.FC<SectionLoadingProps> = React.memo(({ type, count = 3 }) => {
   switch (type) {
     case 'profile':
       return <ProfileSkeleton />;
@@ -224,7 +227,7 @@ export const SectionLoading: React.FC = React.memo(({<SectionLoadingProps> = ({ 
     default:
       return <Skeleton />;
   }
-};
+});
 
 export default Skeleton;
 

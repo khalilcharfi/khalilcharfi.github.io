@@ -8,7 +8,7 @@ export interface CardProps extends HTMLAttributes<HTMLDivElement> {
     children: ReactNode;
 }
 
-export const Card: React.FC = React.memo(({<CardProps> = ({
+export const Card: React.FC<CardProps> = React.memo(({
     variant = 'default',
     padding = 'md',
     hoverable = false,
@@ -31,7 +31,7 @@ export const Card: React.FC = React.memo(({<CardProps> = ({
             {children}
         </div>
     );
-};
+});
 
 export interface CardHeaderProps {
     title: string;
@@ -40,7 +40,7 @@ export interface CardHeaderProps {
     className?: string;
 }
 
-export const CardHeader: React.FC = React.memo(({<CardHeaderProps> = ({
+export const CardHeader: React.FC<CardHeaderProps> = React.memo(({
     title,
     subtitle,
     action,
@@ -55,16 +55,16 @@ export const CardHeader: React.FC = React.memo(({<CardHeaderProps> = ({
             {action && <div className="card-header-action">{action}</div>}
         </div>
     );
-};
+});
 
 export interface CardBodyProps {
     children: ReactNode;
     className?: string;
 }
 
-export const CardBody: React.FC = React.memo(({<CardBodyProps> = ({ children, className = '' }) => {
+export const CardBody: React.FC<CardBodyProps> = React.memo(({ children, className = '' }) => {
     return <div className={`card-body ${className}`}>{children}</div>;
-};
+});
 
 export interface CardFooterProps {
     children: ReactNode;
@@ -72,10 +72,10 @@ export interface CardFooterProps {
     align?: 'left' | 'center' | 'right' | 'space-between';
 }
 
-export const CardFooter: React.FC = React.memo(({<CardFooterProps> = ({
+export const CardFooter: React.FC<CardFooterProps> = React.memo(({
     children,
     className = '',
     align = 'right'
 }) => {
     return <div className={`card-footer card-footer-${align} ${className}`}>{children}</div>;
-};
+});

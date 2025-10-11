@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { CookieConsentBannerProps } from '../../../shared/types';
 
-export const CookieConsentBanner: React.FC = React.memo(({<CookieConsentBannerProps> = () => {
+export const CookieConsentBanner: React.FC<CookieConsentBannerProps> = React.memo(() => {
   const { t } = useTranslation();
 
   useEffect(() => {
@@ -83,6 +83,6 @@ export const CookieConsentBanner: React.FC = React.memo(({<CookieConsentBannerPr
   }, [t]);
 
   return null;
-};
+});
 
 export { CookieConsentBanner as default }; 

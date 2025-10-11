@@ -17,7 +17,7 @@ export interface TabsProps {
     variant?: 'default' | 'pills' | 'underline';
 }
 
-export const Tabs: React.FC = React.memo(({<TabsProps> = ({
+export const Tabs: React.FC<TabsProps> = React.memo(({
     tabs,
     defaultTab,
     activeTab: controlledActiveTab,
@@ -84,7 +84,7 @@ export const Tabs: React.FC = React.memo(({<TabsProps> = ({
             </div>
         </div>
     );
-};
+});
 
 export interface SimpleTabsProps {
     tabs: Omit<Tab, 'content'>[];
@@ -96,7 +96,7 @@ export interface SimpleTabsProps {
     children: ReactNode;
 }
 
-export const SimpleTabs: React.FC = React.memo(({<SimpleTabsProps> = ({
+export const SimpleTabs: React.FC<SimpleTabsProps> = React.memo(({
     tabs,
     defaultTab,
     activeTab: controlledActiveTab,
@@ -149,4 +149,4 @@ export const SimpleTabs: React.FC = React.memo(({<SimpleTabsProps> = ({
             <div className="tabs-content">{children}</div>
         </div>
     );
-};
+});

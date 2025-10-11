@@ -16,7 +16,7 @@ export interface ModalProps {
     'aria-describedby'?: string;
 }
 
-export const Modal: React.FC = React.memo(({<ModalProps> = ({
+export const Modal: React.FC<ModalProps> = React.memo(({
     isOpen,
     onClose,
     title,
@@ -146,4 +146,4 @@ export const Modal: React.FC = React.memo(({<ModalProps> = ({
     );
 
     return typeof document !== 'undefined' ? createPortal(modalContent, document.body) : null;
-};
+});

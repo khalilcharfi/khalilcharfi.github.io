@@ -8,7 +8,7 @@ export interface DividerProps {
     className?: string;
 }
 
-export const Divider: React.FC = React.memo(({<DividerProps> = ({
+export const Divider: React.FC<DividerProps> = React.memo(({
     orientation = 'horizontal',
     variant = 'solid',
     spacing = 'md',
@@ -33,4 +33,4 @@ export const Divider: React.FC = React.memo(({<DividerProps> = ({
     }
 
     return <hr className={classes} role="separator" />;
-};
+});

@@ -5,7 +5,7 @@ export interface FormProps extends FormHTMLAttributes<HTMLFormElement> {
     onSubmit?: (e: React.FormEvent<HTMLFormElement>) => void;
 }
 
-export const Form: React.FC = React.memo(({<FormProps> = ({ children, onSubmit, className = '', ...props }) => {
+export const Form: React.FC<FormProps> = React.memo(({ children, onSubmit, className = '', ...props }) => {
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         if (onSubmit) {
             e.preventDefault();
@@ -18,16 +18,16 @@ export const Form: React.FC = React.memo(({<FormProps> = ({ children, onSubmit, 
             {children}
         </form>
     );
-};
+});
 
 export interface FormGroupProps {
     children: ReactNode;
     className?: string;
 }
 
-export const FormGroup: React.FC = React.memo(({<FormGroupProps> = ({ children, className = '' }) => {
+export const FormGroup: React.FC<FormGroupProps> = React.memo(({ children, className = '' }) => {
     return <div className={`form-group ${className}`}>{children}</div>;
-};
+});
 
 export interface FormRowProps {
     children: ReactNode;
@@ -36,7 +36,7 @@ export interface FormRowProps {
     gap?: 'sm' | 'md' | 'lg';
 }
 
-export const FormRow: React.FC = React.memo(({<FormRowProps> = ({
+export const FormRow: React.FC<FormRowProps> = React.memo(({
     children,
     className = '',
     columns,
@@ -51,7 +51,7 @@ export const FormRow: React.FC = React.memo(({<FormRowProps> = ({
             {children}
         </div>
     );
-};
+});
 
 export interface FormSectionProps {
     title?: string;
@@ -60,7 +60,7 @@ export interface FormSectionProps {
     className?: string;
 }
 
-export const FormSection: React.FC = React.memo(({<FormSectionProps> = ({
+export const FormSection: React.FC<FormSectionProps> = React.memo(({
     title,
     description,
     children,
@@ -77,7 +77,7 @@ export const FormSection: React.FC = React.memo(({<FormSectionProps> = ({
             <div className="form-section-content">{children}</div>
         </div>
     );
-};
+});
 
 export interface FormActionsProps {
     children: ReactNode;
@@ -85,10 +85,10 @@ export interface FormActionsProps {
     align?: 'left' | 'center' | 'right' | 'space-between';
 }
 
-export const FormActions: React.FC = React.memo(({<FormActionsProps> = ({
+export const FormActions: React.FC<FormActionsProps> = React.memo(({
     children,
     className = '',
     align = 'right'
 }) => {
     return <div className={`form-actions form-actions-${align} ${className}`}>{children}</div>;
-};
+});

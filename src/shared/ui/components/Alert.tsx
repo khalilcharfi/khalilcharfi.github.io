@@ -12,7 +12,7 @@ export interface AlertProps {
     className?: string;
 }
 
-export const Alert: React.FC = React.memo(({<AlertProps> = ({
+export const Alert: React.FC<AlertProps> = React.memo(({
     variant = 'info',
     title,
     children,
@@ -90,4 +90,4 @@ export const Alert: React.FC = React.memo(({<AlertProps> = ({
             )}
         </div>
     );
-};
+});

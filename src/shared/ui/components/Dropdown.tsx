@@ -18,7 +18,7 @@ export interface DropdownProps {
     'aria-label'?: string;
 }
 
-export const Dropdown: React.FC = React.memo(({<DropdownProps> = ({
+export const Dropdown: React.FC<DropdownProps> = React.memo(({
     options,
     value,
     onChange,
@@ -124,4 +124,4 @@ export const Dropdown: React.FC = React.memo(({<DropdownProps> = ({
             </div>
         </div>
     );
-};
+});

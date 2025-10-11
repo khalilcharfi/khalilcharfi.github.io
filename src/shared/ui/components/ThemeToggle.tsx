@@ -7,7 +7,7 @@ interface ThemeToggleProps {
     toggleTheme: () => void;
 }
 
-export const ThemeToggle: React.FC = React.memo(({<ThemeToggleProps> = ({ theme, toggleTheme }) => {
+export const ThemeToggle: React.FC<ThemeToggleProps> = React.memo(({ theme, toggleTheme }) => {
     const { t } = useTranslation();
     const label = theme === 'light' ? t('theme.toggleDark') : t('theme.toggleLight');
     return (
@@ -20,5 +20,5 @@ export const ThemeToggle: React.FC = React.memo(({<ThemeToggleProps> = ({ theme,
             {theme === 'light' ? <MoonIcon /> : <SunIcon />}
         </button>
     );
-};
+});
 

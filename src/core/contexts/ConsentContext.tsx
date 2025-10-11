@@ -220,7 +220,7 @@ export const SimpleConsentProvider: React.FC<{ children: React.ReactNode }> = Re
             {children}
         </ConsentContext.Provider>
     );
-};
+});
 
 // Export hook for compatibility
 export const useConsent = () => useContext(ConsentContext);

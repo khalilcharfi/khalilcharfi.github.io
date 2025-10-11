@@ -215,7 +215,7 @@ const presets: Record<ParticleBackgroundPreset, { light: ColorScheme; dark: Colo
   }
 };
 
-export const ParticleBackground: React.FC = React.memo(({<ParticleBackgroundProps> = ({
+export const ParticleBackground: React.FC<ParticleBackgroundProps> = React.memo(({
   preset = 'cosmic',
   theme,
   ...props
@@ -250,6 +250,6 @@ export const ParticleBackground: React.FC = React.memo(({<ParticleBackgroundProp
       {...props}
     />
   );
-};
+});
 
 export default ParticleBackground;

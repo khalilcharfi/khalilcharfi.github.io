@@ -332,7 +332,7 @@ function ParticleSystem({ colorScheme, config, enableInteraction, paused = false
   );
 }
 
-export const AnimatedBackground: React.FC = React.memo(({<AnimatedBackgroundProps> = ({
+export const AnimatedBackground: React.FC<AnimatedBackgroundProps> = React.memo(({
   colorScheme,
   particleConfig,
   enableInteraction = true,
@@ -459,6 +459,6 @@ export const AnimatedBackground: React.FC = React.memo(({<AnimatedBackgroundProp
       </Canvas>
     </div>
   );
-};
+});
 
 export default AnimatedBackground;
