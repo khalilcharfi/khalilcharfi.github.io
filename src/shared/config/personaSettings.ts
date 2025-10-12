@@ -64,8 +64,8 @@ const parseCsv = (value: string | undefined): Set<Persona> => {
   return new Set(value.split(',').map(s => s.trim()) as Persona[]);
 };
 
-const enabledEnv = parseCsv((import.meta as any).env?.VITE_ENABLED_PERSONAS);
-const disabledEnv = parseCsv((import.meta as any).env?.VITE_DISABLED_PERSONAS);
+const enabledEnv = parseCsv(import.meta.env.VITE_ENABLED_PERSONAS);
+const disabledEnv = parseCsv(import.meta.env.VITE_DISABLED_PERSONAS);
 const defaultEnabledSet = new Set(DEFAULT_ENABLED_PERSONAS);
 
 export const ENABLED_PERSONAS: Record<Persona, boolean> = ALL_PERSONAS.reduce((acc, persona) => {
@@ -82,7 +82,4 @@ export const ENABLED_PERSONAS: Record<Persona, boolean> = ALL_PERSONAS.reduce((a
     acc[persona] = defaultEnabledSet.has(persona);
   }
   return acc;
-}, {} as Record<Persona, boolean>);
-
-// Convenience boolean: is the Personas feature as a whole enabled?
-export const PERSONAS_FEATURE_ENABLED: boolean = Object.values(ENABLED_PERSONAS).some(Boolean); 
+}, {} as Record<Persona, boolean>); 

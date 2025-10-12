@@ -1,7 +1,7 @@
 // Dynamic Content Provider Component
 import React, { createContext, useContext, useEffect, useState, ReactNode, useRef } from 'react';
 import { useTranslation } from '../../i18n';
-import { PERSONAS_FEATURE_ENABLED } from '../../../shared/config';
+import { PERSONAS_FEATURE_ENABLED as PERSONAS_ENABLED, DYNAMIC_CONTENT_ENABLED, FORCE_DEFAULT_CONTENT } from '../../../shared/config';
 
 const useConsent = () => {
   const [consent, setConsent] = useState<{ analytics: boolean }>({ analytics: false });
@@ -69,32 +69,11 @@ interface SimpleDynamicContentContextType {
 // ===============================
 //  Feature Flags: Personas / Profiles & Content Modes
 // -------------------------------
+// PERSONAS_ENABLED is now imported from shared/config as PERSONAS_FEATURE_ENABLED
 // Set VITE_ENABLE_PERSONAS=false in your .env or build command to completely
 // disable personalized personas/profiles logic at compile-time.
-// Alternatively, change the constant below directly.
-export const PERSONAS_ENABLED: boolean = import.meta.env.VITE_ENABLE_PERSONAS !== 'false';
-
-// Dynamic content control flags
-export const DYNAMIC_CONTENT_ENABLED: boolean = import.meta.env.VITE_ENABLE_DYNAMIC_CONTENT !== 'false';
-export const FORCE_DEFAULT_CONTENT: boolean = import.meta.env.VITE_FORCE_DEFAULT_CONTENT === 'true';
-
-// Development elements visibility flags
-export const SHOW_DEV_ELEMENTS: boolean = import.meta.env.VITE_SHOW_DEV_ELEMENTS === 'true';
-export const SHOW_VISITOR_CONTROLS: boolean = import.meta.env.VITE_SHOW_VISITOR_CONTROLS === 'true';
-export const SHOW_PROFILE_INSIGHTS: boolean = import.meta.env.VITE_SHOW_PROFILE_INSIGHTS === 'true';
-export const SHOW_TRANSLATION_DEBUG: boolean = import.meta.env.VITE_SHOW_TRANSLATION_DEBUG === 'true';
-export const SHOW_DEBUG_INFO: boolean = import.meta.env.VITE_SHOW_DEBUG_INFO === 'true';
-
-// Chatbot configuration
-export const ENABLE_CHATBOT: boolean = import.meta.env.VITE_ENABLE_CHATBOT !== 'false';
-
-// Recommended sections configuration - PERMANENTLY DISABLED
-// Priority sections feature is disabled and will not render
-export const SHOW_RECOMMENDED_SECTIONS: boolean = false;
-
-// Environment detection
-export const IS_DEVELOPMENT: boolean = import.meta.env.DEV === true;
-export const IS_PRODUCTION: boolean = import.meta.env.PROD === true;
+// All feature flags are now imported from shared/config
+// See src/shared/config/featureFlags.ts and personaSettings.ts for full list
 // ===============================
 
 // Default content as a function for i18n
@@ -158,7 +137,7 @@ export const DynamicContentProvider: React.FC<DynamicContentProviderProps> = Rea
   const analyticsConsent = (consent as any).analytics === true;
 
   // Personas are only active when the feature is enabled *and* analytics consent is given
-  const personasActive = PERSONAS_FEATURE_ENABLED && analyticsConsent;
+  const personasActive = PERSONAS_ENABLED && analyticsConsent;
   
   // Content mode logic: force default content overrides everything
   const useDefaultContent = FORCE_DEFAULT_CONTENT || !DYNAMIC_CONTENT_ENABLED;
@@ -228,7 +207,10 @@ export const DynamicContentProvider: React.FC<DynamicContentProviderProps> = Rea
     <DynamicContentContext.Provider value={{
       personalizedContent: currentContent,
       userProfile: (personasActive && useDynamicContent) ? userProfile : defaultProfile,
-      contentAdapter: {},
+      contentAdapter: {
+        getPersonalizedContent: () => getDefaultContent(t),
+        trackEvent: () => {}
+      },
       trackEvent
     }}>
       {children}
@@ -243,7 +225,7 @@ export const useDynamicContent = () => {
 // Utility function to get current content mode info
 export const getContentModeInfo = () => {
   return {
-    personasEnabled: PERSONAS_FEATURE_ENABLED,
+    personasEnabled: PERSONAS_ENABLED,
     dynamicContentEnabled: DYNAMIC_CONTENT_ENABLED,
     forceDefaultContent: FORCE_DEFAULT_CONTENT,
     isUsingDefaultContent: FORCE_DEFAULT_CONTENT || !DYNAMIC_CONTENT_ENABLED,
@@ -336,7 +318,7 @@ const isDebugMode = (): boolean => {
 export const ProfileInsights: React.FC<{ chatbotOpen?: boolean; scrollToTopVisible?: boolean; }> = React.memo(({ chatbotOpen = false, scrollToTopVisible = false }) => {
   const [isVisible, setIsVisible] = useState(false);
   const debug = isDebugMode();
-  if (!PERSONAS_FEATURE_ENABLED || !DYNAMIC_CONTENT_ENABLED) return null;
+  if (!PERSONAS_ENABLED || !DYNAMIC_CONTENT_ENABLED) return null;
 
   // Dynamically calculate bottom offset
   let bottom = 160;

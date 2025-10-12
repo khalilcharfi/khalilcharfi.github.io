@@ -1,3 +1,5 @@
 // Configuration exports
-export { ENABLED_PERSONAS, PERSONAS_FEATURE_ENABLED } from './personaSettings';
+export { ENABLED_PERSONAS } from './personaSettings';
 export { DEFAULT_SECTION_IDS, getSectionIds } from './sections';
+export * from './featureFlags';
+export { getModelConfig } from './chatbotConfig';

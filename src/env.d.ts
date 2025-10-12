@@ -13,6 +13,8 @@ interface ImportMetaEnv {
   readonly VITE_ENABLE_CHATBOT?: string;
   readonly VITE_ENABLE_DYNAMIC_CONTENT?: string;
   readonly VITE_ENABLE_PERSONAS?: string;
+  readonly VITE_ENABLED_PERSONAS?: string;
+  readonly VITE_DISABLED_PERSONAS?: string;
   readonly VITE_FORCE_DEFAULT_CONTENT?: string;
   readonly VITE_SHOW_RECOMMENDED_SECTIONS?: string;
   
