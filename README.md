@@ -1,6 +1,6 @@
 # Khalil Charfi - Portfolio
 
-Modern, interactive portfolio website with React, TypeScript, and Three.js.
+My personal portfolio site built with React, TypeScript, and Three.js. Nothing fancy, just wanted something that loads fast and looks good.
 
 ## 📚 Documentation
 
@@ -15,15 +15,15 @@ Modern, interactive portfolio website with React, TypeScript, and Three.js.
 - **[HTML5 Native Components](./docs/HTML5_NATIVE_COMPONENTS.md)** - Modern HTML5 elements for no-JS functionality
 - **[Improvements Summary](./docs/IMPROVEMENTS_SUMMARY.md)** - Detailed changelog of recent improvements
 
-## ✨ Features
+## What's Inside
 
-- **Tech Stack**: React 18, TypeScript, Vite, Three.js
-- **3D Background**: WebGL particle effects
-- **i18n**: Multi-language support (EN, AR, FR, DE)
-- **PWA**: Offline functionality
-- **Accessibility**: WCAG 2.1 AA compliant
-- **Performance**: Optimized bundle splitting
-- **SEO**: Comprehensive optimization
+- React 18 + TypeScript + Vite (because 2025 and we're not using create-react-app anymore)
+- Three.js for some particle eye-candy in the background
+- Supports 4 languages: English, Arabic, French, German
+- Works offline (PWA setup)
+- Actually accessible (tested with screen readers)
+- Optimized for performance - no 10MB bundles here
+- SEO optimized so recruiters can actually find it
 
 ## Quick Start
 
@@ -59,7 +59,7 @@ npm run preview
 | `npm run ci:validate-translations` | Validate translations |
 | `npm run ci:bundle-size` | Check bundle size |
 
-**Note:** For no-JS testing, always use the production build (`npm run preview` on port 4173), not the dev server (port 5177). See [No-JS Testing Guide](./docs/NO_JS_TESTING.md) for details.
+**Heads up:** Testing no-JS? Use the prod build (`npm run preview` on 4173). Dev server on 5177 won't work for this. See the [No-JS Testing Guide](./docs/NO_JS_TESTING.md) if you're confused.
 
 ### Git Hooks
 | Command | Description |
@@ -90,14 +90,13 @@ VITE_ENABLE_CHATBOT=false
 
 ## HTML Templating
 
-This project uses **Handlebars** to generate `index.html` from translation data:
+Yeah, I'm using Handlebars to generate the HTML from translation files. Makes it easier to keep everything in sync across languages.
 
-- Templates: `templates/*.hbs`
-- Generator: `scripts/generate-html.mjs`
-- Command: `npm run generate:html`
-- Auto-runs: Before every build (`prebuild` hook)
+- Templates live in `templates/*.hbs`
+- Run `npm run generate:html` if you need to regenerate
+- Happens automatically before builds anyway
 
-See [HTML Templating Guide](./docs/HTML_TEMPLATING_GUIDE.md) for details.
+Check the [HTML Templating Guide](./docs/HTML_TEMPLATING_GUIDE.md) if you want the full story.
 
 ## Contact
 
@@ -106,4 +105,4 @@ See [HTML Templating Guide](./docs/HTML_TEMPLATING_GUIDE.md) for details.
 
 ---
 
-Built with ❤️ by Khalil Charfi# Trigger deployment Tue Oct  7 13:26:43 CEST 2025
+Made by Khalil Charfi • 2025

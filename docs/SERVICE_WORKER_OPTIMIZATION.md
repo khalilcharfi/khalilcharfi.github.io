@@ -1,37 +1,44 @@
-# Service Worker Setup
+# Service Worker
 
-## What This Does
+## What It Does
 
-The service worker caches your site so it loads instantly on repeat visits and works offline.
+Caches your site so it loads instantly on repeat visits and works offline. Pretty standard PWA stuff.
 
 ## Caching Strategy
 
-**Static files** (HTML, CSS, JS): Cached first for instant loading  
-**Images**: Shows cached version immediately, updates in background  
-**API calls**: Tries network first, falls back to cache if offline
+**Static files** (HTML, CSS, JS)  
+→ Cache-first. Shows cached version immediately for speed.
 
-## Update Handling
+**Images**  
+→ Stale-while-revalidate. Shows cached version, updates in background.
+
+**API calls**  
+→ Network-first. Tries live data, falls back to cache if offline.
+
+## Updates
 
 When there's a new version:
-1. User sees a nice banner asking to update
-2. Click "Update Now" to get the latest version
-3. Page reloads automatically with new features
+1. User sees a banner asking if they want to update
+2. Click "Update Now" and boom - fresh version
+3. Page auto-reloads with new stuff
+
+No weird bugs from stale caches hopefully.
 
 ## Cache Management
 
-- Automatically limits cache size to prevent storage bloat
+- Auto-limits cache size so it doesn't eat all storage
 - Cleans up old caches when new version installs
-- Tracks what's cached vs what needs downloading
+- Tracks what's cached vs what needs fetching
 
 ## Debugging
 
-Check what's cached:
+**See what's cached:**
 ```javascript
 // In browser console
 caches.keys().then(console.log);
 ```
 
-Clear all caches:
+**Clear everything:**
 ```javascript
 caches.keys().then(keys => 
   Promise.all(keys.map(key => caches.delete(key)))
@@ -40,10 +47,11 @@ caches.keys().then(keys =>
 
 ## Browser Support
 
-Works on all modern browsers (Chrome, Firefox, Safari, Edge).
+Works on Chrome, Firefox, Safari, Edge. All modern browsers basically.
 
-## Result
+## Results
 
-Before: Slow loading, no offline support  
-After: Instant loading on repeat visits, works offline
+Before: Slow loading every time, no offline  
+After: Instant on repeat visits, works offline
 
+Not rocket science, just proper caching.
