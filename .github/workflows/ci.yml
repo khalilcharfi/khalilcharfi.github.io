@@ -136,9 +136,9 @@ jobs:
             fi
           done
 
-      - name: ⚡ Check artifact size
+      - name: ⚡ Verify build artifacts
         run: |
-          echo "🔍 Analyzing artifact size and structure..."
+          echo "🔍 Verifying build artifacts..."
           du -sh dist/
           
           echo "📊 Largest files in artifact:"
@@ -147,53 +147,12 @@ jobs:
           echo "📦 File count by type:"
           find dist/ -type f | sed 's/.*\.//' | sort | uniq -c | sort -nr
           
-          echo "🔧 Preparing artifact for upload..."
-          
-          # Create backup of original files
-          mkdir -p dist-backup
-          cp -r dist/* dist-backup/
-          
-          # Check total artifact size and warn if too large
+          # Check total artifact size
           TOTAL_SIZE=$(du -sb dist/ | cut -f1)
           TOTAL_SIZE_MB=$((TOTAL_SIZE / 1024 / 1024))
           echo "📏 Total artifact size: ${TOTAL_SIZE_MB}MB"
           
-          # Always apply optimizations to prevent buffer overflow
-          echo "🔧 Applying artifact optimizations to prevent buffer overflow..."
-          
-          # Remove source maps completely to reduce size
-          find dist/ -name "*.map" -delete
-          echo "✅ Removed source maps"
-          
-          # DISABLED: Don't split files as it breaks module loading
-          echo "🔧 Skipping aggressive optimizations (preserving file integrity)"
-          
-          # DISABLED: Don't remove large files as it breaks the app
-          # The main bundle needs to be preserved intact
-          echo "✅ Skipping large file removal (preserving main bundle)"
-          
-          # DISABLED: Don't use sed on minified JS as it can corrupt the code
-          echo "✅ Skipping JS comment removal (files already minified)"
-          
-          # Remove any temporary or cache files
-          find dist/ -name "*.tmp" -o -name "*.cache" -o -name "*.log" -delete
-          echo "✅ Removed temporary files"
-          
-          # Ensure proper file permissions
-          chmod -R 755 dist/
-          echo "✅ Set proper file permissions"
-          
-          OPTIMIZED_SIZE=$(du -sb dist/ | cut -f1)
-          OPTIMIZED_SIZE_MB=$((OPTIMIZED_SIZE / 1024 / 1024))
-          echo "📊 Optimized size: ${OPTIMIZED_SIZE_MB}MB (reduced from ${TOTAL_SIZE_MB}MB)"
-          
-          if [ $OPTIMIZED_SIZE_MB -gt 200 ]; then
-            echo "⚠️ Warning: Artifact size is still large (${OPTIMIZED_SIZE_MB}MB), may cause upload issues"
-          else
-            echo "✅ Artifact size is acceptable for upload"
-          fi
-          
-          echo "✅ Artifact preparation completed"
+          echo "✅ Build artifacts verified - no modifications applied"
 
       # ✅ Upload complete artifact without modifications
       - name: ⚡ Upload Pages artifact
