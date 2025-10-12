@@ -244,12 +244,26 @@ export default defineConfig(({ mode }) => {
       rollupOptions: {
         external: isProd ? [...PROD_EXTERNAL_PATTERNS] : [],
         output: {
-          // Chunking disabled - all code in single bundle
+          // Enable chunking to split large bundle into manageable files
           chunkFileNames: ASSETS_CHUNK_FILE_PATTERN,
           entryFileNames: ASSETS_ENTRY_FILE_PATTERN,
           assetFileNames: ASSETS_FILE_PATTERN,
-          // Inline all dynamic imports into single bundle
-          inlineDynamicImports: true
+          // Enable code splitting for better caching and smaller files
+          manualChunks: (id) => {
+            // Split large vendor libraries
+            if (id.includes('node_modules')) {
+              if (id.includes('react')) {
+                return 'vendor-react';
+              }
+              if (id.includes('three') || id.includes('@react-three')) {
+                return 'vendor-three';
+              }
+              if (id.includes('i18next')) {
+                return 'vendor-i18n';
+              }
+              return 'vendor';
+            }
+          }
         },
         
         treeshake: disableTreeShaking ? false : (enableDCE ? {
