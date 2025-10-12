@@ -174,7 +174,7 @@ jobs:
           done
           echo "✅ Pre-compression complete"
           
-      - name: ⚡ Deploy to GitHub Pages (chunked push)
+      - name: ⚡ Deploy to GitHub Pages (chunked push with size verification)
         env:
           GIT_LFS_SKIP_SMUDGE: 1
         run: |
@@ -218,9 +218,10 @@ jobs:
               # Add file and verify it's in the index
               git add -f "$jsfile"
               
-              # Check what git sees
-              git_size=$(git ls-files -s "$jsfile" | awk '{print $4}')
-              echo "     Git index size: $git_size bytes"
+              # Check what git sees - get object hash and check size
+              object_id=$(git ls-files -s "$jsfile" | awk '{print $2}')
+              git_size=$(git cat-file -s "$object_id" 2>/dev/null || echo "0")
+              echo "     Git object size: $git_size bytes (object: ${object_id:0:8})"
               
               if [ "$filesize" -eq "$git_size" ]; then
                 git commit -m "Deploy: $(basename $jsfile)"
@@ -228,6 +229,10 @@ jobs:
                 echo "  ✅ Pushed: $(basename $jsfile) ($filesize bytes)"
               else
                 echo "  ❌ SIZE MISMATCH! File: $filesize bytes, Git: $git_size bytes"
+                echo "     This indicates git is truncating the file during add!"
+                # Show more info
+                echo "     File SHA256: $(sha256sum "$jsfile" | cut -d' ' -f1)"
+                echo "     Git object SHA: $object_id"
                 exit 1
               fi
             fi
