@@ -149,7 +149,7 @@ jobs:
           
           echo "✅ Build artifacts verified - no modifications applied"
 
-      - name: ⚡ Debug: Verify files before deployment
+      - name: "⚡ Debug: Verify files before deployment"
         run: |
           echo "🔍 Checking vendor-three.js before deployment:"
           ls -lh dist/assets/vendor-three-C2c03BIj.js
