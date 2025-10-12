@@ -7,6 +7,7 @@ My personal portfolio site built with React, TypeScript, and Three.js. Nothing f
 - **[Architecture Guide](./docs/ARCHITECTURE.md)** - Comprehensive architecture documentation
 - **[Error Handling Guide](./docs/ERROR_HANDLING.md)** - Error handling patterns and best practices
 - **[CI/CD & Git Hooks](./docs/CI_HOOKS.md)** - CI/CD workflows and Git hooks setup
+- **[Deployment Troubleshooting](./docs/DEPLOYMENT_TROUBLESHOOTING.md)** - GitHub Pages deployment issues and solutions
 - **[HTML Templating](./docs/HTML_TEMPLATING_GUIDE.md)** - Handlebars templating system for static HTML generation
 - **[Templating Options](./docs/TEMPLATING_OPTIONS.md)** - Comparison of templating approaches
 - **[No-JS Testing Guide](./docs/NO_JS_TESTING.md)** - Testing progressive enhancement and no-JS fallback
@@ -49,6 +50,13 @@ npm run preview
 | `npm run dev` | Start development server |
 | `npm run build` | Build for production |
 | `npm run preview` | Preview production build |
+
+### Deployment
+| Command | Description |
+|---------|-------------|
+| `npm run deploy:manual` | Manual deployment to GitHub Pages (recommended) |
+
+**Note:** Due to CI environment issues with large files, use manual deployment for production releases. See [Deployment Troubleshooting](./docs/DEPLOYMENT_TROUBLESHOOTING.md) for details.
 
 ### Testing & CI
 | Command | Description |
