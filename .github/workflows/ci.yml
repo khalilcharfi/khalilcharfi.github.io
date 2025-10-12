@@ -160,22 +160,24 @@ jobs:
           echo "Last 100 chars:"
           tail -c 100 dist/assets/vendor-three-C2c03BIj.js
 
-      # ✅ Deploy using gh-pages branch with LFS support for large files
+      # ✅ Deploy using direct git push (avoids action truncation issues)
       - name: ⚡ Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist
-          publish_branch: gh-pages
-          force_orphan: true
-          enable_jekyll: false
-          allow_empty_commit: false
-          keep_files: false
-          full_commit_message: 'Deploy: ${{ github.event.head_commit.message }}'
-          user_name: 'github-actions[bot]'
-          user_email: 'github-actions[bot]@users.noreply.github.com'
-          # Disable git lfs to avoid issues with large files
-          lfs: false
+        run: |
+          echo "🚀 Deploying to gh-pages branch..."
+          cd dist
+          git init
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          echo "📦 Files to commit:"
+          git status --short
+          echo "📏 Verifying file sizes before commit:"
+          ls -lh assets/vendor-three-C2c03BIj.js
+          wc -c assets/vendor-three-C2c03BIj.js
+          git commit -m "Deploy: ${{ github.event.head_commit.message }}"
+          echo "📤 Pushing to gh-pages..."
+          git push -f https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git HEAD:gh-pages
+          echo "✅ Deployment complete!"
 
       - name: ⚡ Verify deployment
         run: |
