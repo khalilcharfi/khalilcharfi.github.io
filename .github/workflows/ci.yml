@@ -160,14 +160,23 @@ jobs:
           echo "Last 100 chars:"
           tail -c 100 dist/assets/vendor-three-C2c03BIj.js
 
-      # ✅ Deploy using direct git push (avoids action truncation issues)
+      # ✅ Deploy using direct git push with LFS completely disabled
       - name: ⚡ Deploy to GitHub Pages
+        env:
+          GIT_LFS_SKIP_SMUDGE: 1
         run: |
-          echo "🚀 Deploying to gh-pages branch..."
+          echo "🚀 Deploying to gh-pages branch (LFS disabled)..."
           cd dist
           git init
+          # Disable Git LFS completely for this repository
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config filter.lfs.required false
+          git config filter.lfs.clean "cat"
+          git config filter.lfs.smudge "cat"
+          git config filter.lfs.process ""
+          git config lfs.repositoryformatversion ""
+          echo "✅ Git LFS disabled"
           git add -A
           echo "📦 Files to commit:"
           git status --short
