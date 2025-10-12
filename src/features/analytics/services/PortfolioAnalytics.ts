@@ -1,6 +1,6 @@
 // Portfolio Analytics Service - Lightweight tracking for portfolio showcase
-import { projectService, skillService } from '@/features/portfolio/domain';
-import type { Project } from '@/features/portfolio/content/projects';
+import { projectService, skillService } from '../../portfolio/domain';
+import type { Project } from '../../portfolio/content/projects';
 
 export interface PortfolioEvent {
   type: 'project_view' | 'skill_interest' | 'cta_click' | 'scroll_depth' | 'section_view' | 'download' | 'contact';

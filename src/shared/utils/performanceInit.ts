@@ -15,8 +15,8 @@ import { preloadWASM } from './wasmLoader';
 
 // Performance severity levels based on DCE configuration
 const getPerformanceSeverity = () => {
-  const enableDCE = process.env.VITE_ENABLE_DCE === 'true' || 
-    (process.env.VITE_ENABLE_DCE === undefined && process.env.NODE_ENV === 'production');
+  const enableDCE = import.meta.env.VITE_ENABLE_DCE === 'true' || 
+    (import.meta.env.VITE_ENABLE_DCE === undefined && import.meta.env.PROD);
   
   return {
     // When DCE is enabled, use more aggressive performance monitoring
@@ -39,7 +39,7 @@ export const initializePerformanceOptimizations = async () => {
   preloadCriticalChunks();
 
   // 2. Register service worker (in production only)
-  if (process.env.NODE_ENV === 'production') {
+  if (import.meta.env.PROD) {
     await registerServiceWorker();
     if (import.meta.env.DEV) {
       performanceLogger.log('✅ Service worker registered');

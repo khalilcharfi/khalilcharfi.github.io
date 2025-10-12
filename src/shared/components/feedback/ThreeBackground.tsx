@@ -306,7 +306,9 @@ function FractalParticles({ count = 5000, theme }: { count?: number; theme: stri
     if (paused || !ref.current) return;
 
     frameCount.current += 1;
-    if (frameCount.current % 2 !== 0 && adaptiveSettings.renderQuality < 1) return;
+    
+    // Aggressive frame skipping for better performance
+    if (frameCount.current % 3 !== 0) return;
 
     const time = state.clock.getElapsedTime();
     const positionsArray = ref.current.geometry.attributes.position.array as Float32Array;
@@ -443,30 +445,28 @@ export const ThreeBackground: React.FC<ThreeBackgroundProps> = React.memo(({ the
 
   const bgColor = theme === 'light' ? '#F3F4F6' : '#0D1117';
 
-  // Handle smooth theme transitions with optimized timing
+  // Track theme changes for smooth transitions with fade effect
   useEffect(() => {
     if (previousTheme.current !== theme) {
       setIsTransitioning(true);
       
-      // Use RAF to sync with browser paint
-      requestAnimationFrame(() => {
-        const timer = setTimeout(() => {
-          setIsTransitioning(false);
-          previousTheme.current = theme;
-        }, 400); // Match CSS transition duration (0.4s)
-        
-        return () => clearTimeout(timer);
-      });
+      const transitionTimer = setTimeout(() => {
+        setIsTransitioning(false);
+        previousTheme.current = theme;
+      }, 300);
+      
+      return () => clearTimeout(transitionTimer);
     }
   }, [theme]);
 
   const bloomConfig = useMemo(() => {
+    // Reduce bloom quality during transitions for better performance
     return {
-      luminanceThreshold: 0.45,
-      intensity: 0.7,
-      levels: 8,
-      mipmapBlur: true,
-      radius: 0.9
+      luminanceThreshold: 0.5,
+      intensity: 0.6,
+      levels: 6,
+      mipmapBlur: false,
+      radius: 0.8
     };
   }, []);
 
@@ -521,9 +521,8 @@ export const ThreeBackground: React.FC<ThreeBackgroundProps> = React.memo(({ the
       width: '100%', 
       height: '100%', 
       zIndex: -1,
-      transition: 'opacity 0.4s cubic-bezier(0.4, 0.0, 0.2, 1)',
-      opacity: isTransitioning ? 0.85 : 1,
-      willChange: isTransitioning ? 'opacity' : 'auto'
+      opacity: isTransitioning ? 0.7 : 1,
+      transition: 'opacity 0.15s ease-in-out'
     }}>
       <WebGLErrorBoundary
         fallback={
@@ -544,11 +543,14 @@ export const ThreeBackground: React.FC<ThreeBackgroundProps> = React.memo(({ the
         <Canvas
           ref={canvasRef}
           camera={{ position: [0, 0, 12], fov: theme === 'light' ? 60 : 75 }}
-          dpr={Math.min(window.devicePixelRatio, 2)}
+          dpr={Math.min(window.devicePixelRatio, 1.5)}
           performance={{ min: 0.5 }}
+          frameloop="always"
           onCreated={({ gl }) => {
             const handleContextLoss = () => setHasError(true);
             gl.domElement.addEventListener('webglcontextlost', handleContextLoss);
+            // Optimize WebGL context for better performance
+            gl.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
           }}
           style={{
             position: 'absolute',
@@ -557,11 +559,11 @@ export const ThreeBackground: React.FC<ThreeBackgroundProps> = React.memo(({ the
             width: '100%',
             height: '100%',
             background: bgColor,
-            transition: 'background-color 0.4s cubic-bezier(0.4, 0.0, 0.2, 1)',
+            transition: 'background-color 0.25s ease-in-out',
             willChange: isTransitioning ? 'background-color' : 'auto'
           }}
           gl={{
-            antialias: true,
+            antialias: false,
             alpha: false,
             powerPreference: 'high-performance',
             toneMapping: theme === 'light' ? NoToneMapping : LinearToneMapping,
@@ -569,6 +571,8 @@ export const ThreeBackground: React.FC<ThreeBackgroundProps> = React.memo(({ the
             outputColorSpace: SRGBColorSpace,
             premultipliedAlpha: false,
             preserveDrawingBuffer: false,
+            stencil: false,
+            depth: true,
             failIfMajorPerformanceCaveat: false
           }}
         >

@@ -9,8 +9,8 @@ export {
   LazyVisitorTypeSelector
 } from './lazyLoading';
 
-// Conditionally export debug components
-export { LazyTranslationTest } from './lazyLoading';
+// LazyTranslationTest is NOT re-exported to avoid circular dependencies
+// Import directly from './lazyLoading' if needed in development
 export {
   loadingManager,
   useLoadingManager,

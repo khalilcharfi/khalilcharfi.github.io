@@ -1,8 +1,8 @@
 // Personalized CTA Component - Dynamic CTAs based on visitor behavior
 import React from 'react';
 import { portfolioAnalytics } from '../../analytics/services/PortfolioAnalytics';
-import { projectService } from '@/features/portfolio/domain';
-import { personalInfo } from '@/features/portfolio/content/profile';
+import { projectService } from '../../portfolio/domain';
+import { personalInfo } from '../../portfolio/content/profile';
 
 interface PersonalizedCTAProps {
   context?: 'hero' | 'projects' | 'skills' | 'contact' | 'footer';
@@ -265,7 +265,7 @@ export const PersonalizedCTA: React.FC = React.memo(({<PersonalizedCTAProps> = (
       </div>
       
       {/* Visitor type indicator (for debugging) */}
-      {process.env.NODE_ENV === 'development' && (
+      {import.meta.env.DEV && (
         <div className="visitor-type-indicator">
           <small>
             Visitor Type: {behavior.visitorType} | 

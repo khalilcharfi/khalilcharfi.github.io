@@ -59,7 +59,7 @@ export const useTranslation = (namespace?: string) => {
       const result = originalT(key, options);
       
       // Check if translation is missing (returns the key itself)
-      if (result === key && process.env.NODE_ENV === 'development') {
+      if (result === key && import.meta.env.DEV) {
         i18nLogger.warn(`🌐 Missing translation: "${key}" in language: "${i18n.language}"`);
         
         // Try to find similar keys

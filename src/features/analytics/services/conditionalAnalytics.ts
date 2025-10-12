@@ -1,5 +1,5 @@
 // Conditional analytics import - tree-shaken when disabled
-import { SHOW_RECOMMENDED_SECTIONS } from '../../visitor-personalization';
+import { SHOW_RECOMMENDED_SECTIONS } from '../../../shared/config';
 
 // Type definition for analytics to maintain type safety
 interface ConditionalAnalytics {

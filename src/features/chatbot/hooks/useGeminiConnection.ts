@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { validateApiKey, testGeminiConnection } from '../../../shared/utils/api';
-import { ENABLE_CHATBOT } from '../../visitor-personalization';
+import { ENABLE_CHATBOT } from '../../../shared/config';
 import { chatbotLogger } from '../../../shared/utils/logger';
 
 type ConnectionStatus = 'checking' | 'connected' | 'failed' | 'disabled';
@@ -31,7 +31,7 @@ export const useGeminiConnectionCheck = (): UseGeminiConnectionReturn => {
         }
         
         // Check if API key exists and validate format
-        const apiKey = process.env.API_KEY || process.env.GEMINI_API_KEY;
+        const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
         const keyValidation = validateApiKey(apiKey);
         
         if (!keyValidation.isValid) {
@@ -41,7 +41,7 @@ export const useGeminiConnectionCheck = (): UseGeminiConnectionReturn => {
         }
         
         // Skip API validation in development for faster startup
-        if (window.location.hostname === 'localhost' && process.env.NODE_ENV === 'development') {
+        if (window.location.hostname === 'localhost' && import.meta.env.DEV) {
             chatbotLogger.log('Development mode: Skipping API connection test');
             setConnectionStatus('connected');
             return;

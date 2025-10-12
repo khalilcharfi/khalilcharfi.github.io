@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { loadAIModule } from '../../../shared/utils';
 import type { Chat } from '@google/genai';
-import { buildContext, generateSystemInstruction, getModelConfig } from '../utils/chatConfig';
+import { buildContext, generateSystemInstruction } from '../utils/chatConfig';
+import { getModelConfig } from '../../../shared/config';
 
 interface UseChatInitializationProps {
   isOpen: boolean;

@@ -1,5 +1,5 @@
 import { GoogleGenAI } from '@google/genai';
-import { getModelConfig } from '../../features/chatbot/utils/chatConfig';
+import { getModelConfig } from '../config/chatbotConfig';
 
 export const validateApiKey = (apiKey: string | undefined): { isValid: boolean; error?: string } => {
     if (!apiKey) {

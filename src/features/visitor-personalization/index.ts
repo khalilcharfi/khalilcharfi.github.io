@@ -1,3 +1,11 @@
 export { VisitorTypeSelector } from './components/VisitorTypeSelector';
-export * from './components/DynamicContent';
+export { 
+  DynamicContentProvider,
+  useDynamicContent,
+  useSectionTracking,
+  DynamicSection,
+  DynamicCTA,
+  ProfileInsights,
+  getContentModeInfo
+} from './components/DynamicContent';
 export * from './adapters';

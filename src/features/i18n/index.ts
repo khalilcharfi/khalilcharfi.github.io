@@ -2,4 +2,6 @@ export { default as i18n, t, getCurrentLanguage, getBaseLanguage, isLanguageSupp
 export * from './data/translations';
 export * from './hooks/useTranslation';
 export * from './utils/translationValidator';
-export { TranslationTest } from './components/TranslationTest';
+
+// TranslationTest is NOT exported from index to prevent it from being bundled
+// Import it directly from './components/TranslationTest' in development only

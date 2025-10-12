@@ -17,7 +17,7 @@ export const getDebugComponents = () => {
 
 // Re-export from features for convenience
 export { SEOHead } from '../../features/seo';
-export { Chatbot } from '../../features/chatbot';
+// Note: Chatbot should be imported directly from @/features/chatbot to avoid circular deps
 
 // Re-export UI components
 export { Section } from '../ui';

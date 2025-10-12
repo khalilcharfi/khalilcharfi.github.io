@@ -42,8 +42,9 @@
     --fallback-border: #ffecb5;
 
     /* Theme transition timing for smooth switching */
-    --theme-transition-duration: 0.4s;
-    --theme-transition-timing: cubic-bezier(0.4, 0.0, 0.2, 1);
+    --theme-transition-duration: 0.3s;
+    --theme-transition-timing: ease-out;
+    --theme-transition-timing-smooth: ease-out;
 
     /* Liquid Glass Effect Variables */
     --liquid-glass-edge-size: 20px;
@@ -92,7 +93,8 @@ html {
     scroll-behavior: smooth;
     scroll-padding-top: calc(var(--nav-height) + 20px); /* Match the offset in smoothScrollTo function */
     transition:
-        background-color var(--theme-transition-duration) var(--theme-transition-timing)}
+        background-color var(--theme-transition-duration) var(--theme-transition-timing-smooth),
+        color-scheme var(--theme-transition-duration) var(--theme-transition-timing-smooth)}
 
 body {
     font-family: var(--font-body);
@@ -103,8 +105,8 @@ body {
     -moz-osx-font-smoothing: grayscale;
     min-height: 100vh;
     transition:
-        background-color var(--theme-transition-duration) var(--theme-transition-timing),
-        color var(--theme-transition-duration) var(--theme-transition-timing);
+        background-color var(--theme-transition-duration) var(--theme-transition-timing-smooth),
+        color var(--theme-transition-duration) var(--theme-transition-timing-smooth);
     overflow-x: hidden;
     position: relative}
 body.mobile-menu-open {
@@ -247,8 +249,8 @@ html[data-theme="light"] .btn-outline:hover, html[data-theme="light"] .btn-outli
 
 .navbar { position: fixed; top: 0; left: 0; width: 100%; height: var(--nav-height); background-color: var(--nav-bg); backdrop-filter: blur(var(--blur-strength)); -webkit-backdrop-filter: blur(var(--blur-strength)); display: flex; align-items: center; padding: 0 20px; z-index: 1000; border-bottom: 1px solid var(--glass-border-color); transition:
     top 0.3s ease,
-    background-color var(--theme-transition-duration) var(--theme-transition-timing),
-    border-color var(--theme-transition-duration) var(--theme-transition-timing),
+    background-color var(--theme-transition-duration) var(--theme-transition-timing-smooth),
+    border-color var(--theme-transition-duration) var(--theme-transition-timing-smooth),
     box-shadow var(--transition-speed);
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1)}
 
@@ -2707,6 +2709,40 @@ section {
 }
 
 /* Theme transition overlay for ultra-smooth experience */
+/* View Transition API Support for ultra-smooth theme switching */
+::view-transition-old(root),
+::view-transition-new(root) {
+    animation-duration: 0.35s;
+    animation-timing-function: cubic-bezier(0.32, 0.08, 0.24, 1);
+}
+
+::view-transition-old(root) {
+    animation-name: theme-fade-out;
+}
+
+::view-transition-new(root) {
+    animation-name: theme-fade-in;
+}
+
+@keyframes theme-fade-out {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+
+@keyframes theme-fade-in {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* Smooth overlay for theme transitions */
 body::after {
     content: '';
     position: fixed;
@@ -2718,35 +2754,39 @@ body::after {
     opacity: 0;
     z-index: 9999;
     pointer-events: none;
-    transition:
-        opacity 0.2s ease-out,
-        background-color var(--theme-transition-duration) var(--theme-transition-timing);
-    will-change: opacity;
+    transition: opacity 0.15s ease-in-out;
 }
 
 body.theme-transitioning::after {
-    opacity: 0.08;
+    opacity: 0.2;
 }
 
-/* Prevent layout shift during theme transition */
+/* Prevent layout shift and optimize during theme transition */
 body.theme-transitioning {
     overflow-x: hidden;
 }
 
-/* Smooth color transitions for all themed elements */
-* {
-    transition-property: background-color, border-color, color, fill, stroke;
-    transition-duration: var(--theme-transition-duration);
-    transition-timing-function: var(--theme-transition-timing);
+body.theme-transitioning * {
+    animation-play-state: paused !important;
 }
 
-/* Exclude specific elements from theme transitions */
-.animate-in,
-.glass-panel,
-.modal-overlay,
-.modal-content,
-canvas {
-    transition-property: background-color, border-color, color, fill, stroke, transform, opacity, box-shadow !important;
+/* Smooth color transitions for themed elements */
+body,
+.navbar,
+.section,
+.glass-card,
+.btn,
+p,
+h1, h2, h3, h4, h5, h6,
+.nav-logo,
+.nav-links a,
+.project-card,
+.skill-item,
+footer {
+    transition: background-color var(--theme-transition-duration) ease-out,
+                color var(--theme-transition-duration) ease-out,
+                border-color var(--theme-transition-duration) ease-out,
+                box-shadow var(--theme-transition-duration) ease-out;
 }
 
 /* Global scrollbar transitions moved to scrollbar.css */
@@ -2765,8 +2805,13 @@ canvas {
 
 /* Theme toggle enhanced animations */
 .theme-toggle-btn, .theme-toggle {
-    transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
-    transform-origin: center}
+    transition: transform 0.2s ease-out;
+    transform-origin: center;
+}
+
+.theme-toggle-btn:active {
+    transform: scale(0.95);
+}
 
 .theme-toggle:hover {
     transform: scale(1.1) rotate(10deg)}
@@ -2831,8 +2876,24 @@ canvas {
     .theme-toggle:hover {
         transform: none}
 
+    .theme-toggle-btn:active {
+        transform: none !important}
+
+    .theme-toggle-btn svg {
+        transition: none !important}
+
+    .theme-transitioning .theme-toggle-btn svg {
+        transform: none !important}
+
     .btn:hover {
         transform: none}
+
+    body::after {
+        display: none !important}
+
+    ::view-transition-old(root),
+    ::view-transition-new(root) {
+        animation: none !important}
 
     .nav-links a {
         filter: none !important;

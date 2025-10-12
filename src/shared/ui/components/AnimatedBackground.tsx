@@ -416,7 +416,7 @@ export const AnimatedBackground: React.FC<AnimatedBackgroundProps> = React.memo(
           width: '100%',
           height: '100%',
           background: finalColorScheme.backgroundColor,
-          transition: 'background-color 0.4s cubic-bezier(0.4, 0.0, 0.2, 1)'
+          transition: 'background-color 0.3s ease-out'
         }}
         gl={{
           antialias: true,

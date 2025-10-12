@@ -1,8 +1,24 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
-export const AnimationPauseContext = createContext<boolean>(false);
+interface AnimationPauseContextValue {
+  paused: boolean;
+  setPaused: (paused: boolean) => void;
+}
 
-export const useAnimationPause = () => useContext(AnimationPauseContext);
+export const AnimationPauseContext = createContext<AnimationPauseContextValue>({
+  paused: false,
+  setPaused: () => {}
+});
+
+export const useAnimationPause = () => {
+  const context = useContext(AnimationPauseContext);
+  return context.paused;
+};
+
+export const useAnimationPauseControl = () => {
+  const context = useContext(AnimationPauseContext);
+  return context;
+};
 
 export const AnimationPauseProvider: React.FC<{ children: React.ReactNode }> = React.memo(({ children }) => {
   const [paused, setPaused] = useState(false);
@@ -25,8 +41,10 @@ export const AnimationPauseProvider: React.FC<{ children: React.ReactNode }> = R
     };
   }, []);
 
+  const value = { paused, setPaused };
+
   return (
-    <AnimationPauseContext.Provider value={paused}>
+    <AnimationPauseContext.Provider value={value}>
       {children}
     </AnimationPauseContext.Provider>
   );

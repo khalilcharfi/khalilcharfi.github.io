@@ -280,7 +280,7 @@ export const SEOHead: React.FC<SEOHeadProps> = React.memo(({
     generateStructuredData();
     
     // Log SEO updates in development
-    if (process.env.NODE_ENV === 'development') {
+    if (import.meta.env.DEV) {
       console.log('🔍 SEO Meta Tags Updated:', {
         title: fullTitle,
         description: description.substring(0, 100) + '...',

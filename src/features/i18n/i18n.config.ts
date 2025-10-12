@@ -18,7 +18,7 @@ if (!i18n.isInitialized) {
     .init({
       resources,
       fallbackLng: 'en',
-      debug: process.env.NODE_ENV === 'development',
+      debug: import.meta.env.DEV,
       interpolation: {
         escapeValue: false,
       },
@@ -35,9 +35,9 @@ if (!i18n.isInitialized) {
       },
       defaultNS: 'translation',
       ns: ['translation'],
-      saveMissing: process.env.NODE_ENV === 'development',
+      saveMissing: import.meta.env.DEV,
       missingKeyHandler: (lng, ns, key) => {
-        if (process.env.NODE_ENV === 'development') {
+        if (import.meta.env.DEV) {
           console.warn(`Missing translation key: ${key} for language: ${lng}`);
         }
       },

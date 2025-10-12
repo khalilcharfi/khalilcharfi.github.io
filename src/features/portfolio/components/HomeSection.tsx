@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import { useTranslation } from '@/features/i18n';
-import {useDynamicContent, useSectionTracking, SHOW_RECOMMENDED_SECTIONS} from '@/features/visitor-personalization';
+import { useDynamicContent, useSectionTracking } from '@/features/visitor-personalization';
 import { analytics } from '@/features/analytics';
-import { PERSONAS_FEATURE_ENABLED } from '@/shared/config';
+import { PERSONAS_FEATURE_ENABLED, SHOW_RECOMMENDED_SECTIONS } from '@/shared/config';
 import { smoothScrollTo } from '@/shared/utils';
 import { Section } from '@/shared/components';
 

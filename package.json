@@ -11,6 +11,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build && node scripts/copy-assets.js && node scripts/generate-sitemap.js",
+    "build:dev": "vite build --mode development && node scripts/copy-assets.js && node scripts/generate-sitemap.js",
     "build:prod": "vite build --mode production && node scripts/copy-assets.js && node scripts/generate-sitemap.js",
     "build:prod:debug": "VITE_NO_MINIFY=true vite build --mode production && node scripts/copy-assets.js && node scripts/generate-sitemap.js",
     "build:analyze": "vite build && open dist/bundle-analysis.html",

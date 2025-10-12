@@ -1,19 +1,26 @@
-import { lazy } from 'react';
+import { lazy, type ComponentType } from 'react';
 import { logger, chatbotLogger } from './logger';
 import { loadingManager, ResourceLoader } from './loadingManager';
 
-export const LazyVisitorTypeSelector = lazy(() => import('../../features/visitor-personalization').then(m => ({ default: m.VisitorTypeSelector })));
+export const LazyVisitorTypeSelector = lazy(() => 
+  import('../../features/visitor-personalization').then(m => ({ default: m.VisitorTypeSelector }))
+);
 
-export const LazyTranslationTest = lazy(() => {
-  if (import.meta.env.DEV || import.meta.env.VITE_SHOW_TRANSLATION_DEBUG === 'true') {
-    return import('../../features/i18n').then(m => ({ default: m.TranslationTest }));
-  }
-  return Promise.resolve({ 
-    default: () => null 
-  }) as Promise<{ default: React.ComponentType<any> }>;
-});
+// TranslationTest - production-safe implementation that avoids circular dependencies
+// Use a simple inline component in production, dynamic import only in development
+const EmptyComponent = () => null;
 
-export const LazyThreeBackground = lazy(() => import('../components/feedback/ThreeBackground').then(m => ({ default: m.ThreeBackground })));
+export const LazyTranslationTest = import.meta.env.PROD
+  ? EmptyComponent as ComponentType<any>
+  : lazy(() => 
+      import('../../features/i18n/components/TranslationTest')
+        .then(m => ({ default: m.TranslationTest }))
+        .catch(() => ({ default: EmptyComponent }))
+    );
+
+export const LazyThreeBackground = lazy(() => 
+  import('../components/feedback/ThreeBackground').then(m => ({ default: m.ThreeBackground }))
+);
 
 let aiModulePromise: Promise<any> | null = null;
 
@@ -50,7 +57,7 @@ export const preloadResource = (href: string, as: string, type?: string) => {
 };
 
 export const preloadCriticalChunks = () => {
-  if (process.env.NODE_ENV !== 'production') {
+  if (import.meta.env.DEV) {
     logger.log('⚠️ Skipping chunk preload in development mode');
     return;
   }
@@ -162,7 +169,7 @@ export const conditionallyPreloadThreeJS = () => {
 };
 
 export const registerServiceWorker = async () => {
-  if ('serviceWorker' in navigator && process.env.NODE_ENV === 'production') {
+  if ('serviceWorker' in navigator && import.meta.env.PROD) {
     try {
       const registration = await navigator.serviceWorker.register('/sw.js', {
         scope: '/',
@@ -312,12 +319,16 @@ function showUpdateNotification(registration: ServiceWorkerRegistration) {
   });
 }
 
-export default {
+// Default export - conditionally include LazyTranslationTest to avoid circular dependencies
+const exports = {
   LazyVisitorTypeSelector,
-  LazyTranslationTest,
   loadAIModule,
   preloadResource,
   preloadCriticalChunks,
   conditionallyPreloadThreeJS,
-  registerServiceWorker
+  registerServiceWorker,
+  // Only include in development to avoid circular dependency in production
+  ...(import.meta.env.DEV ? { LazyTranslationTest } : {})
 };
+
+export default exports;

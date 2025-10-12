@@ -27,24 +27,25 @@ if (typeof window !== 'undefined' && process.env.NODE_ENV === 'production') {
 
 import '@/i18n';
 import { useTranslation, CertificateItem } from '@/features/i18n';
-import { useGeminiConnectionCheck } from '@/features/chatbot';
+import { useGeminiConnectionCheck } from '@/features/chatbot/hooks/useGeminiConnection';
 import { useChatbotLoader } from '@/features/chatbot/hooks/useChatbotLoader';
 import { useReducedMotion, useAnnouncer } from '@/shared/hooks';
-import { 
-  DynamicContentProvider, 
-  ProfileInsights, 
-  SHOW_VISITOR_CONTROLS, 
-  SHOW_PROFILE_INSIGHTS, 
-  SHOW_TRANSLATION_DEBUG, 
-  SHOW_DEBUG_INFO, 
-  IS_DEVELOPMENT, 
-  SHOW_RECOMMENDED_SECTIONS 
-} from '@/features/visitor-personalization';
+import { DynamicContentProvider, ProfileInsights } from '@/features/visitor-personalization';
 import { analytics } from '@/features/analytics';
-import { PERSONAS_FEATURE_ENABLED, getSectionIds } from '@/shared/config';
-import { AnimationPauseProvider, SimpleConsentProvider } from '@/core';
+import { 
+  PERSONAS_FEATURE_ENABLED, 
+  getSectionIds,
+  SHOW_VISITOR_CONTROLS,
+  SHOW_PROFILE_INSIGHTS,
+  SHOW_TRANSLATION_DEBUG,
+  SHOW_DEBUG_INFO,
+  IS_DEVELOPMENT,
+  SHOW_RECOMMENDED_SECTIONS
+} from '@/shared/config';
+import { AnimationPauseProvider, SimpleConsentProvider, useAnimationPauseControl } from '@/core';
 import { Navbar, SkipLinks, SEOHead, EnhancedLoadingScreen } from '@/shared/components';
-import { performanceLogger, LazyTranslationTest, LazyThreeBackground, loadingManager, useLoadingManager } from '@/shared/utils';
+import { performanceLogger, LazyThreeBackground, loadingManager, useLoadingManager } from '@/shared/utils';
+import { LazyTranslationTest } from '@/shared/utils/lazyLoading'; // Direct import to avoid circular dependency
 import { ANIMATION_DURATION, SCROLL, OBSERVER_CONFIG } from '@/shared/constants';
 import { 
   HomeSection,
@@ -58,7 +59,7 @@ import {
 } from '@/features/portfolio';
 
 // Lazy load heavy components with preloading hints
-const Chatbot = lazy(() => import('@/shared/components').then(m => ({ default: m.Chatbot })));
+const Chatbot = lazy(() => import('@/features/chatbot/components/Chatbot').then(m => ({ default: m.Chatbot })));
 const CertificateModal = lazy(() => import('@/features/portfolio').then(m => ({ default: m.CertificateModal })));
 const ProjectsSection = lazy(() => import('@/features/portfolio').then(m => ({ default: m.ProjectsSection })));
 const PublicationsSection = lazy(() => import('@/features/portfolio').then(m => ({ default: m.PublicationsSection })));
@@ -115,6 +116,7 @@ const App: React.FC = () => {
     const [isThemeTransitioning, setIsThemeTransitioning] = useState(false);
     const [showBackground] = useState(true);
     const reducedMotion = useReducedMotion();
+    const { setPaused } = useAnimationPauseControl();
     
     // Lazy load chatbot on user interaction
     const { isLoaded: isChatbotLoaded, isLoading: isChatbotLoading, error: chatbotError } = useChatbotLoader();
@@ -337,18 +339,43 @@ const App: React.FC = () => {
         if (isThemeTransitioning) return;
         
         setIsThemeTransitioning(true);
+        
+        // Pause particle animations immediately for smooth transition
+        setPaused(true);
+        
         const newTheme = theme === 'light' ? 'dark' : 'light';
         
-        // Use RAF to ensure smooth transition
-        requestAnimationFrame(() => {
-            setTheme(newTheme);
-            
-            // Announce theme change to screen readers
-            const message = String(newTheme === 'light' 
-                ? t('theme.changedToLight') 
-                : t('theme.changedToDark'));
-            announce(message, 'polite');
-        });
+        // Use View Transition API for smooth theme switching (with fallback)
+        const updateTheme = () => {
+            // Small delay to let the overlay appear
+            setTimeout(() => {
+                setTheme(newTheme);
+                
+                // Announce theme change to screen readers
+                const message = String(newTheme === 'light' 
+                    ? t('theme.changedToLight') 
+                    : t('theme.changedToDark'));
+                announce(message, 'polite');
+            }, 50); // 50ms delay for smooth overlay appearance
+        };
+
+        // Check if View Transition API is supported
+        if ('startViewTransition' in document && !reducedMotion) {
+            // Use native browser View Transition API for ultra-smooth transitions
+            (document as any).startViewTransition(() => {
+                updateTheme();
+            });
+        } else {
+            // Fallback for browsers without View Transition API
+            requestAnimationFrame(() => {
+                updateTheme();
+            });
+        }
+        
+        // Resume particles after transition completes with smooth fade-in
+        setTimeout(() => {
+            setPaused(false);
+        }, 400); // Resume after transition
     };
 
     useEffect(() => {

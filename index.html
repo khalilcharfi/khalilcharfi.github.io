@@ -126,9 +126,8 @@
     <link rel="preconnect" href="https://www.googletagmanager.com">
     
     <!-- Preload critical resources -->
-    <link rel="modulepreload" href="/src/shared/wasm/portfolio_engine.js">
-    <link rel="preload" href="/src/shared/wasm/portfolio_engine_bg.wasm" as="fetch" crossorigin>
-    <link rel="preload" href="/asset/profile/profile-photo.jpg" as="image" type="image/jpeg">
+    <!-- Note: Vite handles modulepreload automatically in production builds -->
+    <link rel="preload" href="/asset/profile/profile-photo.jpg" as="image" type="image/jpeg" fetchpriority="high">
     <!-- Critical CSS - inline for faster initial render -->
     <style>
         /* Critical above-the-fold styles */
