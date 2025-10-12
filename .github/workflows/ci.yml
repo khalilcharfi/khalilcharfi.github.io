@@ -149,7 +149,18 @@ jobs:
           
           echo "✅ Build artifacts verified - no modifications applied"
 
-      # ✅ Deploy using gh-pages branch (more reliable for large files)
+      - name: ⚡ Debug: Verify files before deployment
+        run: |
+          echo "🔍 Checking vendor-three.js before deployment:"
+          ls -lh dist/assets/vendor-three-C2c03BIj.js
+          echo "File size: $(wc -c < dist/assets/vendor-three-C2c03BIj.js) bytes"
+          echo "First 100 chars:"
+          head -c 100 dist/assets/vendor-three-C2c03BIj.js
+          echo "..."
+          echo "Last 100 chars:"
+          tail -c 100 dist/assets/vendor-three-C2c03BIj.js
+
+      # ✅ Deploy using gh-pages branch with LFS support for large files
       - name: ⚡ Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
@@ -157,9 +168,14 @@ jobs:
           publish_dir: ./dist
           publish_branch: gh-pages
           force_orphan: true
+          enable_jekyll: false
+          allow_empty_commit: false
+          keep_files: false
+          full_commit_message: 'Deploy: ${{ github.event.head_commit.message }}'
           user_name: 'github-actions[bot]'
           user_email: 'github-actions[bot]@users.noreply.github.com'
-          commit_message: 'Deploy: ${{ github.event.head_commit.message }}'
+          # Disable git lfs to avoid issues with large files
+          lfs: false
 
       - name: ⚡ Verify deployment
         run: |
