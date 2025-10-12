@@ -76,12 +76,7 @@ jobs:
     if: ${{ inputs.skip_build != true && (needs.validate.result == 'success' || inputs.deploy_only) }}
     timeout-minutes: 15
     permissions:
-      contents: read
-      pages: write
-      id-token: write
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      contents: write
     
     steps:
       - name: ⚡ Checkout
@@ -154,97 +149,37 @@ jobs:
           
           echo "✅ Build artifacts verified - no modifications applied"
 
-      # ✅ Upload complete artifact without modifications
-      - name: ⚡ Upload Pages artifact
-        id: upload-artifact
-        uses: actions/upload-pages-artifact@v4
-        with:
-          path: './dist'
-          name: 'github-pages'
-          retention-days: 1
-        env:
-          # Increase buffer sizes to prevent overflow
-          NODE_OPTIONS: '--max-old-space-size=8192'
-          # Set environment for stable tar operations
-          TAR_OPTIONS: '--no-same-permissions --no-same-owner'
-        continue-on-error: false
-
-      - name: ⚡ Fallback upload (DISABLED - was corrupting files)
-        if: false
-        run: |
-          echo "⚠️ Fallback mechanism disabled to prevent file corruption"
-          
-          # Remove any large image files that aren't critical
-          find dist-fallback/ -name "*.jpg" -o -name "*.jpeg" -o -name "*.png" -o -name "*.gif" -o -name "*.webp" | while read file; do
-            if [ $(stat -f%z "$file" 2>/dev/null || stat -c%s "$file" 2>/dev/null || echo 0) -gt 500000 ]; then
-              echo "Removing large image: $file"
-              rm "$file"
-            fi
-          done
-          
-          # Keep only essential files for basic functionality
-          echo "📦 Fallback artifact contents:"
-          find dist-fallback/ -type f -name "*.html" -o -name "*.css" -o -name "*.js" | head -20
-          
-          echo "📦 Fallback artifact size:"
-          du -sh dist-fallback/
-          
-          # Ensure we don't have any problematic file permissions
-          chmod -R 755 dist-fallback/
-          
-          # Final size check
-          FALLBACK_SIZE=$(du -sb dist-fallback/ | cut -f1)
-          FALLBACK_SIZE_MB=$((FALLBACK_SIZE / 1024 / 1024))
-          echo "📊 Fallback artifact size: ${FALLBACK_SIZE_MB}MB"
-          
-          if [ $FALLBACK_SIZE_MB -gt 100 ]; then
-            echo "⚠️ Warning: Fallback artifact is still large (${FALLBACK_SIZE_MB}MB)"
-          else
-            echo "✅ Fallback artifact size is acceptable"
-          fi
-          
-          echo "✅ Fallback artifact prepared safely"
-
-      - name: ⚡ Upload fallback artifact (DISABLED)
-        if: false
-        uses: actions/upload-pages-artifact@v4
-        with:
-          path: './dist-fallback'
-          name: 'github-pages'
-          retention-days: 1
-        env:
-          # Use minimal buffer settings for fallback
-          NODE_OPTIONS: '--max-old-space-size=2048'
-
+      # ✅ Deploy using gh-pages branch (more reliable for large files)
       - name: ⚡ Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
-        timeout-minutes: 15
-        env:
-          # Increase timeout and buffer settings for large artifacts
-          NODE_OPTIONS: '--max-old-space-size=4096'
-          # Set longer timeout for CDN operations
-          GITHUB_PAGES_TIMEOUT: '900'
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
+          publish_branch: gh-pages
+          force_orphan: true
+          user_name: 'github-actions[bot]'
+          user_email: 'github-actions[bot]@users.noreply.github.com'
+          commit_message: 'Deploy: ${{ github.event.head_commit.message }}'
 
       - name: ⚡ Verify deployment
         run: |
-          echo "🚀 Deployment completed!"
-          echo "URL: ${{ steps.deployment.outputs.page_url }}"
-          sleep 10
-          if curl -fsSL --max-time 15 "${{ steps.deployment.outputs.page_url }}" > /dev/null; then
+          echo "🚀 Deployment completed to gh-pages branch!"
+          echo "URL: https://khalilcharfi.github.io"
+          sleep 15
+          if curl -fsSL --max-time 20 "https://khalilcharfi.github.io" > /dev/null; then
             echo "✅ Site is accessible"
           else
-            echo "⚠️  Site may not be fully propagated yet"
+            echo "⚠️  Site may not be fully propagated yet (CDN delay)"
           fi
 
       - name: ⚡ Deployment summary
         run: |
           echo "## 🚀 Deployment Summary" >> $GITHUB_STEP_SUMMARY
           echo "### ✅ Status: Success" >> $GITHUB_STEP_SUMMARY
-          echo "### 🔗 URL: ${{ steps.deployment.outputs.page_url }}" >> $GITHUB_STEP_SUMMARY
+          echo "### 🔗 URL: https://khalilcharfi.github.io" >> $GITHUB_STEP_SUMMARY
           echo "### 📅 Deployed: $(date -u)" >> $GITHUB_STEP_SUMMARY
           echo "### 📦 Source: ${{ github.ref_name }} branch" >> $GITHUB_STEP_SUMMARY
-          echo "### 🏗️ Build: $(du -sh dist | cut -f1)" >> $GITHUB_STEP_SUMMARY
+          echo "### 🏗️ Deployed via: gh-pages branch" >> $GITHUB_STEP_SUMMARY
 
   summary:
     name: 📊 Pipeline Summary
