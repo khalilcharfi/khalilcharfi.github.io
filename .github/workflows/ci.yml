@@ -183,53 +183,73 @@ jobs:
           git init
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+          
+          # Completely disable LFS - no filters at all
           git config filter.lfs.required false
           git config filter.lfs.clean "cat"
           git config filter.lfs.smudge "cat"
           git config filter.lfs.process ""
           git config lfs.repositoryformatversion ""
           git config lfs.fetchexclude "*"
+          git config core.autocrlf false
+          git config core.eol lf
           
-          # Treat all files as binary to prevent any text conversion
-          echo "* binary" > .gitattributes
-          echo "✅ Git configured (all files as binary, LFS disabled)"
-          
-          # Initial commit with just the structure
-          git add .gitattributes
-          git commit -m "Initial commit: Setup"
+          echo "✅ Git configured (LFS disabled, no line ending conversion)"
           git branch -M gh-pages
           
           # Push HTML and small files first
           echo "📦 Batch 1: HTML, CSS, and small assets..."
           git add index.html *.txt *.xml 2>/dev/null || true
           git add assets/*.css assets/*.svg assets/*.json assets/*.jpg 2>/dev/null || true
-          git commit -m "Deploy batch 1: HTML, CSS, images" --allow-empty
-          git push -f https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git gh-pages
+          if git diff --cached --quiet; then
+            echo "  ⚠️  No files to commit in batch 1"
+          else
+            git commit -m "Deploy batch 1: HTML, CSS, images"
+            git push -f https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git gh-pages
+            echo "  ✅ Batch 1 pushed"
+          fi
           
           # Push JS files one by one (the problematic files)
           echo "📦 Batch 2: JavaScript files (one at a time)..."
           for jsfile in assets/*.js; do
             if [ -f "$jsfile" ]; then
               filesize=$(wc -c < "$jsfile")
-              echo "  Adding: $jsfile ($filesize bytes)"
-              git add "$jsfile"
-              git commit -m "Deploy: $(basename $jsfile)" --allow-empty
-              git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git gh-pages
-              echo "  ✅ Pushed: $(basename $jsfile)"
+              echo "  📄 Processing: $jsfile ($filesize bytes)"
+              # Add file and verify it's in the index
+              git add -f "$jsfile"
+              
+              # Check what git sees
+              git_size=$(git ls-files -s "$jsfile" | awk '{print $4}')
+              echo "     Git index size: $git_size bytes"
+              
+              if [ "$filesize" -eq "$git_size" ]; then
+                git commit -m "Deploy: $(basename $jsfile)"
+                git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git gh-pages
+                echo "  ✅ Pushed: $(basename $jsfile) ($filesize bytes)"
+              else
+                echo "  ❌ SIZE MISMATCH! File: $filesize bytes, Git: $git_size bytes"
+                exit 1
+              fi
             fi
           done
           
           # Push compressed files
           echo "📦 Batch 3: Compressed files..."
           git add assets/*.gz 2>/dev/null || true
-          git commit -m "Deploy: Compressed assets" --allow-empty
-          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git gh-pages
+          if ! git diff --cached --quiet; then
+            git commit -m "Deploy: Compressed assets"
+            git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git gh-pages
+            echo "  ✅ Batch 3 pushed"
+          fi
           
           # Push WASM and remaining files
           echo "📦 Batch 4: WASM and remaining assets..."
           git add . 2>/dev/null || true
-          git commit -m "Deploy: Final assets" --allow-empty
-          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git gh-pages
+          if ! git diff --cached --quiet; then
+            git commit -m "Deploy: Final assets"
+            git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git gh-pages
+            echo "  ✅ Batch 4 pushed"
+          fi
           
           echo "✅ Chunked deployment complete!"
 
