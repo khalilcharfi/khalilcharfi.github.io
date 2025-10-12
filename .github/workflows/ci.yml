@@ -195,8 +195,8 @@ jobs:
           
           echo "✅ Artifact preparation completed"
 
-      # ✅ FIX: Disable zstdmt to prevent buffer overflow
-      - name: ⚡ Upload Pages artifact (fixed)
+      # ✅ Upload complete artifact without modifications
+      - name: ⚡ Upload Pages artifact
         id: upload-artifact
         uses: actions/upload-pages-artifact@v4
         with:
@@ -205,31 +205,15 @@ jobs:
           retention-days: 1
         env:
           # Increase buffer sizes to prevent overflow
-          NODE_OPTIONS: '--max-old-space-size=4096'
+          NODE_OPTIONS: '--max-old-space-size=8192'
           # Set environment for stable tar operations
           TAR_OPTIONS: '--no-same-permissions --no-same-owner'
-        continue-on-error: true
+        continue-on-error: false
 
-      - name: ⚡ Fallback upload (if main upload fails)
-        if: steps.upload-artifact.outcome == 'failure'
+      - name: ⚡ Fallback upload (DISABLED - was corrupting files)
+        if: false
         run: |
-          echo "⚠️ Main upload failed, trying fallback approach..."
-          
-          # Create a smaller artifact by being more aggressive with optimization
-          mkdir -p dist-fallback
-          cp -r dist/* dist-fallback/
-          
-          # Remove source maps completely
-          find dist-fallback/ -name "*.map" -delete
-          
-          # Remove large vendor chunks that can be recreated
-          find dist-fallback/ -name "*vendor*.js" -size +500k -delete
-          
-          # Remove any non-essential JS files larger than 100k
-          find dist-fallback/ -name "*.js" -size +100k -not -name "index.*" -delete
-          
-          # Remove any non-essential CSS files larger than 50k
-          find dist-fallback/ -name "*.css" -size +50k -not -name "index.*" -delete
+          echo "⚠️ Fallback mechanism disabled to prevent file corruption"
           
           # Remove any large image files that aren't critical
           find dist-fallback/ -name "*.jpg" -o -name "*.jpeg" -o -name "*.png" -o -name "*.gif" -o -name "*.webp" | while read file; do
@@ -262,8 +246,8 @@ jobs:
           
           echo "✅ Fallback artifact prepared safely"
 
-      - name: ⚡ Upload fallback artifact
-        if: env.SKIP_PAGES_STEPS != 'true' && steps.upload-artifact.outcome == 'failure'
+      - name: ⚡ Upload fallback artifact (DISABLED)
+        if: false
         uses: actions/upload-pages-artifact@v4
         with:
           path: './dist-fallback'
