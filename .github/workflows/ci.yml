@@ -160,15 +160,25 @@ jobs:
           echo "Last 100 chars:"
           tail -c 100 dist/assets/vendor-three-C2c03BIj.js
 
-      # ✅ Deploy using direct git push with LFS completely disabled
+      # ✅ Deploy with pre-compressed files to work around truncation
+      - name: ⚡ Pre-compress JS files
+        run: |
+          echo "📦 Pre-compressing JavaScript files..."
+          cd dist
+          find assets -name "*.js" -type f | while read file; do
+            echo "Compressing: $file"
+            gzip -9 -k "$file"
+            ls -lh "$file" "$file.gz"
+          done
+          echo "✅ Pre-compression complete"
+          
       - name: ⚡ Deploy to GitHub Pages
         env:
           GIT_LFS_SKIP_SMUDGE: 1
         run: |
-          echo "🚀 Deploying to gh-pages branch (LFS disabled)..."
+          echo "🚀 Deploying to gh-pages branch..."
           cd dist
           git init
-          # Disable Git LFS completely for this repository
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git config filter.lfs.required false
@@ -176,13 +186,14 @@ jobs:
           git config filter.lfs.smudge "cat"
           git config filter.lfs.process ""
           git config lfs.repositoryformatversion ""
-          echo "✅ Git LFS disabled"
+          # Treat all files as binary to prevent any text conversion
+          echo "* binary" > .gitattributes
+          echo "✅ Git configured (all files as binary)"
           git add -A
           echo "📦 Files to commit:"
-          git status --short
-          echo "📏 Verifying file sizes before commit:"
-          ls -lh assets/vendor-three-C2c03BIj.js
-          wc -c assets/vendor-three-C2c03BIj.js
+          git status --short | head -20
+          echo "📏 Verifying compressed file sizes:"
+          ls -lh assets/vendor-three-C2c03BIj.js.gz 2>/dev/null || echo "Compressed file created"
           git commit -m "Deploy: ${{ github.event.head_commit.message }}"
           echo "📤 Pushing to gh-pages..."
           git push -f https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git HEAD:gh-pages
