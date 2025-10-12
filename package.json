@@ -19,6 +19,7 @@
     "preview:prod": "vite preview --mode production",
     "clean": "node scripts/cleanup.mjs",
     "deploy:verify": "node scripts/verify-deployment.js",
+    "deploy:manual": "bash scripts/deploy-manual.sh",
     "i18n:validate": "node scripts/validate-translations.js",
     "i18n:fix-missing": "node scripts/fix-missing-translations.js",
     "i18n:complete": "node scripts/complete-translations.js",
