@@ -164,11 +164,13 @@ jobs:
       - name: ⚡ Pre-compress JS files
         run: |
           echo "📦 Pre-compressing JavaScript files..."
-          cd dist
-          find assets -name "*.js" -type f | while read file; do
-            echo "Compressing: $file"
-            gzip -9 -k "$file"
-            ls -lh "$file" "$file.gz"
+          cd dist/assets
+          for file in *.js; do
+            if [ -f "$file" ]; then
+              echo "Compressing: $file ($(wc -c < "$file") bytes)"
+              gzip -9 -k "$file"
+              echo "  Created: $file.gz ($(wc -c < "$file.gz") bytes)"
+            fi
           done
           echo "✅ Pre-compression complete"
           
@@ -192,8 +194,8 @@ jobs:
           git add -A
           echo "📦 Files to commit:"
           git status --short | head -20
-          echo "📏 Verifying compressed file sizes:"
-          ls -lh assets/vendor-three-C2c03BIj.js.gz 2>/dev/null || echo "Compressed file created"
+          echo "📏 Verifying both original and compressed files:"
+          ls -lh assets/vendor-three-C2c03BIj.js* 2>/dev/null || echo "Files ready"
           git commit -m "Deploy: ${{ github.event.head_commit.message }}"
           echo "📤 Pushing to gh-pages..."
           git push -f https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git HEAD:gh-pages
