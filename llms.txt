@@ -1,0 +1,239 @@
+# Khalil Charfi - Full-Stack Engineer & Software Developer
+
+> **Professional Portfolio**: Khalil Charfi is a Full-Stack Engineer with 8+ years of experience building scalable web and mobile applications. Specialized in Vue.js, Angular, Laravel, Flutter, and modern cloud technologies. Currently based in Frankfurt, Germany, with extensive experience across Tunisia and Germany.
+
+## 🎯 Professional Summary
+
+**Current Role**: Software Engineer – Fullstack Developer at CHECK24 Vergleichsportal GmbH (Aug 2022 – Present)  
+**Location**: Frankfurt, Germany  
+**Expertise**: Full-Stack Development, Mobile Applications, Cloud Architecture, DevOps  
+**Languages**: Arabic (Native), English (Fluent), French (Fluent), German (Conversational)
+
+### Key Professional Highlights
+- **8+ years** of full-stack development experience
+- **Enterprise-scale applications** for Germany's leading comparison platform
+- **Cross-platform mobile development** with Flutter and Ionic
+- **Research background** in IoT and healthcare technologies
+- **International experience** across Tunisia and Germany
+
+## 🛠️ Technical Skills & Expertise
+
+### Frontend Development
+- **Frameworks**: Vue.js, Angular, React (learning)
+- **Languages**: JavaScript, TypeScript, HTML5, CSS3
+- **Styling**: Sass/LESS, Bootstrap, Responsive Design
+- **Tools**: Webpack, Vite, Progressive Web Apps (PWA)
+
+### Backend Development
+- **Languages**: PHP, Java, JavaScript/Node.js
+- **Frameworks**: Laravel, Laminas, Spring Boot
+- **APIs**: REST APIs, GraphQL (Apollo Client)
+- **Architecture**: Microservices, MVC, Clean Architecture
+
+### Mobile Development
+- **Cross-platform**: Flutter, Ionic
+- **Native**: Android (Java)
+- **Features**: Offline-first apps, Bluetooth integration, IoT connectivity
+- **Sync**: CouchDB/PouchDB, SQLite, Firebase
+
+### Databases & Data Management
+- **Relational**: MySQL, PostgreSQL
+- **NoSQL**: MongoDB, CouchDB, SQLite
+- **Caching**: Redis
+- **Sync**: PouchDB for offline-first applications
+
+### DevOps & Cloud
+- **Containers**: Docker, Kubernetes
+- **CI/CD**: Jenkins, GitLab CI/CD, Bitrise
+- **Version Control**: Git, GitLab, GitHub
+- **Infrastructure**: Puppet, Infrastructure as Code
+- **Monitoring**: Grafana, Kibana
+
+### Additional Tools & Technologies
+- **CMS**: Drupal
+- **Authentication**: Keycloak
+- **Cloud Services**: Firebase (Auth, Firestore, FCM)
+- **Maps**: Mapbox GL
+- **Event Processing**: WSO2 CEP
+- **Testing**: TestCafe, Cucumber
+- **Frameworks**: JHipster
+
+## 💼 Professional Experience
+
+### Software Engineer – Fullstack Developer
+**CHECK24 Vergleichsportal GmbH** | Frankfurt, Germany | Aug 2022 – Present
+- Improved front-end performance and user interaction on Germany's top comparison platform using Vue.js and Laminas
+- Enhanced bicycle insurance (Fahrradversicherung) product with advanced features and REST API integration
+- Contributed to Drupal component redesign and embedded analytics tracking
+- Applied caching and optimized database queries for faster loading and smoother user flow
+
+### Software Engineer – Full-Stack Developer
+**ASM - All Soft Multimedia** | Sfax, Tunisia | Jan 2019 – Aug 2022
+- Led development of web and mobile apps across retail, restaurants, and inventory management sectors
+- Built hybrid mobile apps with Flutter and Ionic, featuring offline sync via CouchDB/PouchDB
+- Delivered key projects: Cover 3D Mobile (field sales tool), 3andi & 3andi Partner (loyalty apps), ProInventory & ProCaisse Mobility
+- Ensured secure access and authentication with Keycloak
+
+### Software Engineer – Mobile Developer
+**MyBus – Monkey Factory** | Sfax, Tunisia | Mar 2020 – Nov 2020
+- Built real-time public transportation app using Ionic, Angular, and Mapbox GL
+- Integrated GraphQL with Apollo Client for efficient data updates
+- Enabled CI/CD with Docker and GitLab for faster iterations
+
+### Front-End Developer
+**Softtodo IT Solutions** | Sfax, Tunisia | May 2018 – Dec 2018
+- Modernized IRIDION's e-commerce UI using Bootstrap and responsive design
+- Implemented dynamic JSP components and A/B testing tools
+
+### Android Developer
+**ASM - All Soft Multimedia** | Sfax, Tunisia | Mar 2017 – May 2018
+- Delivered business-critical Android apps with offline capabilities and secure sync via SQLite and Laravel
+- Built custom tools: DUX Mobile (ERP companion), FastQueue (queue system via Bluetooth), ProCaisse Mobile
+
+### Researcher – THERALYTICS Project
+**University of Marburg / Digital Research Centre of Sfax** | Germany & Tunisia | Oct 2016 – Feb 2017
+- Developed cardiac monitoring prototype using IoT sensors and Complex Event Processing (WSO2 CEP)
+- Designed real-time alert systems and data pipelines with Spring Boot, MongoDB, and JHipster
+- Collaborated in international research for early detection of cardiac anomalies
+
+## 🎓 Education
+
+### Master of Science, Enterprise Systems Engineering
+**Higher Institute of Informatics and Multimedia of Sfax** | Sep 2014 – Feb 2017
+- Focus: Large-scale software systems and enterprise architectures
+
+### Bachelor's Degree, Computer Science
+**Higher Institute of Informatics and Multimedia of Sfax** | Sep 2011 – Jun 2014
+- Foundation: Algorithms, data structures, and software development principles
+
+## 🚀 Featured Projects
+
+### Cover 3D Mobile (ASM)
+**Field Sales Tool** | Ionic, Angular, CouchDB, PouchDB, Keycloak
+- Dynamic forms generation with complex pricing logic
+- Multimedia support for product presentations
+- Offline capabilities with CouchDB/PouchDB sync
+
+### 3andi & 3andi Partner (ASM)
+**Loyalty Applications** | Flutter, Firebase, Node.js
+- Customer and vendor loyalty applications
+- QR code scanning for points and promotional offers
+- Firebase integration for push notifications and analytics
+
+### Public Transportation App (MyBus)
+**Real-time Tracking** | Ionic, Angular, Mapbox GL, GraphQL, Docker
+- Real-time tracking and information for public transport users
+- Interactive maps with Mapbox GL
+- Efficient data fetching with GraphQL and Apollo Client
+
+### Cardiac Monitoring Prototype (Theralytics)
+**IoT Health System** | Java, Spring Boot, WSO2 CEP, MongoDB, JHipster
+- IoT-based cardiac anomaly detection using wearable sensors
+- Real-time data processing pipelines and alert systems
+- Complex Event Processing with WSO2 CEP
+
+## 📚 Academic Publications
+
+### CEP4HFP: Complex Event Processing for Heart Failure Prediction
+**IEEE Transactions on Nanobioscience, Vol. 16, No. 8** | December 2017
+- **Authors**: Afef Mdhaffar, Ismael Bouassida Rodriguez, Khalil Charfi, Leila Abid, and Bernd Freisleben
+- **Abstract**: Novel health analysis approach for heart failure prediction using Complex Event Processing (CEP) technology combined with statistical approaches. Features automatic threshold computation and updates based on historical data.
+- **Link**: https://ieeexplore.ieee.org/document/8094944
+
+## 🏆 Certifications & Awards
+
+### DAAD E-Health Workshop Certificates
+- **Certificate for Presentation** | 2nd DAAD Workshop on E-health | Darmstadt, Germany | Dec 2016
+- **Certificate of Attendance** | 2nd DAAD Theralytics Workshop | Darmstadt, Germany | Dec 2016
+- **Certificate for Presentation** | 1st DAAD Workshop on E-health | Sfax, Tunisia | Sep 2016
+- **Certificate of Attendance** | DAAD E-Health Workshop | Sfax, Tunisia | Sep 2016
+- **Certificate of Participation** | E-Health Workshop on Cardiac Patient Monitoring | 2016
+
+## 🌐 Portfolio Features
+
+### Technical Implementation
+- **Frontend**: React 18 with TypeScript, Vite build system
+- **3D Graphics**: Three.js with React Three Fiber
+- **Internationalization**: i18next (English, Arabic, French, German)
+- **Styling**: Modern CSS with custom properties, responsive design
+- **PWA**: Service worker, offline support, manifest
+- **Performance**: Code splitting, lazy loading, optimization
+- **Accessibility**: WCAG 2.1 AA compliant
+
+### Multilingual Support
+- **English** (primary)
+- **Arabic** (native)
+- **French** (fluent)
+- **German** (conversational)
+
+## 📞 Contact & Professional Links
+
+### Primary Contact
+- **Location**: Frankfurt, Germany
+- **Status**: Open to opportunities
+- **Work Authorization**: EU Work Permit
+- **Availability**: Remote & On-site opportunities
+
+### Professional Profiles
+- **GitHub**: https://github.com/khalil-charfi
+- **LinkedIn**: https://www.linkedin.com/in/khalil-charfi/
+- **Email**: Available on LinkedIn
+
+### Portfolio Resources
+- **Main Site**: https://khalilcharfi.github.io/
+- **Sitemap**: https://khalilcharfi.github.io/sitemap.xml
+- **Robots.txt**: https://khalilcharfi.github.io/robots.txt
+
+## 🔍 SEO & Technical Details
+
+### Structured Data
+- **Schema.org**: Person and Organization markup
+- **Open Graph**: Optimized social media sharing
+- **Twitter Cards**: Enhanced social media presence
+- **Hreflang**: Multilingual SEO optimization
+
+### Performance & Accessibility
+- **Core Web Vitals**: Optimized for performance
+- **Accessibility**: WCAG 2.1 AA compliant
+- **Mobile-First**: Responsive design approach
+- **Progressive Enhancement**: Works without JavaScript
+
+## 📊 Key Metrics & Achievements
+
+- **8+ years** professional development experience
+- **6+ companies** worked with across different sectors
+- **4+ programming languages** mastered
+- **10+ frameworks** and technologies
+- **1 peer-reviewed publication** in IEEE journal
+- **5+ professional certifications** in e-health and technology
+- **Multilingual portfolio** supporting 4 languages
+
+## 🎯 Target Audience & Use Cases
+
+### For Recruiters & HR
+- Experienced Full-Stack Developer ready for senior positions
+- Proven track record in enterprise applications
+- International experience and cultural adaptability
+- Strong technical and soft skills combination
+
+### For Technical Leads & CTOs
+- Architecture and system design expertise
+- Experience with modern tech stacks and cloud technologies
+- Leadership experience in cross-functional teams
+- Research background in emerging technologies
+
+### For Startup Founders
+- MVP development and rapid prototyping experience
+- Cross-platform mobile development skills
+- Offline-first application expertise
+- Full-stack capabilities for end-to-end development
+
+## 📅 Last Updated
+
+**Portfolio Version**: 2025-01-04  
+**Content Freshness**: Regularly updated with latest projects and experience  
+**Technical Stack**: Current with modern web technologies
+
+---
+
+*This llms.txt file is optimized for AI models and language models to better understand and reference Khalil Charfi's professional portfolio. For the most up-to-date information and interactive experience, visit the live website at https://khalilcharfi.github.io/*

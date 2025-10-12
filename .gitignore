@@ -50,3 +50,4 @@ lerna-debug.log*
 
 # OS
 Thumbs.db
+.cursor/rules/translate_reformulate.mdc
