@@ -168,17 +168,17 @@ jobs:
           for file in *.js; do
             if [ -f "$file" ]; then
               echo "Compressing: $file ($(wc -c < "$file") bytes)"
-              gzip -9 -k "$file"
+              gzip -9kf "$file"
               echo "  Created: $file.gz ($(wc -c < "$file.gz") bytes)"
             fi
           done
           echo "✅ Pre-compression complete"
           
-      - name: ⚡ Deploy to GitHub Pages
+      - name: ⚡ Deploy to GitHub Pages (chunked push)
         env:
           GIT_LFS_SKIP_SMUDGE: 1
         run: |
-          echo "🚀 Deploying to gh-pages branch..."
+          echo "🚀 Deploying to gh-pages branch with chunked commits..."
           cd dist
           git init
           git config user.name "github-actions[bot]"
@@ -188,18 +188,50 @@ jobs:
           git config filter.lfs.smudge "cat"
           git config filter.lfs.process ""
           git config lfs.repositoryformatversion ""
+          git config lfs.fetchexclude "*"
+          
           # Treat all files as binary to prevent any text conversion
           echo "* binary" > .gitattributes
-          echo "✅ Git configured (all files as binary)"
-          git add -A
-          echo "📦 Files to commit:"
-          git status --short | head -20
-          echo "📏 Verifying both original and compressed files:"
-          ls -lh assets/vendor-three-C2c03BIj.js* 2>/dev/null || echo "Files ready"
-          git commit -m "Deploy: ${{ github.event.head_commit.message }}"
-          echo "📤 Pushing to gh-pages..."
-          git push -f https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git HEAD:gh-pages
-          echo "✅ Deployment complete!"
+          echo "✅ Git configured (all files as binary, LFS disabled)"
+          
+          # Initial commit with just the structure
+          git add .gitattributes
+          git commit -m "Initial commit: Setup"
+          git branch -M gh-pages
+          
+          # Push HTML and small files first
+          echo "📦 Batch 1: HTML, CSS, and small assets..."
+          git add index.html *.txt *.xml 2>/dev/null || true
+          git add assets/*.css assets/*.svg assets/*.json assets/*.jpg 2>/dev/null || true
+          git commit -m "Deploy batch 1: HTML, CSS, images" --allow-empty
+          git push -f https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git gh-pages
+          
+          # Push JS files one by one (the problematic files)
+          echo "📦 Batch 2: JavaScript files (one at a time)..."
+          for jsfile in assets/*.js; do
+            if [ -f "$jsfile" ]; then
+              filesize=$(wc -c < "$jsfile")
+              echo "  Adding: $jsfile ($filesize bytes)"
+              git add "$jsfile"
+              git commit -m "Deploy: $(basename $jsfile)" --allow-empty
+              git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git gh-pages
+              echo "  ✅ Pushed: $(basename $jsfile)"
+            fi
+          done
+          
+          # Push compressed files
+          echo "📦 Batch 3: Compressed files..."
+          git add assets/*.gz 2>/dev/null || true
+          git commit -m "Deploy: Compressed assets" --allow-empty
+          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git gh-pages
+          
+          # Push WASM and remaining files
+          echo "📦 Batch 4: WASM and remaining assets..."
+          git add . 2>/dev/null || true
+          git commit -m "Deploy: Final assets" --allow-empty
+          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git gh-pages
+          
+          echo "✅ Chunked deployment complete!"
 
       - name: ⚡ Verify deployment
         run: |
