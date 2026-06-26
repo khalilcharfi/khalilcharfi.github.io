@@ -1,2 +1,0 @@
--P ubuntu-latest=ghcr.io/catthehacker/ubuntu:act-latest
--s SKIP_PAGES_STEPS=true
