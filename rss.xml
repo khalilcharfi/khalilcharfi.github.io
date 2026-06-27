@@ -5,48 +5,48 @@
     <link>https://khalilcharfi.com</link>
     <description>Latest projects, publications, and updates from Khalil Charfi.</description>
     <language>en-us</language>
-    <lastBuildDate>Sat, 27 Jun 2026 23:27:01 GMT</lastBuildDate>
+    <lastBuildDate>Sat, 27 Jun 2026 23:42:46 GMT</lastBuildDate>
     <atom:link href="https://khalilcharfi.com/rss.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Portfolio Website Launched</title>
       <link>https://khalilcharfi.com</link>
       <description>Launched a new multilingual portfolio website showcasing my engineering approach, projects, and professional experience.</description>
-      <pubDate>Sat, 27 Jun 2026 23:27:01 GMT</pubDate>
+      <pubDate>Sat, 27 Jun 2026 23:42:46 GMT</pubDate>
       <guid isPermaLink="false">portfolio-launch</guid>
     </item>
     <item>
       <title>CHECK24 Bicycle Insurance Portal</title>
       <link>https://khalilcharfi.com/#projects</link>
-      <description>Context: Germany&apos;s leading insurance comparison platform serving 2M+ monthly users. Challenge: Legacy PHP/Drupal templates caused slow checkout load times and redundant data steps. Contribution: Refactored the frontend into decoupled Vue.js components and integrated 8+ REST APIs. Outcome: Decreased page load times from 4.2s to 2.1s, boosting checkout conversion rates by 12%.</description>
-      <pubDate>Sat, 27 Jun 2026 23:27:01 GMT</pubDate>
+      <description>Context: Collaborative project within Germany&apos;s leading comparison portal. Challenge: Legacy PHP templates made the checkout flow slow and harder to maintain. Contribution: Migrated parts of the frontend to Vue.js components and integrated core REST APIs. Outcome: Helped streamline the checkout user flows and improved frontend rendering times.</description>
+      <pubDate>Sat, 27 Jun 2026 23:42:46 GMT</pubDate>
       <guid isPermaLink="false">check24-bicycle-insurance-portal</guid>
     </item>
     <item>
       <title>Cover 3D Mobile (ASM)</title>
       <link>https://khalilcharfi.com/#projects</link>
-      <description>Context: B2B interior design and order-management application deployed to 500+ clients. Challenge: Sales agents in remote regions with unstable internet connections faced frequent order losses. Contribution: Designed a CouchDB/PouchDB offline-first synchronization and data replication model. Outcome: Enabled 100% offline functionality, reducing order data synchronization errors to zero.</description>
-      <pubDate>Sat, 27 Jun 2026 23:27:01 GMT</pubDate>
+      <description>Context: B2B interior design and order-management application. Challenge: Sales agents in remote areas with unstable internet needed to work reliably without losing orders. Contribution: Implemented CouchDB/PouchDB synchronization for offline storage and replication. Outcome: Enabled reliable offline functionality, helping agents submit orders consistently.</description>
+      <pubDate>Sat, 27 Jun 2026 23:42:46 GMT</pubDate>
       <guid isPermaLink="false">cover-3d-mobile-asm-</guid>
     </item>
     <item>
       <title>3andi &amp; 3andi Partner (ASM)</title>
       <link>https://khalilcharfi.com/#projects</link>
-      <description>Context: Multi-tenant loyalty and digital reward applications for North African merchants. Challenge: Paper-based rewards led to high verification overhead and slow customer retention loops. Contribution: Developed Flutter client apps featuring secure QR verification and Firestore listeners. Outcome: Supported 20K+ concurrent users and increased repeat customer visits for vendors by 25%.</description>
-      <pubDate>Sat, 27 Jun 2026 23:27:01 GMT</pubDate>
+      <description>Context: Multi-tenant loyalty and digital reward applications for merchants. Challenge: Transitioning physical rewards to digital systems smoothly for both merchants and users. Contribution: Developed Flutter client applications and integrated Firebase for real-time status updates. Outcome: Provided a reliable platform for local vendors to manage digital loyalty programs.</description>
+      <pubDate>Sat, 27 Jun 2026 23:42:46 GMT</pubDate>
       <guid isPermaLink="false">3andi-3andi-partner-asm-</guid>
     </item>
     <item>
       <title>Business Mobility Suite (ASM)</title>
       <link>https://khalilcharfi.com/#projects</link>
-      <description>Context: Offline-first inventory and sales automation tools for retail networks. Challenge: Real-time stock discrepancies between sales reps and central warehouse databases. Contribution: Built Flutter/Ionic synchronizers and scalable Laravel REST API backends. Outcome: Reduced server load by 40% and eliminated sales synchronization discrepancies entirely.</description>
-      <pubDate>Sat, 27 Jun 2026 23:27:01 GMT</pubDate>
+      <description>Context: Inventory and sales automation tools for retail networks. Challenge: Aligning stock data between sales representatives and central warehouse systems in real time. Contribution: Built Flutter and Ionic apps connected to Laravel-based REST API backends. Outcome: Helped improve data consistency and reduced synchronization issues for warehouse teams.</description>
+      <pubDate>Sat, 27 Jun 2026 23:42:46 GMT</pubDate>
       <guid isPermaLink="false">business-mobility-suite-asm-</guid>
     </item>
     <item>
       <title>Public Transportation App (MyBus)</title>
       <link>https://khalilcharfi.com/#projects</link>
-      <description>Context: Real-time transit navigation and scheduling application serving Sfax. Challenge: Processing noisy live GPS streams from 15+ bus lines while keeping mobile data usage low. Contribution: Designed a GraphQL data caching pipeline and integrated Mapbox GL JS map renderers. Outcome: Delivered live ETAs to 50K+ commuters daily with a proven 92% ETA accuracy rate.</description>
-      <pubDate>Sat, 27 Jun 2026 23:27:01 GMT</pubDate>
+      <description>Context: Public transit navigation and scheduling application. Challenge: Providing live schedules using noisy GPS data streams without overwhelming mobile connections. Contribution: Designed a GraphQL caching pipeline and integrated Mapbox GL JS for map rendering. Outcome: Delivered transit maps and timetables to commuters with reliable timing estimates.</description>
+      <pubDate>Sat, 27 Jun 2026 23:42:46 GMT</pubDate>
       <guid isPermaLink="false">public-transportation-app-mybus-</guid>
     </item>
   </channel>
