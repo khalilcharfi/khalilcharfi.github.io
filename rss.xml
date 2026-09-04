@@ -5,48 +5,48 @@
     <link>https://khalilcharfi.com</link>
     <description>Latest projects, publications, and updates from Khalil Charfi.</description>
     <language>en-us</language>
-    <lastBuildDate>Fri, 04 Sep 2026 20:01:40 GMT</lastBuildDate>
+    <lastBuildDate>Fri, 04 Sep 2026 22:52:37 GMT</lastBuildDate>
     <atom:link href="https://khalilcharfi.com/rss.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Portfolio Website Launched</title>
       <link>https://khalilcharfi.com</link>
       <description>Launched a new multilingual portfolio website showcasing my engineering approach, projects, and professional experience.</description>
-      <pubDate>Fri, 04 Sep 2026 20:01:40 GMT</pubDate>
+      <pubDate>Fri, 04 Sep 2026 22:52:37 GMT</pubDate>
       <guid isPermaLink="false">portfolio-launch</guid>
     </item>
     <item>
       <title>CHECK24 Bicycle Insurance Portal</title>
       <link>https://khalilcharfi.com/#projects</link>
       <description>Context: Collaborative project within Germany&apos;s leading comparison portal. Challenge: Legacy PHP templates made the checkout flow slow and harder to maintain. Contribution: Migrated parts of the frontend to Vue.js components and integrated core REST APIs. Outcome: Helped streamline the checkout user flows and improved frontend rendering times.</description>
-      <pubDate>Fri, 04 Sep 2026 20:01:40 GMT</pubDate>
+      <pubDate>Fri, 04 Sep 2026 22:52:37 GMT</pubDate>
       <guid isPermaLink="false">check24-bicycle-insurance-portal</guid>
     </item>
     <item>
       <title>Cover 3D Mobile (ASM)</title>
       <link>https://khalilcharfi.com/#projects</link>
       <description>Context: B2B interior design and order-management application. Challenge: Sales agents in remote areas with unstable internet needed to work reliably without losing orders. Contribution: Implemented CouchDB/PouchDB synchronization for offline storage and replication. Outcome: Enabled reliable offline functionality, helping agents submit orders consistently.</description>
-      <pubDate>Fri, 04 Sep 2026 20:01:40 GMT</pubDate>
+      <pubDate>Fri, 04 Sep 2026 22:52:37 GMT</pubDate>
       <guid isPermaLink="false">cover-3d-mobile-asm-</guid>
     </item>
     <item>
       <title>3andi &amp; 3andi Partner (ASM)</title>
       <link>https://khalilcharfi.com/#projects</link>
       <description>Context: Multi-tenant loyalty and digital reward applications for merchants. Challenge: Transitioning physical rewards to digital systems smoothly for both merchants and users. Contribution: Developed Flutter client applications and integrated Firebase for real-time status updates. Outcome: Provided a reliable platform for local vendors to manage digital loyalty programs.</description>
-      <pubDate>Fri, 04 Sep 2026 20:01:40 GMT</pubDate>
+      <pubDate>Fri, 04 Sep 2026 22:52:37 GMT</pubDate>
       <guid isPermaLink="false">3andi-3andi-partner-asm-</guid>
     </item>
     <item>
       <title>Business Mobility Suite (ASM)</title>
       <link>https://khalilcharfi.com/#projects</link>
       <description>Context: Inventory and sales automation tools for retail networks. Challenge: Aligning stock data between sales representatives and central warehouse systems in real time. Contribution: Built Flutter and Ionic apps connected to Laravel-based REST API backends. Outcome: Helped improve data consistency and reduced synchronization issues for warehouse teams.</description>
-      <pubDate>Fri, 04 Sep 2026 20:01:40 GMT</pubDate>
+      <pubDate>Fri, 04 Sep 2026 22:52:37 GMT</pubDate>
       <guid isPermaLink="false">business-mobility-suite-asm-</guid>
     </item>
     <item>
       <title>Public Transportation App (MyBus)</title>
       <link>https://khalilcharfi.com/#projects</link>
       <description>Context: Public transit navigation and scheduling application. Challenge: Providing live schedules using noisy GPS data streams without overwhelming mobile connections. Contribution: Designed a GraphQL caching pipeline and integrated Mapbox GL JS for map rendering. Outcome: Delivered transit maps and timetables to commuters with reliable timing estimates.</description>
-      <pubDate>Fri, 04 Sep 2026 20:01:40 GMT</pubDate>
+      <pubDate>Fri, 04 Sep 2026 22:52:37 GMT</pubDate>
       <guid isPermaLink="false">public-transportation-app-mybus-</guid>
     </item>
   </channel>
