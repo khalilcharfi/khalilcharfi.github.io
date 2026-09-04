@@ -1,4 +1,4 @@
-import{w as U,g,c,u as S,B as _,d as m,E as I,e as p}from"./PixelWorld-Bx_aIs-P.js";const x={name:"local-uniform-bit",vertex:{header:`
+import{w as U,g,c,u as S,B as _,d as m,E as I,e as p}from"./PixelWorld-C0M36Thj.js";const x={name:"local-uniform-bit",vertex:{header:`
 
             struct LocalUniforms {
                 uTransformMatrix:mat3x3<f32>,
